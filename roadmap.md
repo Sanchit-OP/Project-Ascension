@@ -3,7 +3,7 @@
 ## Pre-Production
 
 - Lock vision pillars
-- Lock progression grammar
+- Lock planet-based progression grammar
 - Lock major planet list
 - Lock combat and unlock philosophy
 - Lock technical responsibility map
