@@ -2,6 +2,7 @@ package com.ascension.atmosphere;
 
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
+import com.ascension.atmosphere.internal.AtmosphereBlocks;
 import com.ascension.atmosphere.internal.AtmosphereCommands;
 import com.ascension.atmosphere.internal.AtmosphereConfig;
 import com.ascension.atmosphere.internal.DebugAtmosphere;
@@ -9,6 +10,8 @@ import com.ascension.atmosphere.internal.OxygenTracker;
 import com.ascension.atmosphere.internal.ProviderRegistry;
 import com.ascension.atmosphere.internal.VanillaIntegration;
 import com.ascension.atmosphere.internal.net.AtmosphereNetwork;
+import com.ascension.atmosphere.internal.sealed.SealedVolumeEvents;
+import com.ascension.atmosphere.internal.sealed.SealedVolumeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
@@ -44,6 +47,7 @@ public final class AscensionAtmosphere {
         container.registerConfig(ModConfig.Type.SERVER, AtmosphereConfig.SPEC);
 
         AtmosphereAttachments.register(modBus);
+        AtmosphereBlocks.register(modBus);
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(AtmosphereNetwork::register);
 
@@ -51,6 +55,7 @@ public final class AscensionAtmosphere {
         NeoForge.EVENT_BUS.addListener(this::onServerTick);
         NeoForge.EVENT_BUS.addListener(this::onRespawn);
         NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
+        SealedVolumeEvents.register(NeoForge.EVENT_BUS);
 
         LOGGER.info("Ascension Atmosphere loaded ({})", container.getModInfo().getVersion());
     }
@@ -66,6 +71,11 @@ public final class AscensionAtmosphere {
             AtmosphereRegistry.register(
                     ResourceLocation.fromNamespaceAndPath(MOD_ID, "water"),
                     new VanillaIntegration.WaterAtmosphere());
+            // Sealed rooms beat the vacuum around them, and would in turn lose to a vehicle.
+            AtmosphereRegistry.register(
+                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "sealed_volume"),
+                    new SealedVolumeProvider());
+
             AtmosphereRegistry.register(new VanillaIntegration.ConduitPower());
             AtmosphereRegistry.registerLungCapacity(
                     ResourceLocation.fromNamespaceAndPath(MOD_ID, "vanilla_gear"),

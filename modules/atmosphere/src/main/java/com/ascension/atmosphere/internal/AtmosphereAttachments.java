@@ -1,6 +1,7 @@
 package com.ascension.atmosphere.internal;
 
 import com.ascension.atmosphere.AscensionAtmosphere;
+import com.ascension.atmosphere.internal.sealed.SealedVolumeIndex;
 import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -25,6 +26,20 @@ public final class AtmosphereAttachments {
                     .serialize(OxygenState.CODEC)
                     .copyOnDeath()
                     .build());
+
+    /**
+     * Pressurised volumes for one level.
+     *
+     * <p>Deliberately not serialised. Volumes are derived data: they are recomputed from the
+     * emitters themselves, so persisting them would only create a second source of truth that
+     * could disagree with the blocks after a world edit.
+     *
+     * <p>Attached to the level rather than held in a static map keyed by dimension, so it is
+     * freed when the level unloads (ADR-0007 rule 3).
+     */
+    public static final Supplier<AttachmentType<SealedVolumeIndex>> SEALED_VOLUMES = TYPES.register(
+            "sealed_volumes",
+            () -> AttachmentType.builder(() -> new SealedVolumeIndex()).build());
 
     private AtmosphereAttachments() {
     }

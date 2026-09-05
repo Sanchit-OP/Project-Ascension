@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "ascension_atmosphere:block/oxygen_emitter" }
+  }
+}

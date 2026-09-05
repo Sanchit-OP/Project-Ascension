@@ -60,6 +60,17 @@ public final class AtmosphereTuning {
     /** Damage applied per second once the grace window has elapsed. Matches vanilla drowning. */
     public static final float SUFFOCATION_DAMAGE = 2.0f;
 
+    /**
+     * Largest room a single emitter can pressurise, in blocks.
+     *
+     * <p>A hard cap, not a guideline. Without one, an emitter placed outdoors would flood-fill
+     * every loaded chunk, and this runs on block changes.
+     */
+    public static final int SEALED_VOLUME_LIMIT = 4096;
+
+    /** How far from the emitter the fill may reach, in blocks along any axis. */
+    public static final int SEALED_VOLUME_RADIUS = 24;
+
     private AtmosphereTuning() {
     }
 
