@@ -57,36 +57,16 @@ Two things must not be confused when we do it:
 2. **So: two instances.** `Ascension Dev` stays clean and remains the measurement reference.
    A duplicate carries the optimisation mods and exists to catch compatibility breakage.
 
-### Candidates, checked against NeoForge 1.21.1 on 2026-09-05
+### The set
 
-Verified through the Modrinth API — a project listing "neoforge" and "1.21.1" separately does
-not mean the pairing exists, so each was checked per-version.
+Chosen and recorded in [`docs/technical/optimisation-stack.md`](docs/technical/optimisation-stack.md) — what goes in, what must not, the two configuration traps, and the one gap
+(no lighting-engine optimisation exists for NeoForge 1.21.1).
 
-| Mod | Verdict |
-|---|---|
-| **Sodium** `0.8.13-neoforge` | Yes. Upstream Sodium has a real NeoForge 1.21.1 build now, which is the answer to the renderer question — multithreaded chunk meshing and batched draws are what actually gate render distance. |
-| **Distant Horizons** `3.2.0-b-1.21.1` | Yes, and it is the mechanism for high render distance at low RAM: an LOD database instead of loaded chunks. Compatibility with our custom dimensions is untested — see the M2 question above. |
-| **Lithium** `0.15.4-neoforge` | Yes. General server-side wins. |
-| **FerriteCore** `7.0.3-neoforge` | Yes. Memory reduction, and directly relevant to holding more chunks. |
-| **ModernFix** `5.27.24` | Yes. Memory and startup. |
-| **Chunky** `1.4.23` | Yes, and it is the practical substitute for C2ME's benefit in a *travel* pack: pre-generate, and flying becomes disk I/O instead of worldgen. |
-| **Noisium** `2.3.0` | Yes. Worldgen speed. Server-side only, so it is also the one most likely to interact with `ascension-worlds`. |
-| **EntityCulling**, **MoreCulling**, **BadOptimizations** | Yes. Client-side, uncontroversial. |
-| **Embeddium** `1.0.15` | Available, but **do not install alongside Sodium** — it is a Sodium fork and they conflict. Pick one; Sodium is upstream. |
-| **VulkanMod** | **No NeoForge build.** Also replaces the whole renderer and breaks most rendering mods. See the note below — it costs less than it looks. |
-| **C2ME**, **VMP**, **Krypton** | **No NeoForge build.** |
-| **Dynamic FPS** | Works, but **keep it out of the dev instance.** It throttles the game when unfocused, and `pauseOnLostFocus=false` is seeded in our dev runs specifically so alt-tabbing to an editor does not invalidate a timing observation. |
-| **Fabric API**, **Mod Menu**, **Placeholder API** | Fabric plumbing, not optimisation. |
-
-**On VulkanMod and OpenGL.** The bottleneck on render distance is not the graphics API. It is
-chunk mesh building on the CPU, draw-call count, and chunk data in RAM. Sodium attacks all three
-— threaded meshing, batched draws, a compact vertex format. Vulkan would further reduce
-draw-call overhead, but Sodium's batching has already collapsed that count. So having no Vulkan
-renderer on NeoForge costs much less than it appears to.
-
-**On C2ME.** It parallelises chunk *generation and I/O on the server*, which is a different
-problem from render distance. For a pack about travelling, Chunky gets most of the same
-practical benefit by removing generation from the hot path entirely.
+**Sequencing, revised 2026-09-05.** The optimisation stack goes in *before* M1.9, not after,
+and before `ascension-compat-curios`. Reason: M1.9's measurement should be taken once, on the
+stack we intend to keep, rather than taken now and immediately invalidated by adding a dozen
+mods. Order is therefore: install the stack, establish the full-stack baseline, M1.9 refactor
+plus the A/B, then the Curios compat jar, then M2.
 
 **Spark is different and should go in now, not at M2.** It is a profiler, not an optimiser.
 `docs/technical/performance-log.md` currently tells you to read numbers off F3 by hand, which is
