@@ -18,11 +18,13 @@ public final class OxygenState {
 
     public static final Codec<OxygenState> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    Codec.INT.fieldOf("units").forGetter(OxygenState::units),
-                    Codec.INT.fieldOf("suffocationTicks").forGetter(OxygenState::suffocationTicks))
+                    Codec.INT.optionalFieldOf("lungUnits", AtmosphereTuning.LUNG_CAPACITY)
+                            .forGetter(OxygenState::lungUnits),
+                    Codec.INT.optionalFieldOf("suffocationTicks", 0)
+                            .forGetter(OxygenState::suffocationTicks))
             .apply(instance, OxygenState::new));
 
-    private int units;
+    private int lungUnits;
     private int suffocationTicks;
 
     /**
@@ -49,20 +51,26 @@ public final class OxygenState {
     private transient float drainCarry;
 
     public OxygenState() {
-        this(0, 0);
+        // A new player starts with a full set of lungs, not empty ones.
+        this(AtmosphereTuning.LUNG_CAPACITY, 0);
     }
 
-    public OxygenState(int units, int suffocationTicks) {
-        this.units = units;
+    public OxygenState(int lungUnits, int suffocationTicks) {
+        this.lungUnits = lungUnits;
         this.suffocationTicks = suffocationTicks;
     }
 
-    public int units() {
-        return units;
+    /** The player's own lung reserve, in units. Refills for free in breathable air. */
+    public int lungUnits() {
+        return lungUnits;
     }
 
-    public void setUnits(int units) {
-        this.units = Math.max(0, units);
+    public void setLungUnits(int units) {
+        this.lungUnits = Math.min(AtmosphereTuning.LUNG_CAPACITY, Math.max(0, units));
+    }
+
+    public boolean lungsFull() {
+        return lungUnits >= AtmosphereTuning.LUNG_CAPACITY;
     }
 
     /** Ticks spent inside the failure window. Zero whenever the player can breathe. */

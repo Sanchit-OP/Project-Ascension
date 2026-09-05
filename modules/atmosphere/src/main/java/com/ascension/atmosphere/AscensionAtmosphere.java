@@ -4,12 +4,14 @@ import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
 import com.ascension.atmosphere.internal.AtmosphereCommands;
 import com.ascension.atmosphere.internal.AtmosphereConfig;
+import com.ascension.atmosphere.internal.AtmosphereTuning;
 import com.ascension.atmosphere.internal.DebugAtmosphere;
 import com.ascension.atmosphere.internal.OxygenTracker;
 import com.ascension.atmosphere.internal.ProviderRegistry;
 import com.ascension.atmosphere.internal.VanillaIntegration;
 import com.ascension.atmosphere.internal.net.AtmosphereNetwork;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -17,6 +19,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +49,7 @@ public final class AscensionAtmosphere {
 
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(this::onServerTick);
+        NeoForge.EVENT_BUS.addListener(this::onRespawn);
 
         LOGGER.info("Ascension Atmosphere loaded ({})", container.getModInfo().getVersion());
     }
@@ -78,5 +82,25 @@ public final class AscensionAtmosphere {
      */
     private void onServerTick(ServerTickEvent.Post event) {
         OxygenTracker.tick(event.getServer());
+    }
+
+    /**
+     * Respawn with a full set of lungs.
+     *
+     * <p>Lungs refill on their own, so this is only about the first few seconds: without it a
+     * player who suffocated respawns mid-refill and, if they respawn anywhere near water, starts
+     * drowning again before they have caught their breath. Vanilla hands back full air on
+     * respawn and players expect the same.
+     *
+     * <p>Carried tanks are deliberately untouched — they persist or drop with the inventory
+     * like any other item.
+     */
+    private void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            var state = player.getData(AtmosphereAttachments.OXYGEN);
+            state.setLungUnits(AtmosphereTuning.LUNG_CAPACITY);
+            state.setSuffocationTicks(0);
+            OxygenTracker.invalidate(player);
+        }
     }
 }
