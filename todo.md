@@ -38,6 +38,31 @@ Still open, and blocking the API being frozen:
   third parties depend on it is a breaking change.
 - Oxygen units: integer units, or seconds of remaining air?
 
+**Before M2 (`ascension-worlds`) — optimisation mods.** *Decided 2026-09-05 to happen at this
+boundary, not sooner.*
+
+M2 is the right gate: custom dimensions and chunk generation are where the real performance
+cliffs are, and knowing early whether our worldgen fights a chunk-optimisation mod, or a custom
+sky renderer fights a rendering one, is compatibility information we want *before* building
+dimensions rather than after.
+
+Two things must not be confused when we do it:
+
+1. **The ADR-0007 rule 12 measurement stays on a clean instance.** Optimisation mods change
+   exactly the numbers the baseline tracks — tick time, heap, allocation rate. Measuring our own
+   code against a Canary/FerriteCore-modified instance would make "no regression vs. M0.5"
+   unfalsifiable: we could never tell our inefficiency from something else's optimisation
+   covering for it. And per ADR-0003 our modules have to be fast *standalone*, because that is
+   how most adopters will run them.
+2. **So: two instances.** `Ascension Dev` stays clean and remains the measurement reference.
+   A duplicate carries the optimisation mods and exists to catch compatibility breakage.
+
+**Spark is different and should go in now, not at M2.** It is a profiler, not an optimiser.
+`docs/technical/performance-log.md` currently tells you to read numbers off F3 by hand, which is
+why the M0.5 baseline is still missing its sawtooth low point and its three reload cycles. Spark
+gives per-call-site allocation and tick distribution, which is what M1.9 actually needs to sign
+off honestly.
+
 **Before M2 (`ascension-worlds`):**
 - **Is orbit a separate dimension or a high-Y band of the surface dimension?**
   (Deferred deliberately by ADR-0004 — real memory and chunk cost either way.)
