@@ -4,6 +4,7 @@ import com.ascension.core.api.WorldEnvironmentRegistry;
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
 import com.ascension.worlds.internal.PlanetEnvironments;
+import com.ascension.worlds.internal.WorldsContent;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -38,6 +39,7 @@ public final class AscensionWorlds {
     private static final Logger LOGGER = LoggerFactory.getLogger(AscensionWorlds.class);
 
     public AscensionWorlds(IEventBus modBus, ModContainer container) {
+        WorldsContent.register(modBus);
         modBus.addListener(this::onRegisterDataPackRegistries);
         modBus.addListener(this::onCommonSetup);
 

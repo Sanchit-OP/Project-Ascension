@@ -22,5 +22,13 @@
   },
   "spawn_costs": {},
   "carvers": {},
-  "features": []
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [ "ascension_worlds:lunar_helium_ore" ]
+  ]
 }
