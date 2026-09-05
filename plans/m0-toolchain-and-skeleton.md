@@ -117,10 +117,29 @@ measurement method and the baseline numbers while nothing can be blamed on us.
 Also profile **Sable + Aeronautics** here, per ADR-0006, so the cost of the ships route is
 known before anything depends on it.
 
-### M0.6 — Refactor pass
+### M0.6 — Refactor pass  *(done — 2026-09-05)*
 
-Per ADR-0008: no new features. Review the convention plugin, naming, version catalog, and the
-`api`/`internal` split before four more modules inherit the shape.
+Per ADR-0008: no new features. Reviewed the convention plugins, naming, version catalog and
+the `api`/`internal` split before four more modules inherit the shape.
+
+Found and fixed:
+
+1. **A latent bug.** `seedDevGameOptions` was wired with `dependsOn` on the run tasks as
+   well as `finalizedBy` on the prepare tasks. `dependsOn` gives no ordering guarantee
+   relative to `prepareClientRun`, so on a fresh clone the seed could run first, find no
+   run directory, silently do nothing, and the onboarding screen would appear anyway.
+   It only looked correct because the run directory already existed locally. Now hooked
+   solely to the prepare tasks, which is ordered by construction, and **verified by
+   deleting `run/` entirely and re-running**.
+2. `val minecraftVersion` in the mod conventions: declared, never used, and shadowed by
+   the Parchment extension property of the same name. Actively misleading. Removed.
+3. `extra["modId"]`: set, never read. Removed rather than kept speculatively.
+4. JUnit entries in the version catalog were dead declarations. Now wired as test
+   dependencies in the Java conventions, with a comment recording that unit tests are
+   for pure logic only and are never evidence for world-state code (ADR-0008).
+
+The silent-skip path also now logs, so a future failure of this kind is visible rather
+than invisible.
 
 ---
 
@@ -131,7 +150,7 @@ Per ADR-0008: no new features. Review the convention plugin, naming, version cat
 - [x] Jar loads in a real CurseForge instance (clean 1.21.1 / neoforge-21.1.249)
 - [ ] Baseline numbers recorded in `docs/technical/performance-log.md`
 - [ ] Sable + Aeronautics profiled
-- [ ] Refactor pass done
+- [x] Refactor pass done
 - [ ] Committed
 
 ## Risks

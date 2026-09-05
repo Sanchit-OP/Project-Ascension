@@ -27,15 +27,12 @@ val modId: String = generateSequence(project) { it.parent }
     .reversed()
     .joinToString("_", prefix = "ascension_")
 
-extra["modId"] = modId
-
 // Jar is named by mod id, not by the (short) Gradle project name, so distributed
 // artifacts are self-identifying: ascension_core-0.1.0.jar, not core-0.1.0.jar.
 base {
     archivesName = modId
 }
 
-val minecraftVersion: String = providers.gradleProperty("minecraft_version").get()
 val neoForgeVersion: String = providers.gradleProperty("neoforge_version").get()
 
 configure<NeoForgeExtension> {

@@ -31,7 +31,10 @@ val seedDevGameOptions = tasks.register("seedDevGameOptions") {
     doLast {
         listOf("client", "server", "data").forEach { which ->
             val dir = runRoot.resolve(which)
-            if (!dir.exists()) return@forEach
+            if (!dir.exists()) {
+                logger.info("No run/{} directory yet; nothing to seed", which)
+                return@forEach
+            }
 
             val file = dir.resolve("options.txt")
             if (!file.exists()) {
@@ -51,12 +54,15 @@ val seedDevGameOptions = tasks.register("seedDevGameOptions") {
     }
 }
 
-// The run directory does not exist until the run task prepares it, so seed after preparation
-// but before launch.
-tasks.matching { it.name in setOf("runClient", "runServer", "runData") }.configureEach {
-    dependsOn(seedDevGameOptions)
-}
-
+// Ordering matters and is easy to get wrong. The run directory does not exist until
+// prepare<Type>Run creates it, so this must hook the *preparation* task, not the run task.
+//
+// An earlier version also used dependsOn(seedDevGameOptions) on runClient/runServer/runData.
+// That was a latent bug: dependsOn gives no ordering guarantee relative to prepareClientRun,
+// so on a fresh clone the seed could run first, find no directory, silently do nothing, and
+// the onboarding screen would appear anyway -- the exact problem this task exists to prevent.
+// It only appeared to work here because the run directory already existed from an earlier
+// launch. finalizedBy on the prepare task is ordered by construction.
 tasks.matching { it.name.startsWith("prepare") && it.name.endsWith("Run") }.configureEach {
     finalizedBy(seedDevGameOptions)
 }

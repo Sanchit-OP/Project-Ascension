@@ -47,6 +47,14 @@ tasks.withType<Jar>().configureEach {
     isReproducibleFileOrder = true
 }
 
+// Unit tests are for pure logic only. Per ADR-0008 they are never evidence for anything
+// touching world state -- that requires a running client and a dedicated server.
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
