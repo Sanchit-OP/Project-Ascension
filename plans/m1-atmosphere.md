@@ -51,19 +51,28 @@ in v0.1, integer storage with seconds on display, sprinting does not cost oxygen
 modifiers became a registry instead), and share-air rescue (which added `accept` to
 `OxygenSource`).
 
-### M1.2 — Breathability query + player oxygen state
+### M1.2 — Breathability query + player oxygen state  *(done — 2026-09-05)*
 
 Server-side only. Per-player oxygen via data attachment, per-`ServerLevel` zone state.
 Hardcode "Overworld is breathable" and use a debug command for the rest.
 
-**Verify:** `/ascension atmosphere query` reports breathability and oxygen level. Survives
-world unload/reload.
+**Verified in game** (CurseForge `Ascension Dev`, 1.21.1 / neoforge-21.1.249):
 
-> **Carries the deferred M0.3 requirement.** The dedicated-server path was never stood up
-> during M0 — deliberately, since an empty mod could not exercise it. This is the first
-> increment with real world state, so the full ADR-0008 server check happens here: server
-> starts, client connects, mod present both sides, no client-only class referenced from
-> server code. Do not let this slide again; every later increment builds on it.
+- `query` reports breathable, and reports NOT breathable after `debug vacuum`
+- `why` correctly lists providers in resolution order and attributes the win to
+  `ascension_atmosphere:debug_vacuum` — confirming both priority resolution and the
+  diagnostic path work end to end
+- `debug clear` restores breathable
+
+> **Dedicated-server check: still outstanding, now due at M1.3.**
+>
+> This is the second time it has moved, which is exactly how a requirement quietly dies, so it
+> is written down rather than left implied. The honest reason: M1.2 is server-side only and has
+> no sync, so a dedicated server would only prove that no client-only class is referenced —
+> real, but thin. M1.3 introduces the client mirror and the HUD, which is where side-only bugs
+> actually live and where single-player's integrated server stops being representative.
+>
+> **M1.3 does not close without it.** No third deferral.
 
 ### M1.3 — Sync + HUD
 
