@@ -27,6 +27,8 @@ Locks the combat philosophy across melee, ranged, mobs, and bosses.
 - Bosses should escalate through mechanics, arena pressure, and target-priority demands before relying on raw stat inflation.
 - Counterplay must exist for both melee and ranged builds.
 - Adaptation systems must punish over-reliance without making a player's entire build unusable.
+- Imported bosses from content mods must be rebalanced against player firearms, armor scaling, and mobility tools.
+- Existing boss mods are acceptable as encounter bases, but they are not substitutes for authored progression logic.
 
 ## Intended Outcome
 
@@ -39,3 +41,4 @@ Locks the combat philosophy across melee, ranged, mobs, and bosses.
 - Is shield-based combat part of the intended loop?
 - How punishing should ammo logistics be?
 - What form should boss resistance take: armor phases, damage-type adaptation, weak-point windows, or something else?
+- Which boss behaviors are required to keep gunplay from becoming a safe default?

@@ -17,6 +17,8 @@ Defines oxygen as a progression and exploration system.
 - Some planets or structures are not breathable and require oxygen support.
 - Oxygen support can come from tanks, generators, enchantments, and other upgrades.
 - The system must support both short expedition loops and longer established outposts.
+- Spacecraft should support onboard oxygen refilling or distribution if properly equipped.
+- The current direction is a custom oxygen system if existing mods cannot support the required progression cleanly.
 
 ## Oxygen Components
 
@@ -25,6 +27,7 @@ Defines oxygen as a progression and exploration system.
 - Oxygen generators or refill stations
 - Vehicle oxygen support
 - Enchantments or upgrades that improve efficiency, reserve capacity, or survivability
+- Portable stored oxygen carried as mission supplies
 
 ## Design Rules
 
@@ -32,6 +35,16 @@ Defines oxygen as a progression and exploration system.
 - Midgame oxygen should improve mission duration, not remove planning.
 - Lategame oxygen can reduce friction, but should not erase hostile-world identity.
 - Oxygen failures should be harsh enough to matter, especially in space or hostile atmospheres.
+- Running out of oxygen should resemble underwater suffocation pressure: a short failure window followed by death if not corrected.
+- Players should choose between carrying more reserve oxygen and using gear that consumes oxygen more efficiently.
+- Oxygen logic should react to player behavior and environment rather than acting as a flat timer.
+
+## Authored Simulation Boundary
+
+- The project should avoid fully open-ended physical gas simulation.
+- "Physics" should mean authored gameplay logic: breathable zones, tank capacity, refill infrastructure, suit efficiency, vehicle support, environmental drain modifiers, and failure states.
+- The oxygen system should model pressure and logistics in ways that are legible to players and feasible to maintain.
+- If the system becomes too granular to communicate clearly, it is overdesigned.
 
 ## System Questions To Resolve
 
@@ -45,4 +58,5 @@ Defines oxygen as a progression and exploration system.
 
 - What is the base oxygen loop on first orbital entry?
 - How visible should oxygen information be in the UI?
-- What failures happen at zero oxygen?
+- Do sprinting, combat, flight, or environmental hazards increase oxygen usage?
+- Do sealed bases and ships create local breathable zones, or only refill points?

@@ -43,10 +43,11 @@ Maps progression from primitive survival through late-game planetary technology.
 
 - Earth unlocks first-flight engineering and ship readiness
 - Moon unlocks early oxygen infrastructure and first restored fast-return connection
-- Planet 3 unlocks stronger power generation through new minerals
+- Planet 3 unlocks stronger power generation through radiated-world minerals
 - Planet 4 unlocks stronger armor materials
 - Planet 5 unlocks the forge or process needed to realize the armor tier fully
 - Planet 6 unlocks firearms or advanced ranged combat
+- Late progression is currently expected to unlock advanced suit modules, ancient energy, and other high-end capability systems
 - Final progression steps remain open and should add more than numeric escalation
 
 ## Automation Policy
