@@ -129,26 +129,48 @@ makes the reserve-versus-efficiency tradeoff in `oxygen.md` a real decision.
 
 ## 5. Consumption model
 
-Base rate, adjusted by a small named set of multipliers. Deliberately enumerable — a player
-should be able to hold the whole model in their head.
+Base rate, adjusted by registered modifiers. Deliberately enumerable — a player should be able
+to hold the whole model in their head.
 
 ```
 drain = baseRate
-      * atmosphere.drainMultiplier
-      * activityMultiplier      // sprinting, swimming, recent combat
-      / gearEfficiency
+      * atmosphere.drainMultiplier      // where you are
+      * product(activeDrainModifiers)   // what you are doing
+      / gearEfficiency                  // what you are wearing
 ```
 
-**Answering the open questions in `oxygen.md`:**
+### Drain modifiers are a registry, not a hardcoded list
 
-- *Does sprinting or combat increase usage?* **Yes** — via `activityMultiplier`, which is a
-  short fixed list, not a simulation. It makes fights and escapes tense and gives efficiency
-  gear something to bite on.
-- *Do sealed bases create breathable zones, or only refill points?* **Zones.** An emitter block
-  pressurises a sealed volume. This is the more satisfying answer *and* it is the same
-  mechanism ships need later, so building it once serves both.
-- *Can players create temporary field refills?* **Yes**, as a separate cheap deployable — but
-  not in v0.1.
+**Decided 2026-09-05.** Rather than atmosphere knowing about sprinting, thrusters or combat,
+anything can register a modifier:
+
+```java
+public interface DrainModifier {
+    ResourceLocation id();              // shown by /ascension atmosphere why
+    float multiplier(ServerPlayer p);   // 1.0 = no effect
+}
+```
+
+`ascension-gear` can make thrusters cost air without `atmosphere` ever learning what a thruster
+is. This is the same provider-registry philosophy as `AtmosphereProvider`, applied to
+consumption, and it is what lets us add drain triggers later without touching this module or
+breaking its API.
+
+**Sprinting is explicitly not a modifier.** Every planet involves a great deal of walking, and
+taxing ordinary traversal reads as friction rather than tension. Drain triggers should be
+discrete and meaningful — sustained combat, thruster burns, hostile-atmosphere exposure — not
+a constant background penalty on moving around.
+
+**v0.1 ships the registry with no built-in modifiers.** The seam exists; the content arrives
+with `gear` and `worlds`.
+
+### Units
+
+**Decided 2026-09-05.** Stored as **integer units**, displayed as **seconds of air remaining**.
+
+Integers keep arithmetic exact and avoid float drift across save/load. Seconds are what a
+player can actually act on — "40 seconds" is a decision, "1200 units" is not. The conversion
+lives in one place so the display can be retuned without touching consumption logic.
 
 ### Tick rate
 
@@ -206,20 +228,25 @@ A consumer needing anything from `internal` means the `api` is wrong and should 
 
 ---
 
-## Open questions for review
+## Decisions taken at review (2026-09-05)
 
-These are genuine design calls, not oversights.
+1. **UI** — oxygen bar plus a **minimal hazard indicator**. Enough to show *why* you are
+   draining once `drainMultiplier` varies by world, without building a readout nobody reads.
+2. **`drainMultiplier` ships in v0.1.** It is one float, and reshaping a record after third
+   parties depend on it is a breaking change.
+3. **Units** — integer storage, seconds on display. See above.
+4. **Sprinting does not cost oxygen.** Drain modifiers are a registry; triggers are added later
+   by the modules that own them.
 
-1. **How visible is oxygen in the UI?** A vanilla-style bar is legible but low-information.
-   An oxygen bar plus a hazard readout tells players *why* they are draining, which matters
-   once `drainMultiplier` varies by world. Leaning toward bar plus a compact hazard indicator.
-2. **Multiplayer rescue.** If a teammate dies in vacuum, is recovery a mechanic (drag them to
-   air, shared tank) or just a respawn? `oxygen.md` raises this; v0.1 can ship without it, but
-   the answer shapes whether `OxygenSource` needs a transfer operation in its first version.
-3. **Do we ship `drainMultiplier` at all in v0.1?** Earth and one test volume do not need it.
-   Including it now keeps `Atmosphere` stable when `worlds` lands; excluding it keeps v0.1
-   smaller. Leaning toward including it — it is one float, and changing a record's shape after
-   third parties depend on it is a breaking change.
-4. **Units.** Integer "units" of oxygen, or seconds of remaining air? Units are flexible;
-   seconds are far more legible to players and to us when debugging. Leaning toward integer
-   units internally with a seconds-based display.
+## Open questions
+
+1. **Multiplayer rescue.** If a teammate runs dry in vacuum, can another player do anything?
+   Three shapes, in ascending cost:
+   - *Nothing* — they die and respawn. No API cost.
+   - *Share air* — transfer oxygen between sources. **Requires a transfer operation in the
+     first version of `OxygenSource`**, because adding it later breaks every consumer.
+   - *Downed state* — collapse instead of dying, revive by dragging to breathable air. A whole
+     system; out of scope for v0.1.
+
+   This is the last thing blocking the API being frozen. Recommendation: **share air** — it fits
+   the co-op-first pillar, makes a teammate's reserve part of team planning, and is cheap.
