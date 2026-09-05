@@ -4,7 +4,9 @@ import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
 import com.ascension.atmosphere.internal.AtmosphereCommands;
 import com.ascension.atmosphere.internal.DebugAtmosphere;
+import com.ascension.atmosphere.internal.OxygenTracker;
 import com.ascension.atmosphere.internal.ProviderRegistry;
+import com.ascension.atmosphere.internal.net.AtmosphereNetwork;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -12,6 +14,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +37,10 @@ public final class AscensionAtmosphere {
     public AscensionAtmosphere(IEventBus modBus, ModContainer container) {
         AtmosphereAttachments.register(modBus);
         modBus.addListener(this::onCommonSetup);
+        modBus.addListener(AtmosphereNetwork::register);
 
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        NeoForge.EVENT_BUS.addListener(this::onServerTick);
 
         LOGGER.info("Ascension Atmosphere loaded ({})", container.getModInfo().getVersion());
     }
@@ -53,5 +58,13 @@ public final class AscensionAtmosphere {
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
         AtmosphereCommands.register(event.getDispatcher());
+    }
+
+    /**
+     * Oxygen accounting. Rate-limited inside the tracker rather than here, so the interval is
+     * defined next to the rest of the tuning.
+     */
+    private void onServerTick(ServerTickEvent.Post event) {
+        OxygenTracker.tick(event.getServer());
     }
 }
