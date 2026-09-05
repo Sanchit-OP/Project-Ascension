@@ -83,10 +83,11 @@ Launch a dev client:
 ./gradlew :modules:core:runClient
 ```
 
-Launch a dedicated server — required before merging anything touching world state, per ADR-0008:
+Launch a dedicated server with every module loaded — required before merging anything touching
+world state, per ADR-0008:
 
 ```bash
-./gradlew :modules:core:runServer
+./gradlew runDevServer
 ```
 
 List modules and their tier:
@@ -149,11 +150,27 @@ leaving it on.
 
 ## The test loop we actually use
 
-1. `./gradlew :modules:atmosphere:build`
-2. Copy the jar into the CurseForge test instance:
+1. `./gradlew build`
+2. Copy the jars into the CurseForge test instance:
    `C:\Users\sanch\curseforge\minecraft\Instances\Ascension Dev\mods\`
-3. `./gradlew :modules:atmosphere:runServer` (dev server on `localhost`, port 25565)
+3. **`./gradlew runDevServer`** (dev server on `localhost`, port 25565)
 4. Join from the **Ascension Dev** CurseForge instance via Multiplayer
+
+### Use `runDevServer`, not a module's own `runServer`
+
+Each module also has its own `runClient` / `runServer`, and **each loads only itself and what it
+depends on**. `:modules:atmosphere:runServer` has no idea `ascension-worlds` exists, so a
+dimension that module declares is simply absent — and the symptom is
+
+```
+Unknown dimension ascension_worlds:moon
+```
+
+which points at the datapack rather than at the build, and costs an hour.
+
+`./gradlew runDevServer` and `runDevClient` always launch the whole stack, and do not change as
+modules are added. The per-module runs are still the right tool for one job: confirming a module
+works alone (ADR-0003 rule 6), which is what `-PnoDevMods` is for.
 
 The instance is MC 1.21.1 / neoforge-21.1.249, matching what we compile against. `Devil0701` is
 opped at level 4 in `run/server/ops.json`, using the offline-mode UUID because the dev server
@@ -173,7 +190,7 @@ Install mods through the CurseForge app for the instance, so it resolves the cor
 read that folder and load whatever is in it:
 
 ```bash
-./gradlew :modules:atmosphere:devMods
+./gradlew devMods
 ```
 
 `dev_mods_dir` in `gradle.properties` points at the instance's mods folder. `prepareClientRun`
@@ -261,6 +278,8 @@ renderer, the server does not.
 ./gradlew :modules:atmosphere:runServer -PnoDevMods
 ```
 
+(A module's own run, deliberately — this is the one case where loading less is the point.)
+
 Loads no third-party mods at all, which is how to confirm a Tier 1 module works alone
 (ADR-0003 rule 6). A client with those mods installed will refuse to connect, which is the
 point: that configuration is for verifying the module loads, not for playing.
@@ -272,7 +291,7 @@ see, and a jar present at dev runtime cannot create a compile dependency.
 ### Profiling a run
 
 ```bash
-./gradlew :modules:atmosphere:runServer -Pjfr
+./gradlew runDevServer -Pjfr
 ```
 
 Adds a Java Flight Recorder recording to the run, written to `run/server/ascension-server.jfr`
