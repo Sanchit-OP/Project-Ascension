@@ -10,6 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -19,10 +21,15 @@ import net.minecraft.world.level.block.state.BlockState;
  * {@link SealedVolumeIndex}, so the block is only a marker and a trigger &mdash; there is
  * nothing here to fall out of sync with the index.
  */
-public final class OxygenEmitterBlock extends Block {
+public final class OxygenEmitterBlock extends Block implements EntityBlock {
 
     public OxygenEmitterBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new OxygenEmitterBlockEntity(pos, state);
     }
 
     @Override
@@ -31,7 +38,7 @@ public final class OxygenEmitterBlock extends Block {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (level instanceof ServerLevel serverLevel) {
             SealedVolume.Result result = serverLevel.getData(AtmosphereAttachments.SEALED_VOLUMES)
-                    .update(serverLevel, pos);
+                    .addEmitter(serverLevel, pos);
             if (placer instanceof Player player) {
                 report(player, result);
             }
@@ -42,7 +49,7 @@ public final class OxygenEmitterBlock extends Block {
     public void onRemove(BlockState state, Level level, BlockPos pos,
                          BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level instanceof ServerLevel serverLevel) {
-            serverLevel.getData(AtmosphereAttachments.SEALED_VOLUMES).remove(pos);
+            serverLevel.getData(AtmosphereAttachments.SEALED_VOLUMES).removeEmitter(pos);
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
     }

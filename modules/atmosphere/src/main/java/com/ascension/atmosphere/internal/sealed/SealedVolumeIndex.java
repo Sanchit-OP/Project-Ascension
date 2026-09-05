@@ -1,7 +1,10 @@
 package com.ascension.atmosphere.internal.sealed;
 
+import com.ascension.atmosphere.internal.AtmosphereTuning;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
@@ -12,13 +15,20 @@ import net.minecraft.server.level.ServerLevel;
  * level unloads. A static map keyed by dimension would leak the contents of every world the
  * server ever loaded, which is exactly what ADR-0007 rule 3 exists to prevent.
  *
- * <p>Lookups are the hot path &mdash; every breathing player hits this every accounting pass
- * &mdash; so the union of all emitter volumes is kept flattened into one set and queried in O(1)
- * rather than walking emitters.
+ * <p>Lookups are the hot path &mdash; every breathing player, every accounting pass &mdash; so
+ * the union of all volumes is kept flattened into one set and queried in O(1).
+ *
+ * <p><strong>Emitters are tracked separately from their volumes.</strong> That separation is the
+ * whole point: an emitter whose room is currently broken must still be reconsidered when the
+ * wall is repaired. An earlier version dropped unsealed emitters from the map entirely, so a
+ * broken room could never recover and the only cure was to break and replace the emitter.
  */
 public final class SealedVolumeIndex {
 
-    /** Emitter position to the volume it currently pressurises. */
+    /** Every emitter in this level, sealed or not. */
+    private final LongOpenHashSet emitters = new LongOpenHashSet();
+
+    /** Emitter position to the volume it pressurises. Only sealed emitters appear here. */
     private final Long2ObjectOpenHashMap<LongOpenHashSet> volumes = new Long2ObjectOpenHashMap<>();
 
     /** Flattened union of every volume, for O(1) lookup. */
@@ -29,12 +39,32 @@ public final class SealedVolumeIndex {
         return !pressurised.isEmpty() && pressurised.contains(pos.asLong());
     }
 
+    /** True when this level has no emitters at all, so queries can abstain immediately. */
     public boolean isEmpty() {
-        return volumes.isEmpty();
+        return emitters.isEmpty();
     }
 
     /**
-     * Recompute one emitter's volume and fold it back into the union.
+     * Start tracking an emitter and compute its volume.
+     *
+     * <p>Called when one is placed and again whenever its chunk loads, so the index survives
+     * chunk unloads and server restarts without being serialised.
+     */
+    public SealedVolume.Result addEmitter(ServerLevel level, BlockPos emitter) {
+        emitters.add(emitter.asLong());
+        return update(level, emitter);
+    }
+
+    /** Stop tracking an emitter entirely. */
+    public void removeEmitter(BlockPos emitter) {
+        emitters.remove(emitter.asLong());
+        if (volumes.remove(emitter.asLong()) != null) {
+            rebuildUnion();
+        }
+    }
+
+    /**
+     * Recompute one emitter's volume.
      *
      * @return that emitter's own result, not the state of the level as a whole
      */
@@ -49,59 +79,54 @@ public final class SealedVolumeIndex {
         return result;
     }
 
-    /** Volume owned by one emitter, or empty if it is not sealed. */
+    /** Volume owned by one emitter, or zero if it is not sealed. */
     public int volumeSize(BlockPos emitter) {
         LongOpenHashSet volume = volumes.get(emitter.asLong());
         return volume == null ? 0 : volume.size();
     }
 
-    public void remove(BlockPos emitter) {
-        if (volumes.remove(emitter.asLong()) != null) {
-            rebuildUnion();
+    /**
+     * Recompute every emitter that could care about a changed position.
+     *
+     * <p>Relevance is measured from the emitter itself, not from its volume, because an emitter
+     * with no volume is exactly the case that must be re-checked when a wall is repaired. A
+     * block changed across the world costs one distance comparison per emitter.
+     *
+     * @return emitters that were sealed before this change and are not any more
+     */
+    public List<BlockPos> invalidateAround(ServerLevel level, BlockPos changed) {
+        if (emitters.isEmpty()) {
+            return List.of();
         }
+        // Copied first: update() mutates `volumes` while we iterate.
+        long[] candidates = emitters.toLongArray();
+        List<BlockPos> broken = new ArrayList<>();
+
+        for (long emitterPos : candidates) {
+            BlockPos emitter = BlockPos.of(emitterPos);
+            if (!withinReach(emitter, changed)) {
+                continue;
+            }
+            boolean wasSealed = volumes.containsKey(emitterPos);
+            boolean nowSealed = update(level, emitter).sealed();
+            if (wasSealed && !nowSealed) {
+                broken.add(emitter);
+            }
+        }
+        return broken;
     }
 
     /**
-     * Recompute every emitter whose volume contains, or is near, a changed position.
+     * Whether a change is close enough to possibly affect this emitter.
      *
-     * <p>Only emitters that actually care are touched. A block broken on the far side of the
-     * world costs a bounding-box comparison per emitter and nothing more.
-     *
-     * @return true if anything changed
+     * <p>One block of slack past the fill radius, so a wall at the very edge of a
+     * maximum-sized room still counts.
      */
-    public boolean invalidateAround(ServerLevel level, BlockPos changed) {
-        if (volumes.isEmpty()) {
-            return false;
-        }
-        long[] affected = volumes.keySet().toLongArray();
-        boolean changedAny = false;
-
-        for (long emitterPos : affected) {
-            BlockPos emitter = BlockPos.of(emitterPos);
-            LongOpenHashSet volume = volumes.get(emitterPos);
-
-            // A change matters if it is inside the volume, or directly against its shell -- the
-            // wall you just broke is not itself part of the pressurised space.
-            boolean relevant = volume.contains(changed.asLong())
-                    || touchesVolume(volume, changed);
-            if (!relevant) {
-                continue;
-            }
-            update(level, emitter);
-            changedAny = true;
-        }
-        return changedAny;
-    }
-
-    private static boolean touchesVolume(LongOpenHashSet volume, BlockPos changed) {
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        for (var direction : net.minecraft.core.Direction.values()) {
-            cursor.set(changed).move(direction);
-            if (volume.contains(cursor.asLong())) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean withinReach(BlockPos emitter, BlockPos changed) {
+        int reach = AtmosphereTuning.SEALED_VOLUME_RADIUS + 1;
+        return Math.abs(emitter.getX() - changed.getX()) <= reach
+                && Math.abs(emitter.getY() - changed.getY()) <= reach
+                && Math.abs(emitter.getZ() - changed.getZ()) <= reach;
     }
 
     private void rebuildUnion() {
@@ -111,8 +136,13 @@ public final class SealedVolumeIndex {
         }
     }
 
-    /** Emitter positions currently tracked, for diagnostics. */
+    /** Emitters currently tracked, sealed or not. */
     public int emitterCount() {
+        return emitters.size();
+    }
+
+    /** Emitters that currently hold a sealed volume. */
+    public int sealedCount() {
         return volumes.size();
     }
 
