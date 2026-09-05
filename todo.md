@@ -57,6 +57,37 @@ Two things must not be confused when we do it:
 2. **So: two instances.** `Ascension Dev` stays clean and remains the measurement reference.
    A duplicate carries the optimisation mods and exists to catch compatibility breakage.
 
+### Candidates, checked against NeoForge 1.21.1 on 2026-09-05
+
+Verified through the Modrinth API — a project listing "neoforge" and "1.21.1" separately does
+not mean the pairing exists, so each was checked per-version.
+
+| Mod | Verdict |
+|---|---|
+| **Sodium** `0.8.13-neoforge` | Yes. Upstream Sodium has a real NeoForge 1.21.1 build now, which is the answer to the renderer question — multithreaded chunk meshing and batched draws are what actually gate render distance. |
+| **Distant Horizons** `3.2.0-b-1.21.1` | Yes, and it is the mechanism for high render distance at low RAM: an LOD database instead of loaded chunks. Compatibility with our custom dimensions is untested — see the M2 question above. |
+| **Lithium** `0.15.4-neoforge` | Yes. General server-side wins. |
+| **FerriteCore** `7.0.3-neoforge` | Yes. Memory reduction, and directly relevant to holding more chunks. |
+| **ModernFix** `5.27.24` | Yes. Memory and startup. |
+| **Chunky** `1.4.23` | Yes, and it is the practical substitute for C2ME's benefit in a *travel* pack: pre-generate, and flying becomes disk I/O instead of worldgen. |
+| **Noisium** `2.3.0` | Yes. Worldgen speed. Server-side only, so it is also the one most likely to interact with `ascension-worlds`. |
+| **EntityCulling**, **MoreCulling**, **BadOptimizations** | Yes. Client-side, uncontroversial. |
+| **Embeddium** `1.0.15` | Available, but **do not install alongside Sodium** — it is a Sodium fork and they conflict. Pick one; Sodium is upstream. |
+| **VulkanMod** | **No NeoForge build.** Also replaces the whole renderer and breaks most rendering mods. See the note below — it costs less than it looks. |
+| **C2ME**, **VMP**, **Krypton** | **No NeoForge build.** |
+| **Dynamic FPS** | Works, but **keep it out of the dev instance.** It throttles the game when unfocused, and `pauseOnLostFocus=false` is seeded in our dev runs specifically so alt-tabbing to an editor does not invalidate a timing observation. |
+| **Fabric API**, **Mod Menu**, **Placeholder API** | Fabric plumbing, not optimisation. |
+
+**On VulkanMod and OpenGL.** The bottleneck on render distance is not the graphics API. It is
+chunk mesh building on the CPU, draw-call count, and chunk data in RAM. Sodium attacks all three
+— threaded meshing, batched draws, a compact vertex format. Vulkan would further reduce
+draw-call overhead, but Sodium's batching has already collapsed that count. So having no Vulkan
+renderer on NeoForge costs much less than it appears to.
+
+**On C2ME.** It parallelises chunk *generation and I/O on the server*, which is a different
+problem from render distance. For a pack about travelling, Chunky gets most of the same
+practical benefit by removing generation from the hot path entirely.
+
 **Spark is different and should go in now, not at M2.** It is a profiler, not an optimiser.
 `docs/technical/performance-log.md` currently tells you to read numbers off F3 by hand, which is
 why the M0.5 baseline is still missing its sawtooth low point and its three reload cycles. Spark
@@ -66,6 +97,22 @@ off honestly.
 **Before M2 (`ascension-worlds`):**
 - **Is orbit a separate dimension or a high-Y band of the surface dimension?**
   (Deferred deliberately by ADR-0004 — real memory and chunk cost either way.)
+
+  > **New constraint, 2026-09-05.** Sanchit: high render distance is *necessary* for space
+  > travel to read well, not a nice-to-have. That is a design input to this question, and it
+  > pushes hard toward **separate dimensions**.
+  >
+  > A high-Y band means the planet's surface chunks are loaded while you are in orbit. At the
+  > render distance this requirement implies, that is the most expensive configuration
+  > available — and it is expensive in exactly the resource ADR-0007 rule 1 is about.
+  >
+  > It also reframes what "see far" means. From orbit you do not need *terrain*; you need a
+  > planet, which is one rendered body, not thousands of loaded chunks. Distance on the
+  > **surface** is a chunk problem. Distance in **orbit** should be a rendering problem with
+  > almost no chunks behind it. Conflating them would buy the worst of both.
+- **Does a custom dimension work with Distant Horizons' LOD generation?** DH is the mechanism
+  that makes high surface render distance affordable, so this is a compatibility question worth
+  answering before dimension design is finished rather than after.
 - What is the exact order and identity of the seven mandatory off-world steps?
 - Where do ancient gateways physically exist?
 - How are failed landings handled?
