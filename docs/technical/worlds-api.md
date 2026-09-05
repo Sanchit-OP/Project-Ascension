@@ -323,6 +323,93 @@ orient from, somewhere to put the first refill station, and something authored t
 that is otherwise machine-made. One per planet, near the surface origin — the same mechanism
 vanilla uses to guarantee a stronghold near spawn.
 
+### Seamless travel: what is actually possible
+
+**The dimension change cannot be removed.** `ServerPlayer.changeDimension` sends a respawn
+packet, the client discards its `ClientLevel` entirely and builds a new one, and
+`ReceivingLevelScreen` covers the gap until chunks arrive. There is no flag that turns that off,
+and a mod that faked it would be fighting the client's own lifecycle.
+
+So the goal is not "no transition". It is **a transition nobody reads as a loading screen** —
+which is a different problem, and a solvable one.
+
+#### What actually costs the time
+
+Not worldgen, if we have pre-generated. Not the server-side move, which is microseconds. It is
+**getting chunks to the client**: the screen stays up until the chunk the player is standing in,
+plus a small ring, has arrived. Everything else streams in behind.
+
+Which means the levers are: have the chunks ready, make there be fewer of them, and put
+something in front of the gap.
+
+#### 1. `approach_radius` earns a second job
+
+The approach shell already exists as the radius where descent becomes possible. It should
+**also be the pre-load trigger**: crossing into it force-loads the destination's arrival chunks
+server-side, using a chunk ticket around the landing position.
+
+A player then spends the last 320 blocks of the journey closing on the planet — and that flight
+time *is* the loading time. By the time they commit to descent, the server is holding hot chunks
+and can push them immediately.
+
+This is the single biggest win available, and it costs one radius we already had.
+
+#### 2. Chunky pre-generation removes worldgen from the transition
+
+A landing on ungenerated terrain pays for generation inside the transition, which is by far the
+most expensive thing that can happen there. Pre-generating the landing area means arrival is
+disk reads, not worldgen. Recorded in
+[`optimisation-stack.md`](optimisation-stack.md); this is the other reason it matters.
+
+#### 3. Leaving a surface is nearly free by construction
+
+Space is a void dimension. There is almost nothing to send, so surface-to-space should be fast
+without any special handling. The expensive direction is space-to-surface, and that is the one
+the two levers above target.
+
+An accidental benefit of [ADR-0010](../decisions/0010-orbit-is-one-shared-space-dimension.md):
+choosing a near-empty shared space to make distance cheap also made half of every journey's
+transition cheap.
+
+#### 4. Put the fiction in front of the gap
+
+Whatever remains gets covered by something the player expects to see anyway.
+
+Descent through an atmosphere is plasma glow, heat shimmer and shaking. A launch is a burn and a
+receding surface. Neither is a loading screen; both are the moment the game is about, and both
+are perfectly good masks for a few hundred milliseconds. The trick commercial games use is the
+elevator ride and the airlock cycling — the load is real, and nobody minds because they are
+watching the thing they came for.
+
+Mechanically: `ScreenEvent.Opening` on the client to substitute our own render for
+`ReceivingLevelScreen`, **guarded to transitions between our own dimensions** so that vanilla
+nether and end travel is untouched. Client-only code, dist-separated like the HUD.
+
+And **velocity and orientation carry through** (see above), so motion is continuous across the
+seam rather than restarting.
+
+#### The genuinely seamless option, and why not
+
+One dimension containing both space and every planet's surface, with a custom chunk generator
+producing void almost everywhere and terrain near planet positions. Descent would then be
+literally flying downward, with no transition at all.
+
+Rejected. A dimension has **one** `dimension_type` — one height, one light, one sky — so every
+planet would share Earth's, which deletes per-planet identity, the thing planets are for. The
+chunk generator becomes a single monster that has to know about every world, which is the
+opposite of ADR-0004's data-driven promise. And Chunky and Distant Horizons would see one
+enormous world rather than several, making pre-generation and LODs harder for the two mods
+doing most to help us.
+
+It trades a few hundred milliseconds for the identity of every planet. Not worth it.
+
+#### Measure it, do not assume it
+
+All of the above is a plan, not a result. The transition cost is measurable —
+`/spark profiler` across a dimension change, or JFR — and it should be measured at M2.6 before
+anyone claims it feels seamless. Compiling is not evidence, and neither is reasoning about
+packet sizes.
+
 ### Seven planets in one space: range is the gate
 
 Every planet is a coordinate on the same plane. Seven planets is seven `planet.json` files and

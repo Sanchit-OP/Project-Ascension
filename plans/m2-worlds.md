@@ -128,10 +128,26 @@ No features. Scheduled, not discretionary.
 
 Per M2.1's decision. Arrival above the Moon, under the player's control.
 
-### M2.6 — Descent, landing, and failure
+### M2.6 — Descent, landing, and the seam
 
 Manual descent. `dimensions.md` asks how failed landings are handled; this is where it is
 answered in code rather than prose.
+
+**And where the transition stops reading as a loading screen.** The dimension change cannot be
+removed — the client discards its level and rebuilds it, and no flag turns that off — so the
+work is making it fast and putting the fiction in front of it. Four levers, in
+[`worlds-api.md`](../docs/technical/worlds-api.md):
+
+1. **`approach_radius` doubles as a pre-load radius.** Entering the shell force-loads the
+   destination's arrival chunks, so the last 320 blocks of the flight *are* the loading time.
+2. **Chunky pre-generation** keeps worldgen out of the transition entirely.
+3. **Space is void**, so leaving a surface is nearly free by construction — an accidental
+   dividend of ADR-0010.
+4. **Atmospheric entry covers the rest.** Plasma and shaking is what the player expects to see
+   anyway; a vanilla loading screen is not.
+
+**Verify:** measured, not asserted. `/spark profiler` or JFR across a dimension change, before
+anyone claims it feels seamless.
 
 ### M2.7 — Refactor + measurement
 
@@ -148,6 +164,7 @@ about.
 - [x] Tier 1 → Tier 1 dependency policy decided, with an ADR — ADR-0011
 - [ ] The Moon authored entirely as data — no per-planet Java
 - [ ] Full loop playable: leave Earth, orbit, descend, survive, return
+- [ ] Dimension transitions measured, and masked rather than shown as a loading screen
 - [ ] Verified on a dedicated server
 - [ ] Survives world unload/reload **and** dimension change
 - [ ] Atmosphere works on the Moon with `DebugAtmosphere` off
