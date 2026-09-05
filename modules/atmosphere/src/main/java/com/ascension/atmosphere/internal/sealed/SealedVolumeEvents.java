@@ -1,8 +1,13 @@
 package com.ascension.atmosphere.internal.sealed;
 
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
+import com.ascension.atmosphere.internal.AtmosphereTuning;
+import java.util.List;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -52,7 +57,9 @@ public final class SealedVolumeEvents {
         // fill dozens of times for one event, so let the first affected position trigger the
         // rebuild and rely on the fill seeing the finished state.
         for (BlockPos pos : event.getAffectedBlocks()) {
-            if (index.invalidateAround(level, pos)) {
+            List<BlockPos> broken = index.invalidateAround(level, pos);
+            if (!broken.isEmpty()) {
+                announceBroken(level, broken);
                 return;
             }
         }
@@ -66,6 +73,33 @@ public final class SealedVolumeEvents {
         if (index.isEmpty()) {
             return;
         }
-        index.invalidateAround(level, pos);
+        announceBroken(level, index.invalidateAround(level, pos));
+    }
+
+    /**
+     * Tell nearby players their room just lost pressure.
+     *
+     * <p>Breaking a wall previously produced no message at all, which made a real failure
+     * indistinguishable from nothing happening &mdash; the player only found out when their air
+     * started draining, with no idea why.
+     *
+     * <p>Announced to anyone close to the emitter rather than only whoever swung the pickaxe,
+     * because losing pressure affects everyone in the room.
+     */
+    private static void announceBroken(ServerLevel level, List<BlockPos> brokenEmitters) {
+        if (brokenEmitters.isEmpty()) {
+            return;
+        }
+        int reach = AtmosphereTuning.SEALED_VOLUME_RADIUS;
+        for (BlockPos emitter : brokenEmitters) {
+            for (ServerPlayer player : level.players()) {
+                if (player.blockPosition().distManhattan(emitter) > reach * 2) {
+                    continue;
+                }
+                player.displayClientMessage(
+                        Component.literal("Pressure lost — this space is no longer sealed")
+                                .withStyle(ChatFormatting.RED), true);
+            }
+        }
     }
 }
