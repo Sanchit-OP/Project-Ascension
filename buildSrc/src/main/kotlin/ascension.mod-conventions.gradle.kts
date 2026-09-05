@@ -51,6 +51,28 @@ val neoForgeVersion: String = providers.gradleProperty("neoforge_version").get()
 // or open the file in JDK Mission Control for the flame graph.
 val jfrRequested: Boolean = providers.gradleProperty("jfr").isPresent
 
+// --- Third-party mods in dev runs -------------------------------------------
+//
+// The dev server has to carry the same mods as the CurseForge test instance. Curios registers a
+// network channel, so a client that has it will not join a server that does not, and the test
+// loop simply stops working.
+//
+// **This does not weaken ADR-0003 rule 6.** What enforces "atmosphere works with only core
+// present" is the *compile* classpath, and Curios is not on it -- Tier 1 cannot reference a
+// class it cannot see. A jar present at dev runtime cannot create a compile dependency. To
+// check the standalone case explicitly, run with -PnoDevMods.
+val devModsEnabled: Boolean = !providers.gradleProperty("noDevMods").isPresent
+
+repositories {
+    // Curios. Scoped to the one group it serves, so a typo'd coordinate fails here instead of
+    // being hunted for across every repository in the build.
+    maven("https://maven.theillusivec4.top") {
+        name = "TheIllusiveC4"
+        content { includeGroup("top.theillusivec4.curios") }
+    }
+}
+
+
 fun jfrArguments(which: String): List<String> {
     // Forward slashes deliberately. Java accepts them on Windows, and the alternative is a
     // Windows path full of backslashes going into an @argfile, where a backslash is the escape
@@ -103,6 +125,21 @@ configure<NeoForgeExtension> {
         register(modId) {
             sourceSet(sourceSets["main"])
         }
+    }
+}
+
+// Declared *after* the NeoForge extension, because ModDevGradle creates these
+// configurations while configuring it -- they do not exist earlier in this script.
+//
+// Client and server named explicitly rather than using the run-wide
+// `additionalRuntimeClasspath`: the data run generates resources and has no business loading
+// somebody else's mod.
+if (devModsEnabled) {
+    val curiosVersion = providers.gradleProperty("curios_version").get()
+    val curios = "top.theillusivec4.curios:curios-neoforge:$curiosVersion"
+    dependencies {
+        "clientAdditionalRuntimeClasspath"(curios)
+        "serverAdditionalRuntimeClasspath"(curios)
     }
 }
 
