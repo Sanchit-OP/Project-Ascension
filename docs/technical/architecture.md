@@ -32,6 +32,7 @@ Tier 2   ascension-compat-sable    Sub-levels carry pressurised zones -> ships a
 | Mixins in Tier 1 | **Never.** Tier 2 only, with an ADR justifying it. |
 | Extension mechanism | Provider registries. Never require extending our classes. |
 | Tier 1 testable alone | Yes, with only `core` present. |
+| **Tier 1 -> Tier 1** | **Undecided.** See [`plans/m2-worlds.md`](../../plans/m2-worlds.md) §M2.1. ADR-0003 does not cover it, and `worlds` -> `atmosphere` is the first case to need it. Rule 6 means it cannot simply be a hard dependency. |
 
 ## Package convention
 
@@ -68,9 +69,12 @@ run/                          dev client/server, gitignored
 
 | Module | Status |
 |---|---|
-| `ascension-core` | Not started — M0 |
-| `ascension-atmosphere` | Not started — M1 |
-| everything else | Not started |
+| `ascension-core` | Tier 0 stub. Registers nothing yet. |
+| `ascension-atmosphere` | **v0.1 feature-complete**, verified on a dedicated server through M1.8. Refactor pass M1.9 outstanding. |
+| `ascension-worlds` | M2, design pass — [`plans/m2-worlds.md`](../../plans/m2-worlds.md) |
+| `ascension-gear`, `ascension-progression` | Not started |
+| `ascension-compat-curios` | Designed, not built. A tank slot that opens the valve (ADR-0009 §4). |
+| `ascension-compat-chunky` | Designed, not built. Pre-generate on first arrival — scheduled with M2. |
 
 ## Constraints inherited from the register
 
