@@ -1,5 +1,17 @@
 # Balancing
 
+> **Recorded 2026-09-05.** One coupling that is easy to miss and expensive to discover late:
+> **distance to a planet and carried air are the same dial seen from two ends.**
+>
+> Space is vacuum, so a journey is spent entirely on tank. At current tuning a tank plus lungs
+> is 320 seconds; the Moon at 8,000 blocks is a 267-second round trip at 60 b/s. Changing
+> `AtmosphereTuning.TANK_CAPACITY` therefore changes how far away every planet effectively is,
+> and changing a planet's position changes what tier of life support it demands.
+>
+> Neither number can be tuned alone. See
+> [`worlds-api.md`](worlds-api.md) §3 and
+> [ADR-0010](../decisions/0010-orbit-is-one-shared-space-dimension.md).
+
 ## Purpose
 
 Defines balancing methodology so the pack feels authored rather than chaotic.
