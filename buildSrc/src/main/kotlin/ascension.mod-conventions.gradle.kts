@@ -224,25 +224,69 @@ fun serverSkips(mods: List<File>): Map<File, String> {
     return skips
 }
 
-if (devModsEnabled) {
-    val mods = instanceMods()
-    val skips = serverSkips(mods)
-    val serverMods = mods.filterNot { skips.containsKey(it) }
+/**
+ * Copy the instance's mods into the run directories' own `mods` folders.
+ *
+ * **Not the runtime classpath.** An earlier version added these to
+ * `clientAdditionalRuntimeClasspath` / `serverAdditionalRuntimeClasspath`, which put the jars
+ * on the classpath and looked entirely correct from the build's side -- the coordinates
+ * resolved, the jars appeared in the generated classpath file, and the server booted clean.
+ * None of them loaded. FML does not discover mods by scanning the runtime classpath in a dev
+ * run, and a mod that never loads breaks nothing at startup, so the failure was completely
+ * silent until a client tried to connect and was refused over a missing channel.
+ *
+ * `<gameDir>/mods` is the folder FML genuinely scans. It has the side benefit of being
+ * inspectable: what the run will load is a directory you can list.
+ */
+val syncDevMods = tasks.register("syncDevMods") {
+    group = "ascension"
+    description = "Mirrors the test instance's mods into run/client/mods and run/server/mods."
 
-    if (mods.isNotEmpty()) {
-        logger.lifecycle(
-            "Dev runs: {} mod(s) from the test instance, {} of them on the server",
-            mods.size, serverMods.size,
+    val runRoot = rootProject.layout.projectDirectory.dir("run").asFile
+    val enabled = devModsEnabled
+
+    doLast {
+        val mods = if (enabled) instanceMods() else emptyList()
+        val skips = serverSkips(mods)
+        val perRun = mapOf(
+            "client" to mods,
+            "server" to mods.filterNot { skips.containsKey(it) },
         )
-        skips.forEach { (jar, why) ->
-            logger.lifecycle("  client only: {} -- {}", jar.name, why)
+
+        perRun.forEach { (which, jars) ->
+            val runDir = runRoot.resolve(which)
+            if (!runDir.isDirectory) {
+                return@forEach
+            }
+            val modsDir = runDir.resolve("mods")
+            modsDir.mkdirs()
+
+            // Cleared first, and this is the point rather than tidiness: a mod *removed* from
+            // the instance has to disappear here too. Leaving a stale jar behind is how a
+            // server ends up requiring a channel the client no longer has -- the failure in
+            // the opposite direction, which is what started all of this.
+            val existing = (modsDir.listFiles() ?: emptyArray())
+                .filter { it.isFile && it.name.endsWith(".jar") }
+            existing.forEach { it.delete() }
+
+            jars.forEach { it.copyTo(modsDir.resolve(it.name), overwrite = true) }
+            logger.lifecycle("run/{}/mods: {} mod(s)", which, jars.size)
+        }
+
+        if (mods.isNotEmpty()) {
+            skips.forEach { (jar, why) ->
+                logger.lifecycle("  client only, not on the server: {} -- {}", jar.name, why)
+            }
         }
     }
+}
 
-    dependencies {
-        mods.forEach { "clientAdditionalRuntimeClasspath"(files(it)) }
-        serverMods.forEach { "serverAdditionalRuntimeClasspath"(files(it)) }
-    }
+// finalizedBy on the *prepare* task, for the reason spelled out in dev-runtime-conventions:
+// the run directory does not exist until prepare<Type>Run creates it, and dependsOn would give
+// no ordering guarantee against it. Client and server only -- the data run generates resources
+// and has no business loading someone else's mod.
+tasks.matching { it.name == "prepareClientRun" || it.name == "prepareServerRun" }.configureEach {
+    finalizedBy(syncDevMods)
 }
 
 // Lists what the dev runs will load, so a channel-mismatch failure can be checked against

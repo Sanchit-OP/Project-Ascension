@@ -176,9 +176,26 @@ read that folder and load whatever is in it:
 ./gradlew :modules:atmosphere:devMods
 ```
 
-`dev_mods_dir` in `gradle.properties` points at the instance's mods folder. Our own jars are
-always skipped: the dev run already has that code from source, and loading the built jar
-alongside it is a duplicate mod id and an immediate crash.
+`dev_mods_dir` in `gradle.properties` points at the instance's mods folder. `prepareClientRun`
+and `prepareServerRun` copy from there into `run/client/mods` and `run/server/mods`, so what a
+run will load is a directory you can list:
+
+```bash
+ls run/server/mods
+```
+
+Our own jars are always skipped: the dev run already has that code from source, and loading the
+built jar alongside it is a duplicate mod id and an immediate crash. The target folder is
+**cleared** each time — a mod removed from the instance has to disappear here too, or the server
+ends up requiring a channel the client no longer has.
+
+> **Not the runtime classpath.** The first version of this added the jars to
+> `clientAdditionalRuntimeClasspath` / `serverAdditionalRuntimeClasspath`. Everything about that
+> looked right from the build's side: coordinates resolved, jars appeared in the generated
+> classpath file, server booted clean. **None of them loaded.** FML does not discover mods by
+> scanning the runtime classpath in a dev run, and a mod that never loads breaks nothing at
+> startup — so the failure was completely silent until a client tried to connect and was refused
+> over a missing channel. `<gameDir>/mods` is the folder FML genuinely scans.
 
 #### Why mirroring rather than a list of versions
 
