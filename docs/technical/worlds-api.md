@@ -140,6 +140,77 @@ the apparent size of the real moon from Earth. Clearly a place, clearly far away
 **Earth needs a `body_radius` too**, now that it is a body in space you can look at and cannot
 fly through.
 
+### Seven planets in one space: range is the gate
+
+Every planet is a coordinate on the same plane. Seven planets is seven `planet.json` files and
+no new machinery — the interesting question is not *how* but *where*, because in a shared space
+**distance is a gate that needs no code.**
+
+A player can point their ship at Planet 7 on day one. They will die on the way. That is not a
+hole in ADR-0010, it is the mechanism: you can go anywhere you can survive the trip to, and what
+you can survive is a function of life support, which is progression.
+
+#### The numbers are already coupled
+
+Space is vacuum, so a journey is spent entirely on tank.
+
+| | |
+|---|---|
+| Tank + lungs at current tuning | `1200 + 80` units ÷ `4`/s = **320 s** |
+| Moon at 8000 blocks, ship at 60 b/s | 133 s each way, **267 s** round trip |
+| Margin | **53 s** |
+| The same trip on an elytra, ~35 b/s | 229 s each way, **457 s** — you do not get back |
+
+So the Moon sits exactly at the edge of a single tank with a fast ship, and **cannot be done
+round-trip on anything slower without a refill station on arrival**. The M1.7 expedition loop
+lands on the campaign's very first journey, without that having been arranged.
+
+This is worth knowing before the ladder is set: **the distance to a planet and the air a player
+can carry are the same balancing dial seen from two ends.** Changing `TANK_CAPACITY` changes how
+far away a planet effectively is.
+
+#### The ladder
+
+Distances chosen so each world needs a real improvement in carried air, ship speed, or onboard
+life support over the last — roughly geometric, and comfortably inside the ±29,999,984 border.
+
+| Planet | Distance from Earth | What it demands |
+|---|---|---|
+| Moon | 8,000 | One tank and a refill station on arrival |
+| Planet 3 | ~18,000 | More carried air, or a faster ship |
+| Planet 4 | ~32,000 | Onboard life support rather than carried tanks |
+| Planet 5 | ~50,000 | |
+| Planet 6 | ~72,000 | |
+| Planet 7 | ~100,000 | The gateway network, realistically |
+
+**Provisional beyond the Moon.** Only the Moon's 8000 is settled; the rest are a shape, not
+values, and 4–7 are unbuilt per ADR-0005. But they are written down now because travel time is
+pacing, and a distance a player has already learned cannot be changed quietly.
+
+Gateways then have real work to do. A restored gateway that lands you at Planet 5 saves a
+50,000-block flight, which is the *"permanent post-clear travel improvement"* from
+`planets.md` being a genuine reward rather than a second menu entry.
+
+#### Space is Earth-centric, on purpose
+
+Earth is at `[0, 0]` and there is no star as a place. That is not astronomy — a real system would
+put the sun at the origin and Earth in orbit around it.
+
+It is a choice about whose map this is. The player starts on Earth, so Earth is the origin, and
+every coordinate is a distance from home. That is what an early spacefaring civilisation's chart
+would actually look like, and it means a position reads as *how far out you are*. The sun stays a
+skybox feature.
+
+#### Headings, not just distance
+
+Planets should sit at **different bearings**, not all along +X. All-on-one-axis makes travel
+one-dimensional — "keep flying east" — and wastes the navigation problem ADR-0010 deliberately
+created.
+
+The cost is that "which way is Planet 4" needs an in-game answer: an instrument, a chart, or
+coordinates earned as progression. `docs/gameplay/exploration.md` already asks whether map and
+scan data are progression items; this is what makes answering it mandatory.
+
 ### Open: how tall is space?
 
 A dimension's height is configurable and space needs almost none — planets lay out on a plane
