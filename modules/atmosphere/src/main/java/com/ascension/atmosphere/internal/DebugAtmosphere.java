@@ -45,8 +45,21 @@ public final class DebugAtmosphere implements AtmosphereProvider {
         return Optional.empty();
     }
 
+    /**
+     * Just above a dimension baseline, and far below sealed volumes.
+     *
+     * <p>Originally {@code OVERRIDE}, which was wrong for what this is for. This stands in for a
+     * planet with no atmosphere, and a planet is something you are meant to be able to build a
+     * pressurised room on. At {@code OVERRIDE} it beat sealed volumes, structures and vehicles,
+     * which made every one of them impossible to test against it — the room worked and simply
+     * could never win.
+     *
+     * <p>Offset from {@code DIMENSION} rather than equal to it so it does not tie with the water
+     * provider, which sits on the same band. The 1000-spacing between bands exists precisely so
+     * things can slot between them.
+     */
     @Override
     public int priority() {
-        return AtmospherePriority.OVERRIDE;
+        return AtmospherePriority.DIMENSION + 100;
     }
 }

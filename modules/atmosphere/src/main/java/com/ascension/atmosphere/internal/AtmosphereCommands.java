@@ -8,6 +8,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -31,6 +32,8 @@ public final class AtmosphereCommands {
                 .then(Commands.literal("atmosphere")
                         .then(Commands.literal("query")
                                 .executes(ctx -> query(ctx.getSource())))
+                        .then(Commands.literal("volumes")
+                                .executes(ctx -> volumes(ctx.getSource())))
                         .then(Commands.literal("why")
                                 .executes(ctx -> why(ctx.getSource())))
                         .then(Commands.literal("debug")
@@ -96,6 +99,27 @@ public final class AtmosphereCommands {
                             isWinner ? "   <- WINS" : ""))
                     .withStyle(isWinner ? ChatFormatting.GOLD : ChatFormatting.DARK_GRAY), false);
         }
+        return 1;
+    }
+
+    /**
+     * Report sealed volumes in this level, and whether the caller is inside one.
+     *
+     * <p>Added after a test where a room genuinely worked but was being beaten by a
+     * higher-priority provider, which was impossible to tell apart from the room not working.
+     */
+    private static int volumes(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        var index = player.serverLevel().getData(AtmosphereAttachments.SEALED_VOLUMES);
+        boolean inside = index.isPressurised(BlockPos.containing(player.getEyePosition()));
+
+        source.sendSuccess(() -> Component.literal(
+                index.emitterCount() + " sealed volume(s), " + index.pressurisedCount()
+                        + " pressurised block(s) total")
+                .withStyle(ChatFormatting.GRAY), false);
+        source.sendSuccess(() -> Component.literal("Your head is "
+                + (inside ? "INSIDE" : "outside") + " a pressurised volume")
+                .withStyle(inside ? ChatFormatting.GREEN : ChatFormatting.YELLOW), false);
         return 1;
     }
 

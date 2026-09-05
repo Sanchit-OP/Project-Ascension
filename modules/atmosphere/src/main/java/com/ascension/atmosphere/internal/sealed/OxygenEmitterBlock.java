@@ -30,10 +30,10 @@ public final class OxygenEmitterBlock extends Block {
                            LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (level instanceof ServerLevel serverLevel) {
-            boolean sealed = serverLevel.getData(AtmosphereAttachments.SEALED_VOLUMES)
+            SealedVolume.Result result = serverLevel.getData(AtmosphereAttachments.SEALED_VOLUMES)
                     .update(serverLevel, pos);
             if (placer instanceof Player player) {
-                report(player, sealed, serverLevel, pos);
+                report(player, result);
             }
         }
     }
@@ -54,11 +54,13 @@ public final class OxygenEmitterBlock extends Block {
      * space must say so, not sit there doing nothing while the player wonders why they are still
      * suffocating.
      */
-    private static void report(Player player, boolean sealed, ServerLevel level, BlockPos pos) {
-        if (sealed) {
-            int size = level.getData(AtmosphereAttachments.SEALED_VOLUMES).pressurisedCount();
+    private static void report(Player player, SealedVolume.Result result) {
+        if (result.sealed()) {
+            // This emitter's own volume. The previous version reported the level-wide union,
+            // which is a different and much less useful number the moment a second emitter
+            // exists.
             player.displayClientMessage(
-                    Component.literal("Sealed: pressurising " + size + " blocks")
+                    Component.literal("Sealed: pressurising " + result.size() + " blocks")
                             .withStyle(ChatFormatting.GREEN), true);
         } else {
             player.displayClientMessage(

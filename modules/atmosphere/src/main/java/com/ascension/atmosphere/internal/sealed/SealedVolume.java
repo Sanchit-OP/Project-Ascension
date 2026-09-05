@@ -49,11 +49,19 @@ public final class SealedVolume {
         final int limit = AtmosphereTuning.SEALED_VOLUME_LIMIT;
         final int maxRadius = AtmosphereTuning.SEALED_VOLUME_RADIUS;
 
-        LongOpenHashSet visited = new LongOpenHashSet();
+        // Two sets, deliberately. `seen` stops the search revisiting anything, walls included.
+        // `volume` is only the open space, and is what actually gets pressurised.
+        //
+        // Collapsing these into one set was the original bug: every wall block the search
+        // touched ended up in the volume, so a 3x3x3 room reported 81 blocks -- 27 of interior
+        // plus 54 of surrounding shell -- instead of 26.
+        LongOpenHashSet seen = new LongOpenHashSet();
+        LongOpenHashSet volume = new LongOpenHashSet();
         LongArrayFIFOQueue queue = new LongArrayFIFOQueue();
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
-        visited.add(origin.asLong());
+        // The emitter's own block is solid, so it is a search seed but not breathable space.
+        seen.add(origin.asLong());
         queue.enqueue(origin.asLong());
 
         while (!queue.isEmpty()) {
@@ -69,30 +77,33 @@ public final class SealedVolume {
                 }
 
                 long next = cursor.asLong();
-                if (!visited.add(next)) {
+                if (!seen.add(next)) {
                     continue;
                 }
+
                 // Via the chunk source rather than LevelReader.hasChunk, which is deprecated,
                 // and never via getBlockState on an unloaded position -- that would force a
                 // chunk load from inside a block-change handler.
                 if (!level.getChunkSource().hasChunk(
                         SectionPos.blockToSectionCoord(cursor.getX()),
                         SectionPos.blockToSectionCoord(cursor.getZ()))) {
-                    // Cannot see the whole room, so cannot claim it is closed.
                     return Result.unsealed();
                 }
                 if (!isOpen(level, cursor)) {
+                    // A wall. Remembered so we do not test it again, but it holds no air.
                     continue;
                 }
+
+                volume.add(next);
                 // Checked as the frontier grows, not once per dequeue: an open space can enqueue
                 // far more than `limit` positions before any of them are processed.
-                if (visited.size() > limit) {
+                if (volume.size() > limit) {
                     return Result.unsealed();
                 }
                 queue.enqueue(next);
             }
         }
-        return new Result(true, visited);
+        return new Result(true, volume);
     }
 
     /**
