@@ -20,13 +20,15 @@ import net.minecraft.resources.ResourceLocation;
  * @param breathable      whether the surrounding air is breathable
  * @param drainPerSecond  current effective drain, for the seconds readout
  * @param suffocating     inside the failure window
+ * @param refilling       lungs are below capacity and topping up in breathable air
  */
 public record OxygenSyncPayload(
         int units,
         int capacity,
         boolean breathable,
         float drainPerSecond,
-        boolean suffocating) implements CustomPacketPayload {
+        boolean suffocating,
+        boolean refilling) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<OxygenSyncPayload> TYPE =
             new CustomPacketPayload.Type<>(
@@ -39,6 +41,7 @@ public record OxygenSyncPayload(
                     ByteBufCodecs.BOOL, OxygenSyncPayload::breathable,
                     ByteBufCodecs.FLOAT, OxygenSyncPayload::drainPerSecond,
                     ByteBufCodecs.BOOL, OxygenSyncPayload::suffocating,
+                    ByteBufCodecs.BOOL, OxygenSyncPayload::refilling,
                     OxygenSyncPayload::new);
 
     @Override
@@ -60,6 +63,7 @@ public record OxygenSyncPayload(
                 || capacity != other.capacity
                 || breathable != other.breathable
                 || suffocating != other.suffocating
+                || refilling != other.refilling
                 || Math.abs(drainPerSecond - other.drainPerSecond) > 0.001f;
     }
 }

@@ -64,12 +64,13 @@ public final class OxygenTracker {
         // Fast path. A player breathing normally is the common case for the entire first act
         // of the campaign, and it should cost almost nothing: one atmosphere query and two
         // comparisons, with no source walking and no payload built.
-        if (!atRisk && state.suffocationTicks() == 0) {
+        if (!atRisk && state.suffocationTicks() == 0 && state.lungsFull()) {
             state.setDrainCarry(0.0f);
             suppressVanillaAir(player, atmosphere);
 
             OxygenSyncPayload last = state.lastSynced();
-            boolean clientNeedsCorrecting = last == null || !last.breathable() || last.suffocating();
+            boolean clientNeedsCorrecting =
+                    last == null || !last.breathable() || last.suffocating() || last.refilling();
             boolean reconcileDue =
                     tick - state.lastSyncTick() >= AtmosphereTuning.RECONCILE_INTERVAL_TICKS;
             if (!clientNeedsCorrecting && !reconcileDue) {
@@ -89,6 +90,8 @@ public final class OxygenTracker {
         } else {
             state.setSuffocationTicks(0);
             state.setDrainCarry(0.0f);
+            refillLungs(state);
+            supply = gatherSupply(player, state);
         }
 
         suppressVanillaAir(player, atmosphere);
@@ -108,14 +111,35 @@ public final class OxygenTracker {
     private static Supply gatherSupply(ServerPlayer player, OxygenState state) {
         List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
         if (collectors.isEmpty()) {
-            return new Supply(state.units(), AtmosphereTuning.TANK_CAPACITY);
+            return new Supply(state.lungUnits(), AtmosphereTuning.LUNG_CAPACITY);
         }
         SupplySum sum = new SupplySum();
         for (int i = 0; i < collectors.size(); i++) {
             collectors.get(i).collect(player, sum);
         }
-        int capacity = sum.capacity > 0 ? sum.capacity : AtmosphereTuning.TANK_CAPACITY;
-        return new Supply(state.units() + sum.available, capacity);
+        // Lungs are always part of the total, on top of whatever is carried.
+        return new Supply(state.lungUnits() + sum.available,
+                AtmosphereTuning.LUNG_CAPACITY + sum.capacity);
+    }
+
+    /**
+     * Top lungs back up in breathable air.
+     *
+     * <p>Lungs are the one supply that refills for free, exactly like vanilla air bubbles.
+     * Tanks deliberately do not: they are a resource you plan around and refill at a station,
+     * which is what makes carrying more of them a real decision.
+     *
+     * <p>Without this a player who died of suffocation respawned with an empty reserve and
+     * started suffocating again the moment they touched water — the bug that prompted the
+     * lung/tank split.
+     */
+    private static void refillLungs(OxygenState state) {
+        if (state.lungsFull()) {
+            return;
+        }
+        int gained = Math.round(
+                AtmosphereTuning.LUNG_REFILL_PER_SECOND * AtmosphereTuning.accountingSeconds());
+        state.setLungUnits(state.lungUnits() + Math.max(1, gained));
     }
 
     // --- consumption --------------------------------------------------------
@@ -128,12 +152,12 @@ public final class OxygenTracker {
             return;
         }
 
+        // Tanks first, lungs last. Emptying a tank should be a warning that sends you back to
+        // air, not the moment you start dying: the lung reserve is what buys you that trip.
         int remaining = drawFromSources(player, whole);
         if (remaining > 0) {
-            // Fall back to the reserve held directly on the player. Until collectors exist
-            // (M1.7), this is the only supply there is.
-            int fromReserve = Math.min(remaining, state.units());
-            state.setUnits(state.units() - fromReserve);
+            int fromLungs = Math.min(remaining, state.lungUnits());
+            state.setLungUnits(state.lungUnits() - fromLungs);
         }
     }
 
@@ -211,7 +235,8 @@ public final class OxygenTracker {
                 supply.capacity(),
                 atmosphere.breathable(),
                 drainPerSecond,
-                state.suffocationTicks() > 0);
+                state.suffocationTicks() > 0,
+                !state.lungsFull());
 
         boolean changed = payload.differsFrom(state.lastSynced());
         boolean reconcileDue =

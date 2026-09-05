@@ -32,6 +32,24 @@ public final class AtmosphereTuning {
     public static final int TANK_CAPACITY = BASE_UNITS_PER_SECOND * 60 * 5;
 
     /**
+     * Everyone's built-in reserve: what fits in a pair of lungs.
+     *
+     * <p>Twenty seconds at baseline drain. Refills for free in breathable air, exactly like
+     * vanilla air bubbles, and is drawn from <em>last</em> so it is the buffer that gets you
+     * back to air after a tank runs dry.
+     */
+    public static final int LUNG_CAPACITY = BASE_UNITS_PER_SECOND * 20;
+
+    /**
+     * How fast lungs refill in breathable air.
+     *
+     * <p>Roughly four seconds from empty, close to vanilla's bubble refill. Fast enough not to
+     * be a punishment, slow enough that surfacing for air reads as an action rather than a
+     * formality.
+     */
+    public static final int LUNG_REFILL_PER_SECOND = 20;
+
+    /**
      * Ticks between running out of air and taking the first damage.
      *
      * <p>The "short failure window" from {@code docs/gameplay/oxygen.md}: long enough to turn

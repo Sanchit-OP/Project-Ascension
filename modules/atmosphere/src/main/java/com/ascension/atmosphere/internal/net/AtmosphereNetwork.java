@@ -28,7 +28,7 @@ public final class AtmosphereNetwork {
      * Protocol version. Bump when the payload shape changes, so mismatched clients are rejected
      * at handshake rather than silently misreading a packet.
      */
-    private static final String VERSION = "1";
+    private static final String VERSION = "2";
 
     private AtmosphereNetwork() {
     }

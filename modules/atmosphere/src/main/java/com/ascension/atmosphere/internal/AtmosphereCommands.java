@@ -55,7 +55,8 @@ public final class AtmosphereCommands {
                         ? Component.literal("breathable").withStyle(ChatFormatting.GREEN)
                         : Component.literal("NOT breathable").withStyle(ChatFormatting.RED))
                 .append(Component.literal(String.format("  drain x%.2f", atmosphere.drainMultiplier())))
-                .append(Component.literal("  oxygen " + state.units() + " units")), false);
+                .append(Component.literal("  lungs " + state.lungUnits() + "/"
+                        + AtmosphereTuning.LUNG_CAPACITY + " units")), false);
         return 1;
     }
 
@@ -100,9 +101,10 @@ public final class AtmosphereCommands {
             throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         OxygenState state = player.getData(AtmosphereAttachments.OXYGEN);
-        state.setUnits(units);
+        state.setLungUnits(units);
         OxygenTracker.invalidate(player);
-        source.sendSuccess(() -> Component.literal("Oxygen set to " + units + " units"), false);
+        source.sendSuccess(() -> Component.literal(
+                "Lung reserve set to " + units + " / " + AtmosphereTuning.LUNG_CAPACITY + " units"), false);
         return 1;
     }
 
