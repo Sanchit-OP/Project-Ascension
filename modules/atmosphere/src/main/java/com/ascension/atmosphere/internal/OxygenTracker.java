@@ -58,17 +58,64 @@ public final class OxygenTracker {
                 AtmosphereRegistry.query(player.serverLevel(), player.getEyePosition());
 
         float drainPerSecond = drainPerSecond(player, atmosphere);
+        boolean exempt = player.isCreative() || player.isSpectator();
+        boolean atRisk = drainPerSecond > 0.0f && !exempt;
 
-        if (drainPerSecond > 0.0f && !player.isCreative() && !player.isSpectator()) {
+        // Fast path. A player breathing normally is the common case for the entire first act
+        // of the campaign, and it should cost almost nothing: one atmosphere query and two
+        // comparisons, with no source walking and no payload built.
+        if (!atRisk && state.suffocationTicks() == 0) {
+            state.setDrainCarry(0.0f);
+            suppressVanillaAir(player, atmosphere);
+
+            OxygenSyncPayload last = state.lastSynced();
+            boolean clientNeedsCorrecting = last == null || !last.breathable() || last.suffocating();
+            boolean reconcileDue =
+                    tick - state.lastSyncTick() >= AtmosphereTuning.RECONCILE_INTERVAL_TICKS;
+            if (!clientNeedsCorrecting && !reconcileDue) {
+                return;
+            }
+        }
+
+        // One walk of the player's sources, reused for the failure check and the payload.
+        // Previously available and capacity were gathered separately, walking every collector
+        // twice more than necessary on every pass.
+        Supply supply = gatherSupply(player, state);
+
+        if (atRisk) {
             spend(player, state, drainPerSecond);
-            applyFailure(player, state, drainPerSecond);
+            supply = gatherSupply(player, state);
+            applyFailure(player, state, supply);
         } else {
             state.setSuffocationTicks(0);
             state.setDrainCarry(0.0f);
         }
 
         suppressVanillaAir(player, atmosphere);
-        sync(player, state, atmosphere, drainPerSecond, tick);
+        sync(player, state, atmosphere, drainPerSecond, supply, tick);
+    }
+
+    /**
+     * A player's total oxygen, gathered in a single pass over their sources.
+     *
+     * <p>Deliberately a value carried between steps rather than recomputed: the failure check
+     * and the sync payload both need it, and walking every registered collector twice per
+     * player per half-second is exactly the kind of quiet waste ADR-0007 exists to prevent.
+     */
+    private record Supply(int available, int capacity) {
+    }
+
+    private static Supply gatherSupply(ServerPlayer player, OxygenState state) {
+        List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
+        if (collectors.isEmpty()) {
+            return new Supply(state.units(), AtmosphereTuning.TANK_CAPACITY);
+        }
+        SupplySum sum = new SupplySum();
+        for (int i = 0; i < collectors.size(); i++) {
+            collectors.get(i).collect(player, sum);
+        }
+        int capacity = sum.capacity > 0 ? sum.capacity : AtmosphereTuning.TANK_CAPACITY;
+        return new Supply(state.units() + sum.available, capacity);
     }
 
     // --- consumption --------------------------------------------------------
@@ -119,8 +166,8 @@ public final class OxygenTracker {
 
     // --- failure ------------------------------------------------------------
 
-    private static void applyFailure(ServerPlayer player, OxygenState state, float drainPerSecond) {
-        if (totalAvailable(player, state) > 0) {
+    private static void applyFailure(ServerPlayer player, OxygenState state, Supply supply) {
+        if (supply.available() > 0) {
             state.setSuffocationTicks(0);
             return;
         }
@@ -135,19 +182,6 @@ public final class OxygenTracker {
 
         float damage = AtmosphereTuning.SUFFOCATION_DAMAGE * AtmosphereTuning.accountingSeconds();
         player.hurt(player.damageSources().source(NO_OXYGEN), damage);
-    }
-
-    private static int totalAvailable(ServerPlayer player, OxygenState state) {
-        int total = state.units();
-        List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
-        if (collectors.isEmpty()) {
-            return total;
-        }
-        AvailableSum sum = new AvailableSum();
-        for (int i = 0; i < collectors.size(); i++) {
-            collectors.get(i).collect(player, sum);
-        }
-        return total + sum.total;
     }
 
     // --- vanilla air --------------------------------------------------------
@@ -171,10 +205,10 @@ public final class OxygenTracker {
     // --- sync ---------------------------------------------------------------
 
     private static void sync(ServerPlayer player, OxygenState state, Atmosphere atmosphere,
-                             float drainPerSecond, long tick) {
+                             float drainPerSecond, Supply supply, long tick) {
         OxygenSyncPayload payload = new OxygenSyncPayload(
-                totalAvailable(player, state),
-                capacityOf(player),
+                supply.available(),
+                supply.capacity(),
                 atmosphere.breathable(),
                 drainPerSecond,
                 state.suffocationTicks() > 0);
@@ -208,40 +242,21 @@ public final class OxygenTracker {
         return Math.max(0.0f, drain);
     }
 
-    private static int capacityOf(ServerPlayer player) {
-        List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
-        if (collectors.isEmpty()) {
-            return AtmosphereTuning.TANK_CAPACITY;
-        }
-        CapacitySum sum = new CapacitySum();
-        for (int i = 0; i < collectors.size(); i++) {
-            collectors.get(i).collect(player, sum);
-        }
-        return sum.total > 0 ? sum.total : AtmosphereTuning.TANK_CAPACITY;
-    }
-
     /**
-     * Accumulators for the per-player sums.
+     * Accumulates available and capacity together in one pass.
      *
-     * <p>Explicit classes rather than captured {@code int[]} boxes: the array version allocated
-     * a fresh box per collector, per player, per accounting pass, inside exactly the loop
-     * ADR-0007 asks to keep quiet.
+     * <p>An explicit class rather than captured {@code int[]} boxes, and one class rather than
+     * two: the earlier version allocated a fresh box per collector, per player, per accounting
+     * pass, inside exactly the loop ADR-0007 asks to keep quiet.
      */
-    private static final class CapacitySum implements Consumer<OxygenSource> {
-        private int total;
+    private static final class SupplySum implements Consumer<OxygenSource> {
+        private int available;
+        private int capacity;
 
         @Override
         public void accept(OxygenSource source) {
-            total += source.capacity();
-        }
-    }
-
-    private static final class AvailableSum implements Consumer<OxygenSource> {
-        private int total;
-
-        @Override
-        public void accept(OxygenSource source) {
-            total += source.available();
+            available += source.available();
+            capacity += source.capacity();
         }
     }
 

@@ -187,9 +187,38 @@ lives in one place so the display can be retuned without touching consumption lo
 
 ### Tick rate
 
-Per ADR-0007 rule 6, chosen deliberately: **accounting runs every 10 ticks (0.5s)**, with the
-client bar interpolating for smoothness. Oxygen does not need 20 Hz, and 0.5s granularity is
-imperceptible against a multi-second failure window.
+Per ADR-0007 rule 6, chosen deliberately: **accounting runs every 10 ticks (0.5s)**. Oxygen does
+not need 20 Hz, and 0.5s granularity is imperceptible against a multi-second failure window.
+
+> **Corrected 2026-09-05.** This paragraph previously claimed the client bar interpolates
+> between updates. It does not — the client renders the last value it received, so the readout
+> steps in 0.5s increments. Client-side prediction is worth building (it would smooth the bar
+> *and* let the server sync roughly 4x less often, since the client already receives
+> `drainPerSecond` and could extrapolate from it), but it is not built, and the document should
+> not describe work that does not exist. Tracked for M1.8.
+
+### What the accounting pass actually costs
+
+The honest shape, after the M1.5 optimisation pass:
+
+| Player state | Work per pass |
+|---|---|
+| Breathing normally | one atmosphere query, a short-circuit on drain, two comparisons, then return |
+| Draining | the above, plus one walk of the player's oxygen sources, plus one packet |
+
+The fast path matters because breathing normally is the common case for the entire first act of
+the campaign. Before it existed, an idle player on Earth paid for a full payload construction
+and two extra walks of every registered collector, every half second, to discover that nothing
+had changed.
+
+Drain is inherently time-based — something has to tick for a depleting resource — so the goal is
+not to eliminate the pass but to make the common case nearly free.
+
+**Deliberately not cached: the atmosphere query itself.** Caching it per player would need
+invalidation on block change, which does not exist until sealed volumes arrive in M1.6. Adding
+a position-keyed cache before then would risk a stale answer when water flows in or a wall is
+broken — a correctness bug traded for a saving too small to measure at any realistic player
+count.
 
 ## 5b. Water is the same problem as vacuum
 
