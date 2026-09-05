@@ -61,6 +61,13 @@ These need answers during the milestone that touches them, not before.
 - **Fallback ship experience without Sable** — created by ADR-0006. What do players who do not
   install the optional physics jar actually get?
 
+## Pack-level polish
+
+- **First-launch defaults for players.** The dev build seeds `options.txt` via
+  `seedDevGameOptions`, but that only covers our run directories. The shipped pack should
+  ship the same defaults so players never see the accessibility onboarding prompt before the
+  main menu. Decide whether this is a bundled `options.txt`, a config mod, or our own module.
+
 ## Missing documentation
 
 - Quest and onboarding design — FTB Quests appears in the mod list with no design behind it. In
