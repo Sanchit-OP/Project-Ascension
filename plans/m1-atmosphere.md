@@ -33,7 +33,7 @@ It is the hardest system, not the easiest. Three reasons it still goes first:
 
 ## Increments
 
-### M1.1 — API design pass (design only, no implementation)
+### M1.1 — API design pass (design only, no implementation)  *(done — 2026-09-05)*
 
 Write `docs/technical/atmosphere-api.md` first and review it before writing code.
 
@@ -45,7 +45,11 @@ Must resolve:
 - Zone representation — how a zone is anchored so it can later ride a moving sub-level.
 - What is `api` (semver contract) versus `internal` (free to change).
 
-**Verify:** design review against ADR-0003 and ADR-0006. No code yet.
+**Done.** `docs/technical/atmosphere-api.md` written and reviewed; API frozen for v0.1.
+Five decisions settled at review: bar + minimal hazard indicator, `drainMultiplier` ships
+in v0.1, integer storage with seconds on display, sprinting does not cost oxygen (drain
+modifiers became a registry instead), and share-air rescue (which added `accept` to
+`OxygenSource`).
 
 ### M1.2 — Breathability query + player oxygen state
 
