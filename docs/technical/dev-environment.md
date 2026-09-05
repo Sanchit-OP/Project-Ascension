@@ -180,9 +180,36 @@ reading taken on this instance — see
 Install both through the CurseForge app's own mod browser for the instance, so it resolves the
 correct 1.21.1 / NeoForge build and any dependencies.
 
-**Curios also has to be on the dev server**, not just the client — it owns server-side slot
-state. For the Gradle `runServer` that means declaring it on the compat module's runtime
-classpath, not dropping a jar in `run/server/mods`.
+#### Curios must be on the dev server too — it is, automatically
+
+Curios registers a network channel, so a client that has it **refuses to join a server that does
+not**:
+
+```
+Curios break channel of mod curios api failed to connect:
+the channel is missing on the server side but required on the client
+```
+
+That is now handled by the build rather than by hand. `curios_version` in `gradle.properties` is
+put on the client and server run classpaths by `ascension.mod-conventions`, so `runServer`
+carries the same Curios the instance does. Bumping the instance's Curios means bumping that
+property.
+
+**This does not weaken ADR-0003 rule 6.** What enforces "atmosphere works with only `core`
+present" is the *compile* classpath, and Curios is not on it — Tier 1 cannot reference a class it
+cannot see, and a jar present at dev runtime cannot create a compile dependency.
+
+To check the standalone case deliberately:
+
+```bash
+./gradlew :modules:atmosphere:runServer -PnoDevMods
+```
+
+A client with Curios installed will then refuse to connect, which is the point: that
+configuration is for confirming the module loads and works alone, not for playing.
+
+JEI needs none of this. It is client-side, declares no server requirement, and stays an
+instance-only mod — deliberately never a build input.
 
 ### Profiling a run
 
