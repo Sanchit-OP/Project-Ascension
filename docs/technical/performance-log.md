@@ -107,6 +107,73 @@ Flat across cycles is healthy. Climbing means something is holding a `Level`, `P
 
 ---
 
+## M1.8 — Full stack, first reading
+
+**Date:** 2026-09-05
+**Configuration:** dedicated server (`localhost`) + CurseForge client, `view-distance=8`,
+`simulation-distance=6`, G1 (this reading predates the switch to ZGC)
+**Mods:** 15 third-party — Sodium, Distant Horizons, EntityCulling, MoreCulling,
+ImmediatelyFast, BadOptimizations, Lithium, FerriteCore, ModernFix, Chunky, Alternate Current,
+Spark, Curios, JEI, Cloth Config — plus `ascension_atmosphere` 0.1.0 and `ascension_core` 0.1.0
+**Chunky pre-generation:** not yet run
+**Tools:** Spark `/spark health`, `/spark profiler`, `/spark heapsummary`
+
+| Metric | Reading | Read |
+|---|---|---|
+| TPS | **20** | At cap. |
+| Server tick | 4, 6, 8, **28**, 3, 6, 19, **118** ms | Median around 6 ms — better than the 5 ms M0.5 figure suggests, given fifteen more mods. The spikes are the story, see below. |
+| CPU (system) | 70–89% | High, and consistent with DH generating LODs for three dimensions at once. |
+| CPU (process) | 42–49% | |
+| Memory | 1.1 GB | |
+| Client FPS | **200** | Cap lifted, so this number finally means something. |
+| Heap (Spark) | **535 MB** across 17,368 classes | |
+
+### Our share of the heap: 1,408 bytes
+
+Parsed out of the Spark heap report rather than eyeballed:
+
+| Class | Instances | Bytes |
+|---|---|---|
+| `ProviderRegistry$Entry` | 3 | 72 |
+| `OxygenEmitterBlock` | 1 | 72 |
+| `OxygenRefillStationBlock` | 1 | 72 |
+| `OxygenState` | **1** | 40 |
+| `SealedVolumeIndex` | **1** | 24 |
+| `OxygenSyncPayload` | **1** | 32 |
+| ...59 more, all singletons or lambdas | | |
+| **total** | **68** | **1,408** |
+
+**0.00026% of the heap.** More to the point, the counts are all **one**: one `OxygenState` for
+one player online, one `SealedVolumeIndex` for one level with emitters, one in-flight
+`OxygenSyncPayload`. Nothing accumulating anywhere — which is precisely what
+[ADR-0007](../decisions/0007-performance-contract.md) rule 1 exists to catch, and the first
+direct evidence we have that it holds.
+
+### Where the heap actually goes
+
+`long[]` 104 MB, `int[]` 98 MB, `byte[]` 89 MB, `BlockPos` 541,190 instances / 13 MB,
+structure templates 518,241 instances, `PalettedContainer` 170,689 instances.
+
+170,689 chunk sections is roughly 7,000 chunks resident, far more than `view-distance=8` needs
+on its own. That is Distant Horizons holding chunk data to build LODs from, and it accounts for
+the memory and the CPU together.
+
+### The tick spikes
+
+118 ms is more than twice the tick budget, and it appeared while flying on an elytra — visible
+as the world "changing a lot" while moving fast. Two causes, stacked:
+
+1. **Chunk generation.** Chunky has not been run, so flying generates terrain in the hot path.
+2. **DH building LODs** for three dimensions concurrently, on first run.
+
+Neither is ours: nothing from `com.ascension` appears in the profile. The fix for the first is
+Chunky pre-generation; the second is a one-time cost that settles.
+
+**This is not the M1.9 signal.** It is an absolute reading on a stack that is still warming up,
+recorded for context. M1.9 takes the A/B.
+
+---
+
 ## M0.5 — Baseline: vanilla + NeoForge + empty `ascension_core`
 
 **Date:** 2026-09-05

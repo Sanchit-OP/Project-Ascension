@@ -82,6 +82,31 @@ that decides it:
 If worldgen shows up as a real cost in a profile later, the thing to reach for is more Chunky
 pre-generation, not this.
 
+## Garbage collector: generational ZGC, not G1
+
+Distant Horizons warns about G1 on sight, and it is right to. G1's pauses run to tens of
+milliseconds; against a 50 ms tick budget that is a hitch you can see, and on the client it is
+the frame stutter DH is complaining about.
+
+**Dev runs use generational ZGC by default** — `jvm_gc` in `gradle.properties`, applied to the
+client and server runs. Generational is opt-in on Java 21 and the non-generational collector is
+markedly worse for this workload, so both flags go together:
+
+```
+-XX:+UseZGC -XX:+ZGenerational
+```
+
+Put the same two on the CurseForge instance (Settings → Java → JVM Arguments) so the client and
+the dev server are not running different collectors.
+
+`jvm_gc=g1` switches back, which is how to A/B it.
+
+**One consequence for measurement.** ZGC does not sawtooth the way G1 does, so the "watch the
+low point of the sawtooth" method in
+[`performance-log.md`](performance-log.md) stops applying. No loss: leak detection had already
+moved to JFR and `/spark heapsummary`, both of which report the live set directly and neither of
+which cares which collector produced it.
+
 ## Configuration that actually matters
 
 Two mods here can be configured into doing nothing useful.
@@ -93,6 +118,11 @@ distance modest and let DH cover everything beyond. Setting both high pays twice
 
 **Chunky pre-generation is per dimension**, so it is an M2-and-later activity for our own worlds.
 Install it now; use it once dimensions exist.
+
+**Do not run Chunky and DH's LOD generation flat out at the same time.** DH warns about exactly
+this: Chunky generates chunks faster than DH can turn them into LODs, and the LODs come out with
+holes. Either raise DH's CPU thread count first, or pre-generate with Chunky and let DH build
+LODs over already-generated terrain afterwards. The second is the calmer order.
 
 ## Known gap: no lighting engine optimisation
 

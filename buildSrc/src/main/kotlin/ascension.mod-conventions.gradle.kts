@@ -148,6 +148,27 @@ fun declaresClientOnly(jar: File): Boolean = try {
     false
 }
 
+/**
+ * Garbage collector arguments for dev runs.
+ *
+ * Generational ZGC by default. G1's pauses run to tens of milliseconds, and against a 50 ms
+ * tick budget that is a hitch you can see -- which is why Distant Horizons warns about G1 on
+ * sight. ZGC holds pauses under a millisecond and gives up some throughput for it, which is the
+ * right trade for a game.
+ *
+ * Generational is opt-in on Java 21 and the non-generational collector is markedly worse for
+ * this workload, so the flag is not optional.
+ *
+ * Whichever collector is in use is part of any absolute performance reading. -Pjvm_gc=g1 or
+ * `jvm_gc=g1` in gradle.properties switches back for an A/B.
+ */
+fun gcArguments(): List<String> = when (providers.gradleProperty("jvm_gc").orNull?.trim()?.lowercase()) {
+    "g1", "" , null -> listOf("-XX:+UseG1GC")
+    "zgc" -> listOf("-XX:+UseZGC", "-XX:+ZGenerational")
+    else -> throw GradleException(
+        "jvm_gc must be 'zgc' or 'g1', got: " + providers.gradleProperty("jvm_gc").get())
+}
+
 fun jfrArguments(which: String): List<String> {
     // Forward slashes deliberately. Java accepts them on Windows, and the alternative is a
     // Windows path full of backslashes going into an @argfile, where a backslash is the escape
@@ -178,6 +199,7 @@ configure<NeoForgeExtension> {
         register("client") {
             client()
             gameDirectory = file("${rootProject.projectDir}/run/client")
+            jvmArguments.addAll(gcArguments())
             if (jfrRequested) {
                 jvmArguments.addAll(jfrArguments("client"))
             }
@@ -186,6 +208,7 @@ configure<NeoForgeExtension> {
             server()
             gameDirectory = file("${rootProject.projectDir}/run/server")
             programArgument("--nogui")
+            jvmArguments.addAll(gcArguments())
             if (jfrRequested) {
                 jvmArguments.addAll(jfrArguments("server"))
             }
