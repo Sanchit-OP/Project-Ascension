@@ -3,6 +3,7 @@ package com.ascension.atmosphere.internal.supply;
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
 import com.ascension.atmosphere.internal.AtmosphereContent;
 import com.ascension.atmosphere.internal.AtmosphereTuning;
+import com.ascension.atmosphere.internal.OxygenLevel;
 import com.ascension.atmosphere.internal.OxygenTracker;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -217,10 +218,11 @@ public final class OxygenTankItem extends Item {
             return COLOUR_CLOSED;
         }
         int seconds = units(stack) / AtmosphereTuning.BASE_UNITS_PER_SECOND;
-        if (seconds <= SECONDS_CRITICAL) {
-            return COLOUR_CRITICAL;
-        }
-        return seconds <= SECONDS_LOW ? COLOUR_LOW : COLOUR_OK;
+        return switch (OxygenLevel.forSecondsRemaining(seconds)) {
+            case CRITICAL -> COLOUR_CRITICAL;
+            case LOW -> COLOUR_LOW;
+            case OK -> COLOUR_OK;
+        };
     }
 
     @Override
@@ -247,9 +249,7 @@ public final class OxygenTankItem extends Item {
     /** Vanilla's durability bar is thirteen pixels wide. */
     private static final float MAX_BAR_WIDTH = 13.0f;
 
-    /** Same thresholds and colours as the HUD, so the two never disagree about "low". */
-    private static final int SECONDS_LOW = 30;
-    private static final int SECONDS_CRITICAL = 10;
+    /** Thresholds live in {@link OxygenLevel}, shared with the HUD. Only colour is local. */
     private static final int COLOUR_OK = 0x43C5F0;
     private static final int COLOUR_LOW = 0xE0B33A;
     private static final int COLOUR_CRITICAL = 0xD84B3A;

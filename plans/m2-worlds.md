@@ -126,9 +126,21 @@ Overworld.
 
 **Verify:** fly it with Distant Horizons on and Chunky pre-generating, per M2.1's answer.
 
-### M2.4 — Refactor pass (ADR-0008)
+### M2.4 — Refactor pass (ADR-0008)  *(done)*
 
 No features. Scheduled, not discretionary.
+
+Pulled the pure arithmetic out of `OxygenTracker` and `TankRules` into small,
+Minecraft-free classes (`OxygenAccounting`, `TankCarrySweep`), and merged the tank
+item's and the HUD's separately-duplicated low/critical thresholds into one
+(`OxygenLevel`). 64 unit tests now exist across `core` and `atmosphere`, up from 17
+all in `core`; `atmosphere` had none before this pass. Found and fixed one real bug
+along the way: the at-risk accounting path was gathering a player's oxygen sources
+twice per pass instead of once.
+
+`DebugAtmosphere` was reviewed rather than removed — it is still useful for
+reaching an unbreathable state without a real one on hand, just no longer the
+*only* one, so it stays as a documented dev tool.
 
 ### M2.5 — Orbit and arrival
 

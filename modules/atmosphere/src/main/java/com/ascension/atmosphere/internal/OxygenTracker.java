@@ -103,27 +103,34 @@ public final class OxygenTracker {
         // Gathering before the branch as well used to look harmless. It stopped being harmless
         // the moment a collector did real work: the tank collector walks 41 inventory slots, so
         // the discarded gather was a wasted inventory scan per player per pass.
+        //
+        // And the same mistake survived one layer down until the M2.4 pass. Spending drew from a
+        // freshly gathered list and then the summary gathered a second one, so a player in danger
+        // paid two full inventory walks every pass -- the exact waste the note on Supply below
+        // claims to prevent. Gathered once here now, and used for both.
+        List<OxygenSource> sources = gatherSources(player);
+
         Supply supply;
         if (atRisk) {
-            spend(player, state, drainPerSecond);
-            supply = gatherSupply(player, state, lungCapacity);
+            spend(state, drainPerSecond, sources);
+            supply = summarise(state, lungCapacity, sources);
             applyFailure(player, state, supply);
         } else {
             state.setSuffocationTicks(0);
             state.setDrainCarry(0.0f);
             refillLungs(state, lungCapacity);
-            supply = gatherSupply(player, state, lungCapacity);
+            supply = summarise(state, lungCapacity, sources);
         }
 
         sync(player, state, atmosphere, drainPerSecond, supply, lungCapacity, tick);
     }
 
     /**
-     * A player's total oxygen, gathered in a single pass over their sources.
+     * A player's total oxygen: lungs plus everything they are carrying.
      *
-     * <p>Deliberately a value carried between steps rather than recomputed: the failure check
-     * and the sync payload both need it, and walking every registered collector twice per
-     * player per half-second is exactly the kind of quiet waste ADR-0007 exists to prevent.
+     * <p>Deliberately a value carried between steps rather than recomputed. The failure check and
+     * the sync payload both need it, and walking every registered collector twice per player per
+     * half-second is exactly the kind of quiet waste ADR-0007 exists to prevent.
      */
     public record Supply(int available, int capacity) {
     }
@@ -136,21 +143,46 @@ public final class OxygenTracker {
      * it out twice.
      */
     public static Supply supply(ServerPlayer player) {
-        return gatherSupply(player, player.getData(AtmosphereAttachments.OXYGEN),
-                lungCapacity(player));
+        return summarise(player.getData(AtmosphereAttachments.OXYGEN), lungCapacity(player),
+                gatherSources(player));
     }
 
-    private static Supply gatherSupply(ServerPlayer player, OxygenState state, int lungCapacity) {
+    /**
+     * Everything a player can currently breathe from, asked for once.
+     *
+     * <p>This is the expensive step in the whole pass &mdash; a collector may walk an inventory,
+     * a curio slot or a vehicle &mdash; so the caller gathers once and both spends from and sums
+     * the same list.
+     */
+    private static List<OxygenSource> gatherSources(ServerPlayer player) {
         List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
         if (collectors.isEmpty()) {
-            return new Supply(state.lungUnits(), lungCapacity);
+            return List.of();
         }
-        SupplySum sum = new SupplySum();
+        List<OxygenSource> sources = new ArrayList<>(collectors.size());
+        Consumer<OxygenSource> sink = sources::add;
         for (int i = 0; i < collectors.size(); i++) {
-            collectors.get(i).collect(player, sum);
+            collectors.get(i).collect(player, sink);
         }
-        // Lungs are always part of the total, on top of whatever is carried.
-        return new Supply(state.lungUnits() + sum.available, lungCapacity + sum.capacity);
+        return sources;
+    }
+
+    /**
+     * Add up already-gathered sources, plus the lungs that are always part of the total.
+     *
+     * <p>Reads the sources rather than a number captured when they were gathered, so calling this
+     * after {@link #spend} reports what is left rather than what there was.
+     */
+    private static Supply summarise(OxygenState state, int lungCapacity,
+                                    List<OxygenSource> sources) {
+        int available = state.lungUnits();
+        int capacity = lungCapacity;
+        for (int i = 0; i < sources.size(); i++) {
+            OxygenSource source = sources.get(i);
+            available += source.available();
+            capacity += source.capacity();
+        }
+        return new Supply(available, capacity);
     }
 
     /**
@@ -171,36 +203,28 @@ public final class OxygenTracker {
     /**
      * Top lungs back up in breathable air.
      *
-     * <p>Lungs are the one supply that refills for free, exactly like vanilla air bubbles.
-     * Tanks deliberately do not: they are a resource you plan around and refill at a station,
-     * which is what makes carrying more of them a real decision.
-     *
      * <p>Without this a player who died of suffocation respawned with an empty reserve and
      * started suffocating again the moment they touched water — the bug that prompted the
-     * lung/tank split.
+     * lung/tank split. The arithmetic, and why it always gains at least one unit, is in
+     * {@link OxygenAccounting#lungsAfterRefill}.
      */
     private static void refillLungs(OxygenState state, int lungCapacity) {
-        if (state.lungUnits() >= lungCapacity) {
-            return;
-        }
-        int gained = Math.round(
-                AtmosphereTuning.LUNG_REFILL_PER_SECOND * AtmosphereTuning.accountingSeconds());
-        state.setLungUnits(Math.min(lungCapacity, state.lungUnits() + Math.max(1, gained)));
+        state.setLungUnits(OxygenAccounting.lungsAfterRefill(state.lungUnits(), lungCapacity));
     }
 
     // --- consumption --------------------------------------------------------
 
-    private static void spend(ServerPlayer player, OxygenState state, float drainPerSecond) {
-        float owed = drainPerSecond * AtmosphereTuning.accountingSeconds() + state.drainCarry();
-        int whole = (int) owed;
-        state.setDrainCarry(owed - whole);
-        if (whole <= 0) {
+    private static void spend(OxygenState state, float drainPerSecond,
+                              List<OxygenSource> sources) {
+        OxygenAccounting.Debt debt = OxygenAccounting.debt(drainPerSecond, state.drainCarry());
+        state.setDrainCarry(debt.carry());
+        if (debt.units() <= 0) {
             return;
         }
 
         // Tanks first, lungs last. Emptying a tank should be a warning that sends you back to
         // air, not the moment you start dying: the lung reserve is what buys you that trip.
-        int remaining = drawFromSources(player, whole);
+        int remaining = drawFromSources(sources, debt.units());
         if (remaining > 0) {
             int fromLungs = Math.min(remaining, state.lungUnits());
             state.setLungUnits(state.lungUnits() - fromLungs);
@@ -208,25 +232,20 @@ public final class OxygenTracker {
     }
 
     /**
-     * Draw from registered sources in {@code drawOrder}, lowest first.
+     * Draw from the gathered sources in {@code drawOrder}, lowest first.
      *
      * <p>Portable tanks sit below suit reserve, so the suit stays a safety margin and running a
      * tank dry is a warning rather than a death sentence.
      *
+     * <p>Sorts in place, and only when there is something to order. With one source &mdash; the
+     * open tank, which is the whole of the game today &mdash; a sort is pure ceremony.
+     *
      * @return units still owed after every source was exhausted
      */
-    private static int drawFromSources(ServerPlayer player, int units) {
-        List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
-        if (collectors.isEmpty()) {
-            return units;
+    private static int drawFromSources(List<OxygenSource> sources, int units) {
+        if (sources.size() > 1) {
+            sources.sort(Comparator.comparingInt(OxygenSource::drawOrder));
         }
-        List<OxygenSource> sources = new ArrayList<>();
-        Consumer<OxygenSource> sink = sources::add;
-        for (int i = 0; i < collectors.size(); i++) {
-            collectors.get(i).collect(player, sink);
-        }
-        sources.sort(Comparator.comparingInt(OxygenSource::drawOrder));
-
         int owed = units;
         for (int i = 0; i < sources.size() && owed > 0; i++) {
             owed -= sources.get(i).consume(owed);
@@ -237,21 +256,15 @@ public final class OxygenTracker {
     // --- failure ------------------------------------------------------------
 
     private static void applyFailure(ServerPlayer player, OxygenState state, Supply supply) {
-        if (supply.available() > 0) {
-            state.setSuffocationTicks(0);
-            return;
-        }
-
-        int ticks = state.suffocationTicks() + AtmosphereTuning.ACCOUNTING_INTERVAL_TICKS;
+        int ticks = OxygenAccounting.suffocationTicksAfter(
+                state.suffocationTicks(), supply.available() > 0);
         state.setSuffocationTicks(ticks);
 
-        if (ticks <= AtmosphereTuning.SUFFOCATION_GRACE_TICKS) {
-            // Grace window: the player is told, loudly, but not yet hurt.
-            return;
+        // Inside the grace window the player is told, loudly, but not yet hurt.
+        if (OxygenAccounting.damageDue(ticks)) {
+            player.hurt(player.damageSources().source(NO_OXYGEN),
+                    OxygenAccounting.damagePerPass());
         }
-
-        float damage = AtmosphereTuning.SUFFOCATION_DAMAGE * AtmosphereTuning.accountingSeconds();
-        player.hurt(player.damageSources().source(NO_OXYGEN), damage);
     }
 
     // --- sync ---------------------------------------------------------------
@@ -295,24 +308,6 @@ public final class OxygenTracker {
             drain *= modifiers.get(i).multiplier(player);
         }
         return Math.max(0.0f, drain);
-    }
-
-    /**
-     * Accumulates available and capacity together in one pass.
-     *
-     * <p>An explicit class rather than captured {@code int[]} boxes, and one class rather than
-     * two: the earlier version allocated a fresh box per collector, per player, per accounting
-     * pass, inside exactly the loop ADR-0007 asks to keep quiet.
-     */
-    private static final class SupplySum implements Consumer<OxygenSource> {
-        private int available;
-        private int capacity;
-
-        @Override
-        public void accept(OxygenSource source) {
-            available += source.available();
-            capacity += source.capacity();
-        }
     }
 
     /** Force a resend on the next pass, e.g. after a dimension change or respawn. */

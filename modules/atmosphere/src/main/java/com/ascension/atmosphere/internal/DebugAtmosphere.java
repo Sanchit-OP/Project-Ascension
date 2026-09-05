@@ -9,12 +9,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 /**
- * A switchable vacuum, so the system can be exercised before any planet exists.
+ * A switchable vacuum, on demand, in any dimension &mdash; including one that is meant to be
+ * breathable.
  *
- * <p>ADR-0008 requires every increment to be observable in a running client. Until
- * {@code ascension-worlds} can supply a genuinely airless dimension, there is nothing to
- * stand in that would prove breathability resolution works &mdash; so this provides it on
- * demand, per dimension, via {@code /ascension atmosphere debug}.
+ * <p>Until M2.2 this was the <em>only</em> unbreathable place in the project, which made it a
+ * crutch: the atmosphere system was only ever tested against a vacuum built by the same hand
+ * that built the thing reading it. The Moon retired that dependency. What is left is its honest
+ * job &mdash; forcing vacuum anywhere, instantly, via {@code /ascension atmosphere debug}, for
+ * testing gear, HUD states and failure timing without a rocket trip. Kept for exactly that,
+ * reviewed and confirmed still worth having at the M2.4 pass rather than removed.
  *
  * <p>Off unless explicitly switched on, and it stores only a {@link ResourceKey}, never a
  * {@code Level} (ADR-0007 rule 1).
