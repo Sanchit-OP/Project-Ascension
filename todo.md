@@ -21,12 +21,22 @@ Moved out of this list — see the register for reasoning:
 
 These need answers during the milestone that touches them, not before.
 
-**During M1.1 (atmosphere API design):**
-- Does sprinting, combat, or hazard exposure increase oxygen consumption?
-- Do sealed bases create local breathable zones, or only refill points?
-- How visible should oxygen information be in the UI?
-- Can players create temporary field refills?
-- How do multiplayer rescue and recovery work?
+**M1.1 (atmosphere API design) — draft written, awaiting review**
+
+See [`docs/technical/atmosphere-api.md`](docs/technical/atmosphere-api.md). Answered there:
+
+- ~~Does sprinting or combat increase consumption?~~ Yes, via a short named `activityMultiplier` list.
+- ~~Sealed bases: zones or refill points?~~ Zones — same mechanism ships need later.
+- ~~Can players create temporary field refills?~~ Yes, but not in v0.1.
+
+Still open, and blocking the API being frozen:
+
+- How visible should oxygen information be in the UI? (bar only, or bar + hazard readout)
+- How do multiplayer rescue and recovery work? Decides whether `OxygenSource` needs a transfer
+  operation in its first version.
+- Ship `drainMultiplier` in v0.1, or add it when `worlds` lands? Changing a record's shape after
+  third parties depend on it is a breaking change.
+- Oxygen units: integer units, or seconds of remaining air?
 
 **Before M2 (`ascension-worlds`):**
 - **Is orbit a separate dimension or a high-Y band of the surface dimension?**
@@ -77,4 +87,3 @@ These need answers during the milestone that touches them, not before.
   recipes consume it
 - Testing and playtest plan
 - `docs/technical/performance-log.md` — created in M0.5
-- `docs/technical/atmosphere-api.md` — created in M1.1
