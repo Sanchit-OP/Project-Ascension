@@ -30,3 +30,8 @@ Thumbs.db
 # Python bytecode from ad-hoc tooling scripts
 __pycache__/
 *.pyc
+
+# Log4j writes here when unit tests put Minecraft on the classpath.
+# Not build output, so `build/` does not catch it.
+modules/*/logs/
+logs/
