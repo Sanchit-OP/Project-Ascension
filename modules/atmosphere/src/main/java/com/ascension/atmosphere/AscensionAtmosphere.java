@@ -3,14 +3,17 @@ package com.ascension.atmosphere;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
 import com.ascension.atmosphere.internal.AtmosphereCommands;
+import com.ascension.atmosphere.internal.AtmosphereConfig;
 import com.ascension.atmosphere.internal.DebugAtmosphere;
 import com.ascension.atmosphere.internal.OxygenTracker;
 import com.ascension.atmosphere.internal.ProviderRegistry;
+import com.ascension.atmosphere.internal.VanillaIntegration;
 import com.ascension.atmosphere.internal.net.AtmosphereNetwork;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -35,6 +38,8 @@ public final class AscensionAtmosphere {
     private static final Logger LOGGER = LoggerFactory.getLogger(AscensionAtmosphere.class);
 
     public AscensionAtmosphere(IEventBus modBus, ModContainer container) {
+        container.registerConfig(ModConfig.Type.SERVER, AtmosphereConfig.SPEC);
+
         AtmosphereAttachments.register(modBus);
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(AtmosphereNetwork::register);
@@ -50,6 +55,13 @@ public final class AscensionAtmosphere {
             AtmosphereRegistry.register(
                     ResourceLocation.fromNamespaceAndPath(MOD_ID, "debug_vacuum"),
                     new DebugAtmosphere());
+
+            // Water is just another unbreathable atmosphere. Registered unconditionally; the
+            // provider itself honours the config, so toggling it needs no restart.
+            AtmosphereRegistry.register(
+                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "water"),
+                    new VanillaIntegration.WaterAtmosphere());
+            AtmosphereRegistry.register(new VanillaIntegration.VanillaBreathingGear());
 
             // Sort once, then never again. Queries after this point allocate nothing.
             ProviderRegistry.get().freeze();

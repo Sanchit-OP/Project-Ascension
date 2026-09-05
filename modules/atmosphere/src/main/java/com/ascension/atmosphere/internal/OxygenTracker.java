@@ -1,31 +1,40 @@
 package com.ascension.atmosphere.internal;
 
+import com.ascension.atmosphere.AscensionAtmosphere;
 import com.ascension.atmosphere.api.Atmosphere;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.api.DrainModifier;
 import com.ascension.atmosphere.api.OxygenSource;
 import com.ascension.atmosphere.api.OxygenSourceCollector;
 import com.ascension.atmosphere.internal.net.OxygenSyncPayload;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
- * Server-side accounting: works out each player's oxygen situation and syncs it.
+ * Server-side accounting: works out each player's oxygen situation, spends it, and syncs it.
  *
  * <p>Runs every {@link AtmosphereTuning#ACCOUNTING_INTERVAL_TICKS} ticks over the online player
- * list. There is no world scan and no per-block work here &mdash; the cost is proportional to
- * players online, not to world size (ADR-0007 rule 4).
+ * list. No world scan, no per-block work: cost is proportional to players online, not world
+ * size (ADR-0007 rule 4).
  *
  * <p>Holds no state of its own. Everything per-player lives on that player's attachment, so it
  * cannot outlive them.
- *
- * <p>Consumption is deliberately not implemented yet; that is M1.5. This computes the drain
- * <em>rate</em> so the readout is honest, but does not yet subtract it.
  */
 public final class OxygenTracker {
+
+    /** Damage dealt when the failure window elapses. Defined as data, not a vanilla stand-in. */
+    public static final ResourceKey<DamageType> NO_OXYGEN = ResourceKey.create(
+            Registries.DAMAGE_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "no_oxygen"));
 
     private OxygenTracker() {
     }
@@ -36,18 +45,135 @@ public final class OxygenTracker {
         }
         long tick = server.getTickCount();
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            syncPlayer(player, tick);
+            update(player, tick);
         }
     }
 
-    private static void syncPlayer(ServerPlayer player, long tick) {
+    private static void update(ServerPlayer player, long tick) {
         OxygenState state = player.getData(AtmosphereAttachments.OXYGEN);
-        Atmosphere atmosphere = AtmosphereRegistry.query(player.serverLevel(), player.position());
+
+        // Breathing happens at the head, not the feet. Standing chest-deep in water should not
+        // suffocate you, and standing on a sealed floor with your head in vacuum should.
+        Atmosphere atmosphere =
+                AtmosphereRegistry.query(player.serverLevel(), player.getEyePosition());
 
         float drainPerSecond = drainPerSecond(player, atmosphere);
 
+        if (drainPerSecond > 0.0f && !player.isCreative() && !player.isSpectator()) {
+            spend(player, state, drainPerSecond);
+            applyFailure(player, state, drainPerSecond);
+        } else {
+            state.setSuffocationTicks(0);
+            state.setDrainCarry(0.0f);
+        }
+
+        suppressVanillaAir(player, atmosphere);
+        sync(player, state, atmosphere, drainPerSecond, tick);
+    }
+
+    // --- consumption --------------------------------------------------------
+
+    private static void spend(ServerPlayer player, OxygenState state, float drainPerSecond) {
+        float owed = drainPerSecond * AtmosphereTuning.accountingSeconds() + state.drainCarry();
+        int whole = (int) owed;
+        state.setDrainCarry(owed - whole);
+        if (whole <= 0) {
+            return;
+        }
+
+        int remaining = drawFromSources(player, whole);
+        if (remaining > 0) {
+            // Fall back to the reserve held directly on the player. Until collectors exist
+            // (M1.7), this is the only supply there is.
+            int fromReserve = Math.min(remaining, state.units());
+            state.setUnits(state.units() - fromReserve);
+        }
+    }
+
+    /**
+     * Draw from registered sources in {@code drawOrder}, lowest first.
+     *
+     * <p>Portable tanks sit below suit reserve, so the suit stays a safety margin and running a
+     * tank dry is a warning rather than a death sentence.
+     *
+     * @return units still owed after every source was exhausted
+     */
+    private static int drawFromSources(ServerPlayer player, int units) {
+        List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
+        if (collectors.isEmpty()) {
+            return units;
+        }
+        List<OxygenSource> sources = new ArrayList<>();
+        Consumer<OxygenSource> sink = sources::add;
+        for (int i = 0; i < collectors.size(); i++) {
+            collectors.get(i).collect(player, sink);
+        }
+        sources.sort(Comparator.comparingInt(OxygenSource::drawOrder));
+
+        int owed = units;
+        for (int i = 0; i < sources.size() && owed > 0; i++) {
+            owed -= sources.get(i).consume(owed);
+        }
+        return owed;
+    }
+
+    // --- failure ------------------------------------------------------------
+
+    private static void applyFailure(ServerPlayer player, OxygenState state, float drainPerSecond) {
+        if (totalAvailable(player, state) > 0) {
+            state.setSuffocationTicks(0);
+            return;
+        }
+
+        int ticks = state.suffocationTicks() + AtmosphereTuning.ACCOUNTING_INTERVAL_TICKS;
+        state.setSuffocationTicks(ticks);
+
+        if (ticks <= AtmosphereTuning.SUFFOCATION_GRACE_TICKS) {
+            // Grace window: the player is told, loudly, but not yet hurt.
+            return;
+        }
+
+        float damage = AtmosphereTuning.SUFFOCATION_DAMAGE * AtmosphereTuning.accountingSeconds();
+        player.hurt(player.damageSources().source(NO_OXYGEN), damage);
+    }
+
+    private static int totalAvailable(ServerPlayer player, OxygenState state) {
+        int total = state.units();
+        List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
+        if (collectors.isEmpty()) {
+            return total;
+        }
+        AvailableSum sum = new AvailableSum();
+        for (int i = 0; i < collectors.size(); i++) {
+            collectors.get(i).collect(player, sum);
+        }
+        return total + sum.total;
+    }
+
+    // --- vanilla air --------------------------------------------------------
+
+    /**
+     * Hold vanilla's air supply full while we are managing breathing.
+     *
+     * <p>Without this the player runs two timers at once and drowns on vanilla's schedule while
+     * our bar still shows air. Deliberately skipped when the feature is disabled, so turning it
+     * off restores stock behaviour exactly rather than leaving a half-converted state.
+     */
+    private static void suppressVanillaAir(ServerPlayer player, Atmosphere atmosphere) {
+        if (!AtmosphereConfig.INSTANCE.waterIntegrationEnabled()) {
+            return;
+        }
+        if (player.getAirSupply() < player.getMaxAirSupply()) {
+            player.setAirSupply(player.getMaxAirSupply());
+        }
+    }
+
+    // --- sync ---------------------------------------------------------------
+
+    private static void sync(ServerPlayer player, OxygenState state, Atmosphere atmosphere,
+                             float drainPerSecond, long tick) {
         OxygenSyncPayload payload = new OxygenSyncPayload(
-                state.units(),
+                totalAvailable(player, state),
                 capacityOf(player),
                 atmosphere.breathable(),
                 drainPerSecond,
@@ -64,11 +190,10 @@ public final class OxygenTracker {
     }
 
     /**
-     * Effective drain, following the model in {@code docs/technical/atmosphere-api.md}:
-     * where you are, times what you are doing, divided by what you are wearing.
+     * Effective drain: where you are, times what you are doing, divided by what you are wearing.
      *
-     * <p>Breathable air costs nothing at all, so the common case short-circuits before touching
-     * the modifier list.
+     * <p>Breathable air costs nothing, so the common case short-circuits before touching the
+     * modifier list.
      */
     public static float drainPerSecond(ServerPlayer player, Atmosphere atmosphere) {
         if (atmosphere.breathable()) {
@@ -80,15 +205,9 @@ public final class OxygenTracker {
         for (int i = 0; i < modifiers.size(); i++) {
             drain *= modifiers.get(i).multiplier(player);
         }
-        return drain;
+        return Math.max(0.0f, drain);
     }
 
-    /**
-     * Total capacity across the player's sources.
-     *
-     * <p>No collectors are registered in v0.1, so this reports the debug reserve held directly
-     * on the attachment. Tanks and suit reserves arrive with M1.7 and {@code ascension-gear}.
-     */
     private static int capacityOf(ServerPlayer player) {
         List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
         if (collectors.isEmpty()) {
@@ -102,12 +221,11 @@ public final class OxygenTracker {
     }
 
     /**
-     * Accumulator for {@link #capacityOf(ServerPlayer)}.
+     * Accumulators for the per-player sums.
      *
-     * <p>An explicit class rather than a captured {@code int[]}: the array version allocated a
-     * fresh box per collector per player per accounting pass, which is a per-tick allocation in
-     * the one loop ADR-0007 asks to keep quiet. One instance now covers all collectors for a
-     * player, and the empty case allocates nothing at all.
+     * <p>Explicit classes rather than captured {@code int[]} boxes: the array version allocated
+     * a fresh box per collector, per player, per accounting pass, inside exactly the loop
+     * ADR-0007 asks to keep quiet.
      */
     private static final class CapacitySum implements Consumer<OxygenSource> {
         private int total;
@@ -115,6 +233,15 @@ public final class OxygenTracker {
         @Override
         public void accept(OxygenSource source) {
             total += source.capacity();
+        }
+    }
+
+    private static final class AvailableSum implements Consumer<OxygenSource> {
+        private int total;
+
+        @Override
+        public void accept(OxygenSource source) {
+            total += source.available();
         }
     }
 
