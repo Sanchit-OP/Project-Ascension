@@ -1,34 +1,43 @@
-# KubeJS
+# KubeJS and Scripting
+
+> **Reframed 2026-09-05 by [ADR-0002](../decisions/0002-custom-mods-not-curated-modpack.md).**
+> This document previously treated "which mechanics require a custom mod?" as an open
+> question. It is now settled: we write Java for core systems. Scripting is a pack-level
+> tuning layer, not a foundation.
 
 ## Purpose
 
-Defines what should be solved through scripting and what should not.
+Define the boundary between scripted pack tuning and authored Java systems.
 
-## Suitable For
+## The boundary
 
-- Recipe gating
-- Loot tables
-- Quest synchronization
-- Item progression tags
-- Simple progression checks
+**Java (Ascension modules)** — anything that owns state, ticks, syncs, or defines an API:
 
-## Poor Fit
+- the atmosphere and oxygen system (`ascension-atmosphere`)
+- planets, orbit, and gateway state (`ascension-worlds`)
+- suit modules and gear behaviour (`ascension-gear`)
+- team capability and progression state (`ascension-progression`)
+- boss behaviour, wherever authored combat is required
 
-- Complex movement systems
-- Deep custom UI systems
-- Low-level dimension behavior
-- Persistent mechanics that need tight performance control
-- A fully custom oxygen system with heavy simulation logic
+**Scripting / datapacks** — pack-level content and tuning that must be editable without a
+rebuild:
 
-## Likely Custom-Mod Territory
+- recipe gating and progression recipe trees
+- loot tables
+- quest wiring
+- tags
+- balance numbers exposed deliberately by our own modules
 
-- Oxygen systems with suit, zone, and vehicle integration
-- Rift or gateway state tracking
-- Planet progression capability checks beyond simple recipes or loot
-- Special suit modules and advanced gear behaviors
+## Rule
 
-## Open Questions
+If a behaviour needs to persist, tick, sync across the network, or be extended by another mod,
+it is Java. If it is content that a pack author might reasonably want to retune, it is data.
 
-- Which progression checks must be script-driven?
-- Which mechanics require a custom mod instead?
-- How much logic are we comfortable maintaining in scripts?
+Our own modules should **expose data hooks** (JSON, tags, recipe types) rather than forcing
+consumers into scripts — that is also what makes them reusable per
+[ADR-0003](../decisions/0003-modular-architecture-and-compatibility-policy.md).
+
+## Open questions
+
+- Do we ship KubeJS in the final pack at all, or expose our own datapack surface and skip it?
+- Which balance numbers do we deliberately expose as data versus keep authored in code?

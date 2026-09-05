@@ -1,5 +1,16 @@
 # Vision
 
+> **Updated 2026-09-05.** Project-Ascension is a **custom mod project**, not a curated modpack
+> ([ADR-0002](decisions/0002-custom-mods-not-curated-modpack.md)). Because we author the code,
+> every Non-Negotiable Rule below stays intact rather than being trimmed to fit what existing
+> mods happen to do.
+>
+> The "Current Scope Assumptions" section is superseded on one point: the seven-step critical
+> path is still the design target, but **v1 builds three worlds**
+> ([ADR-0005](decisions/0005-v1-scope-vertical-slice.md)).
+>
+> Start at [docs/decisions/](decisions/) for the full locked context.
+
 ## Purpose
 
 Defines the project pillars, intended player experience, and non-negotiable design rules.
