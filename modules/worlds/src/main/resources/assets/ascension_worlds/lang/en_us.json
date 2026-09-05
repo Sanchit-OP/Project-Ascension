@@ -3,5 +3,8 @@
   "planet.ascension_worlds.moon": "The Moon",
 
   "block.ascension_worlds.lunar_helium_ore": "Lunar Helium Ore",
-  "item.ascension_worlds.raw_helium": "Raw Helium Crystal"
+  "item.ascension_worlds.raw_helium": "Raw Helium Crystal",
+
+  "block.ascension_worlds.titanium_ore": "Titanium Ore",
+  "item.ascension_worlds.raw_titanium": "Raw Titanium"
 }

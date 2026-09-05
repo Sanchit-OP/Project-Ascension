@@ -65,6 +65,31 @@ public final class WorldsContent {
     public static final Supplier<Item> RAW_HELIUM = ITEMS.register(
             "raw_helium", () -> new Item(new Item.Properties()));
 
+    /**
+     * Earth's counterpart to the Moon's ore: the hull metal, where the Moon supplies the fuel.
+     * Real titanium is exactly what it sounds like &mdash; strong for its weight and used in
+     * actual aerospace airframes &mdash; so the pairing is not an arbitrary game-resource
+     * invention.
+     *
+     * <p>Unlike the Moon, Earth is vanilla's own dimension: this block is placed via a NeoForge
+     * biome modifier rather than a biome file we own. See {@code docs/technical/datapacks.md}
+     * for why that is the correct tool here and the wrong one for the Moon.
+     */
+    public static final Supplier<Block> TITANIUM_ORE = BLOCKS.register(
+            "titanium_ore",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.5f, 3.0f)
+                    .sound(SoundType.STONE)));
+
+    public static final Supplier<Item> TITANIUM_ORE_ITEM = ITEMS.register(
+            "titanium_ore",
+            () -> new BlockItem(TITANIUM_ORE.get(), new Item.Properties()));
+
+    public static final Supplier<Item> RAW_TITANIUM = ITEMS.register(
+            "raw_titanium", () -> new Item(new Item.Properties()));
+
     private WorldsContent() {
     }
 
@@ -77,9 +102,11 @@ public final class WorldsContent {
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(LUNAR_HELIUM_ORE_ITEM.get());
+            event.accept(TITANIUM_ORE_ITEM.get());
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(RAW_HELIUM.get());
+            event.accept(RAW_TITANIUM.get());
         }
     }
 }

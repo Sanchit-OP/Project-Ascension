@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder texture: reuses vanilla's raw_copper (chosen over raw_iron so the two new raw materials are not visually identical). Swap this one line once a CC0 texture is chosen.",
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/raw_copper"
+  }
+}
