@@ -5,6 +5,7 @@
 // a module cannot drift from the conventions in ADR-0003.
 
 import net.neoforged.moddevgradle.dsl.NeoForgeExtension
+import java.util.zip.ZipFile
 
 plugins {
     id("ascension.java-conventions")
@@ -110,6 +111,42 @@ fun instanceMods(): List<File> {
         .sortedBy { it.name }
 }
 
+/**
+ * Whether a mod jar says it only has anything to do on the client.
+ *
+ * NeoForge has no mod-level "side" field in neoforge.mods.toml -- the real mechanism is
+ * @Mod(dist = Dist.CLIENT) in the class file. What the toml does carry is a `side` on every
+ * dependency, and a mod whose every declared dependency is CLIENT is asserting that it needs
+ * nothing on a server. That reads across this instance exactly right: it picks out Sodium,
+ * ImmediatelyFast and BadOptimizations while correctly leaving ModernFix alone, which has one
+ * client-side soft dependency but genuinely runs on both.
+ *
+ * Sodium is why this exists rather than a hand-written list. It registers an early-bootstrap
+ * window service, which FML loads through ServiceLoader *before* mod loading -- so
+ * @Mod(dist = Dist.CLIENT) cannot save it, and the dedicated server dies on
+ * NoClassDefFoundError: org/lwjgl/Version before printing a single mod name.
+ *
+ * A heuristic, so it is reported rather than applied silently, and
+ * `dev_mods_server_exclude` exists for anything it misses.
+ */
+fun declaresClientOnly(jar: File): Boolean = try {
+    ZipFile(jar).use { zip ->
+        val entry = zip.getEntry("META-INF/neoforge.mods.toml")
+        if (entry == null) {
+            false
+        } else {
+            val toml = zip.getInputStream(entry).bufferedReader().use { it.readText() }
+            val sides = Regex("(?im)^\\s*side\\s*=\\s*\"([A-Za-z]+)\"")
+                .findAll(toml)
+                .map { it.groupValues[1].uppercase() }
+                .toList()
+            sides.isNotEmpty() && sides.all { it == "CLIENT" }
+        }
+    }
+} catch (e: Exception) {
+    // Unreadable jar: assume it belongs on both and let the server say otherwise.
+    false
+}
 
 fun jfrArguments(which: String): List<String> {
     // Forward slashes deliberately. Java accepts them on Windows, and the alternative is a
@@ -172,20 +209,34 @@ configure<NeoForgeExtension> {
 // Client and server named explicitly rather than using the run-wide
 // `additionalRuntimeClasspath`: the data run generates resources and has no business loading
 // somebody else's mod.
+/** Mods to skip on the server run, and why -- ordered so the reason is reportable. */
+fun serverSkips(mods: List<File>): Map<File, String> {
+    val manual = providers.gradleProperty("dev_mods_server_exclude").orNull
+        ?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+    val skips = LinkedHashMap<File, String>()
+    mods.forEach { jar ->
+        val named = manual.firstOrNull { jar.name.contains(it, ignoreCase = true) }
+        when {
+            named != null -> skips[jar] = "excluded by dev_mods_server_exclude ($named)"
+            declaresClientOnly(jar) -> skips[jar] = "declares client-only dependencies"
+        }
+    }
+    return skips
+}
+
 if (devModsEnabled) {
     val mods = instanceMods()
-    val serverExclusions = providers.gradleProperty("dev_mods_server_exclude").orNull
-        ?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
-
-    val serverMods = mods.filterNot { jar ->
-        serverExclusions.any { jar.name.contains(it, ignoreCase = true) }
-    }
+    val skips = serverSkips(mods)
+    val serverMods = mods.filterNot { skips.containsKey(it) }
 
     if (mods.isNotEmpty()) {
         logger.lifecycle(
-            "Dev runs: mirroring {} mod(s) from the test instance ({} on the server)",
+            "Dev runs: {} mod(s) from the test instance, {} of them on the server",
             mods.size, serverMods.size,
         )
+        skips.forEach { (jar, why) ->
+            logger.lifecycle("  client only: {} -- {}", jar.name, why)
+        }
     }
 
     dependencies {
@@ -207,8 +258,18 @@ tasks.register("devMods") {
             println("No third-party mods found. dev_mods_dir = " +
                 (providers.gradleProperty("dev_mods_dir").orNull ?: "<unset>"))
         } else {
-            println("Mirroring ${mods.size} mod(s) into dev runs:")
-            mods.forEach { println("  ${it.name}") }
+            val skips = serverSkips(mods)
+            println("${mods.size} mod(s) mirrored into dev runs from the test instance:")
+            mods.forEach { jar ->
+                val why = skips[jar]
+                if (why == null) {
+                    println("  both     ${jar.name}")
+                } else {
+                    println("  client   ${jar.name}  ($why)")
+                }
+            }
+            println()
+            println("${mods.size - skips.size} on the server, ${skips.size} client-only.")
         }
     }
 }

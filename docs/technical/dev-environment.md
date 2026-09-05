@@ -203,15 +203,40 @@ JEI needs its server half too, incidentally. Recipe *viewing* works from a clien
 recipe data is synced anyway, but recipe **transfer** — the `+` button that fills a crafting
 grid — sends a packet nothing was there to receive.
 
-#### If the dev server crashes on somebody else's mod
+#### Client-only mods are kept off the server automatically
 
-A client-only mod normally excludes itself: NeoForge's `@Mod(dist = Dist.CLIENT)` means FML
-never constructs it on a dedicated server. For the one that gets that wrong and dies reaching
-for a client class, keep it off the server run by filename fragment:
+`@Mod(dist = Dist.CLIENT)` is *not* enough. Sodium registers an early-bootstrap window service,
+which FML loads through `ServiceLoader` **before** mod loading — so the dist annotation never
+gets consulted and the dedicated server dies before printing a single mod name:
 
 ```
-dev_mods_server_exclude=sodium,DistantHorizons
+Exception in thread "main" java.lang.NoClassDefFoundError: org/lwjgl/Version
+    at ...sodium.client.compatibility.checks.PreLaunchChecks.isUsingKnownCompatibleLwjglVersion
 ```
+
+So the build works it out from each jar. NeoForge has no mod-level `side` field in
+`neoforge.mods.toml` — the toml carries a `side` on each *dependency* — and a mod whose every
+declared dependency is `CLIENT` is asserting it needs nothing from a server. Across this
+instance that reads exactly right: it picks out Sodium, ImmediatelyFast and BadOptimizations,
+and correctly leaves ModernFix alone, which has one client-side soft dependency but genuinely
+runs on both.
+
+It is a heuristic, so `./gradlew devMods` reports the split rather than applying it silently:
+
+```
+  client   sodium-neoforge-0.8.13+mc1.21.1.jar  (declares client-only dependencies)
+  both     lithium-neoforge-0.15.4+mc1.21.1.jar
+```
+
+For anything the heuristic misses — a mod that declares `BOTH` and then crashes the server
+anyway — name it by filename fragment:
+
+```
+dev_mods_server_exclude=some-mod,another
+```
+
+This asymmetry is correct and matches how a real server pack is built: the client gets the
+renderer, the server does not.
 
 #### Checking the standalone case
 
