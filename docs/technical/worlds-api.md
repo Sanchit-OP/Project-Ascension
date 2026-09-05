@@ -181,6 +181,60 @@ That makes the launch angle the first navigation act of a journey, and it is wha
 surface to interplanetary space: where on Earth you launched from is irrelevant, but which way
 you were pointing is not.
 
+#### Aiming: the disc you can see is the reticle
+
+A heading error does **not** slow your approach in proportion. It converts almost entirely into
+*miss distance*, and it does so immediately. For a straight shot at the Moon with no steering,
+closest approach is `8000 * sin(error)`:
+
+| Heading error | Closest approach | Arrive? |
+|---|---|---|
+| 0.5 deg | 70 | yes |
+| 1 deg | 140 | yes |
+| 2 deg | 279 | yes |
+| **2.3 deg** | **321** | **miss** |
+| 5 deg | 697 | miss |
+| 45 deg | 5,657 | miss |
+| 89 deg | 7,999 | miss |
+
+At 89 degrees you come **1.2 blocks closer**, after 140 blocks of travel, and then leave forever.
+"Almost perpendicular but still slowly approaching" is not what happens: the lateral motion
+dominates within a few hundred blocks. Ballistic tolerance to the Moon is about **±2.3 degrees**.
+
+**And that is exactly as wide as it should be**, because of a coincidence in the numbers worth
+keeping:
+
+| | Angular radius, seen from Earth |
+|---|---|
+| The Moon's visible disc | **1.37 deg** |
+| The Moon's approach shell | **2.29 deg** |
+
+**Aim anywhere inside the disc you can see and you land inside the shell.** The visible planet is
+not merely feedback, it is the aiming reticle — and a conservative one, since the shell is
+two-thirds wider than the disc. It also gets easier as you close: the disc grows while the shell
+stays 320 blocks, so a course that was marginal at launch becomes comfortable on approach.
+
+If `body_radius` or `approach_radius` are ever retuned, this relationship is the thing to
+preserve. A shell narrower than the disc would mean aiming at a planet and missing it, which
+would read as broken.
+
+#### What you pass on the way
+
+The spiral (below) means a direct flight is rarely empty. Perpendicular miss distances along
+each route, with apparent size at closest approach:
+
+| Flying Earth to | What passes | Distance | When | Apparent size |
+|---|---|---|---|---|
+| Planet 3 (18,000) | **the Moon** | 6,553 | 25% in | **3.36 deg** |
+| Planet 4 (32,000) | Planet 3 | 14,745 | 32% in | 1.49 deg |
+| Planet 5 (50,000) | Planet 4 | 26,213 | 37% in | 0.84 deg |
+| Planet 6 (72,000) | Planet 5 | 40,958 | 40% in | 0.54 deg |
+| Planet 7 (100,000) | **the Moon** | 7,970 | 1% in | 2.76 deg |
+
+Flying to Planet 3, the Moon swells to **larger than it ever appears from Earth**, passes to one
+side, and shrinks away behind. None of that was arranged; it falls out of the spiral, and it is a
+good reason not to flatten the layout onto one axis.
+
 #### What if a player flies perpendicular, or simply the wrong way?
 
 **Nothing special happens, and that is the correct answer.**
@@ -189,6 +243,15 @@ Everything shrinks, which is the feedback. And then they run out of air — the 
 overreaching in any direction, and the one the entire game is already built around. Bad
 navigation and overambition are punished identically, by asphyxiation, and the lesson is the
 same: check your air against your distance before committing.
+
+**With steering, though, almost any heading works.** The table above is a *ballistic* shot, held
+straight. A player who keeps turning toward the growing disc converges from any initial heading
+under 90 degrees — they simply fly further to get there, and further is air. So the punishment
+for a bad launch is not failure, it is fuel: an expensive arrival, or an arrival you cannot
+return from.
+
+That is the right shape. Precision is rewarded, imprecision is survivable, and carelessness is
+fatal — all through one resource that is already on the HUD.
 
 No invisible walls, no corrective nudge, no "you cannot go that way". The plane is a fact about
 where things are, not a fence.
