@@ -3,6 +3,7 @@ package com.ascension.atmosphere.internal;
 import com.ascension.atmosphere.api.Atmosphere;
 import com.ascension.atmosphere.api.AtmosphereContext;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
+import com.ascension.atmosphere.internal.supply.OxygenTankItem;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,6 +15,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -45,6 +47,10 @@ public final class AtmosphereCommands {
                                 .then(Commands.literal("oxygen")
                                         .then(Commands.argument("units", IntegerArgumentType.integer(0))
                                                 .executes(ctx -> setOxygen(ctx.getSource(),
+                                                        IntegerArgumentType.getInteger(ctx, "units")))))
+                                .then(Commands.literal("tank")
+                                        .then(Commands.argument("units", IntegerArgumentType.integer(0))
+                                                .executes(ctx -> setTank(ctx.getSource(),
                                                         IntegerArgumentType.getInteger(ctx, "units"))))))));
     }
 
@@ -52,16 +58,27 @@ public final class AtmosphereCommands {
         ServerPlayer player = source.getPlayerOrException();
         Atmosphere atmosphere = AtmosphereRegistry.query(player.serverLevel(), player.position());
         OxygenState state = player.getData(AtmosphereAttachments.OXYGEN);
+        int lungCapacity = OxygenTracker.lungCapacity(player);
 
         source.sendSuccess(() -> Component.literal("Atmosphere: ")
                 .append(atmosphere.breathable()
                         ? Component.literal("breathable").withStyle(ChatFormatting.GREEN)
                         : Component.literal("NOT breathable").withStyle(ChatFormatting.RED))
-                .append(Component.literal(String.format("  drain x%.2f", atmosphere.drainMultiplier())))
-                .append(Component.literal("  lungs " + state.lungUnits() + "/"
-                        + OxygenTracker.lungCapacity(player) + " units ("
-                        + (OxygenTracker.lungCapacity(player)
-                                / AtmosphereTuning.BASE_UNITS_PER_SECOND) + "s)")), false);
+                .append(Component.literal(String.format("  drain x%.2f", atmosphere.drainMultiplier()))),
+                false);
+
+        // Lungs and carried supply reported separately. Once a tank is involved the totals are
+        // dominated by it, and "how much of this is the reserve I get back for free" is exactly
+        // the question a player — and a bug report — needs answered.
+        OxygenTracker.Supply supply = OxygenTracker.supply(player);
+        int carriedUnits = supply.available() - state.lungUnits();
+        int carriedCapacity = supply.capacity() - lungCapacity;
+        source.sendSuccess(() -> Component.literal(
+                "  lungs " + state.lungUnits() + "/" + lungCapacity
+                        + "   carried " + carriedUnits + "/" + carriedCapacity
+                        + "   total " + supply.available() + "/" + supply.capacity()
+                        + " units")
+                .withStyle(ChatFormatting.GRAY), false);
         return 1;
     }
 
@@ -132,6 +149,29 @@ public final class AtmosphereCommands {
         source.sendSuccess(() -> Component.literal(
                 "Lung reserve set to " + units + " / " + OxygenTracker.lungCapacity(player)
                         + " units"), false);
+        return 1;
+    }
+
+    /**
+     * Set the charge of the tank in the main hand.
+     *
+     * <p>Exists so the drain-and-refill loop can be tested at a chosen level without waiting out
+     * five minutes of air, and so "tank empty" can be reached without also being in danger.
+     */
+    private static int setTank(CommandSourceStack source, int units) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        ItemStack held = player.getMainHandItem();
+        if (!OxygenTankItem.isTank(held)) {
+            source.sendFailure(Component.literal("Hold an oxygen tank in your main hand"));
+            return 0;
+        }
+        OxygenTankItem.setUnits(held, units);
+        OxygenTracker.invalidate(player);
+        int now = OxygenTankItem.units(held);
+        source.sendSuccess(() -> Component.literal("Tank set to " + now + " / "
+                + OxygenTankItem.capacity(held) + " units ("
+                + AtmosphereTuning.formatDuration(now / AtmosphereTuning.BASE_UNITS_PER_SECOND)
+                + ")"), false);
         return 1;
     }
 

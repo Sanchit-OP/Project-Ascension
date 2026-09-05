@@ -1,5 +1,16 @@
 {
   "death.attack.ascension_atmosphere.no_oxygen": "%1$s ran out of air",
   "death.attack.ascension_atmosphere.no_oxygen.player": "%1$s ran out of air while fighting %2$s",
-  "block.ascension_atmosphere.oxygen_emitter": "Oxygen Emitter"
+
+  "block.ascension_atmosphere.oxygen_emitter": "Oxygen Emitter",
+  "block.ascension_atmosphere.oxygen_refill_station": "Oxygen Refill Station",
+
+  "item.ascension_atmosphere.oxygen_tank": "Oxygen Tank",
+  "item.ascension_atmosphere.oxygen_tank.contents": "Air: %1$s / %2$s",
+  "item.ascension_atmosphere.oxygen_tank.hint": "Works anywhere in your inventory",
+
+  "block.ascension_atmosphere.oxygen_refill_station.filled": "Tank filled — %1$s of air",
+  "block.ascension_atmosphere.oxygen_refill_station.full": "Tank is already full",
+  "block.ascension_atmosphere.oxygen_refill_station.no_air": "No breathable air here to compress",
+  "block.ascension_atmosphere.oxygen_refill_station.ready": "Ready — hold a tank and use to fill"
 }

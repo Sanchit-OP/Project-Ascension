@@ -2,7 +2,7 @@ package com.ascension.atmosphere;
 
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
-import com.ascension.atmosphere.internal.AtmosphereBlocks;
+import com.ascension.atmosphere.internal.AtmosphereContent;
 import com.ascension.atmosphere.internal.AtmosphereCommands;
 import com.ascension.atmosphere.internal.AtmosphereConfig;
 import com.ascension.atmosphere.internal.DebugAtmosphere;
@@ -10,6 +10,7 @@ import com.ascension.atmosphere.internal.OxygenTracker;
 import com.ascension.atmosphere.internal.ProviderRegistry;
 import com.ascension.atmosphere.internal.VanillaIntegration;
 import com.ascension.atmosphere.internal.net.AtmosphereNetwork;
+import com.ascension.atmosphere.internal.supply.PlayerTankCollector;
 import com.ascension.atmosphere.internal.sealed.SealedVolumeEvents;
 import com.ascension.atmosphere.internal.sealed.SealedVolumeProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -47,7 +48,7 @@ public final class AscensionAtmosphere {
         container.registerConfig(ModConfig.Type.SERVER, AtmosphereConfig.SPEC);
 
         AtmosphereAttachments.register(modBus);
-        AtmosphereBlocks.register(modBus);
+        AtmosphereContent.register(modBus);
         modBus.addListener(this::onCommonSetup);
         modBus.addListener(AtmosphereNetwork::register);
 
@@ -75,6 +76,12 @@ public final class AscensionAtmosphere {
             AtmosphereRegistry.register(
                     ResourceLocation.fromNamespaceAndPath(MOD_ID, "sealed_volume"),
                     new SealedVolumeProvider());
+
+            // Tanks carried in the inventory. Registered exactly the way a third party would
+            // register a curio slot or a suit module — this module has no privileged path.
+            AtmosphereRegistry.register(
+                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "inventory_tanks"),
+                    new PlayerTankCollector());
 
             AtmosphereRegistry.register(new VanillaIntegration.ConduitPower());
             AtmosphereRegistry.registerLungCapacity(

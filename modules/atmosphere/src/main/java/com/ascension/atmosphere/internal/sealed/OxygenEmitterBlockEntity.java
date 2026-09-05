@@ -1,7 +1,7 @@
 package com.ascension.atmosphere.internal.sealed;
 
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
-import com.ascension.atmosphere.internal.AtmosphereBlocks;
+import com.ascension.atmosphere.internal.AtmosphereContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class OxygenEmitterBlockEntity extends BlockEntity {
 
     public OxygenEmitterBlockEntity(BlockPos pos, BlockState state) {
-        super(AtmosphereBlocks.OXYGEN_EMITTER_ENTITY.get(), pos, state);
+        super(AtmosphereContent.OXYGEN_EMITTER_ENTITY.get(), pos, state);
     }
 
     @Override

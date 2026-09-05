@@ -32,6 +32,15 @@ public final class AtmosphereTuning {
     public static final int TANK_CAPACITY = BASE_UNITS_PER_SECOND * 60 * 5;
 
     /**
+     * Where portable tanks sit in the consumption order. Lower is drained first.
+     *
+     * <p>Deliberately low, with plenty of room above it: suit-integrated reserve, vehicle supply
+     * and anything else that ought to be a safety margin gets a higher number, so running a tank
+     * dry is a warning rather than the moment you start dying.
+     */
+    public static final int TANK_DRAW_ORDER = 100;
+
+    /**
      * Everyone's built-in reserve: what fits in a pair of lungs.
      *
      * <p>Twenty seconds at baseline drain. Refills for free in breathable air, exactly like
@@ -89,5 +98,25 @@ public final class AtmosphereTuning {
             return Integer.MAX_VALUE;
         }
         return (int) Math.floor(units / drainPerSecond);
+    }
+
+    /**
+     * Seconds as something a player can read.
+     *
+     * <p>Lives here rather than in the HUD because the HUD is client-only and tank tooltips,
+     * station messages and commands all need the same string. Two formatters would eventually
+     * disagree, and the first place anyone would notice is a tooltip claiming a different
+     * number from the bar.
+     *
+     * @return {@code "--"} for {@link Integer#MAX_VALUE}, meaning nothing is draining
+     */
+    public static String formatDuration(int seconds) {
+        if (seconds == Integer.MAX_VALUE) {
+            return "--";
+        }
+        if (seconds < 60) {
+            return seconds + "s";
+        }
+        return (seconds / 60) + "m " + (seconds % 60) + "s";
     }
 }

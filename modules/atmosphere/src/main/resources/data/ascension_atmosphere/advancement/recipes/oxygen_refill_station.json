@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [ { "items": "ascension_atmosphere:oxygen_tank" } ] }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "ascension_atmosphere:oxygen_refill_station" }
+    }
+  },
+  "requirements": [ [ "has_tank", "has_the_recipe" ] ],
+  "rewards": { "recipes": [ "ascension_atmosphere:oxygen_refill_station" ] }
+}

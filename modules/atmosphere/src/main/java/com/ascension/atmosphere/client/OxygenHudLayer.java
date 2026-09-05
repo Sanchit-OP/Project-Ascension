@@ -87,7 +87,7 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
         // Right-aligned above the bar, so the digits stay put as the text width changes.
         Component label = state.suffocating()
                 ? Component.literal("NO AIR")
-                : Component.literal(formatSeconds(seconds));
+                : Component.literal(AtmosphereTuning.formatDuration(seconds));
         graphics.drawString(minecraft.font, label,
                 right - minecraft.font.width(label), barY - 10, COLOUR_TEXT, true);
 
@@ -109,15 +109,5 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
                 String.format("x%.1f", state.drainPerSecond() / baseline));
         graphics.drawString(minecraft.font, marker,
                 barX - minecraft.font.width(marker) - 5, barY - 1, COLOUR_CRITICAL, true);
-    }
-
-    private static String formatSeconds(int seconds) {
-        if (seconds == Integer.MAX_VALUE) {
-            return "--";
-        }
-        if (seconds < 60) {
-            return seconds + "s";
-        }
-        return (seconds / 60) + "m " + (seconds % 60) + "s";
     }
 }
