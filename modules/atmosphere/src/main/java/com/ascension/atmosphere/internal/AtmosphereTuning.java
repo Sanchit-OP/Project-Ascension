@@ -31,7 +31,23 @@ public final class AtmosphereTuning {
     /** Units in one standard portable tank. At baseline drain, five minutes of air. */
     public static final int TANK_CAPACITY = BASE_UNITS_PER_SECOND * 60 * 5;
 
+    /**
+     * Ticks between running out of air and taking the first damage.
+     *
+     * <p>The "short failure window" from {@code docs/gameplay/oxygen.md}: long enough to turn
+     * and run for a door, short enough that ignoring the bar kills you.
+     */
+    public static final int SUFFOCATION_GRACE_TICKS = 40;
+
+    /** Damage applied per second once the grace window has elapsed. Matches vanilla drowning. */
+    public static final float SUFFOCATION_DAMAGE = 2.0f;
+
     private AtmosphereTuning() {
+    }
+
+    /** Seconds covered by one accounting pass. */
+    public static float accountingSeconds() {
+        return ACCOUNTING_INTERVAL_TICKS / 20.0f;
     }
 
     /**

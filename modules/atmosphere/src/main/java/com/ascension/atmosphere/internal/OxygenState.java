@@ -38,6 +38,16 @@ public final class OxygenState {
     /** Server tick of the last send, for the low-frequency reconcile. */
     private transient long lastSyncTick;
 
+    /**
+     * Fractional units carried between accounting passes.
+     *
+     * <p>Units are integers, but drain rarely lands on a whole number once modifiers apply.
+     * Rounding every pass would quietly change the effective rate; carrying the remainder keeps
+     * the advertised seconds honest. Not serialised, because losing at most one unit across a
+     * save is not worth the field.
+     */
+    private transient float drainCarry;
+
     public OxygenState() {
         this(0, 0);
     }
@@ -75,6 +85,14 @@ public final class OxygenState {
     public void recordSync(OxygenSyncPayload payload, long tick) {
         this.lastSynced = payload;
         this.lastSyncTick = tick;
+    }
+
+    public float drainCarry() {
+        return drainCarry;
+    }
+
+    public void setDrainCarry(float carry) {
+        this.drainCarry = carry;
     }
 
     /** Forget sync bookkeeping so the next pass resends unconditionally. */
