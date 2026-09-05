@@ -27,7 +27,12 @@ task rather than an engineering task.
   sequencing atmosphere first — it is testable in the Overworld, before any dimension exists.
 - `ascension-worlds` owns the planet registry, orbit layers, and the gateway network.
 
-## Deferred, not settled
+## Deferred, not settled — **resolved by [ADR-0010](0010-orbit-is-one-shared-space-dimension.md)**
+
+> **Answered 2026-09-05: neither.** Orbit is a single shared interplanetary space dimension, with
+> planets as destinations inside it. A third option that was not considered here, and the only one
+> where travelling between planets is a journey rather than a transition. The section below is
+> kept for the reasoning that led to the deferral.
 
 **Is orbit a separate dimension or a high-Y band of the surface dimension?**
 

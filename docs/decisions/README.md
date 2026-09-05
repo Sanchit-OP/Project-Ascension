@@ -36,3 +36,5 @@ forgets it.
 | [0007](0007-performance-contract.md) | Performance contract | Accepted |
 | [0008](0008-build-and-test-cadence.md) | Build-and-test-in-game cadence | Accepted |
 | [0009](0009-carry-limits-enforced-on-the-player.md) | Carry limits are enforced on the player, not on containers | Accepted |
+| [0010](0010-orbit-is-one-shared-space-dimension.md) | Orbit is one shared interplanetary space dimension | Accepted |
+| [0011](0011-tier-1-modules-share-contracts-through-core.md) | Tier 1 modules share contracts through `core` | Accepted |

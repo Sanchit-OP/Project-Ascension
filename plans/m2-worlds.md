@@ -35,64 +35,57 @@ built the thing being tested — which is the weakest kind of test there is.
 
 ## Increments
 
-### M2.1 — Design pass (design only, no implementation)
+### M2.1 — Design pass (design only, no implementation)  *(in progress)*
 
-Write `docs/technical/worlds-api.md` and review it before writing code. This is the M1.1
-pattern, and M1.1 earned it: the API shape is the most expensive thing in a module to change
-once other modules coupled to it.
+Design written and reviewed before any code, per the M1.1 pattern — M1.1 earned it, because a
+module's API is the most expensive thing in it to change once other modules couple to it.
 
-**Four things must be resolved. Three are architecture; one is content.**
+Four things to resolve. Three are architecture; one is content.
 
-#### 1. Orbit representation — the ADR-0004 deferral
+#### 1. Orbit representation — ✅ settled
 
-Three candidates, not two. The third was not on the table when ADR-0004 was written:
+**[ADR-0010](../docs/decisions/0010-orbit-is-one-shared-space-dimension.md): one shared
+interplanetary space dimension**, superseding ADR-0004's deferral. A third option that was not
+on the table when ADR-0004 was written, and the only one where travel between planets is a
+journey rather than a transition — which matters, because ADR-0004 rejected Ad Astra partly on
+the grounds that *travel is a menu*, and both other options rebuild the menu.
 
-| Option | Dimensions for v1 | Dimensions at 7 worlds |
-|---|---|---|
-| Orbit as a high-Y band of each surface | 3 | 7 |
-| An orbit dimension per planet | 6 | 14 |
-| **One shared interplanetary space dimension** | **4** | **8** |
+Four dimensions for v1 instead of six; eight instead of fourteen at seven worlds.
 
-The third also answers a question `dimensions.md` already asks — *"is interplanetary space a
-navigable dimension?"* — and it is the only one of the three where travel between planets is a
-journey rather than a transition. ADR-0004 rejected Ad Astra partly because *travel is a menu*;
-two of these three options rebuild the menu.
+#### 2. Planet data schema — 🔶 drafted, awaiting review
 
-#### 2. Planet data schema
+[`docs/technical/worlds-api.md`](../docs/technical/worlds-api.md).
 
-Data-driven is locked by ADR-0004, so the schema **is** the API. `planets.md` already lists the
-required fields per planet: orbit purpose, surface survival mechanic, movement mechanic, resource
-gate, structure, boss condition, post-clear travel improvement. Not all of those are M2's
-business, but the schema has to leave room for them or every later world reopens it.
+Two boundaries do most of the work. **A planet references a dimension, it does not define one** —
+vanilla datapacks already own dimension JSON, biomes and worldgen, and competing with that would
+put us in the worldgen business and break every tool that reads it. And **the registry describes
+where a world is and what it is like, not what happens on it** — `planets.md`'s "required fields
+per planet" is an authoring checklist, not a schema; a boss is an entity in a structure.
 
-#### 3. Tier 1 → Tier 1 dependencies — a gap in ADR-0003
+Open for review: the distance scale between planets, whether Earth belongs in the registry at
+all given it has no custom dimension, and how a player reaches space from Earth's surface.
 
-A planet has an atmosphere. So `worlds` wants to tell `atmosphere` about it. But rule 6 says
-`worlds` must work with only `core` present, and ADR-0003 says nothing about one Tier 1 module
-depending on another — it only covers Tier 1 → third-party and Tier 1 → Tier 2.
+#### 3. Tier 1 → Tier 1 dependencies — ✅ settled
 
-This needs settling **now**, because it is not a `worlds` question. `gear` → `atmosphere` and
-`progression` → `worlds` hit the same wall, and whatever is decided here is the pattern for all
-of them. Options, in increasing cost:
+**[ADR-0011](../docs/decisions/0011-tier-1-modules-share-contracts-through-core.md): Tier 1
+modules never depend on each other; shared concepts are contracts in `core`.** This amends
+ADR-0003, which covered Tier 1 → third-party and Tier 1 → Tier 2 and was silent on this.
 
-- **Soft dependency.** `worlds` compiles against `atmosphere`'s `api` as `compileOnly` and
-  registers an `AtmosphereProvider` only when `ascension_atmosphere` is loaded. Both modules
-  stay standalone. This is the same shape as a Tier 2 compat jar, pointed inward.
-- **Contract in `core`.** A neutral description of a world's environment that both read. Keeps
-  the modules ignorant of each other, but grows Tier 0 into something `architecture.md`
-  currently forbids: *"NeoForge only. Infra, no gameplay."*
-- **A Tier 2 bridge between our own modules.** Consistent with the existing rules and almost
-  certainly overkill.
+Not a `worlds` question — `gear` → `atmosphere` and `progression` → `worlds` hit the same wall,
+so it is now the pattern for all of them. It also makes `core` more than a stub for the first
+time, and moves the line on what Tier 0 may contain: contracts, never behaviour.
 
-Whatever is chosen wants an ADR, because it closes a hole rather than restating a rule.
+The cost, stated in `worlds-api.md` rather than buried: `atmosphere` currently depends on
+nothing but NeoForge and now gains a required dependency on `core`, so an adopter needs two jars
+instead of one.
 
-#### 4. Distant Horizons compatibility
+#### 4. Distant Horizons compatibility — ⬜ open
 
-Recorded in `todo.md` as an open question and it belongs here. DH is what makes high render
-distance affordable, and a custom dimension is exactly the thing that could defeat its LOD
-generation. Worth answering while dimension design can still move.
+DH is what makes high render distance affordable, and a custom dimension is exactly the thing
+that could defeat its LOD generation. Worth answering while dimension design can still move —
+and cheaply answerable with a throwaway dimension before M2.2 commits to anything.
 
-**Verify:** nothing. This increment produces a document.
+**Verify:** nothing. This increment produces documents.
 
 ### M2.2 — The Moon surface, authored as data
 
@@ -137,9 +130,9 @@ about.
 
 ## Definition of done
 
-- [ ] `docs/technical/worlds-api.md` written and reviewed
-- [ ] Orbit representation decided, with an ADR superseding ADR-0004's deferral
-- [ ] Tier 1 → Tier 1 dependency policy decided, with an ADR
+- [ ] `docs/technical/worlds-api.md` written and **reviewed** (drafted 2026-09-05)
+- [x] Orbit representation decided, with an ADR superseding ADR-0004's deferral — ADR-0010
+- [x] Tier 1 → Tier 1 dependency policy decided, with an ADR — ADR-0011
 - [ ] The Moon authored entirely as data — no per-planet Java
 - [ ] Full loop playable: leave Earth, orbit, descend, survive, return
 - [ ] Verified on a dedicated server
