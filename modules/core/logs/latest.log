@@ -1,0 +1,10 @@
+[05Sept2026 22:45:49.569] [Test worker/INFO] [com.ascension.core.internal.WorldEnvironments/]: World environment registry frozen: 3 source(s)
+[05Sept2026 22:45:49.580] [Test worker/INFO] [com.ascension.core.internal.WorldEnvironments/]: World environment registry frozen: 2 source(s)
+[05Sept2026 22:45:49.581] [Test worker/INFO] [com.ascension.core.internal.WorldEnvironments/]: World environment registry frozen: 2 source(s)
+[05Sept2026 22:45:49.583] [Test worker/WARN] [com.ascension.core.internal.WorldEnvironments/]: Two sources describe test:contested: test:aaa and test:zzz. 'test:aaa' wins by id ordering. A source should only answer for dimensions it owns.
+[05Sept2026 22:45:49.584] [Test worker/WARN] [com.ascension.core.internal.WorldEnvironments/]: Two sources describe test:contested: test:aaa and test:zzz. 'test:aaa' wins by id ordering. A source should only answer for dimensions it owns.
+[05Sept2026 22:45:49.586] [Test worker/INFO] [com.ascension.core.internal.WorldEnvironments/]: World environment registry frozen: 1 source(s)
+[05Sept2026 22:45:49.589] [Test worker/WARN] [com.ascension.core.internal.WorldEnvironments/]: World environment queried before mod loading completed; answering 'unknown'. Something is resolving worlds during setup.
+[05Sept2026 22:45:49.592] [Test worker/INFO] [com.ascension.core.internal.WorldEnvironments/]: World environment registry frozen: 1 source(s)
+[05Sept2026 22:45:49.593] [Test worker/INFO] [com.ascension.core.internal.WorldEnvironments/]: World environment registry frozen: 0 source(s)
+[05Sept2026 22:45:49.594] [Test worker/INFO] [com.ascension.core.internal.WorldEnvironments/]: World environment registry frozen: 0 source(s)

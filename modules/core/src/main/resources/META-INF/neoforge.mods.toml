@@ -11,9 +11,11 @@ authors = "${mod_authors}"
 description = '''
 Shared infrastructure for the Project-Ascension module family.
 
-Tier 0: contains no gameplay. Provides soft-dependency service loading, sync helpers and
-performance instrumentation used by the other Ascension modules. Safe to install alone,
-where it does nothing observable.
+Tier 0: contains no gameplay. Holds the contracts that more than one Ascension module needs to
+agree about, so that none of them has to depend on another - currently the world environment
+registry, which lets any mod describe what its dimensions are like and any other mod act on it.
+
+Safe to install alone, where it does nothing observable.
 '''
 
 [[dependencies.${mod_id}]]

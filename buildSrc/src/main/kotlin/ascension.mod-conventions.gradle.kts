@@ -187,8 +187,19 @@ fun jfrArguments(which: String): List<String> {
     )
 }
 
+// Captured outside the configure block so it cannot be mistaken for a member of the extension.
+val testSourceSet = sourceSets["test"]
+
 configure<NeoForgeExtension> {
     version = neoForgeVersion
+
+    // Minecraft types on the test compile classpath. Pure-logic tests still touch
+    // ResourceKey, ResourceLocation and codecs, and without this they cannot even compile.
+    //
+    // Deliberately NOT `unitTest { testedMod = ... }`, which boots the game for tests. ADR-0008
+    // says unit tests are never evidence for anything touching world state, so a test that needs
+    // a running game is a test that should have been an in-game check instead.
+    addModdingDependenciesTo(testSourceSet)
 
     parchment {
         minecraftVersion = providers.gradleProperty("parchment_minecraft_version").get()
