@@ -1,6 +1,7 @@
 package com.ascension.atmosphere.internal.sealed;
 
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
+import com.ascension.atmosphere.internal.AtmosphereTuning;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -70,8 +71,12 @@ public final class OxygenEmitterBlock extends Block implements EntityBlock {
                     Component.literal("Sealed: pressurising " + result.size() + " blocks")
                             .withStyle(ChatFormatting.GREEN), true);
         } else {
+            // Says which limit was hit rather than just "no". "Too large" and "there is a hole"
+            // are very different problems and the player cannot tell them apart from outside.
             player.displayClientMessage(
-                    Component.literal("Not sealed — this space is open or too large")
+                    Component.literal("Not sealed — open to the outside, or larger than "
+                            + AtmosphereTuning.SEALED_VOLUME_LIMIT + " blocks / "
+                            + AtmosphereTuning.SEALED_VOLUME_RADIUS + " block radius")
                             .withStyle(ChatFormatting.RED), true);
         }
     }

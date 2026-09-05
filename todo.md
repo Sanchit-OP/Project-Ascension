@@ -78,6 +78,20 @@ Still open, and blocking the API being frozen:
   ship the same defaults so players never see the accessibility onboarding prompt before the
   main menu. Decide whether this is a bundled `options.txt`, a config mod, or our own module.
 
+## Atmosphere follow-ups
+
+Captured during M1.6 testing; none block v0.1.
+
+- **Emitter becomes a three-block Create chain** — generator (rotation or addon electricity)
+  feeds a buffer tank, tank feeds a pressuriser that holds the volume. Direct generator-to-
+  pressuriser is the cheap early setup. Belongs in `ascension-compat-create` (Tier 2); the
+  standalone emitter stays so the module works with no Create installed. Design recorded in
+  `docs/technical/atmosphere-api.md` section 7b.
+- **Airlocks need solid blocks.** Doors, trapdoors, slabs and panes are not full collision cubes,
+  so they leak by the current sealing rule. Either accept it, or add a sealing door block.
+- **No general block-change event** means external world edits are not seen until something else
+  near the volume changes. Fails safe, but worth revisiting if it bites.
+
 ## Missing documentation
 
 - Quest and onboarding design — FTB Quests appears in the mod list with no design behind it. In

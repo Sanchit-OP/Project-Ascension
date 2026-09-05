@@ -285,6 +285,40 @@ Emitter block pressurises the enclosed space via a **bounded** flood fill:
 - Invalidated **only** by block changes inside the emitter's bounds, tracked by `SectionPos`.
 - Never recomputed on a schedule (ADR-0007 rule 5).
 
+## 7b. The emitter is a placeholder
+
+**Recorded 2026-09-05.** The Oxygen Emitter as built is a single block that pressurises a room
+for free. That is scaffolding for testing sealed volumes, not the intended machine.
+
+The real shape is three parts, built around Create:
+
+| Part | Job |
+|---|---|
+| **Generator** | Produces oxygen. Powered by Create rotation, or electricity from a Create addon. |
+| **Tank** | Buffers oxygen. Decouples production rate from consumption, so a room survives a stall. |
+| **Pressuriser** | Consumes from the tank to hold a sealed volume breathable. |
+
+The generator can feed a tank, or feed a pressuriser directly &mdash; the direct path being the
+cheap early-game setup, and the buffered path what you build once you care about surviving a
+power cut.
+
+### Why this does not change the current code
+
+The sealed-volume machinery does not care what pressurises a room. `SealedVolumeProvider`
+answers "is this position inside a volume"; what *maintains* that volume is the block's problem.
+Splitting one emitter into generator, tank and pressuriser is a block-layer change, and the
+index, the fill, the invalidation and the provider are all untouched by it.
+
+The pressuriser will also want to *stop* holding a volume when it runs out of stored oxygen,
+which the index already supports: that is the same path as a wall being broken.
+
+### Dependency note
+
+This lands in a Tier 2 `ascension-compat-create` jar, not here. Tier 1 may not depend on Create
+(ADR-0003 rule 1). `ascension-atmosphere` keeps a working standalone emitter so the module
+stays useful with no Create installed; the Create machines are the Project-Ascension
+progression version of the same idea.
+
 ## 8. State and sync
 
 | What | Where | Why |

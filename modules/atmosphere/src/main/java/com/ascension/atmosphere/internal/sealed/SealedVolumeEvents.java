@@ -17,14 +17,20 @@ import net.neoforged.neoforge.event.level.ExplosionEvent;
  * Keeps pressurised volumes in step with the blocks that form them.
  *
  * <p>Recomputation is driven entirely by block changes, never by a schedule (ADR-0007 rule 5),
- * and only for emitters whose volume actually touches the changed position.
+ * and only for emitters close enough to care.
  *
- * <p><strong>Known gap, stated rather than hidden.</strong> Minecraft has no general
- * "any block changed" event, and this module may not use mixins (ADR-0003 rule 5). The events
- * below cover what players actually do &mdash; placing, breaking, explosions &mdash; but a wall
- * altered by some other mod's world edit will not be noticed until something else near that
- * volume changes. The failure is safe in the direction that matters: a room reports as sealed
- * slightly too long, rather than a player suffocating in a room that is genuinely fine.
+ * <p><strong>Every recompute is deferred to later in the tick.</strong> {@code BreakEvent} and
+ * {@code EntityPlaceEvent} are both cancellable, which means they fire <em>before</em> the world
+ * actually changes. Filling from inside the handler reads the old world, so the volume was
+ * always one edit behind: breaking a wall block reported the room still sealed, and it only
+ * appeared to break on the <em>next</em> edit. Repair had the mirror-image problem, which is why
+ * a single hole seemed to need patching twice before it took effect.
+ *
+ * <p><strong>Known gap, stated rather than hidden.</strong> Minecraft has no general "any block
+ * changed" event and Tier 1 may not use mixins (ADR-0003 rule 5). Place, break and explosions
+ * are covered; a wall altered by another mod's world edit is not noticed until something else
+ * near that volume changes. The failure direction is safe: a room reads as sealed slightly too
+ * long, rather than a player suffocating in a room that is genuinely fine.
  */
 public final class SealedVolumeEvents {
 
@@ -38,67 +44,75 @@ public final class SealedVolumeEvents {
     }
 
     private static void onPlace(BlockEvent.EntityPlaceEvent event) {
-        invalidate(event.getLevel(), event.getPos());
+        scheduleRecompute(event.getLevel(), event.getPos());
     }
 
     private static void onBreak(BlockEvent.BreakEvent event) {
-        invalidate(event.getLevel(), event.getPos());
+        scheduleRecompute(event.getLevel(), event.getPos());
     }
 
     private static void onExplosion(ExplosionEvent.Detonate event) {
-        if (!(event.getLevel() instanceof ServerLevel level)) {
-            return;
+        List<BlockPos> affected = event.getAffectedBlocks();
+        if (!affected.isEmpty()) {
+            // One deferred recompute is enough for the whole blast: by the time it runs, every
+            // one of those block changes has already landed.
+            scheduleRecompute(event.getLevel(), affected.get(0));
         }
-        SealedVolumeIndex index = level.getData(AtmosphereAttachments.SEALED_VOLUMES);
-        if (index.isEmpty()) {
-            return;
-        }
-        // An explosion changes many blocks at once. Recomputing per block would run the same
-        // fill dozens of times for one event, so let the first affected position trigger the
-        // rebuild and rely on the fill seeing the finished state.
-        for (BlockPos pos : event.getAffectedBlocks()) {
-            List<BlockPos> broken = index.invalidateAround(level, pos);
-            if (!broken.isEmpty()) {
-                announceBroken(level, broken);
-                return;
-            }
-        }
-    }
-
-    private static void invalidate(LevelAccessor levelAccessor, BlockPos pos) {
-        if (!(levelAccessor instanceof ServerLevel level)) {
-            return;
-        }
-        SealedVolumeIndex index = level.getData(AtmosphereAttachments.SEALED_VOLUMES);
-        if (index.isEmpty()) {
-            return;
-        }
-        announceBroken(level, index.invalidateAround(level, pos));
     }
 
     /**
-     * Tell nearby players their room just lost pressure.
+     * Queue the recompute so it runs after the block change has actually been applied.
      *
-     * <p>Breaking a wall previously produced no message at all, which made a real failure
-     * indistinguishable from nothing happening &mdash; the player only found out when their air
-     * started draining, with no idea why.
-     *
-     * <p>Announced to anyone close to the emitter rather than only whoever swung the pickaxe,
-     * because losing pressure affects everyone in the room.
+     * <p>{@code MinecraftServer.execute} runs the task on the server thread at the next
+     * opportunity, which is the earliest point the world reflects the edit.
      */
-    private static void announceBroken(ServerLevel level, List<BlockPos> brokenEmitters) {
-        if (brokenEmitters.isEmpty()) {
+    private static void scheduleRecompute(LevelAccessor levelAccessor, BlockPos pos) {
+        if (!(levelAccessor instanceof ServerLevel level)) {
             return;
         }
-        int reach = AtmosphereTuning.SEALED_VOLUME_RADIUS;
-        for (BlockPos emitter : brokenEmitters) {
+        if (level.getData(AtmosphereAttachments.SEALED_VOLUMES).isEmpty()) {
+            return;
+        }
+        BlockPos frozen = pos.immutable();
+        level.getServer().execute(() -> {
+            SealedVolumeIndex.Changes changes = level
+                    .getData(AtmosphereAttachments.SEALED_VOLUMES)
+                    .invalidateAround(level, frozen);
+            announce(level, changes);
+        });
+    }
+
+    /**
+     * Tell nearby players what happened to their room.
+     *
+     * <p>Both directions are announced. Reporting only failure meant a player who patched a hole
+     * got no confirmation, and could not tell a working repair from a wasted one.
+     *
+     * <p>Sent to everyone near the emitter, not only whoever swung the pickaxe, because losing or
+     * regaining pressure affects the whole room.
+     */
+    private static void announce(ServerLevel level, SealedVolumeIndex.Changes changes) {
+        if (changes.isEmpty()) {
+            return;
+        }
+        notifyNear(level, changes.broken(),
+                Component.literal("Pressure lost — this space is no longer sealed")
+                        .withStyle(ChatFormatting.RED));
+        notifyNear(level, changes.restored(),
+                Component.literal("Pressure restored")
+                        .withStyle(ChatFormatting.GREEN));
+    }
+
+    private static void notifyNear(ServerLevel level, List<BlockPos> emitters, Component message) {
+        if (emitters.isEmpty()) {
+            return;
+        }
+        int reach = AtmosphereTuning.SEALED_VOLUME_RADIUS * 2;
+        for (BlockPos emitter : emitters) {
             for (ServerPlayer player : level.players()) {
-                if (player.blockPosition().distManhattan(emitter) > reach * 2) {
-                    continue;
+                if (player.blockPosition().distManhattan(emitter) <= reach) {
+                    player.displayClientMessage(message, true);
                 }
-                player.displayClientMessage(
-                        Component.literal("Pressure lost — this space is no longer sealed")
-                                .withStyle(ChatFormatting.RED), true);
             }
         }
     }
