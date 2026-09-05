@@ -92,15 +92,16 @@ public final class SealedVolumeIndex {
      * with no volume is exactly the case that must be re-checked when a wall is repaired. A
      * block changed across the world costs one distance comparison per emitter.
      *
-     * @return emitters that were sealed before this change and are not any more
+     * @return which emitters changed state, in either direction
      */
-    public List<BlockPos> invalidateAround(ServerLevel level, BlockPos changed) {
+    public Changes invalidateAround(ServerLevel level, BlockPos changed) {
         if (emitters.isEmpty()) {
-            return List.of();
+            return Changes.NONE;
         }
         // Copied first: update() mutates `volumes` while we iterate.
         long[] candidates = emitters.toLongArray();
         List<BlockPos> broken = new ArrayList<>();
+        List<BlockPos> restored = new ArrayList<>();
 
         for (long emitterPos : candidates) {
             BlockPos emitter = BlockPos.of(emitterPos);
@@ -111,9 +112,20 @@ public final class SealedVolumeIndex {
             boolean nowSealed = update(level, emitter).sealed();
             if (wasSealed && !nowSealed) {
                 broken.add(emitter);
+            } else if (!wasSealed && nowSealed) {
+                restored.add(emitter);
             }
         }
-        return broken;
+        return new Changes(broken, restored);
+    }
+
+    /** Emitters whose sealed state flipped during one invalidation. */
+    public record Changes(List<BlockPos> broken, List<BlockPos> restored) {
+        public static final Changes NONE = new Changes(List.of(), List.of());
+
+        public boolean isEmpty() {
+            return broken.isEmpty() && restored.isEmpty();
+        }
     }
 
     /**
