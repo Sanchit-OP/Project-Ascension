@@ -90,12 +90,52 @@ off honestly.
   > planet, which is one rendered body, not thousands of loaded chunks. Distance on the
   > **surface** is a chunk problem. Distance in **orbit** should be a rendering problem with
   > almost no chunks behind it. Conflating them would buy the worst of both.
+- **`ascension-compat-chunky`: pre-generate a dimension when a player first arrives.**
+  Wanted for multiplayer. Deliberately scheduled with M2 rather than now, because until our own
+  dimensions exist there is nothing to trigger it — the Nether is closed and the End is gated,
+  so the feature would be built untestable.
+
+  The API is there and was checked against `Chunky-NeoForge-1.4.23`:
+
+  ```java
+  boolean isRunning(String world);
+  boolean startTask(String world, String shape,
+                    double centerX, double centerZ,
+                    double radiusX, double radiusZ, String pattern);
+  void onGenerationComplete(Consumer<GenerationCompleteEvent> listener);
+  ```
+
+  Design notes worth keeping, because the obvious version of this is wrong:
+
+  - **Centre on where the player arrived, not on 0,0.** `startTask` takes a centre for exactly
+    this. A player who lands on the Moon needs terrain where they landed.
+  - **Small radius — a few hundred blocks, not thousands.** The trigger fires with the player
+    standing right there, so a 250,000-chunk task is the worst possible thing to start: it is
+    the 118 ms tick spike from the M1.8 reading, aimed at the person who just arrived. 512
+    blocks is ~4,000 chunks and finishes in seconds.
+  - Spawn pre-generation is the opposite job — huge, one-off, run deliberately. Different tool,
+    different sizing. Both use Chunky; only one should be automatic.
+  - Persist "this dimension is done" as a **serialised level attachment** per level rather than
+    a static set, per ADR-0007 rule 3.
 - **Does a custom dimension work with Distant Horizons' LOD generation?** DH is the mechanism
   that makes high surface render distance affordable, so this is a compatibility question worth
   answering before dimension design is finished rather than after.
 - What is the exact order and identity of the seven mandatory off-world steps?
 - Where do ancient gateways physically exist?
 - How are failed landings handled?
+
+## Outstanding before calling the server multiplayer-ready
+
+- **Two clients has never been tested.** It is in M1's definition of done
+  ([`plans/m1-atmosphere.md`](plans/m1-atmosphere.md)) and still unticked. Oxygen is
+  per-player state with per-player sync, and every session so far has had exactly one player.
+  Two bars that drain independently is not a thing we have observed.
+- **`online-mode=false` on the dev server must not survive onto a real one.** Offline mode
+  authenticates nobody — anyone can connect as any username, an operator's included. See
+  [`serverpack/README.md`](serverpack/README.md).
+- **Share-air rescue is designed and not built.** Decided at the M1.1 review, it is the reason
+  `accept` exists on `OxygenSource`, and it is the one atmosphere feature that only means
+  anything with two players. Small — an `interactLivingEntity` on the tank.
 
 ## Design questions, not yet blocking
 
