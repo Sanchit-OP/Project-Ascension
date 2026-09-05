@@ -169,27 +169,52 @@ This is worth knowing before the ladder is set: **the distance to a planet and t
 can carry are the same balancing dial seen from two ends.** Changing `TANK_CAPACITY` changes how
 far away a planet effectively is.
 
-#### The ladder
+#### The ladder, and the shape it makes
 
-Distances chosen so each world needs a real improvement in carried air, ship speed, or onboard
-life support over the last — roughly geometric, and comfortably inside the ±29,999,984 border.
+This is a **plane, not a line.** A planet is any `[x, z]`, negatives included, exactly as if the
+system were sketched on paper with Earth at the origin. Distance from home is
+`sqrt(x² + z²)`, so a planet at `[-12000, 5300]` sits about 13,100 blocks out.
 
-| Planet | Distance from Earth | What it demands |
-|---|---|---|
-| Moon | 8,000 | One tank and a refill station on arrival |
-| Planet 3 | ~18,000 | More carried air, or a faster ship |
-| Planet 4 | ~32,000 | Onboard life support rather than carried tanks |
-| Planet 5 | ~50,000 | |
-| Planet 6 | ~72,000 | |
-| Planet 7 | ~100,000 | The gateway network, realistically |
+Radii are chosen so each world demands a real improvement in carried air, ship speed or onboard
+life support. **Bearings are chosen so the route graph works**, which turns out to matter as much
+as the distances: laid out as an outward spiral, roughly 55° per step.
 
-**Provisional beyond the Moon.** Only the Moon's 8000 is settled; the rest are a shape, not
-values, and 4–7 are unbuilt per ADR-0005. But they are written down now because travel time is
+| Planet | Radius | Bearing | `[x, z]` | Hop from previous | Direct from Earth |
+|---|---|---|---|---|---|
+| Earth | 0 | — | `[0, 0]` | — | — |
+| Moon | 8,000 | 0° | `[8000, 0]` | 8,000 | 8,000 |
+| Planet 3 | 18,000 | 55° | `[10324, 14745]` | **14,927** | 18,000 |
+| Planet 4 | 32,000 | 110° | `[-10945, 30070]` | **26,215** | 32,000 |
+| Planet 5 | 50,000 | 165° | `[-48296, 12941]` | **41,091** | 50,000 |
+| Planet 6 | 72,000 | 220° | `[-55155, -46281]` | **59,618** | 72,000 |
+| Planet 7 | 100,000 | 275° | `[8716, -99619]` | **83,213** | 100,000 |
+
+**Every outward hop is shorter than flying to that planet from Earth.** That is the property the
+spiral buys, and it is worth having on purpose: pushing on from your furthest foothold is always
+cheaper than going home and setting out again, so a forward base is rewarded rather than merely
+allowed. Home, meanwhile, is always a straight line inward from anywhere.
+
+The failure this avoids: pick bearings carelessly and two consecutive planets end up on opposite
+sides of the origin, so the critical path makes a player cross the entire system to advance one
+step — while flying home first would have been shorter. That reads as a bug even when it is
+geometry.
+
+**Provisional beyond the Moon.** Only the Moon's 8,000 is settled; 4–7 are unbuilt per ADR-0005
+and their radii are a shape rather than values. They are written down now because travel time is
 pacing, and a distance a player has already learned cannot be changed quietly.
 
-Gateways then have real work to do. A restored gateway that lands you at Planet 5 saves a
-50,000-block flight, which is the *"permanent post-clear travel improvement"* from
-`planets.md` being a genuine reward rather than a second menu entry.
+Gateways then have real work to do. A restored gateway to Planet 5 saves a 50,000-block flight,
+which is the *"permanent post-clear travel improvement"* from `planets.md` being a genuine reward
+rather than a second menu entry.
+
+#### Set the space dimension's world border deliberately
+
+Vanilla's default border is ±29,999,984, and there is no reason for interplanetary space to be
+that large. Nothing is out there, and a player who flies to 20 million is well into the range
+where floating-point precision and chunk maths misbehave.
+
+Set it to something that comfortably contains all seven — ±150,000 leaves room for later
+additions without inviting a trip nothing survives.
 
 #### Space is Earth-centric, on purpose
 
