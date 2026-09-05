@@ -9,6 +9,7 @@ import com.ascension.atmosphere.internal.DebugAtmosphere;
 import com.ascension.atmosphere.internal.OxygenTracker;
 import com.ascension.atmosphere.internal.ProviderRegistry;
 import com.ascension.atmosphere.internal.VanillaIntegration;
+import com.ascension.atmosphere.internal.WorldEnvironmentAtmosphere;
 import com.ascension.atmosphere.internal.net.AtmosphereNetwork;
 import com.ascension.atmosphere.internal.supply.PlayerTankCollector;
 import com.ascension.atmosphere.internal.supply.TankRules;
@@ -32,9 +33,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Entry point for {@code ascension_atmosphere}.
  *
- * <p>Tier 1 in ADR-0003: it depends on nothing but NeoForge and must load and work with no
- * other Ascension module present. Anything that needs a third-party mod belongs in a Tier 2
+ * <p>Tier 1 in ADR-0003: it must load and work with no other Ascension module present beyond
+ * {@code core}. Anything that needs a third-party mod belongs in a Tier 2
  * {@code ascension-compat-*} jar, never here.
+ *
+ * <p>{@code ascension_core} is the one Ascension dependency, and the only one there will ever be
+ * (ADR-0011). It carries the shared world-environment contract, so this module can honour a
+ * dimension declared airless by anyone at all without depending on whoever declared it. With
+ * nothing registering environments, that registry is simply empty and everything is breathable
+ * &mdash; which is the standalone behaviour rule 6 asks for.
  *
  * <p>Design record: {@code docs/technical/atmosphere-api.md}.
  */
@@ -65,6 +72,14 @@ public final class AscensionAtmosphere {
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            // What the world itself says it is like, read from ascension-core's shared registry
+            // (ADR-0011). Whoever owns a dimension declares its environment there; this module
+            // never learns that ascension-worlds exists, and a third-party dimension mod is
+            // honoured on exactly the same terms.
+            AtmosphereRegistry.register(
+                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "world_environment"),
+                    new WorldEnvironmentAtmosphere());
+
             AtmosphereRegistry.register(
                     ResourceLocation.fromNamespaceAndPath(MOD_ID, "debug_vacuum"),
                     new DebugAtmosphere());

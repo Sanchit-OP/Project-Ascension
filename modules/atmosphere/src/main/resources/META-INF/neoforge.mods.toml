@@ -31,4 +31,15 @@ modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
+
+# Tier 0, and the only Ascension module this one depends on (ADR-0011). It carries the shared
+# world-environment contract, so that a dimension mod can declare its worlds airless without
+# either side knowing about the other.
+#
+# BEFORE, so its registry exists to be registered into during our setup.
+[[dependencies.${mod_id}]]
+modId = "ascension_core"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
 side = "BOTH"
