@@ -6,5 +6,9 @@
   "item.ascension_worlds.raw_helium": "Raw Helium Crystal",
 
   "block.ascension_worlds.titanium_ore": "Titanium Ore",
-  "item.ascension_worlds.raw_titanium": "Raw Titanium"
+  "item.ascension_worlds.raw_titanium": "Raw Titanium",
+
+  "block.ascension_worlds.moon_regolith": "Lunar Regolith",
+  "block.ascension_worlds.anorthosite": "Anorthosite",
+  "block.ascension_worlds.moon_basalt": "Lunar Basalt"
 }

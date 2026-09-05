@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder texture: reuses vanilla's diorite. Swap this one line once a CC0 texture is chosen.",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "minecraft:block/diorite"
+  }
+}
