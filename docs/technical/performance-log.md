@@ -44,7 +44,7 @@ Java Flight Recorder is in the JDK the build already pins, so this needs no mod 
 dependency. It is off unless asked for.
 
 ```bash
-./gradlew :modules:atmosphere:runServer -Pjfr
+./gradlew runDevServer -Pjfr
 ```
 
 Play, then **quit the server cleanly** — `dumponexit` is what writes the file, so killing the

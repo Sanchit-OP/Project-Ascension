@@ -6,6 +6,36 @@
 //
 // See docs/technical/architecture.md.
 
+// --- The dev run ------------------------------------------------------------
+//
+// Each module has its own runClient/runServer, and each one loads only itself and what it
+// depends on. That is right for checking a module works alone (ADR-0003 rule 6) and wrong for
+// everything else: `:modules:atmosphere:runServer` has no idea `ascension-worlds` exists, so a
+// dimension it declares is simply absent, and the symptom is "Unknown dimension" rather than
+// anything pointing at the build.
+//
+// So there is one command that always launches the whole stack, and it does not change as
+// modules are added. Only the constant below does.
+//
+//     ./gradlew runDevServer
+//     ./gradlew runDevClient
+//
+// The host is the module furthest down the dependency chain, since its run already loads
+// everything beneath it. Evaluation order follows real dependencies, so it cannot cycle.
+val devRunHost = ":modules:worlds"
+
+tasks.register("runDevServer") {
+    group = "ascension"
+    description = "Dev server with every Ascension module loaded."
+    dependsOn("$devRunHost:runServer")
+}
+
+tasks.register("runDevClient") {
+    group = "ascension"
+    description = "Dev client with every Ascension module loaded."
+    dependsOn("$devRunHost:runClient")
+}
+
 tasks.register("moduleReport") {
     group = "ascension"
     description = "Lists Ascension modules and their tier."
