@@ -35,7 +35,6 @@ Install order matters only where noted.
 | **Lithium** | `0.15.4-neoforge` | General game-logic optimisation. **No conflict with Sodium** — same authors, deliberately split: Sodium is rendering, Lithium is logic. |
 | **FerriteCore** | `7.0.3-neoforge` | Cuts memory used by block states and chunk data. Directly buys headroom for holding more chunks. |
 | **ModernFix** | `5.27.24+mc1.21.1` | Memory and startup. Its dynamic-resources option is a large win on a pack this size. |
-| **Noisium** | `2.3.0+mc1.21-1.21.1` | Faster worldgen. Server-side only, and therefore the entry most likely to interact with `ascension-worlds`. |
 | **Chunky** | `1.4.23` | Pre-generates terrain. For a pack about travelling, this is the practical substitute for C2ME: it removes worldgen from the hot path rather than making it faster. |
 | **Alternate Current** | `neoforge-mc1.21-1.9.0` | Faster redstone. Worth having once Create-driven machinery is common. |
 
@@ -55,6 +54,7 @@ Install order matters only where noted.
 | **Dynamic FPS** | Works on NeoForge, but **keep it out of the dev instance.** It throttles the game when unfocused, and `pauseOnLostFocus=false` is seeded into our dev runs specifically so alt-tabbing to an editor cannot invalidate a timing observation. Fine in the shipped pack. |
 | Any "memory leak fix" mod | These paper over leaks — including ours. That is the last thing we want while our own code is the thing being measured (ADR-0007 rule 1). |
 | **Fabric API**, **Mod Menu**, **Placeholder API** | Fabric plumbing, not optimisation. |
+| **Noisium** | **Dropped 2026-09-05** after being recommended. Its only NeoForge 1.21.1 build is from August 2024 and it is not published to CurseForge, which is why searching there turns up third-party forks instead. See below. |
 
 ## Why no Vulkan renderer is not the loss it appears to be
 
@@ -62,6 +62,25 @@ The bottleneck on render distance is not the graphics API. It is three things: c
 building on the CPU, draw-call count, and chunk data in RAM. Sodium attacks all three. Vulkan's
 main advantage is lower draw-call overhead, and Sodium's batching has already collapsed that
 count.
+
+## Why Noisium was dropped
+
+It was on the recommended list and should not have been. Four reasons, and the last is the one
+that decides it:
+
+1. Its only NeoForge 1.21.1 build is `2.3.0`, published **August 2024** — over a year stale on
+   this loader, while remaining current on Fabric.
+2. It is not on CurseForge under that name. What a CurseForge search turns up are third-party
+   forks — an unmaintained fork of a stale build is strictly worse than neither.
+3. **Chunky already covers the need.** Noisium makes worldgen faster; Chunky removes it from the
+   hot path. For a pack about travelling long distances, pre-generating once is the better
+   answer, and it makes a worldgen optimiser close to redundant.
+4. It patches vanilla worldgen internals, and `ascension-worlds` is about to introduce our own.
+   That is the highest-risk overlap in this entire stack, taken on for a benefit we already
+   have.
+
+If worldgen shows up as a real cost in a profile later, the thing to reach for is more Chunky
+pre-generation, not this.
 
 ## Configuration that actually matters
 
