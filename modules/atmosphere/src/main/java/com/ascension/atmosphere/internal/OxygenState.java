@@ -1,5 +1,6 @@
 package com.ascension.atmosphere.internal;
 
+import com.ascension.atmosphere.internal.net.OxygenSyncPayload;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -32,7 +33,7 @@ public final class OxygenState {
      * Living on the attachment means it dies with the player instead of accumulating in a
      * server-side map keyed by player (ADR-0007 rule 1).
      */
-    private transient com.ascension.atmosphere.internal.net.OxygenSyncPayload lastSynced;
+    private transient OxygenSyncPayload lastSynced;
 
     /** Server tick of the last send, for the low-frequency reconcile. */
     private transient long lastSyncTick;
@@ -63,7 +64,7 @@ public final class OxygenState {
         this.suffocationTicks = Math.max(0, ticks);
     }
 
-    public com.ascension.atmosphere.internal.net.OxygenSyncPayload lastSynced() {
+    public OxygenSyncPayload lastSynced() {
         return lastSynced;
     }
 
@@ -71,7 +72,7 @@ public final class OxygenState {
         return lastSyncTick;
     }
 
-    public void recordSync(com.ascension.atmosphere.internal.net.OxygenSyncPayload payload, long tick) {
+    public void recordSync(OxygenSyncPayload payload, long tick) {
         this.lastSynced = payload;
         this.lastSyncTick = tick;
     }

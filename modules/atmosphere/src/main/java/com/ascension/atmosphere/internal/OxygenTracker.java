@@ -3,8 +3,11 @@ package com.ascension.atmosphere.internal;
 import com.ascension.atmosphere.api.Atmosphere;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.api.DrainModifier;
+import com.ascension.atmosphere.api.OxygenSource;
+import com.ascension.atmosphere.api.OxygenSourceCollector;
 import com.ascension.atmosphere.internal.net.OxygenSyncPayload;
 import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -87,13 +90,32 @@ public final class OxygenTracker {
      * on the attachment. Tanks and suit reserves arrive with M1.7 and {@code ascension-gear}.
      */
     private static int capacityOf(ServerPlayer player) {
-        int collected = 0;
-        for (var collector : ProviderRegistry.get().oxygenCollectors()) {
-            final int[] sum = {0};
-            collector.collect(player, source -> sum[0] += source.capacity());
-            collected += sum[0];
+        List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
+        if (collectors.isEmpty()) {
+            return AtmosphereTuning.TANK_CAPACITY;
         }
-        return collected > 0 ? collected : AtmosphereTuning.TANK_CAPACITY;
+        CapacitySum sum = new CapacitySum();
+        for (int i = 0; i < collectors.size(); i++) {
+            collectors.get(i).collect(player, sum);
+        }
+        return sum.total > 0 ? sum.total : AtmosphereTuning.TANK_CAPACITY;
+    }
+
+    /**
+     * Accumulator for {@link #capacityOf(ServerPlayer)}.
+     *
+     * <p>An explicit class rather than a captured {@code int[]}: the array version allocated a
+     * fresh box per collector per player per accounting pass, which is a per-tick allocation in
+     * the one loop ADR-0007 asks to keep quiet. One instance now covers all collectors for a
+     * player, and the empty case allocates nothing at all.
+     */
+    private static final class CapacitySum implements Consumer<OxygenSource> {
+        private int total;
+
+        @Override
+        public void accept(OxygenSource source) {
+            total += source.capacity();
+        }
     }
 
     /** Force a resend on the next pass, e.g. after a dimension change or respawn. */

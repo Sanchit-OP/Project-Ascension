@@ -5,6 +5,7 @@ import com.ascension.atmosphere.api.AtmosphereContext;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -44,7 +45,7 @@ public final class AtmosphereCommands {
                                                         IntegerArgumentType.getInteger(ctx, "units"))))))));
     }
 
-    private static int query(CommandSourceStack source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+    private static int query(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         Atmosphere atmosphere = AtmosphereRegistry.query(player.serverLevel(), player.position());
         OxygenState state = player.getData(AtmosphereAttachments.OXYGEN);
@@ -58,7 +59,7 @@ public final class AtmosphereCommands {
         return 1;
     }
 
-    private static int why(CommandSourceStack source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+    private static int why(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         ServerLevel level = player.serverLevel();
         Vec3 position = player.position();
@@ -96,7 +97,7 @@ public final class AtmosphereCommands {
     }
 
     private static int setOxygen(CommandSourceStack source, int units)
-            throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+            throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         OxygenState state = player.getData(AtmosphereAttachments.OXYGEN);
         state.setUnits(units);
@@ -106,7 +107,7 @@ public final class AtmosphereCommands {
     }
 
     private static int setVacuum(CommandSourceStack source, boolean on)
-            throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+            throws CommandSyntaxException {
         ServerLevel level = source.getPlayerOrException().serverLevel();
         if (on) {
             DebugAtmosphere.setVacuum(level.dimension());
