@@ -65,7 +65,8 @@ val devModsEnabled: Boolean = !providers.gradleProperty("noDevMods").isPresent
 
 // Each repository is scoped to the group it actually serves, so a typo'd coordinate fails at
 // the one place that was supposed to have it instead of being hunted for across every
-// repository in the build.
+// repository in the build. Only compat modules use these; nothing here is on a Tier 1 compile
+// classpath.
 repositories {
     maven("https://maven.theillusivec4.top") {
         name = "TheIllusiveC4"
@@ -75,6 +76,38 @@ repositories {
         name = "BlameJared"
         content { includeGroup("mezz.jei") }
     }
+}
+
+/**
+ * Third-party mod jars to load into dev runs, taken from the client test instance.
+ *
+ * Read from the instance rather than declared per mod. A hand-maintained list of fourteen
+ * coordinates would drift the moment anyone installed something in CurseForge, and the symptom
+ * of that drift is a connection refused with a channel-mismatch message, which does not look
+ * like a stale build file at all.
+ *
+ * Reads the filesystem during configuration. That is fine while the configuration cache is off
+ * (see gradle.properties) and is the thing to revisit if it is ever turned on.
+ */
+fun instanceMods(): List<File> {
+    val configured = providers.gradleProperty("dev_mods_dir").orNull?.trim()
+    if (configured.isNullOrEmpty()) {
+        return emptyList()
+    }
+    val dir = File(configured)
+    if (!dir.isDirectory) {
+        logger.warn(
+            "dev_mods_dir does not exist, so no third-party mods will be loaded into dev runs: {}",
+            configured,
+        )
+        return emptyList()
+    }
+    return (dir.listFiles() ?: emptyArray())
+        .filter { it.isFile && it.name.endsWith(".jar") }
+        // Our own jars: the dev run already has this code from source, and loading the built
+        // jar alongside it is a duplicate mod id and an immediate crash.
+        .filterNot { it.name.startsWith("ascension_") }
+        .sortedBy { it.name }
 }
 
 
@@ -140,20 +173,42 @@ configure<NeoForgeExtension> {
 // `additionalRuntimeClasspath`: the data run generates resources and has no business loading
 // somebody else's mod.
 if (devModsEnabled) {
-    val devMods = listOf(
-        // Server-side too: it registers a network channel, so a client carrying it will not
-        // join a server without it.
-        "top.theillusivec4.curios:curios-neoforge:"
-            + providers.gradleProperty("curios_version").get(),
-        // Server-side too: recipe *viewing* works from synced recipe data alone, but recipe
-        // transfer needs JEI's server half to receive the packet.
-        "mezz.jei:jei-1.21.1-neoforge:"
-            + providers.gradleProperty("jei_version").get(),
-    )
+    val mods = instanceMods()
+    val serverExclusions = providers.gradleProperty("dev_mods_server_exclude").orNull
+        ?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+
+    val serverMods = mods.filterNot { jar ->
+        serverExclusions.any { jar.name.contains(it, ignoreCase = true) }
+    }
+
+    if (mods.isNotEmpty()) {
+        logger.lifecycle(
+            "Dev runs: mirroring {} mod(s) from the test instance ({} on the server)",
+            mods.size, serverMods.size,
+        )
+    }
+
     dependencies {
-        devMods.forEach {
-            "clientAdditionalRuntimeClasspath"(it)
-            "serverAdditionalRuntimeClasspath"(it)
+        mods.forEach { "clientAdditionalRuntimeClasspath"(files(it)) }
+        serverMods.forEach { "serverAdditionalRuntimeClasspath"(files(it)) }
+    }
+}
+
+// Lists what the dev runs will load, so a channel-mismatch failure can be checked against
+// reality in one command instead of being guessed at.
+tasks.register("devMods") {
+    group = "ascension"
+    description = "Lists the third-party mods mirrored into dev runs from the test instance."
+    doLast {
+        val mods = instanceMods()
+        if (!devModsEnabled) {
+            println("Dev mods disabled (-PnoDevMods).")
+        } else if (mods.isEmpty()) {
+            println("No third-party mods found. dev_mods_dir = " +
+                (providers.gradleProperty("dev_mods_dir").orNull ?: "<unset>"))
+        } else {
+            println("Mirroring ${mods.size} mod(s) into dev runs:")
+            mods.forEach { println("  ${it.name}") }
         }
     }
 }

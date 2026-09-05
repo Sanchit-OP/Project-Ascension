@@ -161,59 +161,71 @@ runs `online-mode=false`.
 
 **Restart the server after every rebuild** — the jar is read at startup.
 
-### Third-party mods in the test instance
+### Third-party mods: the dev runs mirror the instance
 
-Kept deliberately short, and each one is recorded here with the reason it is present. This is a
-**development environment**, not a modpack: ADR-0002 still stands and
-`docs/technical/mod-list.md` is still a landscape survey, not a dependency list.
+This is a **development environment**, not a modpack.
+[ADR-0002](../decisions/0002-custom-mods-not-curated-modpack.md) still stands and
+[`mod-list.md`](mod-list.md) is still a landscape survey, not a dependency list. The performance
+set and the reasoning behind it is [`optimisation-stack.md`](optimisation-stack.md).
 
-| Mod | Why it is installed | Is it a dependency? |
-|---|---|---|
-| **JEI** (Just Enough Items) | Item search, and `U` / `R` to see what a thing is used in and how it is made. Turns "did the recipe load" from a guessing game into a lookup. | **Not a compile dependency.** Loaded into dev runs on both sides, because recipe *transfer* needs its server half. |
-| **Curios API** | Provides the accessory slot the tank valve will bind to. | **Yes, but Tier 2 only.** `ascension-compat-curios` compiles against it; Tier 1 must never require it (ADR-0003 rule 1, ADR-0009 §4). |
+Install mods through the CurseForge app for the instance, so it resolves the correct
+1.21.1 / NeoForge build and any dependencies. **Then do nothing else** — the Gradle dev runs
+read that folder and load whatever is in it:
 
-Installed versions, as of 2026-09-05: `jei-1.21.1-neoforge-19.51.0.418`,
-`curios-neoforge-9.5.1+1.21.1`. Versions are listed because they are part of any performance
-reading taken on this instance — see
-[`performance-log.md`](performance-log.md) on what a baseline may be compared to.
+```bash
+./gradlew :modules:atmosphere:devMods
+```
 
-Install both through the CurseForge app's own mod browser for the instance, so it resolves the
-correct 1.21.1 / NeoForge build and any dependencies.
+`dev_mods_dir` in `gradle.properties` points at the instance's mods folder. Our own jars are
+always skipped: the dev run already has that code from source, and loading the built jar
+alongside it is a duplicate mod id and an immediate crash.
 
-#### The dev server carries these too — automatically
+#### Why mirroring rather than a list of versions
 
-Both are loaded into the Gradle dev runs, client **and** server, from `curios_version` and
-`jei_version` in `gradle.properties`. `ascension.mod-conventions` puts them on the run
-classpaths, so `runServer` carries the same mods the instance does. Bumping the instance means
-bumping the property.
+The dev server must carry the same mods as the client, and **both directions bite.** Curios
+registers a network channel, so a client that has it refuses a server that does not:
 
-Each one needs its server half for a different reason, and both were found the hard way:
+```
+Curios break channel of mod curios api failed to connect:
+the channel is missing on the server side but required on the client
+```
 
-- **Curios** registers a network channel, so a client that has it **refuses to join a server
-  that does not**:
-  ```
-  Curios break channel of mod curios api failed to connect:
-  the channel is missing on the server side but required on the client
-  ```
-- **JEI** shows recipes fine from a client alone — recipe data is synced anyway — but recipe
-  *transfer*, the `+` button that fills a crafting grid, sends a packet nothing was there to
-  receive. Which made the one thing JEI was installed for the one thing that did not work.
+— and a server that has it refuses a client that does not. That second case is not
+hypothetical: it is what happens if a mod is removed from the instance while a build file still
+names it.
 
-**This does not weaken ADR-0003 rule 6.** What enforces "atmosphere works with only `core`
-present" is the *compile* classpath, and Curios is not on it — Tier 1 cannot reference a class it
-cannot see, and a jar present at dev runtime cannot create a compile dependency.
+Two mods pinned by version in `gradle.properties` was already a list that could drift. Fourteen
+would be a list that *would* drift, silently, in whichever direction someone last clicked in
+CurseForge — and the symptom is a connection refused, which does not look like a stale build
+file at all. Mirroring makes the two impossible to disagree.
 
-To check the standalone case deliberately:
+JEI needs its server half too, incidentally. Recipe *viewing* works from a client alone because
+recipe data is synced anyway, but recipe **transfer** — the `+` button that fills a crafting
+grid — sends a packet nothing was there to receive.
+
+#### If the dev server crashes on somebody else's mod
+
+A client-only mod normally excludes itself: NeoForge's `@Mod(dist = Dist.CLIENT)` means FML
+never constructs it on a dedicated server. For the one that gets that wrong and dies reaching
+for a client class, keep it off the server run by filename fragment:
+
+```
+dev_mods_server_exclude=sodium,DistantHorizons
+```
+
+#### Checking the standalone case
 
 ```bash
 ./gradlew :modules:atmosphere:runServer -PnoDevMods
 ```
 
-A client with Curios installed will then refuse to connect, which is the point: that
-configuration is for confirming the module loads and works alone, not for playing.
+Loads no third-party mods at all, which is how to confirm a Tier 1 module works alone
+(ADR-0003 rule 6). A client with those mods installed will refuse to connect, which is the
+point: that configuration is for verifying the module loads, not for playing.
 
-JEI needs none of this. It is client-side, declares no server requirement, and stays an
-instance-only mod — deliberately never a build input.
+**None of this weakens rule 6.** What enforces "atmosphere works with only `core` present" is
+the *compile* classpath, and none of these are on it — Tier 1 cannot reference a class it cannot
+see, and a jar present at dev runtime cannot create a compile dependency.
 
 ### Profiling a run
 
