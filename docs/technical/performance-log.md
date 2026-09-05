@@ -3,7 +3,79 @@
 Required by [ADR-0007](../decisions/0007-performance-contract.md) rule 12: every milestone ends
 with a measurement, and a milestone with an unexplained regression is not complete.
 
+## What a baseline can be compared to
+
+**Settled 2026-09-05.** A baseline is only a baseline *for the configuration it was taken in*.
+Mod set, single-player versus dedicated server, and heap ceiling are all part of it. Comparing
+across configurations produces a number that looks like evidence and is not.
+
+This was decided when optimisation mods were planned for the M2 boundary, and it immediately
+exposed a problem in the reading already recorded here: **M0.5 was taken in single-player, on
+the integrated server, with no third-party mods.** Since M1.3 the test loop has been a dedicated
+server with a separate client, and JEI and Curios are now installed. The M0.5 tick figure is
+therefore not comparable to anything we measure today, and was quietly on its way to being cited
+as though it were.
+
+### So the primary signal is an A/B, not a historical baseline
+
+**Measure our mod on versus our mod off, in the same session, on the same stack.**
+
+That answers the question ADR-0007 rule 12 actually cares about — *did our code cost anything* —
+and it is immune to everything that makes historical baselines rot: mod updates, a new
+optimisation mod, a different machine, a changed heap ceiling. Both halves of the comparison
+move together.
+
+Absolute baselines are still recorded, for context and for spotting slow drift across
+milestones. They are just no longer the thing a milestone is judged on.
+
+### Two configurations, on purpose
+
+| Configuration | What it is for |
+|---|---|
+| **Clean** — our modules only | One reading per module release. This is the number an adopter installing `ascension-atmosphere` into their own pack cares about, and ADR-0003 makes that priority. |
+| **Full stack** — optimisation mods and all | The pack's real performance, which is what a player experiences. Becomes the standing reference from M2 onward. |
+
+Every recorded reading names its configuration and the exact mod versions. Changing the mod set
+invalidates the absolute numbers and means retaking them; it does **not** invalidate an A/B.
+
+## Profiling with JFR
+
+Java Flight Recorder is in the JDK the build already pins, so this needs no mod and no
+dependency. It is off unless asked for.
+
+```bash
+./gradlew :modules:atmosphere:runServer -Pjfr
+```
+
+Play, then **quit the server cleanly** — `dumponexit` is what writes the file, so killing the
+process gets you nothing. The recording lands at `run/server/ascension-server.jfr`
+(`-Pjfr` works on `runClient` too, writing `run/client/ascension-client.jfr`).
+
+Reading it, with the `jfr` tool that ships alongside `java`:
+
+```bash
+jfr summary run/server/ascension-server.jfr
+```
+
+```bash
+jfr print --events jdk.ObjectAllocationSample run/server/ascension-server.jfr
+```
+
+Or open the file in JDK Mission Control for flame graphs and the heap-over-time view.
+
+**This is the tool that closes the gaps listed under M0.5 below.** The F3 method that follows
+asks for a sawtooth low point to be eyeballed and three reload cycles to be remembered, which is
+exactly why neither was ever captured. JFR gives the live set after GC and allocation attributed
+to a call site, which is what ADR-0007 rule 1 and rule 12 are really asking for.
+
+Stack depth is raised to 256 frames deliberately. At the default 64, an allocation inside our
+code truncates before the stack reaches a `com.ascension` frame, and "who allocated this" becomes
+"something, somewhere in Minecraft".
+
 ## How to take a reading
+
+The F3 method below still works for a quick look, and is what the M0.5 row was taken with.
+Prefer JFR for anything being recorded as a milestone measurement.
 
 In game, F3. Record:
 
@@ -70,5 +142,10 @@ climbs noticeably after M1, something is allocating per-tick that should not be.
 - **Sable + Aeronautics not profiled.** Required by ADR-0006 before anything depends on them.
   Deferred — nothing depends on them yet.
 
-These do not block M1.2. They must be closed before M1.8 signs off, since M1.8 compares against
-this row.
+**Superseded 2026-09-05.** These gaps are no longer closed by retaking this row. M0.5 was
+single-player with no third-party mods, and neither is true of how we test now — so the row is
+kept as history and is not a comparison target. See *What a baseline can be compared to* above.
+
+M1.9 takes a fresh reading on the real configuration (dedicated server, current mod set) and
+runs the atmosphere-on / atmosphere-off A/B, which is the measurement that actually signs the
+milestone off.
