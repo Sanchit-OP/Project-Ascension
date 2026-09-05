@@ -172,6 +172,27 @@ which points at the datapack rather than at the build, and costs an hour.
 modules are added. The per-module runs are still the right tool for one job: confirming a module
 works alone (ADR-0003 rule 6), which is what `-PnoDevMods` is for.
 
+### A dimension's generator settings are frozen into the world the first time it's created
+
+Edit `dimension/moon.json` after `run/server/ascension-dev` already has a Moon &mdash; nothing
+happens. Minecraft snapshots each dimension's `ChunkGenerator` config into `level.dat` the moment
+that dimension is first touched in a save, and never re-reads the datapack for it again on later
+starts. This bit us for real: flipping the flat generator's `"features"` flag from `false` to
+`true` so Lunar Helium Ore could place did nothing for the existing test world, in any chunk, no
+matter how far from spawn &mdash; the frozen `false` from the Moon's original M2.2 creation kept
+governing every chunk generated afterward.
+
+**Biome content is not subject to this.** A biome's own `features` list, and anything a
+`neoforge:add_features`/`remove_features` biome modifier patches onto one, is read fresh from the
+registry at each chunk's generation — which is why Titanium Ore worked on Earth immediately and
+Helium Ore did not on the Moon, in the same session, from the same kind of edit.
+
+**The fix is a new world, every time a dimension's generator settings change** — deleting only
+that dimension's own subfolder is not enough, since the stale setting lives in `level.dat`, not
+in the per-dimension terrain files. Stop the server first (`Get-Process`/`Stop-Process` on the
+`DevLaunch` java process, or the process holding Distant Horizons' `.sqlite` files, if `rm -rf`
+refuses with "resource busy") before deleting `run/server/ascension-dev`.
+
 The instance is MC 1.21.1 / neoforge-21.1.249, matching what we compile against. `Devil0701` is
 opped at level 4 in `run/server/ops.json`, using the offline-mode UUID because the dev server
 runs `online-mode=false`.
