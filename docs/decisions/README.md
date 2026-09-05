@@ -35,3 +35,4 @@ forgets it.
 | [0006](0006-sable-integration-posture.md) | Sable is an optional integration, never a hard dependency | Accepted |
 | [0007](0007-performance-contract.md) | Performance contract | Accepted |
 | [0008](0008-build-and-test-cadence.md) | Build-and-test-in-game cadence | Accepted |
+| [0009](0009-carry-limits-enforced-on-the-player.md) | Carry limits are enforced on the player, not on containers | Accepted |

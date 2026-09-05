@@ -53,6 +53,15 @@ public final class OxygenTracker {
     private static void update(ServerPlayer player, long tick) {
         OxygenState state = player.getData(AtmosphereAttachments.OXYGEN);
 
+        // Before anything else, and deliberately outside the fast path below: a tank opened in
+        // breathable air must still come up to pressure while you walk to the airlock. Making
+        // the timer run only when you are already in danger would mean it never ran when it
+        // mattered and always ran when it hurt most.
+        if (state.pressurisingTicks() > 0) {
+            state.setPressurisingTicks(
+                    state.pressurisingTicks() - AtmosphereTuning.ACCOUNTING_INTERVAL_TICKS);
+        }
+
         // Breathing happens at the head, not the feet. Standing chest-deep in water should not
         // suffocate you, and standing on a sealed floor with your head in vacuum should.
         Atmosphere atmosphere =
@@ -73,11 +82,13 @@ public final class OxygenTracker {
             state.setLungUnits(lungCapacity);
         }
 
-        if (!atRisk && state.suffocationTicks() == 0 && state.lungUnits() >= lungCapacity) {
+        if (!atRisk && state.suffocationTicks() == 0 && state.lungUnits() >= lungCapacity
+                && state.pressurisingTicks() == 0) {
             state.setDrainCarry(0.0f);
             OxygenSyncPayload last = state.lastSynced();
             boolean clientNeedsCorrecting =
-                    last == null || !last.breathable() || last.suffocating() || last.refilling();
+                    last == null || !last.breathable() || last.suffocating() || last.refilling()
+                            || last.pressurisingSeconds() > 0;
             boolean reconcileDue =
                     tick - state.lastSyncTick() >= AtmosphereTuning.RECONCILE_INTERVAL_TICKS;
             if (!clientNeedsCorrecting && !reconcileDue) {
@@ -253,7 +264,9 @@ public final class OxygenTracker {
                 atmosphere.breathable(),
                 drainPerSecond,
                 state.suffocationTicks() > 0,
-                state.lungUnits() < lungCapacity);
+                state.lungUnits() < lungCapacity,
+                // Rounded up, so a countdown never shows "0s" while it is still running.
+                Math.ceilDiv(state.pressurisingTicks(), 20));
 
         boolean changed = payload.differsFrom(state.lastSynced());
         boolean reconcileDue =

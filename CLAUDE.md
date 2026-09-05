@@ -81,11 +81,17 @@ Done and verified in game on a dedicated server:
 - Oxygen Emitter pressurises a sealed room (4096 blocks / 24 radius), invalidated on block
   change.
 
-**Next: M1.7** — tank item and refill station. Then M1.8: refactor plus a performance
-comparison against the M0.5 baseline (5 ms/tick, 60 MB/s allocation) in
-`docs/technical/performance-log.md`.
+- M1.7 tank item and refill station. Tank charge is a data component; the station only works
+  where the air is breathable, which is what makes the expedition loop a loop and composes with
+  sealed rooms for free.
 
-Scope decision: finish M1.7 + M1.8, ship atmosphere v0.1, then start `ascension-worlds`. Further
+**Next: M1.8** — the valve (ADR-0009). Only an *open* tank supplies air, one open at a time,
+opening costs a pressurise delay, and the inventory holds at most two. Built and deployed,
+**not yet verified in game**. Then M1.9: refactor plus a performance comparison against the M0.5
+baseline (5 ms/tick, 60 MB/s allocation) in `docs/technical/performance-log.md`.
+
+Scope decision: finish M1.8 + M1.9, ship atmosphere v0.1, then the first Tier 2 jar
+(`ascension-compat-curios`, a tank slot that opens the valve), then `ascension-worlds`. Further
 atmosphere ideas mostly depend on modules that do not exist yet and are queued in `todo.md`
 under "Atmosphere follow-ups" — including replacing the placeholder emitter with a Create-powered
 generator → tank → pressuriser chain in a Tier 2 compat jar.

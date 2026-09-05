@@ -140,6 +140,21 @@ public interface OxygenSourceCollector {
 safety margin, so running dry on tanks is a warning rather than a death sentence. This is what
 makes the reserve-versus-efficiency tradeoff in `oxygen.md` a real decision.
 
+### 4b. Only an open tank is a source
+
+**Amended 2026-09-05 (M1.8).** M1.7 shipped tanks that supplied air from anywhere in the
+inventory. Playing it showed why that is wrong: a two-second dip in a river silently spent tank
+air that costs a walk back to a station to replace, and there was no way to say "not now".
+
+A tank now carries a valve. Closed, it is not a source at all — `PlayerTankCollector` does not
+emit it. One tank open at a time, and opening one costs
+`AtmosphereTuning.TANK_PRESSURISE_TICKS` before it delivers anything.
+
+The reasoning, including why storage restrictions were rejected in favour of a time cost, is
+[ADR-0009](../decisions/0009-carry-limits-enforced-on-the-player.md). The consequence for this
+API is small and worth stating plainly: **a collector is free to decide that an oxygen source it
+can see is not currently available.** Nothing in `OxygenSource` changed.
+
 ## 5. Consumption model
 
 Base rate, adjusted by registered modifiers. Deliberately enumerable — a player should be able

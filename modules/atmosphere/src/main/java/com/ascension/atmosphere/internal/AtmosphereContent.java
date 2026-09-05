@@ -57,6 +57,22 @@ public final class AtmosphereContent {
                     .networkSynchronized(ByteBufCodecs.VAR_INT)
                     .build());
 
+    /**
+     * Whether this tank's valve is open.
+     *
+     * <p>A closed tank is inert: it supplies nothing and drains nothing. That is what makes a
+     * stowed tank a saved tank, and it is the answer to a tank quietly emptying itself because
+     * its owner swam across a river.
+     *
+     * <p>Absent means closed, so a freshly crafted tank carries no component at all.
+     */
+    public static final Supplier<DataComponentType<Boolean>> TANK_OPEN = COMPONENTS.register(
+            "tank_open",
+            () -> DataComponentType.<Boolean>builder()
+                    .persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL)
+                    .build());
+
     public static final Supplier<Block> OXYGEN_EMITTER = BLOCKS.register(
             "oxygen_emitter",
             () -> new OxygenEmitterBlock(BlockBehaviour.Properties.of()
