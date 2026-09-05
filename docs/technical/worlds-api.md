@@ -140,6 +140,67 @@ the apparent size of the real moon from Earth. Clearly a place, clearly far away
 **Earth needs a `body_radius` too**, now that it is a body in space you can look at and cannot
 fly through.
 
+### Space is 3D. Only the *layout* is flat.
+
+Worth correcting a sloppy phrase: "space is a plane" describes **where the planets sit**, not how
+you move. `ascension_worlds:space` is an ordinary Minecraft dimension. You can pitch, climb,
+dive, and fly perpendicular to the planetary plane — a rocket with angled thrust is meaningless
+otherwise.
+
+Y in space is **manoeuvring room, not a navigation axis.** Planets share one altitude, so
+climbing away from it takes you somewhere with nothing in it. The dimension should be tall enough
+that its ceiling is never the thing that stops you: what limits how far you stray should be air,
+not a build limit.
+
+#### Apparent size is the navigation
+
+A planet is drawn at a size derived from its distance, `2 * atan(radius / distance)`.
+
+| Distance | Moon, `body_radius` 192 | Earth, `body_radius` 384 |
+|---|---|---|
+| 320 — the Moon's approach shell | **62 deg**, fills the view | |
+| 512 — just launched from Earth | | **74 deg**, Earth behind you |
+| 8,000 — the Moon seen from Earth | **2.75 deg**, a clear disc | 5.50 deg |
+| 18,000 — Planet 3 | 1.22 deg | |
+| 100,000 — Planet 7 | **0.22 deg**, a bright dot | |
+
+For scale: a full moon from Earth is about 0.5 deg, and a hand at arm's length about 10 deg.
+
+This is not decoration. **It is the primary navigation instrument**, and the most legible one
+available: distant worlds are points of light, they grow as you close, and they shrink when you
+are going the wrong way. A player reads their entire navigational situation out of the window
+without a single number.
+
+#### Ascent triggers on altitude, and carries your heading
+
+Crossing the threshold altitude on a surface transitions you to space **whatever your pitch** —
+angle does not gate the transition. But **velocity is preserved through it**, so an angled launch
+emerges already moving in that direction.
+
+That makes the launch angle the first navigation act of a journey, and it is what connects a
+surface to interplanetary space: where on Earth you launched from is irrelevant, but which way
+you were pointing is not.
+
+#### What if a player flies perpendicular, or simply the wrong way?
+
+**Nothing special happens, and that is the correct answer.**
+
+Everything shrinks, which is the feedback. And then they run out of air — the same failure as
+overreaching in any direction, and the one the entire game is already built around. Bad
+navigation and overambition are punished identically, by asphyxiation, and the lesson is the
+same: check your air against your distance before committing.
+
+No invisible walls, no corrective nudge, no "you cannot go that way". The plane is a fact about
+where things are, not a fence.
+
+Two things this makes non-optional rather than nice to have:
+
+- **A distance readout to the nearest body**, so a player can judge whether they can still get
+  home. Air remaining and distance remaining are the two numbers this game is actually about, and
+  one of them is already on the HUD.
+- **An answer to dying in space.** Respawn on Earth and the ship is lost is consistent, and
+  harsh; if it proves too harsh that is a design dial, not a bug. Decide before M2.6.
+
 ### How space coordinates relate to world coordinates
 
 **They are the same thing.** `position` is not a separate coordinate system — it is literally
@@ -181,24 +242,23 @@ arrive at is **authored, not computed**.
 
 Worth writing down so nobody later tries to "fix" the mismatch. It is not a bug.
 
-#### So where do you land? — open, and it decides how the game feels
+#### Where you land — settled
 
-Options, and this is a real design choice rather than a technical one:
+**First arrival puts you at an authored landing site. Every arrival after that returns you to
+where you last departed from.**
 
-- **A fixed landing site per planet**, a field in the planet JSON. Predictable, authorable, and
-  every arrival is the same place — which is right the first time and wrong the tenth.
-- **Where you last departed from.** You build a base, you come back to your base. This is what
-  players will expect, and it is what makes a forward base feel like a place rather than a
-  waypoint.
-- **Free choice during descent.** The most interesting and the most work; also the most likely
-  to drop someone into a wall.
+You build a base, you come back to your base. That is what makes a forward base a *place* rather
+than a waypoint, and it is what players will expect.
 
-Leaning to **the second, with the first as the fallback**: first arrival lands at the authored
-site, later arrivals return you to where you left. That needs per-player, per-planet persisted
-state — a serialised player attachment holding a `ResourceKey<Level>` and a `BlockPos` per
-visited world, never a `Level` (ADR-0007 rule 1).
+Needs per-player, per-planet persisted state: a serialised player attachment holding a
+`ResourceKey<Level>` and a `BlockPos` per visited world — keys, never a `Level`
+(ADR-0007 rule 1).
 
-Decide before M2.6.
+**The landing site is a structure, on an otherwise procedural world.** Worlds generate
+procedurally; the arrival point is marked by a guaranteed structure, so a player has somewhere to
+orient from, somewhere to put the first refill station, and something authored to read on a world
+that is otherwise machine-made. One per planet, near the surface origin — the same mechanism
+vanilla uses to guarantee a stronghold near spawn.
 
 ### Seven planets in one space: range is the gate
 
