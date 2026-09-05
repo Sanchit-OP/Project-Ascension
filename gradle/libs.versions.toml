@@ -1,0 +1,23 @@
+# ---------------------------------------------------------------------------
+# Gradle plugins and Java libraries.
+#
+# Runtime platform versions (Minecraft / NeoForge / Parchment) are NOT here --
+# they live in gradle.properties because they are also interpolated into
+# neoforge.mods.toml. See the note at the top of that file.
+# ---------------------------------------------------------------------------
+
+[versions]
+moddevgradle = "2.0.146"
+junit = "5.11.4"
+
+[plugins]
+moddev = { id = "net.neoforged.moddev", version.ref = "moddevgradle" }
+
+[libraries]
+# Needed on the buildSrc classpath so precompiled convention scripts can apply
+# the plugin by id.
+moddevgradle = { module = "net.neoforged:moddev-gradle", version.ref = "moddevgradle" }
+
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }

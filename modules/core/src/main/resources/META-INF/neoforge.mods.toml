@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Core"
+authors = "${mod_authors}"
+description = '''
+Shared infrastructure for the Project-Ascension module family.
+
+Tier 0: contains no gameplay. Provides soft-dependency service loading, sync helpers and
+performance instrumentation used by the other Ascension modules. Safe to install alone,
+where it does nothing observable.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"

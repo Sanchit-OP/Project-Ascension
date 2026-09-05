@@ -52,8 +52,14 @@ Must resolve:
 Server-side only. Per-player oxygen via data attachment, per-`ServerLevel` zone state.
 Hardcode "Overworld is breathable" and use a debug command for the rest.
 
-**Verify:** `/ascension atmosphere query` reports breathability and oxygen level. Dedicated
-server. Survives reload.
+**Verify:** `/ascension atmosphere query` reports breathability and oxygen level. Survives
+world unload/reload.
+
+> **Carries the deferred M0.3 requirement.** The dedicated-server path was never stood up
+> during M0 — deliberately, since an empty mod could not exercise it. This is the first
+> increment with real world state, so the full ADR-0008 server check happens here: server
+> starts, client connects, mod present both sides, no client-only class referenced from
+> server code. Do not let this slide again; every later increment builds on it.
 
 ### M1.3 — Sync + HUD
 
