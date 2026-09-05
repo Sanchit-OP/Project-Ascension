@@ -103,7 +103,7 @@ older 21.1.x install. The dev client would never have caught it — it runs exac
 Fixed to a floor of `[21.1,)`; see "Dependency version ranges" in
 `docs/technical/dev-environment.md`.
 
-### M0.5 — Baseline measurement
+### M0.5 — Baseline measurement  *(partial — 2026-09-05)*
 
 Record, per ADR-0007 rule 12, into `docs/technical/performance-log.md`:
 
@@ -148,8 +148,9 @@ than invisible.
 - [x] Clean clone builds with one command
 - [x] `runClient` works; `runServer` deferred to M1.2 (see M0.3)
 - [x] Jar loads in a real CurseForge instance (clean 1.21.1 / neoforge-21.1.249)
-- [ ] Baseline numbers recorded in `docs/technical/performance-log.md`
-- [ ] Sable + Aeronautics profiled
+- [x] Baseline recorded in `docs/technical/performance-log.md` — tick 5 ms/50 ms, alloc 60 MB/s
+- [ ] Sawtooth low point + 3 reload cycles (leak reference) — outstanding
+- [ ] Sable + Aeronautics profiled — deferred, nothing depends on them yet
 - [x] Refactor pass done
 - [ ] Committed
 
