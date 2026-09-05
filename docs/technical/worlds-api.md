@@ -140,6 +140,66 @@ the apparent size of the real moon from Earth. Clearly a place, clearly far away
 **Earth needs a `body_radius` too**, now that it is a body in space you can look at and cannot
 fly through.
 
+### How space coordinates relate to world coordinates
+
+**They are the same thing.** `position` is not a separate coordinate system — it is literally
+where in `ascension_worlds:space` that planet's body sits. Fly to the Moon and F3 reads
+`X: 8000, Z: 0`.
+
+What needs care is that **each dimension has its own independent coordinate space**, and a
+transition discards the previous one. Walked through, as F3 would show it:
+
+| Where you are | Dimension | F3 |
+|---|---|---|
+| On Earth, wherever you happen to be | `minecraft:overworld` | `420 / 71 / -1130` |
+| Just ascended | `ascension_worlds:space` | `0 / 64 / 512` |
+| Arrived at the Moon | `ascension_worlds:space` | `8000 / 64 / 0` |
+| Landed | `ascension_worlds:moon` | `0 / 78 / 0` |
+
+Note rows one and two: the Earth coordinates `420 / -1130` have **nothing** to do with the space
+position `0 / 512`. Leaving Earth's surface puts you at *Earth's position in space*, which is
+the origin, regardless of where on Earth you took off from. Two players launching from opposite
+sides of the world arrive in the same place.
+
+`512` is Earth's `approach_radius` — you emerge on the shell where descent is possible, not
+inside the body.
+
+**Y is nearly meaningless in space.** Planets sit at one altitude and flying is horizontal, so Y
+is a thin slab you move within rather than a dimension of navigation. That is what makes the
+layout a plane (§3).
+
+#### The body is a symbol, not a scale model
+
+A planet is 192 blocks across in space. Its surface is an effectively unbounded Minecraft world.
+**Those cannot be reconciled and should not be.**
+
+There is no spatial mapping from "which part of the body I touched" to "where on the surface I
+land", because the surface is millions of times larger than the thing representing it. Any
+scale factor would be a fiction pretending to be arithmetic. The body in space *stands for* the
+planet; descent is a transition between two coordinate spaces, and the surface coordinate you
+arrive at is **authored, not computed**.
+
+Worth writing down so nobody later tries to "fix" the mismatch. It is not a bug.
+
+#### So where do you land? — open, and it decides how the game feels
+
+Options, and this is a real design choice rather than a technical one:
+
+- **A fixed landing site per planet**, a field in the planet JSON. Predictable, authorable, and
+  every arrival is the same place — which is right the first time and wrong the tenth.
+- **Where you last departed from.** You build a base, you come back to your base. This is what
+  players will expect, and it is what makes a forward base feel like a place rather than a
+  waypoint.
+- **Free choice during descent.** The most interesting and the most work; also the most likely
+  to drop someone into a wall.
+
+Leaning to **the second, with the first as the fallback**: first arrival lands at the authored
+site, later arrivals return you to where you left. That needs per-player, per-planet persisted
+state — a serialised player attachment holding a `ResourceKey<Level>` and a `BlockPos` per
+visited world, never a `Level` (ADR-0007 rule 1).
+
+Decide before M2.6.
+
 ### Seven planets in one space: range is the gate
 
 Every planet is a coordinate on the same plane. Seven planets is seven `planet.json` files and
