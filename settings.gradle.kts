@@ -16,7 +16,7 @@ rootProject.name = "project-ascension"
 include(":modules:core")
 
 // --- Tier 1 (added as each milestone reaches them) ---------------------------
-// include(":modules:atmosphere")     // M1
+include(":modules:atmosphere")
 // include(":modules:worlds")         // M2
 // include(":modules:progression")    // M3
 // include(":modules:gear")           // M4

@@ -1,6 +1,6 @@
 # `ascension-atmosphere` API Design
 
-**Status:** Draft for review (M1.1). No code exists yet.
+**Status:** Frozen for v0.1 (M1.1 complete, 2026-09-05). Implementation begins at M1.2.
 
 This document is written *before* implementation deliberately. Every other Ascension module and
 every compat jar couples to this API, so it is the most expensive surface in the project to get
@@ -110,9 +110,14 @@ public interface OxygenSource {
     int available();
     int capacity();
     int consume(int units);   // returns units actually consumed
+    int accept(int units);    // returns units actually accepted
     int drawOrder();          // lower is consumed first
 }
 ```
+
+`accept` is the counterpart to `consume`, and it pays for itself three times over: it is how a
+refill station fills a tank, how a tank is topped up from a base supply, **and** how one player
+shares air with another. One method, three features.
 
 Sources are discovered per player by registered collectors, so other mods can contribute
 inventory slots, curios, suit modules or vehicle tanks without us knowing they exist:
@@ -238,15 +243,28 @@ A consumer needing anything from `internal` means the `api` is wrong and should 
 4. **Sprinting does not cost oxygen.** Drain modifiers are a registry; triggers are added later
    by the modules that own them.
 
-## Open questions
+## Multiplayer rescue
 
-1. **Multiplayer rescue.** If a teammate runs dry in vacuum, can another player do anything?
-   Three shapes, in ascending cost:
-   - *Nothing* — they die and respawn. No API cost.
-   - *Share air* — transfer oxygen between sources. **Requires a transfer operation in the
-     first version of `OxygenSource`**, because adding it later breaks every consumer.
-   - *Downed state* — collapse instead of dying, revive by dragging to breathable air. A whole
-     system; out of scope for v0.1.
+**Decided 2026-09-05: share air.**
 
-   This is the last thing blocking the API being frozen. Recommendation: **share air** — it fits
-   the co-op-first pillar, makes a teammate's reserve part of team planning, and is cheap.
+A player can transfer oxygen from their own supply to a teammate's. This fits the co-op-first
+pillar in `vision.md`, turns a teammate's reserve into part of team planning, and costs one
+method on `OxygenSource` — `accept` — which refill stations need anyway.
+
+Deliberately *not* chosen: a downed-and-revive state. It is the most dramatic option and a real
+co-op moment, but it is a whole system and belongs well after v0.1. Nothing in this API
+prevents adding it later, because reviving does not change how oxygen moves.
+
+The decision had to be made now rather than later: adding a transfer operation to
+`OxygenSource` after third parties implement the interface is a breaking change.
+
+---
+
+## API status
+
+**Frozen for v0.1 as of 2026-09-05.** All review questions are settled. Implementation begins
+at M1.2.
+
+Changes to anything in the `api` package from this point need a note in the commit explaining
+what forced it — that friction is the point, and it is why this document was written before any
+code existed.
