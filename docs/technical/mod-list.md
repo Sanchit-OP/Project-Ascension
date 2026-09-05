@@ -15,6 +15,13 @@ Tracks candidate mods, required mods, rejected mods, and why each is included.
 - LootJS
 - FTB Quests
 
+## Combat Content Candidates
+
+- L_Ender's Cataclysm
+- Bosses of Mass Destruction
+- TacZ
+- One additional boss or combat mod still to be chosen
+
 ## Per-Mod Notes
 
 - Role in progression

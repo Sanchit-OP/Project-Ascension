@@ -15,10 +15,10 @@ Defines the role of each planet in the progression route.
 
 - Earth: controlled starting world, primitive survival, basic engineering, first ship readiness
 - Moon: oxygen progression step, small boss, first repaired return connection
-- Planet 3: new minerals for stronger power generation
+- Planet 3: radiated power world with new minerals for stronger power generation
 - Planet 4: new armor materials without full upgrade potential
 - Planet 5: structure world with forge needed to unlock the armor's full potential
-- Planet 6: gun unlock planet
+- Planet 6: industrial war-machine world and gun unlock step
 - Planet 7+: final steps not yet defined
 
 ## Earth Rules
@@ -27,6 +27,17 @@ Defines the role of each planet in the progression route.
 - Many standard ores or progression shortcuts can be removed or relocated.
 - Nether portal access is not available through normal vanilla progression.
 - Earth should teach long-term preparation, engineering, and resource discipline before real off-world expansion.
+
+## Locked World Notes
+
+- Team members can piggyback on the team's current unlocked planet immediately.
+- Optional side destinations should stay limited and curated rather than sprawling.
+- Some off-world environments can borrow End-like or Nether-like visual and biome logic without using vanilla dimension progression directly.
+- Planet 3 is currently defined as the radiated power world.
+- Planet 4 is currently intended as a predator-pressure world tied to armor-material acquisition.
+- Planet 5 is currently intended as an ancient megastructure world containing a dormant forge that must be powered on before full armor upgrading becomes possible.
+- Planet 6 is currently intended as the industrialization and firearms step, with industrial war machines as the primary threat.
+- Some mandatory progression beats can be structure clears, repairs, and siege survival sequences rather than boss kills.
 
 ## Planet Template
 

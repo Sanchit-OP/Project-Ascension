@@ -41,6 +41,7 @@ Defines the project pillars, intended player experience, and non-negotiable desi
 - Earth is naturally breathable; other worlds may require oxygen support systems.
 - The homeworld is intentionally stripped down and cannot grant full vanilla progression freedom.
 - Nether access is not part of the starting-world progression route.
+- Players joining an advanced team can immediately access the team's currently unlocked planet tier.
 
 ## Current Scope Assumptions
 
@@ -55,6 +56,7 @@ Defines the project pillars, intended player experience, and non-negotiable desi
 - Shared team progression must avoid turning late-joining players into spectators.
 - Demanding late-game bosses should punish one-note strategies without hard-invalidating whole weapon classes.
 - A long campaign needs pacing variety, or planets will blur together into repeated gear checks.
+- A custom oxygen system is likely justified, but only if its rules stay authored and understandable instead of chasing open-ended simulation.
 
 ## Open Questions
 

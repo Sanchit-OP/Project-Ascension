@@ -18,6 +18,14 @@ Defines what should be solved through scripting and what should not.
 - Deep custom UI systems
 - Low-level dimension behavior
 - Persistent mechanics that need tight performance control
+- A fully custom oxygen system with heavy simulation logic
+
+## Likely Custom-Mod Territory
+
+- Oxygen systems with suit, zone, and vehicle integration
+- Rift or gateway state tracking
+- Planet progression capability checks beyond simple recipes or loot
+- Special suit modules and advanced gear behaviors
 
 ## Open Questions
 

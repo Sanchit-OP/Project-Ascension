@@ -13,6 +13,13 @@ Defines weapon families, progression roles, and unlock timing.
 - Advanced firearms
 - Utility or heavy weapons
 
+## Current Assumptions
+
+- Firearms are not part of the early route.
+- Guns arrive after several off-world steps as a meaningful progression shift.
+- The current likely source direction is industrial manufacturing plus curated gun-mod integration such as TacZ.
+- Guns must enter the combat sandbox without invalidating melee, utility weapons, or boss mechanics.
+
 ## Per-Weapon Documentation
 
 - Era
