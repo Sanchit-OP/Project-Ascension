@@ -89,7 +89,65 @@ module, which is the project's stated first priority, and it is worth being hone
 compatibility argument in ADR-0011 buys third-party *interoperability* at the price of a second
 jar.
 
-## 3. The planet schema
+## 3. What a position actually means
+
+Three places exist. Only one of them is shared.
+
+```
+  minecraft:overworld           ascension_worlds:space            ascension_worlds:moon
+  (Earth's surface)             ONE shared dimension              (Moon's surface)
+
+    ┌──────────┐              [0,0]             [8000,0]            ┌──────────┐
+    │ fly up   │ ─ ascend ─▶   ⬤ Earth ···· 8000 blocks ····▶ ⬤ Moon ─ descend ─▶ │ you land │
+    └──────────┘              body_r 384        body_r 192          └──────────┘
+                                                approach_r 320
+```
+
+**There is no "Earth orbit" and no "Moon orbit".** That is precisely what
+[ADR-0010](../decisions/0010-orbit-is-one-shared-space-dimension.md) changed. There is one
+space; Earth is at `[0, 0]` in it and the Moon is at `[8000, 0]`, and **8000 is the distance you
+fly.**
+
+Ascending from Earth's surface puts you in space just outside Earth's body. From there the Moon
+is 8000 blocks away. Reach its `approach_radius` and descent to `ascension_worlds:moon` becomes
+possible.
+
+### Why 8000
+
+| Travel method | One way |
+|---|---|
+| Elytra and rockets, ~35 b/s | ~3.8 min |
+| A ship at 60 b/s | ~2.2 min |
+| Creative fast flight, ~22 b/s | ~6 min |
+
+A trip you feel, without being a chore. **Settled 2026-09-05.** Distances for planets 4–7 should
+be laid out before any of them is built, because travel time is pacing and a distance a player
+has already learned cannot be changed quietly.
+
+### Two consequences worth stating before M2.5
+
+**A planet body in space is rendered, not built.** At 8000 blocks — roughly 500 chunks —
+Minecraft will never draw a sphere made of blocks. So a planet in space is a rendered body like
+the sun or the moon, and `body_radius` is *its apparent size plus a volume you cannot fly
+into*. You never land on it in space; approaching triggers descent to its surface dimension.
+
+This is also what keeps the shared space affordable: there is nothing there to load, which is
+what makes seeing across it cheap (ADR-0010).
+
+For scale: a 192-block radius body seen from 8000 blocks subtends about 2.7°, roughly five times
+the apparent size of the real moon from Earth. Clearly a place, clearly far away.
+
+**Earth needs a `body_radius` too**, now that it is a body in space you can look at and cannot
+fly through.
+
+### Open: how tall is space?
+
+A dimension's height is configurable and space needs almost none — planets lay out on a plane
+and flying is horizontal. A short world (a few hundred blocks) is the cheapest thing to load and
+reinforces that space is wide rather than tall. Against that, a ship with no vertical room to
+manoeuvre may feel like a corridor. Decide before M2.5.
+
+## 4. The planet schema
 
 ```
 data/ascension_worlds/planet/moon.json
@@ -110,6 +168,28 @@ data/ascension_worlds/planet/moon.json
   "order": 20
 }
 ```
+
+And Earth, which is a planet like any other — that is the point of claiming it:
+
+```
+data/ascension_worlds/planet/earth.json
+```
+
+```json
+{
+  "surface": "minecraft:overworld",
+  "space": {
+    "position": [ 0, 0 ],
+    "body_radius": 384,
+    "approach_radius": 512
+  },
+  "order": 10
+}
+```
+
+No `environment` block: it defaults to `EARTHLIKE`, which is what Earth is. Nothing about the
+Overworld changes because of this file — it declares where Earth *is*, so that flying home uses
+the same descent every other world uses.
 
 | Field | Type | Required | Meaning |
 |---|---|---|---|
@@ -152,7 +232,7 @@ record in an `api` package *is* — it changes the canonical constructor for eve
 implements it. So a data schema can grow safely and a public record cannot, and they get
 opposite treatment.
 
-## 4. Registry mechanism
+## 5. Registry mechanism
 
 A **datapack registry**, via NeoForge's `DataPackRegistryEvent.NewRegistry`, with a codec and
 network sync.
@@ -168,18 +248,34 @@ network sync.
 Held as a registry, resolved on demand, never cached in a static map keyed by dimension
 (ADR-0007 rule 1 and rule 3).
 
-## 5. Open for review
+## 6. Open for review
 
-1. **Distances.** What is the scale between planets? This sets the pace of the entire campaign
-   and is a balancing decision, not a technical one. A candidate to argue about: Earth at
-   `[0, 0]`, Moon at `[8000, 0]` — far enough that the trip is a trip, close enough that it is
-   not a chore.
+1. ~~**Distances.**~~ **Settled 2026-09-05: Earth `[0, 0]`, Moon `[8000, 0]`.** See §3.
+   Planets 4–7 still need laying out, and should be laid out before any of them is built.
 2. **Does `body_radius` do two jobs badly?** It is currently both the rendered size and the
    collision volume. Those may want to be separate once there is a renderer.
-3. **Is Earth a planet in this registry at all?** It has no custom dimension — it is
-   `minecraft:overworld`. Treating it as a planet with `surface: minecraft:overworld` is elegant
-   and makes "fly home" fall out for free. It also means our registry claims a vanilla dimension,
-   which an adopter might not expect.
+3. ~~**Is Earth a planet in this registry?**~~ **Settled 2026-09-05: yes.** Earth is
+   `surface: minecraft:overworld` at `[0, 0]`. "Fly home" then falls out of the same mechanism
+   as every other descent, with no special case for the one world that matters most.
+
+   The cost is that our registry claims a vanilla dimension, which an adopter might not expect.
+   Mitigated by it being *data*: the Earth entry is a JSON file in our datapack, so anyone who
+   wants `minecraft:overworld` left alone deletes one file.
 4. **How does a player reach the space dimension from Earth's surface?** Out of scope for the
    schema, on M2's critical path, and the answer shapes what `approach_radius` means on the way
    *out* as well as in.
+
+### Distant Horizons: tested when orbit exists, and it does not get a vote
+
+Deliberately **not** answered with an early throwaway dimension, which is what this document
+originally proposed.
+
+The reason is better than the proposal was: *DH is not the game.* It is an optional third-party
+optimisation mod, and letting one constrain our dimension design would invert
+[ADR-0002](../decisions/0002-custom-mods-not-curated-modpack.md) and
+[ADR-0003](../decisions/0003-modular-architecture-and-compatibility-policy.md) — the whole
+posture of this project is that third-party mods are things we work *with*, never things our
+Tier 1 design answers to. A negative result would be DH's problem to route around, not a reason
+to reshape a planet.
+
+So it is a compatibility check at M2.5, against the real thing, not a design input beforehand.
