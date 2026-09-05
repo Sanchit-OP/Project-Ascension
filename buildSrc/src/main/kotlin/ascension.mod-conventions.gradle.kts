@@ -35,6 +35,40 @@ base {
 
 val neoForgeVersion: String = providers.gradleProperty("neoforge_version").get()
 
+// --- Java Flight Recorder, on demand ----------------------------------------
+//
+// ADR-0007 rule 12 needs allocation attributed to a call site and a live set read across
+// reload cycles. performance-log.md currently asks for both to be squinted at on the F3
+// screen, which is why the M0.5 baseline is still missing them.
+//
+// JFR is in the JDK we already pin, so this costs no dependency and no mod. Off unless asked
+// for, because a recording is overhead and a file on disk that nobody wanted.
+//
+//   ./gradlew :modules:atmosphere:runServer -Pjfr
+//   jfr summary run/server/ascension-server.jfr
+//   jfr print --events jdk.ObjectAllocationSample run/server/ascension-server.jfr
+//
+// or open the file in JDK Mission Control for the flame graph.
+val jfrRequested: Boolean = providers.gradleProperty("jfr").isPresent
+
+fun jfrArguments(which: String): List<String> {
+    // Forward slashes deliberately. Java accepts them on Windows, and the alternative is a
+    // Windows path full of backslashes going into an @argfile, where a backslash is the escape
+    // character -- so the correctness of the path would depend on someone else's escaping.
+    val projectRoot = rootProject.projectDir.path.replace('\\', '/')
+    val recording = "$projectRoot/run/$which/ascension-$which.jfr"
+    return listOf(
+        // dumponexit is what makes this usable: quitting the game writes the file, so a
+        // measurement run is "start, play, quit" rather than "remember to dump it".
+        "-XX:StartFlightRecording=name=ascension,settings=profile,dumponexit=true,"
+            + "filename=$recording",
+        // The default 64 frames is not enough. Minecraft's own call stacks are deep, so an
+        // allocation inside our code truncates before it reaches a com.ascension frame --
+        // which turns "who allocated this" into "something, somewhere in Minecraft".
+        "-XX:FlightRecorderOptions=stackdepth=256",
+    )
+}
+
 configure<NeoForgeExtension> {
     version = neoForgeVersion
 
@@ -47,11 +81,17 @@ configure<NeoForgeExtension> {
         register("client") {
             client()
             gameDirectory = file("${rootProject.projectDir}/run/client")
+            if (jfrRequested) {
+                jvmArguments.addAll(jfrArguments("client"))
+            }
         }
         register("server") {
             server()
             gameDirectory = file("${rootProject.projectDir}/run/server")
             programArgument("--nogui")
+            if (jfrRequested) {
+                jvmArguments.addAll(jfrArguments("server"))
+            }
         }
         register("data") {
             data()

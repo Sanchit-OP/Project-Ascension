@@ -172,12 +172,28 @@ Kept deliberately short, and each one is recorded here with the reason it is pre
 | **JEI** (Just Enough Items) | Item search, and `U` / `R` to see what a thing is used in and how it is made. Turns "did the recipe load" from a guessing game into a lookup. | **No.** Client convenience only, never referenced in code. |
 | **Curios API** | Provides the accessory slot the tank valve will bind to. | **Yes, but Tier 2 only.** `ascension-compat-curios` compiles against it; Tier 1 must never require it (ADR-0003 rule 1, ADR-0009 §4). |
 
+Installed versions, as of 2026-09-05: `jei-1.21.1-neoforge-19.51.0.418`,
+`curios-neoforge-9.5.1+1.21.1`. Versions are listed because they are part of any performance
+reading taken on this instance — see
+[`performance-log.md`](performance-log.md) on what a baseline may be compared to.
+
 Install both through the CurseForge app's own mod browser for the instance, so it resolves the
 correct 1.21.1 / NeoForge build and any dependencies.
 
 **Curios also has to be on the dev server**, not just the client — it owns server-side slot
 state. For the Gradle `runServer` that means declaring it on the compat module's runtime
 classpath, not dropping a jar in `run/server/mods`.
+
+### Profiling a run
+
+```bash
+./gradlew :modules:atmosphere:runServer -Pjfr
+```
+
+Adds a Java Flight Recorder recording to the run, written to `run/server/ascension-server.jfr`
+when the server exits **cleanly**. Needs no mod: JFR is in the JDK the build already pins. Full
+instructions, including how to read the file, are in
+[`performance-log.md`](performance-log.md#profiling-with-jfr).
 
 ### Debug commands
 
