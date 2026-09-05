@@ -153,6 +153,14 @@ off honestly.
 - Which boss pressure types are mandatory across the campaign?
 - Should some planet completions use non-boss victory conditions?
 
+**Movement:**
+- **Gravity per planet.** Noticed but not designed — excluded from the M2 planet schema on
+  purpose (`worlds-api.md`'s "no field lands here until something reads it") and listed as an
+  open question in `movement.md`. Natural shape once `gear` exists: the same pattern as
+  atmosphere — `worlds` publishes a per-planet multiplier through a `core` contract, `gear`
+  reads it and applies the movement effect, and the two never depend on each other directly
+  (ADR-0011). Not a blocker for M2 v0.1, which is Earth-gravity Moon and Planet 3 throughout.
+
 **Systems gaps identified 2026-09-05:**
 - **Nether removal has an uncosted recipe debt.** Cutting Nether access means re-sourcing
   blaze, nether quartz, netherite and ancient debris wherever our progression needs them. This
