@@ -45,10 +45,12 @@ public final class WorldEnvironmentAtmosphere implements AtmosphereProvider {
      * expect to author: Earth is breathable at zero drain, and an airless one drains at baseline.
      * A query on those allocates nothing beyond the {@code Optional} the frozen API requires.
      *
-     * <p>No cache beyond that, on purpose. A per-dimension cache would have to be invalidated on
-     * {@code /reload}, since planet data is datapack-driven and can change &mdash; real
-     * complexity, and a stale cache would report the old atmosphere, for a saving of one small
-     * object per player per accounting pass at 2 Hz.
+     * <p>No cache beyond that, on purpose &mdash; and not for the reason first written here. The
+     * original note claimed a cache would need invalidating on {@code /reload}; it would not,
+     * because datapack registries load once at world load and {@code /reload} rebuilds recipes,
+     * loot and advancements only. The real reason is simply that there is nothing to save: the
+     * interning above already covers every world we expect to author, and what remains is one
+     * {@code Optional} per player per accounting pass at 2 Hz.
      */
     private static Atmosphere translate(WorldEnvironment environment) {
         if (environment.breathable() && environment.drainMultiplier() == 0.0f) {

@@ -1,0 +1,9 @@
+{
+  "surface": "minecraft:overworld",
+  "space": {
+    "position": [0, 0],
+    "body_radius": 384,
+    "approach_radius": 512
+  },
+  "order": 10
+}
