@@ -100,7 +100,7 @@ compatibility check against the real thing at M2.5, not a design input before it
 
 **Verify:** nothing. This increment produces documents.
 
-### M2.2 — The Moon surface, authored as data
+### M2.2 — The Moon surface, authored as data  *(done, verified in game)*
 
 One dimension, registered from JSON through the schema M2.1 fixes, reachable by command. Airless.
 
@@ -112,6 +112,12 @@ hardcoded planet is how that promise quietly breaks.
 persists across reload, and **suffocates you** — with `DebugAtmosphere` switched off. That last
 part is the increment's real purpose: it is the first time the atmosphere system is tested
 against something it was not built alongside.
+
+**Result:** it does. The Moon generates, persists, and suffocates you with `DebugAtmosphere`
+untouched, on the dev server. `DebugAtmosphere` is now a dev tool rather than the only vacuum in
+the project, which is the thing M1 could not test for itself.
+
+Gravel to the horizon, as authored — the flat placeholder's top layer. Terrain is M2.3.
 
 ### M2.3 — Moon worldgen
 
@@ -162,12 +168,12 @@ about.
 - [ ] `docs/technical/worlds-api.md` written and **reviewed** (drafted 2026-09-05)
 - [x] Orbit representation decided, with an ADR superseding ADR-0004's deferral — ADR-0010
 - [x] Tier 1 → Tier 1 dependency policy decided, with an ADR — ADR-0011
-- [ ] The Moon authored entirely as data — no per-planet Java
+- [x] The Moon authored entirely as data — no per-planet Java
 - [ ] Full loop playable: leave Earth, orbit, descend, survive, return
 - [ ] Dimension transitions measured, and masked rather than shown as a loading screen
 - [ ] Verified on a dedicated server
 - [ ] Survives world unload/reload **and** dimension change
-- [ ] Atmosphere works on the Moon with `DebugAtmosphere` off
+- [x] Atmosphere works on the Moon with `DebugAtmosphere` off
 - [ ] No regression against the M1.8 full-stack reading
 - [ ] Loads and works with **no other Ascension module present** (ADR-0003 rule 6)
 - [ ] Two refactor passes done (M2.4, M2.7)

@@ -64,10 +64,11 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
   discretionary.
 - Every milestone ends with a recorded measurement in `docs/technical/performance-log.md`.
 
-## Current state (2026-09-05)
+## Current state (2026-09-06)
 
-Two modules exist. **`ascension-core`** is an empty Tier 0 stub. **`ascension-atmosphere`** is
-the real work and is nearly feature-complete for v0.1.
+Three modules exist. **`ascension-core`** holds shared contracts (no behaviour).
+**`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** is new and has
+one real world in it.
 
 Done and verified in game on a dedicated server:
 
@@ -95,7 +96,8 @@ full-stack reading is in `docs/technical/performance-log.md`: our whole heap foo
 ADR-0007 rule 1 holds.
 
 **Outstanding from M1, carried not cancelled:** the M1.9 refactor pass (ADR-0008 schedules one
-every third increment; we are four past M1.4), two-client testing, and share-air rescue. All
+every third increment; see the refactor-debt note below), two-client testing, and share-air
+rescue. All
 three are listed in `plans/m2-worlds.md`.
 
 The M0.5 baseline is **retired as a comparison target** — it was taken in single-player with no
@@ -106,14 +108,27 @@ jar**, at Sanchit's call. M1.9's refactor pass and two-client testing are carrie
 [`plans/m2-worlds.md`](plans/m2-worlds.md) under "Carried over from M1, unresolved" — they are
 outstanding, not cancelled.
 
-**M2 state:** design pass. Settled — orbit is one shared interplanetary space dimension
-(ADR-0010, superseding ADR-0004's deferral); Tier 1 modules never depend on each other and
-share contracts in `core` instead (ADR-0011, which amends ADR-0003 and makes `core` more than a
-stub for the first time). Planet schema drafted in `docs/technical/worlds-api.md`, awaiting
-review. Distant Horizons compatibility with a custom dimension is still open. Further
-atmosphere ideas mostly depend on modules that do not exist yet and are queued in `todo.md`
-under "Atmosphere follow-ups" — including replacing the placeholder emitter with a Create-powered
-generator → tank → pressuriser chain in a Tier 2 compat jar.
+**M2 state:** M2.1 design settled, **M2.2 done and verified in game**. Three modules now exist —
+`ascension-worlds` is the third. Orbit is one shared interplanetary space dimension (ADR-0010,
+superseding ADR-0004's deferral); Tier 1 modules never depend on each other and share contracts
+in `core` instead (ADR-0011, which amends ADR-0003 and makes `core` more than a stub for the
+first time). Planet schema in `docs/technical/worlds-api.md`.
+
+The Moon is a datapack planet with no per-planet Java, and **it suffocates you with
+`DebugAtmosphere` off** — so `atmosphere` has now been tested against a world it was not built
+alongside, and the debug vacuum is a dev tool rather than the only vacuum in the project. Its
+worldgen is still a flat gravel placeholder; terrain is M2.3. Distant Horizons compatibility
+with a custom dimension is still open.
+
+**Refactor debt is the largest outstanding risk.** ADR-0008 schedules a pass every third
+increment; the last one was M1.4 and five have landed since (M1.5–M1.8, M2.2), so two passes are
+owed. `ascension-atmosphere` is 3,795 lines with **zero unit tests**, while `core` — written
+after the test harness existed — has 17, one of which caught a real codec bug. That asymmetry is
+the concrete debt, not a feeling.
+
+Further atmosphere ideas mostly depend on modules that do not exist yet and are queued in
+`todo.md` under "Atmosphere follow-ups" — including replacing the placeholder emitter with a
+Create-powered generator → tank → pressuriser chain in a Tier 2 compat jar.
 
 ## Style
 
