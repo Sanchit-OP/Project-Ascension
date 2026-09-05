@@ -9,7 +9,14 @@ package com.ascension.atmosphere.api;
  */
 public interface OxygenSource {
 
-    /** Units currently stored. */
+    /**
+     * Units currently stored.
+     *
+     * <p>Must reflect any {@link #consume(int)} or {@link #accept(int)} already applied to this
+     * instance. The accounting pass gathers your source once, draws from it, and then reads it
+     * back to work out what the player has left; a source that answers from a value captured at
+     * construction would report air it has already handed out.
+     */
     int available();
 
     /** Maximum units this source can hold. */

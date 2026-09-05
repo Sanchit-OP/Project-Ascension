@@ -90,8 +90,7 @@ public final class TankRules {
     public static void enforce(ServerPlayer player) {
         Inventory inventory = player.getInventory();
         int size = inventory.getContainerSize();
-        int kept = 0;
-        boolean sawOpen = false;
+        TankCarrySweep sweep = new TankCarrySweep();
         boolean dropped = false;
 
         for (int slot = 0; slot < size; slot++) {
@@ -100,22 +99,15 @@ public final class TankRules {
                 continue;
             }
 
-            if (kept >= AtmosphereTuning.MAX_TANKS_CARRIED) {
-                inventory.setItem(slot, ItemStack.EMPTY);
-                player.drop(stack, false);
-                dropped = true;
-                continue;
-            }
-
-            if (OxygenTankItem.isOpen(stack)) {
-                if (sawOpen) {
-                    // Two open valves would double the supply for free. Later slots lose.
-                    OxygenTankItem.setOpen(stack, false);
-                } else {
-                    sawOpen = true;
+            switch (sweep.next(OxygenTankItem.isOpen(stack))) {
+                case DROP -> {
+                    inventory.setItem(slot, ItemStack.EMPTY);
+                    player.drop(stack, false);
+                    dropped = true;
                 }
+                case KEEP_CLOSED -> OxygenTankItem.setOpen(stack, false);
+                case KEEP -> { }
             }
-            kept++;
         }
 
         if (dropped) {

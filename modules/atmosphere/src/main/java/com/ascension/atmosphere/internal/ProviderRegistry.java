@@ -59,7 +59,15 @@ public final class ProviderRegistry {
      */
     private final Set<String> reportedConflicts = ConcurrentHashMap.newKeySet();
 
-    private ProviderRegistry() {
+    /**
+     * Package-private rather than private so tests can build their own instance.
+     *
+     * <p>Same reasoning as {@code WorldEnvironments} in core, and the same rejected alternative:
+     * a {@code reset()} on the singleton is test-only API living in production code, one careless
+     * call away from emptying the provider list on a running server. Freezing is one-way by
+     * design; a test that needs a frozen registry should get a fresh one.
+     */
+    ProviderRegistry() {
     }
 
     public static ProviderRegistry get() {

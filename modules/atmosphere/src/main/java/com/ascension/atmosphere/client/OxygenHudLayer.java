@@ -1,6 +1,7 @@
 package com.ascension.atmosphere.client;
 
 import com.ascension.atmosphere.internal.AtmosphereTuning;
+import com.ascension.atmosphere.internal.OxygenLevel;
 import com.ascension.atmosphere.internal.net.OxygenSyncPayload;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -45,9 +46,6 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
     private static final int COLOUR_CRITICAL = 0xFFD84B3A;
     private static final int COLOUR_TEXT = 0xFFFFFFFF;
 
-    private static final int SECONDS_LOW = 30;
-    private static final int SECONDS_CRITICAL = 10;
-
     @Override
     public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -74,9 +72,11 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
                 : Math.min(1.0f, (float) state.units() / state.capacity());
         int filled = Math.round(BAR_WIDTH * fill);
 
-        int colour = seconds <= SECONDS_CRITICAL ? COLOUR_CRITICAL
-                : seconds <= SECONDS_LOW ? COLOUR_LOW
-                : COLOUR_OK;
+        int colour = switch (OxygenLevel.forSecondsRemaining(seconds)) {
+            case CRITICAL -> COLOUR_CRITICAL;
+            case LOW -> COLOUR_LOW;
+            case OK -> COLOUR_OK;
+        };
 
         graphics.fill(barX - 1, barY - 1, right + 1, barY + BAR_HEIGHT + 1, COLOUR_FRAME);
         graphics.fill(barX, barY, right, barY + BAR_HEIGHT, COLOUR_TRACK);

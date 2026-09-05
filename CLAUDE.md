@@ -120,11 +120,26 @@ alongside, and the debug vacuum is a dev tool rather than the only vacuum in the
 worldgen is still a flat gravel placeholder; terrain is M2.3. Distant Horizons compatibility
 with a custom dimension is still open.
 
-**Refactor debt is the largest outstanding risk.** ADR-0008 schedules a pass every third
-increment; the last one was M1.4 and five have landed since (M1.5–M1.8, M2.2), so two passes are
-owed. `ascension-atmosphere` is 3,795 lines with **zero unit tests**, while `core` — written
-after the test harness existed — has 17, one of which caught a real codec bug. That asymmetry is
-the concrete debt, not a feeling.
+**M2.4 refactor pass done.** ADR-0008 schedules one every third increment; the last was M1.4
+and five had landed since (M1.5–M1.8, M2.2), so this closes that debt rather than adding to it.
+Added 64 unit tests across `core` and `atmosphere` (was 17, all in `core`) — not by writing tests
+around existing code, but by pulling the pure arithmetic out of `OxygenTracker`, `TankRules` and
+the tank/HUD display code into small classes (`OxygenAccounting`, `TankCarrySweep`, `OxygenLevel`)
+that take numbers in and give numbers back, no `ServerPlayer` required. That is what ADR-0008's
+"unit tests are never evidence for world state" rule leaves testable, and until now nothing in
+`atmosphere` had been split out that way.
+
+Found two real things doing it: `OxygenTracker`'s at-risk path gathered a player's oxygen sources
+twice per accounting pass (once to spend, once to summarise) — the exact double inventory-walk
+its own comment warned against; and the tank item's durability bar and the HUD bar each carried a
+separate copy of the same two thresholds (30s/10s), which is the failure mode
+`AtmosphereTuning.formatDuration`'s own javadoc names for duration strings but had not been
+caught for colour bands. Both fixed; `OxygenLevel` is now the one place those numbers live.
+
+Line count did not shrink — comment density here is deliberate (see the Style note below) and
+extraction adds a docblock per class, so 4 new files land at roughly the same total. What changed
+is that the arithmetic deciding how fast a player dies is now checked by 25 tests
+(`OxygenAccountingTest`, `OxygenLevelTest`) instead of by standing in a vacuum and counting.
 
 Further atmosphere ideas mostly depend on modules that do not exist yet and are queued in
 `todo.md` under "Atmosphere follow-ups" — including replacing the placeholder emitter with a
