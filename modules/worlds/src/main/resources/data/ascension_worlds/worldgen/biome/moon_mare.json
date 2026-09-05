@@ -7,8 +7,8 @@
     "fog_color": 1052688,
     "water_color": 4159204,
     "water_fog_color": 329011,
-    "grass_color": 8355711,
-    "foliage_color": 8355711
+    "grass_color": 3945098,
+    "foliage_color": 3945098
   },
   "spawners": {
     "monster": [],
@@ -25,7 +25,7 @@
   "features": [
     [],
     [],
-    [],
+    [ "ascension_worlds:small_crater" ],
     [],
     [],
     [],

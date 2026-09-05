@@ -1,0 +1,34 @@
+{
+  "temperature": 0.0,
+  "downfall": 0.0,
+  "has_precipitation": false,
+  "effects": {
+    "sky_color": 0,
+    "fog_color": 1052688,
+    "water_color": 4159204,
+    "water_fog_color": 329011,
+    "grass_color": 11316396,
+    "foliage_color": 11316396
+  },
+  "spawners": {
+    "monster": [],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [ "ascension_worlds:small_crater", "ascension_worlds:large_crater" ],
+    [],
+    [],
+    [],
+    [ "ascension_worlds:lunar_helium_ore" ]
+  ]
+}

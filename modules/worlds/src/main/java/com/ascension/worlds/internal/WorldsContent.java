@@ -1,6 +1,8 @@
 package com.ascension.worlds.internal;
 
 import com.ascension.worlds.AscensionWorlds;
+import com.ascension.worlds.internal.terrain.CraterConfiguration;
+import com.ascension.worlds.internal.terrain.CraterFeature;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -8,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -34,6 +37,54 @@ public final class WorldsContent {
             DeferredRegister.create(Registries.BLOCK, AscensionWorlds.MOD_ID);
     private static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(Registries.ITEM, AscensionWorlds.MOD_ID);
+    private static final DeferredRegister<Feature<?>> FEATURES =
+            DeferredRegister.create(Registries.FEATURE, AscensionWorlds.MOD_ID);
+
+    /**
+     * Loose surface dust. The one block every airless world shares, regardless of biome &mdash;
+     * real regolith settles over everything alike, so the highlands/mare visual split comes from
+     * the rock underneath rather than a second dust block.
+     */
+    public static final Supplier<Block> MOON_REGOLITH = BLOCKS.register(
+            "moon_regolith",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(0.5f)
+                    .sound(SoundType.GRAVEL)));
+
+    public static final Supplier<Item> MOON_REGOLITH_ITEM = ITEMS.register(
+            "moon_regolith", () -> new BlockItem(MOON_REGOLITH.get(), new Item.Properties()));
+
+    /** Highlands rock: pale, ancient, heavily cratered. Real anorthosite is what makes it pale. */
+    public static final Supplier<Block> ANORTHOSITE = BLOCKS.register(
+            "anorthosite",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.QUARTZ)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5f, 6.0f)
+                    .sound(SoundType.STONE)));
+
+    public static final Supplier<Item> ANORTHOSITE_ITEM = ITEMS.register(
+            "anorthosite", () -> new BlockItem(ANORTHOSITE.get(), new Item.Properties()));
+
+    /** Mare rock: dark basalt, the "seas" visible from Earth with the naked eye. */
+    public static final Supplier<Block> MOON_BASALT = BLOCKS.register(
+            "moon_basalt",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5f, 6.0f)
+                    .sound(SoundType.BASALT)));
+
+    public static final Supplier<Item> MOON_BASALT_ITEM = ITEMS.register(
+            "moon_basalt", () -> new BlockItem(MOON_BASALT.get(), new Item.Properties()));
+
+    /**
+     * The crater shape, registered once. See {@link CraterFeature}'s own javadoc for why this is
+     * the one piece of Java the Moon's terrain needs.
+     */
+    public static final Supplier<Feature<CraterConfiguration>> CRATER = FEATURES.register(
+            "crater", () -> new CraterFeature(CraterConfiguration.CODEC));
 
     /**
      * The Moon's first exclusive resource: a fusion-fuel ore, mined in place rather than
@@ -96,6 +147,7 @@ public final class WorldsContent {
     public static void register(IEventBus modBus) {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
+        FEATURES.register(modBus);
         modBus.addListener(WorldsContent::addToCreativeTabs);
     }
 
@@ -103,6 +155,9 @@ public final class WorldsContent {
         if (event.getTabKey() == CreativeModeTabs.NATURAL_BLOCKS) {
             event.accept(LUNAR_HELIUM_ORE_ITEM.get());
             event.accept(TITANIUM_ORE_ITEM.get());
+            event.accept(MOON_REGOLITH_ITEM.get());
+            event.accept(ANORTHOSITE_ITEM.get());
+            event.accept(MOON_BASALT_ITEM.get());
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(RAW_HELIUM.get());
