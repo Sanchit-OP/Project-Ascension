@@ -161,6 +161,13 @@ off honestly.
   reads it and applies the movement effect, and the two never depend on each other directly
   (ADR-0011). Not a blocker for M2 v0.1, which is Earth-gravity Moon and Planet 3 throughout.
 
+**Worldgen:**
+- **Curate Earth's modded ore spawns** once Create and whichever other mods actually land add
+  their own overworld ores. Mechanism is already proven: `neoforge:remove_features` biome
+  modifiers, the mirror image of the `add_features` one that placed Titanium Ore — see
+  `docs/technical/datapacks.md`. Deliberately not started now, per Sanchit's call 2026-09-06:
+  nothing to remove yet.
+
 **Systems gaps identified 2026-09-05:**
 - **Nether removal has an uncosted recipe debt.** Cutting Nether access means re-sourcing
   blaze, nether quartz, netherite and ancient debris wherever our progression needs them. This

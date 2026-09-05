@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder texture: reuses vanilla's own iron_ore, referenced by path rather than copied. Swap this one line for our own texture once a CC0 asset is chosen -- nothing else here needs to change.",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "minecraft:block/iron_ore"
+  }
+}
