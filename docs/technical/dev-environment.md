@@ -147,6 +147,33 @@ Currently **off** (`org.gradle.configuration-cache=false`). ModDevGradle's compa
 it is unverified. Enable it, confirm `runClient` still works, and record the result before
 leaving it on.
 
+## The test loop we actually use
+
+1. `./gradlew :modules:atmosphere:build`
+2. Copy the jar into the CurseForge test instance:
+   `C:\Users\sanch\curseforge\minecraft\Instances\Ascension Dev\mods\`
+3. `./gradlew :modules:atmosphere:runServer` (dev server on `localhost`, port 25565)
+4. Join from the **Ascension Dev** CurseForge instance via Multiplayer
+
+The instance is MC 1.21.1 / neoforge-21.1.249, matching what we compile against. `Devil0701` is
+opped at level 4 in `run/server/ops.json`, using the offline-mode UUID because the dev server
+runs `online-mode=false`.
+
+**Restart the server after every rebuild** — the jar is read at startup.
+
+### Debug commands
+
+```
+/ascension atmosphere query      breathability, drain, lung reserve
+/ascension atmosphere why        every provider that claimed this position, and which won
+/ascension atmosphere volumes    emitter count, pressurised blocks, whether your head is inside one
+/ascension atmosphere debug vacuum | clear
+/ascension atmosphere debug oxygen <units>
+```
+
+`why` and `volumes` exist because two separate bugs were invisible without them: a provider
+losing to a higher band looks exactly like a provider that does not work.
+
 ## Testing expectations
 
 Per [ADR-0008](../decisions/0008-build-and-test-cadence.md), compiling is not evidence.

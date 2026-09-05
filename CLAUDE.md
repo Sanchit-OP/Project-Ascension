@@ -66,9 +66,29 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
 
 ## Current state (2026-09-05)
 
-Design and decisions locked. **No implementation code exists yet.** JDK 21 installed and
-verified. Next: [M0](plans/m0-toolchain-and-skeleton.md), then
-[M1](plans/m1-atmosphere.md).
+Two modules exist. **`ascension-core`** is an empty Tier 0 stub. **`ascension-atmosphere`** is
+the real work and is nearly feature-complete for v0.1.
+
+Done and verified in game on a dedicated server:
+
+- M0 toolchain, M1.1 API design (frozen), M1.2 providers, M1.3 sync + HUD, M1.4 refactor,
+  M1.5 drain / failure / water, M1.6 sealed volumes.
+- Lungs (20s, refill free in breathable air, drawn last) vs tanks (drained first, never
+  self-refill). Gear grows lung capacity rather than reducing drain, so enchantments cannot
+  silently extend a tank.
+- Water is an unbreathable atmosphere at the `DIMENSION` band; vanilla bubbles and drowning are
+  suppressed while active, switchable via server config `waterIntegration`.
+- Oxygen Emitter pressurises a sealed room (4096 blocks / 24 radius), invalidated on block
+  change.
+
+**Next: M1.7** — tank item and refill station. Then M1.8: refactor plus a performance
+comparison against the M0.5 baseline (5 ms/tick, 60 MB/s allocation) in
+`docs/technical/performance-log.md`.
+
+Scope decision: finish M1.7 + M1.8, ship atmosphere v0.1, then start `ascension-worlds`. Further
+atmosphere ideas mostly depend on modules that do not exist yet and are queued in `todo.md`
+under "Atmosphere follow-ups" — including replacing the placeholder emitter with a Create-powered
+generator → tank → pressuriser chain in a Tier 2 compat jar.
 
 ## Style
 

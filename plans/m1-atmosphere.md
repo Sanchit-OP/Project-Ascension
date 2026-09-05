@@ -141,13 +141,38 @@ Three things testing changed, none of which were visible from the code:
    on air supply, which jittered as that value changed — a workaround for a bug that was itself
    a bug.
 
-### M1.6 — Zone emitter block + volume caching
+### M1.6 — Zone emitter block + volume caching  *(done — 2026-09-05)*
 
 A test block that makes a sealed volume non-breathable. Flood-fill bounded and cached, cache
 invalidated on block change within bounds only.
 
-**Verify:** seal a room, break one block, watch it re-evaluate. Confirm no per-tick cost with
-the profiler attached.
+**Verified on the dedicated server.** Sealing, breaking and repairing all behave, with
+messages in both directions.
+
+Limits: **4096 open blocks** per emitter and **24 blocks radius** on any axis, whichever binds
+first.
+
+Four bugs testing found, none visible from the code:
+
+1. **Walls were being pressurised.** One set served as both cycle-detection and result, and
+   positions were marked visited before being tested for openness. A 3x3x3 room reported 81
+   blocks (27 interior + 54 shell) instead of 26. Now `seen` tracks the search and `volume`
+   holds only open space.
+2. **Debug vacuum outranked every room.** It claimed at `OVERRIDE` (10000) against
+   `SEALED_VOLUME` (2000), so a correctly working room could never win — and "room broken" was
+   indistinguishable from "room works but loses". Moved to `DIMENSION + 100`.
+3. **Broken rooms never recovered.** Unsealed emitters were dropped from the map that
+   invalidation iterated, so repairing a wall did nothing forever; only breaking and replacing
+   the emitter worked. Emitters are now tracked separately from their volumes. The same fix
+   covers the load path — nothing outside `setPlacedBy` ever populated the index, so every
+   emitter would have been forgotten across a server restart.
+4. **Volumes computed one edit behind.** `BreakEvent` and `EntityPlaceEvent` are cancellable and
+   fire *before* the world changes, so the fill read the old world. Breaking one block appeared
+   to do nothing and a single hole seemed to need patching twice. Recomputes are now deferred
+   through `MinecraftServer.execute`.
+
+Every one of these was found by playing, not by reading — which is the entire argument of
+ADR-0008.
 
 ### M1.7 — Tank item + refill station
 
