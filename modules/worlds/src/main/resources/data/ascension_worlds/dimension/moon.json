@@ -5,7 +5,7 @@
     "settings": {
       "biome": "ascension_worlds:moon_surface",
       "lakes": false,
-      "features": false,
+      "features": true,
       "layers": [
         { "block": "minecraft:bedrock", "height": 1 },
         { "block": "minecraft:deepslate", "height": 40 },
