@@ -58,9 +58,17 @@ public interface AtmosphereProvider {
 | `VEHICLE` | 3000 | Ship and sub-level interiors. |
 | `OVERRIDE` | 10000 | Admin, debug, creative. |
 
-**Highest claiming provider wins. A tie between two providers at the same priority claiming
-the same position is a registration error and fails loudly at startup, never silently at
-runtime.**
+**Highest claiming provider wins.** Ties break on registration id, fixed once when the
+registry freezes, so the outcome never depends on mod load order.
+
+> **Corrected during M1.2 implementation.** This section originally said equal-priority
+> conflicts would "fail loudly at startup". That is not knowable at startup: two providers
+> sharing a priority is legal and common — every dimension baseline sits at `DIMENSION` —
+> and whether they genuinely conflict depends on the position being queried. The check
+> therefore happens at query time, where the conflict is real: if a second provider at the
+> winner's priority also claims the position, it is logged once per pair, not every tick.
+> Resolution stays deterministic either way, so this is a diagnostic rather than a
+> correctness fix.
 
 ### Debuggability is a feature
 
