@@ -31,14 +31,14 @@
       "type": "minecraft:add",
       "argument1": {
         "type": "minecraft:y_clamped_gradient",
-        "from_y": -64,
+        "from_y": 0,
         "from_value": 1.5,
-        "to_y": 0,
+        "to_y": 40,
         "to_value": -1.5
       },
       "argument2": {
         "type": "minecraft:mul",
-        "argument1": 0.3,
+        "argument1": 0.2,
         "argument2": {
           "type": "minecraft:noise",
           "noise": "ascension_worlds:moon_hills",
@@ -51,14 +51,14 @@
       "type": "minecraft:add",
       "argument1": {
         "type": "minecraft:y_clamped_gradient",
-        "from_y": -64,
+        "from_y": 0,
         "from_value": 1.5,
-        "to_y": 0,
+        "to_y": 40,
         "to_value": -1.5
       },
       "argument2": {
         "type": "minecraft:mul",
-        "argument1": 0.3,
+        "argument1": 0.2,
         "argument2": {
           "type": "minecraft:noise",
           "noise": "ascension_worlds:moon_hills",
