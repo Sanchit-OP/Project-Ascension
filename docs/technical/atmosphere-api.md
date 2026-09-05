@@ -191,6 +191,51 @@ Per ADR-0007 rule 6, chosen deliberately: **accounting runs every 10 ticks (0.5s
 client bar interpolating for smoothness. Oxygen does not need 20 Hz, and 0.5s granularity is
 imperceptible against a multi-second failure window.
 
+## 5b. Water is the same problem as vacuum
+
+**Decided 2026-09-05.** Drowning and suffocating in vacuum are the same situation: no air to
+breathe. Running them as two parallel meters with two separate failure timers is a UI accident
+of vanilla, not a design choice, and this project should not inherit it.
+
+So water registers as an ordinary unbreathable atmosphere, and one bar covers both.
+
+### Why this is more than tidiness
+
+It makes existing gear meaningful off-world instead of dead weight, and it makes new gear
+meaningful underwater without any special-casing:
+
+| Vanilla thing | Becomes |
+|---|---|
+| Respiration enchantment | a `gearEfficiency` contribution |
+| Turtle helmet | a `gearEfficiency` contribution |
+| Conduit power | a `STRUCTURE`-band provider claiming breathable |
+| An oxygen tank | works underwater, because water is just another atmosphere |
+
+A player who kits out for the Moon is, without being told, also kitted out for deep water. That
+is the kind of unification worth having.
+
+### The catch, and how it is handled
+
+Taking this over means suppressing vanilla's air supply and drowning damage. For a module
+whose first priority is being adoptable by other people (ADR-0003), silently seizing a core
+vanilla mechanic is exactly the kind of surprise that makes a library untrustworthy.
+
+Therefore:
+
+- The water provider is **built in but individually switchable**, defaulting **on** for
+  Project-Ascension and documented prominently for anyone else.
+- It claims at the `DIMENSION` band, so any structure, vehicle or sealed volume still overrides
+  it. A pressurised submarine works with no extra code.
+- Vanilla air supply is held full only while our system is actually managing the player, so
+  disabling the feature restores stock behaviour exactly rather than leaving the player in a
+  half-converted state.
+
+### Scheduling
+
+Implemented in **M1.5**, alongside drain and the failure window. Doing it before consumption
+exists would produce a bar that correctly says "you cannot breathe" and then never moves,
+which tests nothing.
+
 ## 6. Failure model
 
 From `oxygen.md`: *"a short failure window followed by death if not corrected."*

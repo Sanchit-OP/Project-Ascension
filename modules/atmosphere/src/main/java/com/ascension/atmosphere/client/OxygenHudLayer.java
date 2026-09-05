@@ -1,32 +1,46 @@
 package com.ascension.atmosphere.client;
 
+import com.ascension.atmosphere.internal.AtmosphereTuning;
 import com.ascension.atmosphere.internal.net.OxygenSyncPayload;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 /**
- * Oxygen bar and hazard indicator.
+ * Oxygen bar and hazard indicator, drawn in the vanilla air-bubble slot.
  *
- * <p>Hidden entirely in breathable air. A meter that reads "fine" at all times is noise, and
- * Earth is breathable for the whole first act of the campaign.
+ * <p>Position is deliberately the same place vanilla shows air: the right-hand status column
+ * above the hotbar. Registering above {@code VanillaGuiLayers.AIR_LEVEL} only controls draw
+ * order, not layout, so the coordinates here do the actual work.
+ *
+ * <p>Hidden entirely in breathable air. A meter that always reads "fine" is noise, and Earth is
+ * breathable for the whole first act of the campaign.
  *
  * <p>Shows <em>seconds</em>, not units. "40s" is something a player can act on; "1200 units" is
  * not. Units remain the storage format so arithmetic stays exact.
  *
- * <p>Draws from the cached {@link ClientOxygenState} only. No computation, no allocation beyond
- * the text component, nothing that touches world state (ADR-0007 rule 7).
+ * <p>Draws from the cached {@link ClientOxygenState} only. No computation, no world access
+ * (ADR-0007 rule 7).
  */
 @OnlyIn(Dist.CLIENT)
 public final class OxygenHudLayer implements LayeredDraw.Layer {
 
+    /** Half the hotbar width; vanilla anchors both status columns to this. */
+    private static final int HOTBAR_HALF_WIDTH = 91;
+
+    /** Vanilla draws the air-bubble row this far above the bottom of the screen. */
+    private static final int AIR_ROW_FROM_BOTTOM = 49;
+
+    /** Lift clear of vanilla bubbles when the player is also short of breath underwater. */
+    private static final int UNDERWATER_LIFT = 10;
+
     private static final int BAR_WIDTH = 80;
     private static final int BAR_HEIGHT = 5;
-    private static final int BAR_Y_OFFSET = 56;
 
     private static final int COLOUR_FRAME = 0xFF000000;
     private static final int COLOUR_TRACK = 0xFF3A3A3A;
@@ -35,15 +49,14 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
     private static final int COLOUR_CRITICAL = 0xFFD84B3A;
     private static final int COLOUR_TEXT = 0xFFFFFFFF;
 
-    /** Below this many seconds the bar turns amber. */
     private static final int SECONDS_LOW = 30;
-    /** Below this many seconds the bar turns red. */
     private static final int SECONDS_CRITICAL = 10;
 
     @Override
     public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player == null || minecraft.options.hideGui) {
+        LocalPlayer player = minecraft.player;
+        if (player == null || minecraft.options.hideGui) {
             return;
         }
         if (!ClientOxygenState.shouldRender()) {
@@ -53,10 +66,15 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
         OxygenSyncPayload state = ClientOxygenState.current();
         int seconds = ClientOxygenState.secondsRemaining();
 
-        int screenWidth = graphics.guiWidth();
-        int screenHeight = graphics.guiHeight();
-        int x = (screenWidth - BAR_WIDTH) / 2;
-        int y = screenHeight - BAR_Y_OFFSET;
+        int right = graphics.guiWidth() / 2 + HOTBAR_HALF_WIDTH;
+        int barX = right - BAR_WIDTH;
+        int barY = graphics.guiHeight() - AIR_ROW_FROM_BOTTOM;
+
+        // Vanilla only draws bubbles while the player is actually short of air, so shift up
+        // only then rather than permanently leaving a gap.
+        if (player.getAirSupply() < player.getMaxAirSupply()) {
+            barY -= UNDERWATER_LIFT;
+        }
 
         float fill = state.capacity() <= 0
                 ? 0.0f
@@ -67,39 +85,37 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
                 : seconds <= SECONDS_LOW ? COLOUR_LOW
                 : COLOUR_OK;
 
-        graphics.fill(x - 1, y - 1, x + BAR_WIDTH + 1, y + BAR_HEIGHT + 1, COLOUR_FRAME);
-        graphics.fill(x, y, x + BAR_WIDTH, y + BAR_HEIGHT, COLOUR_TRACK);
+        graphics.fill(barX - 1, barY - 1, right + 1, barY + BAR_HEIGHT + 1, COLOUR_FRAME);
+        graphics.fill(barX, barY, right, barY + BAR_HEIGHT, COLOUR_TRACK);
         if (filled > 0) {
-            graphics.fill(x, y, x + filled, y + BAR_HEIGHT, colour);
+            graphics.fill(barX, barY, barX + filled, barY + BAR_HEIGHT, colour);
         }
 
+        // Right-aligned above the bar, so the digits stay put as the text width changes.
         Component label = state.suffocating()
                 ? Component.literal("NO AIR")
                 : Component.literal(formatSeconds(seconds));
-        int labelWidth = minecraft.font.width(label);
         graphics.drawString(minecraft.font, label,
-                (screenWidth - labelWidth) / 2, y - 10, COLOUR_TEXT, true);
+                right - minecraft.font.width(label), barY - 10, COLOUR_TEXT, true);
 
-        renderHazard(graphics, minecraft, state, x, y);
+        renderHazard(graphics, minecraft, state, barX, barY);
     }
 
     /**
-     * Minimal hazard indicator: shown only when the surroundings drain faster than baseline.
-     *
-     * <p>This is what tells a player <em>why</em> their air is going quickly, which matters once
-     * different worlds carry different drain multipliers. Deliberately a single glyph rather
-     * than a readout panel.
+     * Minimal hazard indicator, left of the bar. Shown only when the surroundings drain faster
+     * than baseline &mdash; that is what tells a player <em>why</em> their air is going quickly
+     * once different worlds carry different multipliers.
      */
     private void renderHazard(GuiGraphics graphics, Minecraft minecraft,
                               OxygenSyncPayload state, int barX, int barY) {
-        float baselineDrain = com.ascension.atmosphere.internal.AtmosphereTuning.BASE_UNITS_PER_SECOND;
-        if (state.drainPerSecond() <= baselineDrain + 0.001f) {
+        float baseline = AtmosphereTuning.BASE_UNITS_PER_SECOND;
+        if (state.drainPerSecond() <= baseline + 0.001f) {
             return;
         }
         Component marker = Component.literal(
-                String.format("⚠ x%.1f", state.drainPerSecond() / baselineDrain));
+                String.format("x%.1f", state.drainPerSecond() / baseline));
         graphics.drawString(minecraft.font, marker,
-                barX + BAR_WIDTH + 6, barY - 2, COLOUR_CRITICAL, true);
+                barX - minecraft.font.width(marker) - 5, barY - 1, COLOUR_CRITICAL, true);
     }
 
     private static String formatSeconds(int seconds) {

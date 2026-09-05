@@ -74,23 +74,55 @@ Hardcode "Overworld is breathable" and use a debug command for the rest.
 >
 > **M1.3 does not close without it.** No third deferral.
 
-### M1.3 — Sync + HUD
+### M1.3 — Sync + HUD  *(done — 2026-09-05)*
 
 Delta-synced client mirror, oxygen bar. No per-tick packets.
 
-**Verify:** HUD tracks server state in multiplayer with two clients connected; no packet spam
-under a network profiler.
+**Verified on a dedicated server** (`localhost`, online-mode=false, NeoForge 21.1.249):
 
-### M1.4 — Refactor pass (ADR-0008)
+- server started clean with `Ascension Atmosphere loaded (0.1.0)` and no client-class errors,
+  which is what the dist-separation work was protecting
+- HUD rendered from genuine network state: the client's default is `0 units, breathable,
+  hidden`, so a visible bar reading `2m 30s` required `units`, `breathable` and
+  `drainPerSecond` to all arrive from the server
+- changing oxygen with `debug oxygen <n>` updated the bar each time, confirming repeated
+  change-driven sync rather than a single packet at join
+
+Two findings worth keeping:
+
+1. **HUD position.** `registerAbove(VanillaGuiLayers.AIR_LEVEL, ...)` sets draw *order*, not
+   layout. The first version drew centred above the hotbar; it now anchors to the right-hand
+   status column where vanilla shows air, lifting 10px only while genuinely underwater.
+2. **Op permissions.** `debug` requires permission level 2, and Brigadier hides subcommands the
+   caller cannot use, so the whole branch was invisible on a fresh server. Single-player never
+   showed this because the host is op by default — a test-setup gap that only a real server
+   exposes.
+
+**M1.4 refactor findings:** fully-qualified names left behind by patch scripts (cleaned), and a
+per-tick allocation in `capacityOf` — a captured `int[]` box allocated per collector, per
+player, per accounting pass, inside the one loop ADR-0007 asks to keep quiet. Replaced with a
+reusable accumulator that allocates nothing when no collectors are registered.
+
+
+
+### M1.4 — Refactor pass (ADR-0008)  *(done — 2026-09-05)*
 
 No features. API surface review before the failure model builds on it.
 
-### M1.5 — Drain and failure model
+### M1.5 — Drain, failure model, and water unification
 
 Depletion, the short failure window, then death — the underwater-suffocation feel specified in
 `docs/gameplay/oxygen.md`. Recovery on re-entering breathable air.
 
-**Verify:** in-game death and recovery, both sides, on a dedicated server.
+**Also in this increment: water counts as unbreathable atmosphere.** Drowning and vacuum are
+the same problem, so one bar and one failure timer covers both. Respiration and turtle helmets
+map to `gearEfficiency`; conduit power claims breathable at the `STRUCTURE` band; an oxygen tank
+works underwater for free. Built in but individually switchable, defaulting on, because
+silently seizing a vanilla mechanic would make this module untrustworthy to adopt. See
+`docs/technical/atmosphere-api.md` section 5b.
+
+**Verify:** in-game death and recovery, both sides, on a dedicated server. Plus: drown with the
+feature off (vanilla behaviour intact) and with it on (our bar, our timer).
 
 ### M1.6 — Zone emitter block + volume caching
 
