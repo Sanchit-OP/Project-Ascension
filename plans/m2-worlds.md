@@ -62,8 +62,17 @@ put us in the worldgen business and break every tool that reads it. And **the re
 where a world is and what it is like, not what happens on it** — `planets.md`'s "required fields
 per planet" is an authoring checklist, not a schema; a boss is an entity in a structure.
 
-Open for review: the distance scale between planets, whether Earth belongs in the registry at
-all given it has no custom dimension, and how a player reaches space from Earth's surface.
+Settled since drafting: **Earth `[0, 0]`, Moon `[8000, 0]`** — 8000 blocks is the distance you
+actually fly, roughly 2–4 minutes each way under power. **Earth is in the registry** as
+`surface: minecraft:overworld`, so flying home uses the same descent as every other world
+instead of being a special case.
+
+Two consequences that reach M2.5: a planet in space is a **rendered body, not built blocks** —
+at 500 chunks away nothing made of blocks will ever draw — and Earth therefore needs a
+`body_radius` of its own.
+
+Still open: how tall the space dimension should be, and how a player gets from Earth's surface
+into space in the first place.
 
 #### 3. Tier 1 → Tier 1 dependencies — ✅ settled
 
@@ -79,11 +88,15 @@ The cost, stated in `worlds-api.md` rather than buried: `atmosphere` currently d
 nothing but NeoForge and now gains a required dependency on `core`, so an adopter needs two jars
 instead of one.
 
-#### 4. Distant Horizons compatibility — ⬜ open
+#### 4. Distant Horizons compatibility — ⏭ deferred to M2.5, and it does not get a vote
 
-DH is what makes high render distance affordable, and a custom dimension is exactly the thing
-that could defeat its LOD generation. Worth answering while dimension design can still move —
-and cheaply answerable with a throwaway dimension before M2.2 commits to anything.
+This plan originally wanted it answered early, with a throwaway dimension, on the grounds that a
+negative answer would reshape dimension design.
+
+**That was the wrong framing.** DH is not the game — it is an optional third-party optimisation
+mod, and letting one constrain our Tier 1 design inverts ADR-0002 and ADR-0003. A negative
+result is DH's problem to route around, not a reason to reshape a planet. So it becomes a
+compatibility check against the real thing at M2.5, not a design input before it.
 
 **Verify:** nothing. This increment produces documents.
 
