@@ -26,3 +26,7 @@ bin/
 # OS
 .DS_Store
 Thumbs.db
+
+# Python bytecode from ad-hoc tooling scripts
+__pycache__/
+*.pyc
