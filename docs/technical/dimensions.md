@@ -8,11 +8,14 @@
 > Per [ADR-0005](../decisions/0005-v1-scope-vertical-slice.md), v1 builds **Earth + Moon +
 > Planet 3** only.
 >
-> **Still open and explicitly deferred:** whether orbit is a separate dimension or a high-Y
-> band of the surface dimension. Seven planets x two dimensions is real chunk and memory cost,
-> and the concern below that orbit risks being "just a loading layer" is the reason this is not
-> being decided casually. It is resolved in the `ascension-worlds` design pass, before Moon
-> work begins.
+> **Resolved 2026-09-05 by [ADR-0010](../decisions/0010-orbit-is-one-shared-space-dimension.md):
+> orbit is neither.** It is a single shared interplanetary space dimension, with planets as
+> destinations within it. Four dimensions for v1 instead of six, eight instead of fourteen at
+> seven worlds — and the only option where travel between planets is a journey rather than a
+> transition, which is the pillar ADR-0004 rejected Ad Astra to protect.
+>
+> The assumptions below are written against orbit-per-planet and are **stale**. The API design
+> is [`worlds-api.md`](worlds-api.md).
 
 ## Purpose
 

@@ -84,14 +84,33 @@ Done and verified in game on a dedicated server:
 - M1.7 tank item and refill station. Tank charge is a data component; the station only works
   where the air is breathable, which is what makes the expedition loop a loop and composes with
   sealed rooms for free.
+- M1.8 the valve (ADR-0009). Only an *open* tank supplies air, one at a time, opening costs a
+  3s pressurise delay, inventory holds two. **Verified in game.**
 
-**Next: M1.8** — the valve (ADR-0009). Only an *open* tank supplies air, one open at a time,
-opening costs a pressurise delay, and the inventory holds at most two. Built and deployed,
-**not yet verified in game**. Then M1.9: refactor plus a performance comparison against the M0.5
-baseline (5 ms/tick, 60 MB/s allocation) in `docs/technical/performance-log.md`.
+The test environment is now a 15-mod stack — see
+[`docs/technical/optimisation-stack.md`](docs/technical/optimisation-stack.md). Dev runs mirror
+the CurseForge instance's mods folder into `run/*/mods` and use generational ZGC. First
+full-stack reading is in `docs/technical/performance-log.md`: our whole heap footprint is
+**1,408 bytes across 68 instances**, every count a singleton, which is the first direct evidence
+ADR-0007 rule 1 holds.
 
-Scope decision: finish M1.8 + M1.9, ship atmosphere v0.1, then the first Tier 2 jar
-(`ascension-compat-curios`, a tank slot that opens the valve), then `ascension-worlds`. Further
+**Outstanding from M1, carried not cancelled:** the M1.9 refactor pass (ADR-0008 schedules one
+every third increment; we are four past M1.4), two-client testing, and share-air rescue. All
+three are listed in `plans/m2-worlds.md`.
+
+The M0.5 baseline is **retired as a comparison target** — it was taken in single-player with no
+third-party mods, and neither is true of how we test now. See `performance-log.md`.
+
+Scope decision, revised: **M2 (`ascension-worlds`) started before M1.9 and before the Curios
+jar**, at Sanchit's call. M1.9's refactor pass and two-client testing are carried forward in
+[`plans/m2-worlds.md`](plans/m2-worlds.md) under "Carried over from M1, unresolved" — they are
+outstanding, not cancelled.
+
+**M2 state:** design pass. Settled — orbit is one shared interplanetary space dimension
+(ADR-0010, superseding ADR-0004's deferral); Tier 1 modules never depend on each other and
+share contracts in `core` instead (ADR-0011, which amends ADR-0003 and makes `core` more than a
+stub for the first time). Planet schema drafted in `docs/technical/worlds-api.md`, awaiting
+review. Distant Horizons compatibility with a custom dimension is still open. Further
 atmosphere ideas mostly depend on modules that do not exist yet and are queued in `todo.md`
 under "Atmosphere follow-ups" — including replacing the placeholder emitter with a Create-powered
 generator → tank → pressuriser chain in a Tier 2 compat jar.

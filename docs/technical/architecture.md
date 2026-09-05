@@ -10,7 +10,7 @@ Every module is a **separately publishable NeoForge mod jar with its own modid**
 take one module and use it without the rest.
 
 ```
-Tier 0   ascension-core            NeoForge only. Infra, no gameplay.
+Tier 0   ascension-core            NeoForge only. Shared contracts, no behaviour.
            |
 Tier 1   ascension-atmosphere      Breathable zones + oxygen.  <- flagship, reusable
          ascension-worlds          Planets, orbit, gateways.   (data-driven)
@@ -32,7 +32,8 @@ Tier 2   ascension-compat-sable    Sub-levels carry pressurised zones -> ships a
 | Mixins in Tier 1 | **Never.** Tier 2 only, with an ADR justifying it. |
 | Extension mechanism | Provider registries. Never require extending our classes. |
 | Tier 1 testable alone | Yes, with only `core` present. |
-| **Tier 1 -> Tier 1** | **Undecided.** See [`plans/m2-worlds.md`](../../plans/m2-worlds.md) §M2.1. ADR-0003 does not cover it, and `worlds` -> `atmosphere` is the first case to need it. Rule 6 means it cannot simply be a hard dependency. |
+| **Tier 1 -> Tier 1** | **Never directly.** Shared concepts are contracts in `core`; modules stay ignorant of each other ([ADR-0011](../decisions/0011-tier-1-modules-share-contracts-through-core.md)). |
+| What `core` may hold | Contracts only — interfaces, records, registry keys, codecs. No behaviour. The test: removing every Tier 1 module must leave `core` doing nothing observable. |
 
 ## Package convention
 
