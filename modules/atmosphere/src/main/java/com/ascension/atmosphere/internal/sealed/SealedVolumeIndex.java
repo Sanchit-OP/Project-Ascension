@@ -36,9 +36,9 @@ public final class SealedVolumeIndex {
     /**
      * Recompute one emitter's volume and fold it back into the union.
      *
-     * @return whether the emitter found a sealed space
+     * @return that emitter's own result, not the state of the level as a whole
      */
-    public boolean update(ServerLevel level, BlockPos emitter) {
+    public SealedVolume.Result update(ServerLevel level, BlockPos emitter) {
         SealedVolume.Result result = SealedVolume.fill(level, emitter);
         if (result.sealed()) {
             volumes.put(emitter.asLong(), result.positions());
@@ -46,7 +46,13 @@ public final class SealedVolumeIndex {
             volumes.remove(emitter.asLong());
         }
         rebuildUnion();
-        return result.sealed();
+        return result;
+    }
+
+    /** Volume owned by one emitter, or empty if it is not sealed. */
+    public int volumeSize(BlockPos emitter) {
+        LongOpenHashSet volume = volumes.get(emitter.asLong());
+        return volume == null ? 0 : volume.size();
     }
 
     public void remove(BlockPos emitter) {
