@@ -161,14 +161,33 @@ runs `online-mode=false`.
 
 **Restart the server after every rebuild** — the jar is read at startup.
 
+### Third-party mods in the test instance
+
+Kept deliberately short, and each one is recorded here with the reason it is present. This is a
+**development environment**, not a modpack: ADR-0002 still stands and
+`docs/technical/mod-list.md` is still a landscape survey, not a dependency list.
+
+| Mod | Why it is installed | Is it a dependency? |
+|---|---|---|
+| **JEI** (Just Enough Items) | Item search, and `U` / `R` to see what a thing is used in and how it is made. Turns "did the recipe load" from a guessing game into a lookup. | **No.** Client convenience only, never referenced in code. |
+| **Curios API** | Provides the accessory slot the tank valve will bind to. | **Yes, but Tier 2 only.** `ascension-compat-curios` compiles against it; Tier 1 must never require it (ADR-0003 rule 1, ADR-0009 §4). |
+
+Install both through the CurseForge app's own mod browser for the instance, so it resolves the
+correct 1.21.1 / NeoForge build and any dependencies.
+
+**Curios also has to be on the dev server**, not just the client — it owns server-side slot
+state. For the Gradle `runServer` that means declaring it on the compat module's runtime
+classpath, not dropping a jar in `run/server/mods`.
+
 ### Debug commands
 
 ```
-/ascension atmosphere query      breathability, drain, lung reserve
+/ascension atmosphere query      breathability, drain, lung reserve, valve state
 /ascension atmosphere why        every provider that claimed this position, and which won
 /ascension atmosphere volumes    emitter count, pressurised blocks, whether your head is inside one
 /ascension atmosphere debug vacuum | clear
 /ascension atmosphere debug oxygen <units>
+/ascension atmosphere debug tank <units>    charge of the tank in your main hand
 ```
 
 `why` and `volumes` exist because two separate bugs were invisible without them: a provider
