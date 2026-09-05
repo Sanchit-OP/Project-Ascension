@@ -1,0 +1,41 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Worlds"
+authors = "${mod_authors}"
+description = '''
+Planets, interplanetary space, and the routes between them.
+
+Worlds are authored as data: a planet references a dimension rather than defining one, so
+adding a world is a datapack, not a code change. Environments are published through
+ascension_core, so any mod that cares about breathable air will honour them without either
+side depending on the other.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# Carries the shared world-environment contract this module publishes into.
+# BEFORE, so its registry is open when we register during setup.
+[[dependencies.${mod_id}]]
+modId = "ascension_core"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "BOTH"
