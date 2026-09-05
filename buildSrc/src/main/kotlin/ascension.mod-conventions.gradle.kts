@@ -304,6 +304,32 @@ val syncDevMods = tasks.register("syncDevMods") {
     }
 }
 
+/**
+ * Copy the server pack's config over the dev server's.
+ *
+ * So the dev server runs the configuration we actually ship, rather than whatever defaults each
+ * mod wrote on first launch. `run/` is gitignored, so anything only configured there is
+ * configured nowhere.
+ *
+ * Copies, never deletes. Chunky keeps live pre-generation task state in `config/chunky/tasks/`,
+ * and wiping that would throw away hours of generation.
+ */
+val syncServerPackConfig = tasks.register<Copy>("syncServerPackConfig") {
+    group = "ascension"
+    description = "Copies serverpack/config over run/server/config."
+
+    val source = rootProject.layout.projectDirectory.dir("serverpack/config")
+    onlyIf { source.asFile.isDirectory }
+    from(source)
+    into(rootProject.layout.projectDirectory.dir("run/server/config"))
+    // Our shipped file wins: the point is that the dev server matches the server pack.
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.matching { it.name == "prepareServerRun" }.configureEach {
+    finalizedBy(syncServerPackConfig)
+}
+
 // finalizedBy on the *prepare* task, for the reason spelled out in dev-runtime-conventions:
 // the run directory does not exist until prepare<Type>Run creates it, and dependsOn would give
 // no ordering guarantee against it. Client and server only -- the data run generates resources
