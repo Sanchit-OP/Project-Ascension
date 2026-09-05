@@ -24,6 +24,19 @@ public final class OxygenState {
     private int units;
     private int suffocationTicks;
 
+    /**
+     * Last payload sent to this player, for change detection.
+     *
+     * <p>Deliberately not in the codec: it is transient sync bookkeeping, not saved state, and
+     * a reconnecting client must be resynced from scratch rather than trusted to remember.
+     * Living on the attachment means it dies with the player instead of accumulating in a
+     * server-side map keyed by player (ADR-0007 rule 1).
+     */
+    private transient com.ascension.atmosphere.internal.net.OxygenSyncPayload lastSynced;
+
+    /** Server tick of the last send, for the low-frequency reconcile. */
+    private transient long lastSyncTick;
+
     public OxygenState() {
         this(0, 0);
     }
@@ -48,5 +61,23 @@ public final class OxygenState {
 
     public void setSuffocationTicks(int ticks) {
         this.suffocationTicks = Math.max(0, ticks);
+    }
+
+    public com.ascension.atmosphere.internal.net.OxygenSyncPayload lastSynced() {
+        return lastSynced;
+    }
+
+    public long lastSyncTick() {
+        return lastSyncTick;
+    }
+
+    public void recordSync(com.ascension.atmosphere.internal.net.OxygenSyncPayload payload, long tick) {
+        this.lastSynced = payload;
+        this.lastSyncTick = tick;
+    }
+
+    /** Forget sync bookkeeping so the next pass resends unconditionally. */
+    public void invalidateSync() {
+        this.lastSynced = null;
     }
 }

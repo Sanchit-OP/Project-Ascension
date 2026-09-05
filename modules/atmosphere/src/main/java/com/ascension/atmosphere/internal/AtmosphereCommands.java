@@ -4,6 +4,7 @@ import com.ascension.atmosphere.api.Atmosphere;
 import com.ascension.atmosphere.api.AtmosphereContext;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -36,7 +37,11 @@ public final class AtmosphereCommands {
                                 .then(Commands.literal("vacuum")
                                         .executes(ctx -> setVacuum(ctx.getSource(), true)))
                                 .then(Commands.literal("clear")
-                                        .executes(ctx -> setVacuum(ctx.getSource(), false))))));
+                                        .executes(ctx -> setVacuum(ctx.getSource(), false)))
+                                .then(Commands.literal("oxygen")
+                                        .then(Commands.argument("units", IntegerArgumentType.integer(0))
+                                                .executes(ctx -> setOxygen(ctx.getSource(),
+                                                        IntegerArgumentType.getInteger(ctx, "units"))))))));
     }
 
     private static int query(CommandSourceStack source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
@@ -87,6 +92,16 @@ public final class AtmosphereCommands {
                             isWinner ? "   <- WINS" : ""))
                     .withStyle(isWinner ? ChatFormatting.GOLD : ChatFormatting.DARK_GRAY), false);
         }
+        return 1;
+    }
+
+    private static int setOxygen(CommandSourceStack source, int units)
+            throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        OxygenState state = player.getData(AtmosphereAttachments.OXYGEN);
+        state.setUnits(units);
+        OxygenTracker.invalidate(player);
+        source.sendSuccess(() -> Component.literal("Oxygen set to " + units + " units"), false);
         return 1;
     }
 
