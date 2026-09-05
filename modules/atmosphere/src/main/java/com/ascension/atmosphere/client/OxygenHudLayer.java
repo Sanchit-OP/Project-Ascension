@@ -85,9 +85,19 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
         }
 
         // Right-aligned above the bar, so the digits stay put as the text width changes.
-        Component label = state.suffocating()
-                ? Component.literal("NO AIR")
-                : Component.literal(AtmosphereTuning.formatDuration(seconds));
+        //
+        // Pressurising outranks the seconds readout. While a valve is coming up to pressure the
+        // number is technically correct and completely useless — it is counting down your lungs
+        // while the tank you are standing there holding does nothing. Saying so is the difference
+        // between a mechanic and a bug report.
+        Component label;
+        if (state.pressurisingSeconds() > 0) {
+            label = Component.literal("PRESSURISING " + state.pressurisingSeconds() + "s");
+        } else if (state.suffocating()) {
+            label = Component.literal("NO AIR");
+        } else {
+            label = Component.literal(AtmosphereTuning.formatDuration(seconds));
+        }
         graphics.drawString(minecraft.font, label,
                 right - minecraft.font.width(label), barY - 10, COLOUR_TEXT, true);
 

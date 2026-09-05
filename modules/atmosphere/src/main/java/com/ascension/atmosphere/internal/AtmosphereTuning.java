@@ -59,6 +59,35 @@ public final class AtmosphereTuning {
     public static final int LUNG_REFILL_PER_SECOND = 20;
 
     /**
+     * How long a freshly opened tank takes before it delivers any air.
+     *
+     * <p>This is the whole anti-stockpile mechanism, and it is deliberately the only one that
+     * cannot be dodged. Capping the inventory stops a player carrying ten tanks; it does nothing
+     * about ten tanks in a shulker box, and chasing every container mod is a fight we would lose.
+     * A swap that costs real time inside the failure window does not care where the spares were
+     * hidden.
+     *
+     * <p>Three seconds against a twenty-second lung reserve: enough that swapping mid-crisis is a
+     * decision, not enough that it is a death sentence.
+     */
+    public static final int TANK_PRESSURISE_TICKS = 60;
+
+    /**
+     * Tanks a player may carry in their own inventory.
+     *
+     * <p>Two: the one on the valve and one spare. Enough to plan a longer trip, not enough to
+     * replace a refill station with a bag of tanks.
+     *
+     * <p>Counts the player's own 41 slots only. Anything inside another container &mdash; a
+     * shulker box, a backpack &mdash; is invisible here, by acknowledged design rather than
+     * oversight. {@link #TANK_PRESSURISE_TICKS} is what covers that gap.
+     */
+    public static final int MAX_TANKS_CARRIED = 2;
+
+    /** How often the carry rules are swept. Only runs at all while a player holds a tank. */
+    public static final int TANK_SWEEP_INTERVAL_TICKS = 20;
+
+    /**
      * Ticks between running out of air and taking the first damage.
      *
      * <p>The "short failure window" from {@code docs/gameplay/oxygen.md}: long enough to turn

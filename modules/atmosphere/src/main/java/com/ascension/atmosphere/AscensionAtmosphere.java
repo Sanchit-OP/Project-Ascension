@@ -11,6 +11,7 @@ import com.ascension.atmosphere.internal.ProviderRegistry;
 import com.ascension.atmosphere.internal.VanillaIntegration;
 import com.ascension.atmosphere.internal.net.AtmosphereNetwork;
 import com.ascension.atmosphere.internal.supply.PlayerTankCollector;
+import com.ascension.atmosphere.internal.supply.TankRules;
 import com.ascension.atmosphere.internal.sealed.SealedVolumeEvents;
 import com.ascension.atmosphere.internal.sealed.SealedVolumeProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -57,6 +58,7 @@ public final class AscensionAtmosphere {
         NeoForge.EVENT_BUS.addListener(this::onRespawn);
         NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
         SealedVolumeEvents.register(NeoForge.EVENT_BUS);
+        TankRules.register(NeoForge.EVENT_BUS);
 
         LOGGER.info("Ascension Atmosphere loaded ({})", container.getModInfo().getVersion());
     }

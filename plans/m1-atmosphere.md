@@ -214,10 +214,35 @@ Two things came out of building and playing it:
 Also closed here, because the module was otherwise creative-only: crafting recipes and recipe
 advancements for the tank, the station **and** the emitter, which never had one.
 
-### M1.8 — Refactor + measurement
+### M1.8 — The valve: active tanks and carry limits
+
+Scope added after M1.7 testing, decided in
+[ADR-0009](../docs/decisions/0009-carry-limits-enforced-on-the-player.md).
+
+A tank now has a valve. **Closed, it is not an oxygen source at all** — inert cargo. One open at
+a time, and opening one costs three seconds of pressurising before it delivers anything. At most
+two tanks in the player's own inventory; picking up a third is refused rather than accepted and
+then dropped, so the cap is a thing you bump into once instead of an item that will not stay
+anywhere.
+
+The pressurise delay is the part that carries the design. Inventory caps do nothing about a
+vanilla shulker box full of spares; a swap that costs real seconds inside a failure window does
+not care where the spare came from. ADR-0009 has the full argument, including why per-backpack
+blocking jars were rejected.
+
+The valve also answers the swimming wrinkle from M1.7: stow the tank and it is safe.
+
+**Verify:** valve toggles and only the open tank drains; opening one closes any other; the HUD
+reads `PRESSURISING` and lungs drain during it; a third tank cannot be picked up; the timer
+survives a relog; a station still fills a closed or pressurising tank.
+
+### M1.9 — Refactor + measurement
 
 Per ADR-0007 rule 12: tick time, heap after GC, heap after three reload cycles, against the
 M0.5 baseline. Any regression blocks completion.
+
+The tank collector is the first thing here that touches an inventory on the accounting path, so
+it is the first candidate for measurement rather than assertion.
 
 ---
 

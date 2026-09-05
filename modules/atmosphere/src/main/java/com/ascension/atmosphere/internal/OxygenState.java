@@ -21,11 +21,25 @@ public final class OxygenState {
                     Codec.INT.optionalFieldOf("lungUnits", AtmosphereTuning.LUNG_CAPACITY)
                             .forGetter(OxygenState::lungUnits),
                     Codec.INT.optionalFieldOf("suffocationTicks", 0)
-                            .forGetter(OxygenState::suffocationTicks))
+                            .forGetter(OxygenState::suffocationTicks),
+                    Codec.INT.optionalFieldOf("pressurisingTicks", 0)
+                            .forGetter(OxygenState::pressurisingTicks))
             .apply(instance, OxygenState::new));
 
     private int lungUnits;
     private int suffocationTicks;
+
+    /**
+     * Ticks left before a freshly opened tank starts delivering air.
+     *
+     * <p><strong>Serialised deliberately.</strong> It is tempting to treat this as transient
+     * bookkeeping, but then logging out and back in would clear it, and the one mechanism that
+     * makes a bag of spare tanks useless would have a trivial bypass.
+     *
+     * <p>Per player rather than per tank, which is correct rather than merely convenient: only
+     * one tank can be open at a time, so there is only ever one thing coming up to pressure.
+     */
+    private int pressurisingTicks;
 
     /**
      * Last payload sent to this player, for change detection.
@@ -52,12 +66,13 @@ public final class OxygenState {
 
     public OxygenState() {
         // A new player starts with a full set of lungs, not empty ones.
-        this(AtmosphereTuning.LUNG_CAPACITY, 0);
+        this(AtmosphereTuning.LUNG_CAPACITY, 0, 0);
     }
 
-    public OxygenState(int lungUnits, int suffocationTicks) {
+    public OxygenState(int lungUnits, int suffocationTicks, int pressurisingTicks) {
         this.lungUnits = lungUnits;
         this.suffocationTicks = suffocationTicks;
+        this.pressurisingTicks = pressurisingTicks;
     }
 
     /** The player's own lung reserve, in units. Refills for free in breathable air. */
@@ -83,6 +98,15 @@ public final class OxygenState {
 
     public void setSuffocationTicks(int ticks) {
         this.suffocationTicks = Math.max(0, ticks);
+    }
+
+    /** Ticks left before the open tank delivers air. Zero when it is ready, or none is open. */
+    public int pressurisingTicks() {
+        return pressurisingTicks;
+    }
+
+    public void setPressurisingTicks(int ticks) {
+        this.pressurisingTicks = Math.max(0, ticks);
     }
 
     public OxygenSyncPayload lastSynced() {

@@ -4,6 +4,7 @@ import com.ascension.atmosphere.api.Atmosphere;
 import com.ascension.atmosphere.api.AtmosphereContext;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.internal.supply.OxygenTankItem;
+import com.ascension.atmosphere.internal.supply.TankRules;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -78,6 +79,18 @@ public final class AtmosphereCommands {
                         + "   carried " + carriedUnits + "/" + carriedCapacity
                         + "   total " + supply.available() + "/" + supply.capacity()
                         + " units")
+                .withStyle(ChatFormatting.GRAY), false);
+
+        // Valve state, because "carried 0/1200" with a full tank in the bag is otherwise a
+        // completely mystifying line to read.
+        ItemStack open = TankRules.openTank(player);
+        String valve = open.isEmpty()
+                ? "no tank open"
+                : "tank open, " + OxygenTankItem.units(open) + " units"
+                        + (state.pressurisingTicks() > 0
+                                ? ", pressurising " + state.pressurisingTicks() + " ticks"
+                                : "");
+        source.sendSuccess(() -> Component.literal("  " + valve)
                 .withStyle(ChatFormatting.GRAY), false);
         return 1;
     }

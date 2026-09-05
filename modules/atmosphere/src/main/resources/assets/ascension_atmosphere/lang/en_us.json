@@ -7,7 +7,12 @@
 
   "item.ascension_atmosphere.oxygen_tank": "Oxygen Tank",
   "item.ascension_atmosphere.oxygen_tank.contents": "Air: %1$s / %2$s",
-  "item.ascension_atmosphere.oxygen_tank.hint": "Works anywhere in your inventory",
+  "item.ascension_atmosphere.oxygen_tank.valve_open": "Valve open — supplying air",
+  "item.ascension_atmosphere.oxygen_tank.valve_closed": "Valve closed — stowed",
+  "item.ascension_atmosphere.oxygen_tank.hint": "Use to open or close the valve",
+  "item.ascension_atmosphere.oxygen_tank.opened": "Valve open — pressurising, %1$ss",
+  "item.ascension_atmosphere.oxygen_tank.closed": "Valve closed — tank stowed",
+  "item.ascension_atmosphere.oxygen_tank.too_many": "You can only carry %1$s oxygen tanks",
 
   "block.ascension_atmosphere.oxygen_refill_station.filled": "Tank filled — %1$s of air",
   "block.ascension_atmosphere.oxygen_refill_station.full": "Tank is already full",
