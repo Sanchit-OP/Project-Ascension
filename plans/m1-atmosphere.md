@@ -109,7 +109,7 @@ reusable accumulator that allocates nothing when no collectors are registered.
 
 No features. API surface review before the failure model builds on it.
 
-### M1.5 — Drain, failure model, and water unification
+### M1.5 — Drain, failure model, and water unification  *(done — 2026-09-05)*
 
 Depletion, the short failure window, then death — the underwater-suffocation feel specified in
 `docs/gameplay/oxygen.md`. Recovery on re-entering breathable air.
@@ -121,8 +121,25 @@ works underwater for free. Built in but individually switchable, defaulting on, 
 silently seizing a vanilla mechanic would make this module untrustworthy to adopt. See
 `docs/technical/atmosphere-api.md` section 5b.
 
-**Verify:** in-game death and recovery, both sides, on a dedicated server. Plus: drown with the
-feature off (vanilla behaviour intact) and with it on (our bar, our timer).
+**Verified on the dedicated server.** Drain counts down, the failure window kills, water is
+handled by our bar with no vanilla bubbles, gear extends lung capacity, and surfacing refills.
+
+Three things testing changed, none of which were visible from the code:
+
+1. **There was no baseline reserve.** A player who suffocated respawned with an empty pool and
+   died again the moment they touched water; the pool could sit at zero forever. Fixed by
+   splitting supply into **lungs** (20s, refills free in breathable air, drawn last) and
+   **tanks** (carried, drained first, never self-refill). The draw order is the point: emptying
+   a tank should be the warning that sends you back to air, not the moment you start dying.
+2. **Gear grows lung capacity, not drain reduction.** Drain reduction would have slowed
+   consumption of tanks too, silently extending them; capacity keeps the supplies independent.
+   Bar width stays fixed, a full bar is simply worth more seconds.
+3. **Vanilla bubbles fought our bar.** Air was pinned once per accounting pass while vanilla
+   decrements every tick, so it drained and redrew in the gaps — a flicker at exactly our sync
+   cadence. Pinning moved to per-tick and the vanilla `AIR_LEVEL` layer is cancelled while our
+   bar shows. The HUD's "underwater lift" workaround was removed: it dodged bubbles by shifting
+   on air supply, which jittered as that value changed — a workaround for a bug that was itself
+   a bug.
 
 ### M1.6 — Zone emitter block + volume caching
 

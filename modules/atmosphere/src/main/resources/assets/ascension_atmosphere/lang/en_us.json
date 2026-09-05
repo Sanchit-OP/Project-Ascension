@@ -1,4 +1,5 @@
 {
   "death.attack.ascension_atmosphere.no_oxygen": "%1$s ran out of air",
-  "death.attack.ascension_atmosphere.no_oxygen.player": "%1$s ran out of air while fighting %2$s"
+  "death.attack.ascension_atmosphere.no_oxygen.player": "%1$s ran out of air while fighting %2$s",
+  "block.ascension_atmosphere.oxygen_emitter": "Oxygen Emitter"
 }
