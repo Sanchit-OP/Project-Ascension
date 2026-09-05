@@ -4,6 +4,7 @@ import com.ascension.atmosphere.api.Atmosphere;
 import com.ascension.atmosphere.api.AtmosphereContext;
 import com.ascension.atmosphere.api.AtmosphereProvider;
 import com.ascension.atmosphere.api.DrainModifier;
+import com.ascension.atmosphere.api.LungCapacityModifier;
 import com.ascension.atmosphere.api.OxygenSourceCollector;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,11 +45,13 @@ public final class ProviderRegistry {
     private final Map<ResourceLocation, AtmosphereProvider> pendingProviders = new LinkedHashMap<>();
     private final Map<ResourceLocation, OxygenSourceCollector> pendingCollectors = new LinkedHashMap<>();
     private final Map<ResourceLocation, DrainModifier> pendingModifiers = new LinkedHashMap<>();
+    private final Map<ResourceLocation, LungCapacityModifier> pendingLungModifiers = new LinkedHashMap<>();
 
     /** Sorted highest priority first, then by id for determinism. Null until frozen. */
     private volatile Entry[] providers;
     private volatile List<OxygenSourceCollector> collectors = List.of();
     private volatile List<DrainModifier> modifiers = List.of();
+    private volatile List<LungCapacityModifier> lungModifiers = List.of();
 
     /**
      * Equal-priority conflicts already reported, so a genuine misconfiguration is logged once
@@ -86,6 +89,13 @@ public final class ProviderRegistry {
         }
     }
 
+    public void addLungModifier(ResourceLocation id, LungCapacityModifier modifier) {
+        requireOpen();
+        if (pendingLungModifiers.putIfAbsent(id, modifier) != null) {
+            throw new IllegalArgumentException("Duplicate LungCapacityModifier id: " + id);
+        }
+    }
+
     private void requireOpen() {
         if (providers != null) {
             throw new IllegalStateException(
@@ -108,10 +118,12 @@ public final class ProviderRegistry {
 
         collectors = List.copyOf(pendingCollectors.values());
         modifiers = List.copyOf(pendingModifiers.values());
+        lungModifiers = List.copyOf(pendingLungModifiers.values());
         providers = sorted.toArray(new Entry[0]);
 
-        LOGGER.info("Atmosphere registry frozen: {} provider(s), {} collector(s), {} drain modifier(s)",
-                providers.length, collectors.size(), modifiers.size());
+        LOGGER.info("Atmosphere registry frozen: {} provider(s), {} collector(s), "
+                        + "{} drain modifier(s), {} lung modifier(s)",
+                providers.length, collectors.size(), modifiers.size(), lungModifiers.size());
     }
 
     // --- resolution ---------------------------------------------------------
@@ -177,5 +189,9 @@ public final class ProviderRegistry {
 
     public List<DrainModifier> drainModifiers() {
         return modifiers;
+    }
+
+    public List<LungCapacityModifier> lungCapacityModifiers() {
+        return lungModifiers;
     }
 }

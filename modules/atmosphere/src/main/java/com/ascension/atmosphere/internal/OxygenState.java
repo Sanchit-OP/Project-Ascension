@@ -65,12 +65,15 @@ public final class OxygenState {
         return lungUnits;
     }
 
+    /**
+     * Set the lung reserve.
+     *
+     * <p>Clamped only at zero. The upper bound is not a constant any more: gear grows lung
+     * capacity, so only the tracker knows the current maximum, and clamping here against a
+     * fixed value would silently cap an enchanted player at the unenchanted limit.
+     */
     public void setLungUnits(int units) {
-        this.lungUnits = Math.min(AtmosphereTuning.LUNG_CAPACITY, Math.max(0, units));
-    }
-
-    public boolean lungsFull() {
-        return lungUnits >= AtmosphereTuning.LUNG_CAPACITY;
+        this.lungUnits = Math.max(0, units);
     }
 
     /** Ticks spent inside the failure window. Zero whenever the player can breathe. */

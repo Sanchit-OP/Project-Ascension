@@ -4,7 +4,6 @@ import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.internal.AtmosphereAttachments;
 import com.ascension.atmosphere.internal.AtmosphereCommands;
 import com.ascension.atmosphere.internal.AtmosphereConfig;
-import com.ascension.atmosphere.internal.AtmosphereTuning;
 import com.ascension.atmosphere.internal.DebugAtmosphere;
 import com.ascension.atmosphere.internal.OxygenTracker;
 import com.ascension.atmosphere.internal.ProviderRegistry;
@@ -20,6 +19,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +50,7 @@ public final class AscensionAtmosphere {
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(this::onServerTick);
         NeoForge.EVENT_BUS.addListener(this::onRespawn);
+        NeoForge.EVENT_BUS.addListener(this::onPlayerTick);
 
         LOGGER.info("Ascension Atmosphere loaded ({})", container.getModInfo().getVersion());
     }
@@ -65,7 +66,10 @@ public final class AscensionAtmosphere {
             AtmosphereRegistry.register(
                     ResourceLocation.fromNamespaceAndPath(MOD_ID, "water"),
                     new VanillaIntegration.WaterAtmosphere());
-            AtmosphereRegistry.register(new VanillaIntegration.VanillaBreathingGear());
+            AtmosphereRegistry.register(new VanillaIntegration.ConduitPower());
+            AtmosphereRegistry.registerLungCapacity(
+                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "vanilla_gear"),
+                    new VanillaIntegration.VanillaBreathingGear());
 
             // Sort once, then never again. Queries after this point allocate nothing.
             ProviderRegistry.get().freeze();
@@ -85,6 +89,26 @@ public final class AscensionAtmosphere {
     }
 
     /**
+     * Hold vanilla's air supply full, every tick.
+     *
+     * <p>This has to run per tick, not per accounting pass. Vanilla decrements air every single
+     * tick underwater, so pinning it only twice a second let it drain and redraw bubbles in
+     * between, which is what made the vanilla meter reappear and flicker against ours.
+     *
+     * <p>Cheap by construction: one comparison and at most one setter per player, with no
+     * allocation and no world access.
+     */
+    private void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!AtmosphereConfig.INSTANCE.waterIntegrationEnabled()) {
+            return;
+        }
+        if (event.getEntity() instanceof ServerPlayer player
+                && player.getAirSupply() < player.getMaxAirSupply()) {
+            player.setAirSupply(player.getMaxAirSupply());
+        }
+    }
+
+    /**
      * Respawn with a full set of lungs.
      *
      * <p>Lungs refill on their own, so this is only about the first few seconds: without it a
@@ -98,7 +122,7 @@ public final class AscensionAtmosphere {
     private void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             var state = player.getData(AtmosphereAttachments.OXYGEN);
-            state.setLungUnits(AtmosphereTuning.LUNG_CAPACITY);
+            state.setLungUnits(OxygenTracker.lungCapacity(player));
             state.setSuffocationTicks(0);
             OxygenTracker.invalidate(player);
         }

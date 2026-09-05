@@ -4,6 +4,7 @@ import com.ascension.atmosphere.AscensionAtmosphere;
 import com.ascension.atmosphere.api.Atmosphere;
 import com.ascension.atmosphere.api.AtmosphereRegistry;
 import com.ascension.atmosphere.api.DrainModifier;
+import com.ascension.atmosphere.api.LungCapacityModifier;
 import com.ascension.atmosphere.api.OxygenSource;
 import com.ascension.atmosphere.api.OxygenSourceCollector;
 import com.ascension.atmosphere.internal.net.OxygenSyncPayload;
@@ -64,10 +65,16 @@ public final class OxygenTracker {
         // Fast path. A player breathing normally is the common case for the entire first act
         // of the campaign, and it should cost almost nothing: one atmosphere query and two
         // comparisons, with no source walking and no payload built.
-        if (!atRisk && state.suffocationTicks() == 0 && state.lungsFull()) {
-            state.setDrainCarry(0.0f);
-            suppressVanillaAir(player, atmosphere);
+        int lungCapacity = lungCapacity(player);
 
+        // Gear can be removed mid-dive. Trim the reserve down rather than leaving a player
+        // holding more air than their lungs can now contain.
+        if (state.lungUnits() > lungCapacity) {
+            state.setLungUnits(lungCapacity);
+        }
+
+        if (!atRisk && state.suffocationTicks() == 0 && state.lungUnits() >= lungCapacity) {
+            state.setDrainCarry(0.0f);
             OxygenSyncPayload last = state.lastSynced();
             boolean clientNeedsCorrecting =
                     last == null || !last.breathable() || last.suffocating() || last.refilling();
@@ -81,21 +88,20 @@ public final class OxygenTracker {
         // One walk of the player's sources, reused for the failure check and the payload.
         // Previously available and capacity were gathered separately, walking every collector
         // twice more than necessary on every pass.
-        Supply supply = gatherSupply(player, state);
+        Supply supply = gatherSupply(player, state, lungCapacity);
 
         if (atRisk) {
             spend(player, state, drainPerSecond);
-            supply = gatherSupply(player, state);
+            supply = gatherSupply(player, state, lungCapacity);
             applyFailure(player, state, supply);
         } else {
             state.setSuffocationTicks(0);
             state.setDrainCarry(0.0f);
-            refillLungs(state);
-            supply = gatherSupply(player, state);
+            refillLungs(state, lungCapacity);
+            supply = gatherSupply(player, state, lungCapacity);
         }
 
-        suppressVanillaAir(player, atmosphere);
-        sync(player, state, atmosphere, drainPerSecond, supply, tick);
+        sync(player, state, atmosphere, drainPerSecond, supply, lungCapacity, tick);
     }
 
     /**
@@ -108,18 +114,32 @@ public final class OxygenTracker {
     private record Supply(int available, int capacity) {
     }
 
-    private static Supply gatherSupply(ServerPlayer player, OxygenState state) {
+    private static Supply gatherSupply(ServerPlayer player, OxygenState state, int lungCapacity) {
         List<OxygenSourceCollector> collectors = ProviderRegistry.get().oxygenCollectors();
         if (collectors.isEmpty()) {
-            return new Supply(state.lungUnits(), AtmosphereTuning.LUNG_CAPACITY);
+            return new Supply(state.lungUnits(), lungCapacity);
         }
         SupplySum sum = new SupplySum();
         for (int i = 0; i < collectors.size(); i++) {
             collectors.get(i).collect(player, sum);
         }
         // Lungs are always part of the total, on top of whatever is carried.
-        return new Supply(state.lungUnits() + sum.available,
-                AtmosphereTuning.LUNG_CAPACITY + sum.capacity);
+        return new Supply(state.lungUnits() + sum.available, lungCapacity + sum.capacity);
+    }
+
+    /**
+     * Base lungs plus whatever worn gear adds.
+     *
+     * <p>Gear grows the reserve rather than slowing consumption, so a helmet enchantment never
+     * silently stretches the duration of a carried tank.
+     */
+    public static int lungCapacity(ServerPlayer player) {
+        int capacity = AtmosphereTuning.LUNG_CAPACITY;
+        List<LungCapacityModifier> modifiers = ProviderRegistry.get().lungCapacityModifiers();
+        for (int i = 0; i < modifiers.size(); i++) {
+            capacity += Math.max(0, modifiers.get(i).bonusUnits(player));
+        }
+        return capacity;
     }
 
     /**
@@ -133,13 +153,13 @@ public final class OxygenTracker {
      * started suffocating again the moment they touched water — the bug that prompted the
      * lung/tank split.
      */
-    private static void refillLungs(OxygenState state) {
-        if (state.lungsFull()) {
+    private static void refillLungs(OxygenState state, int lungCapacity) {
+        if (state.lungUnits() >= lungCapacity) {
             return;
         }
         int gained = Math.round(
                 AtmosphereTuning.LUNG_REFILL_PER_SECOND * AtmosphereTuning.accountingSeconds());
-        state.setLungUnits(state.lungUnits() + Math.max(1, gained));
+        state.setLungUnits(Math.min(lungCapacity, state.lungUnits() + Math.max(1, gained)));
     }
 
     // --- consumption --------------------------------------------------------
@@ -208,35 +228,17 @@ public final class OxygenTracker {
         player.hurt(player.damageSources().source(NO_OXYGEN), damage);
     }
 
-    // --- vanilla air --------------------------------------------------------
-
-    /**
-     * Hold vanilla's air supply full while we are managing breathing.
-     *
-     * <p>Without this the player runs two timers at once and drowns on vanilla's schedule while
-     * our bar still shows air. Deliberately skipped when the feature is disabled, so turning it
-     * off restores stock behaviour exactly rather than leaving a half-converted state.
-     */
-    private static void suppressVanillaAir(ServerPlayer player, Atmosphere atmosphere) {
-        if (!AtmosphereConfig.INSTANCE.waterIntegrationEnabled()) {
-            return;
-        }
-        if (player.getAirSupply() < player.getMaxAirSupply()) {
-            player.setAirSupply(player.getMaxAirSupply());
-        }
-    }
-
     // --- sync ---------------------------------------------------------------
 
     private static void sync(ServerPlayer player, OxygenState state, Atmosphere atmosphere,
-                             float drainPerSecond, Supply supply, long tick) {
+                             float drainPerSecond, Supply supply, int lungCapacity, long tick) {
         OxygenSyncPayload payload = new OxygenSyncPayload(
                 supply.available(),
                 supply.capacity(),
                 atmosphere.breathable(),
                 drainPerSecond,
                 state.suffocationTicks() > 0,
-                !state.lungsFull());
+                state.lungUnits() < lungCapacity);
 
         boolean changed = payload.differsFrom(state.lastSynced());
         boolean reconcileDue =

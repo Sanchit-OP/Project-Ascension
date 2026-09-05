@@ -6,6 +6,7 @@ import com.ascension.atmosphere.api.AtmosphereContext;
 import com.ascension.atmosphere.api.AtmosphereProvider;
 import com.ascension.atmosphere.api.AtmospherePriority;
 import com.ascension.atmosphere.api.DrainModifier;
+import com.ascension.atmosphere.api.LungCapacityModifier;
 import java.util.Optional;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -58,27 +60,20 @@ public final class VanillaIntegration {
     }
 
     /**
-     * Maps vanilla breathing gear onto the drain model.
+     * Conduit power stops drain entirely.
      *
-     * <p>Expressed as a {@link DrainModifier} rather than a new API concept, because that is
-     * exactly what the registry is for: something that changes how fast you use air.
+     * <p>A drain modifier rather than lung capacity, because the effect is not "bigger lungs" —
+     * it is "nothing is consuming your air". Returning zero means nothing drains, and since
+     * suffocation triggers on drain rather than on breathability, nothing suffocates either.
      *
-     * <ul>
-     *   <li>Conduit power returns {@code 0} &mdash; nothing drains, so nothing suffocates.</li>
-     *   <li>Respiration and a turtle helmet reduce consumption rather than adding a separate
-     *       timer, so they help in vacuum too.</li>
-     * </ul>
+     * <p>Without this, a player with a fully built conduit — an expensive endgame item whose
+     * entire purpose is underwater breathing — would start drowning in their own base the moment
+     * this mod took over water.
      */
-    public static final class VanillaBreathingGear implements DrainModifier {
+    public static final class ConduitPower implements DrainModifier {
 
         private static final ResourceLocation ID =
-                ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "vanilla_gear");
-
-        /** Each Respiration level cuts consumption by this fraction of the base. */
-        private static final float RESPIRATION_PER_LEVEL = 0.25f;
-
-        /** A turtle helmet is worth roughly one Respiration level. */
-        private static final float TURTLE_HELMET_BONUS = 0.25f;
+                ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "conduit_power");
 
         @Override
         public ResourceLocation id() {
@@ -90,24 +85,59 @@ public final class VanillaIntegration {
             if (!AtmosphereConfig.INSTANCE.waterIntegrationEnabled()) {
                 return 1.0f;
             }
-            if (player.hasEffect(MobEffects.CONDUIT_POWER)) {
-                return 0.0f;
+            return player.hasEffect(MobEffects.CONDUIT_POWER) ? 0.0f : 1.0f;
+        }
+    }
+
+    /**
+     * Respiration and turtle helmets make your lungs bigger.
+     *
+     * <p>Deliberately capacity rather than a drain reduction. Both would make a full bar last
+     * longer, but a drain reduction slows consumption of <em>everything</em>, so a helmet
+     * enchantment would quietly stretch a carried tank's duration too. Growing lungs keeps the
+     * two supplies independent: gear improves the free, self-refilling reserve, and a tank stays
+     * exactly as big as the tank you built.
+     *
+     * <p>It also keeps the HUD honest. The bar is always the same width; better gear simply means
+     * a full bar is worth more seconds.
+     */
+    public static final class VanillaBreathingGear implements LungCapacityModifier {
+
+        private static final ResourceLocation ID =
+                ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "vanilla_gear");
+
+        /** Seconds of extra lung capacity per level of Respiration. */
+        private static final int RESPIRATION_SECONDS_PER_LEVEL = 10;
+
+        /** Seconds of extra lung capacity from a turtle helmet. */
+        private static final int TURTLE_HELMET_SECONDS = 10;
+
+        @Override
+        public ResourceLocation id() {
+            return ID;
+        }
+
+        @Override
+        public int bonusUnits(ServerPlayer player) {
+            if (!AtmosphereConfig.INSTANCE.waterIntegrationEnabled()) {
+                return 0;
+            }
+            ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+            if (helmet.isEmpty()) {
+                return 0;
             }
 
-            float reduction = 0.0f;
+            int seconds = 0;
 
             var registry = player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
-            var respiration = registry.getOrThrow(Enchantments.RESPIRATION);
-            int level = player.getItemBySlot(EquipmentSlot.HEAD).getEnchantmentLevel(respiration);
-            reduction += level * RESPIRATION_PER_LEVEL;
+            int respiration = helmet.getEnchantmentLevel(registry.getOrThrow(Enchantments.RESPIRATION));
+            seconds += respiration * RESPIRATION_SECONDS_PER_LEVEL;
 
-            if (player.getItemBySlot(EquipmentSlot.HEAD).is(Items.TURTLE_HELMET)) {
-                reduction += TURTLE_HELMET_BONUS;
+            if (helmet.is(Items.TURTLE_HELMET)) {
+                seconds += TURTLE_HELMET_SECONDS;
             }
 
-            // Never quite free: fully cancelling drain from gear alone would make the whole
-            // preparation loop skippable with a single enchantment.
-            return Math.max(0.15f, 1.0f - reduction);
+            return seconds * AtmosphereTuning.BASE_UNITS_PER_SECOND;
         }
     }
 }

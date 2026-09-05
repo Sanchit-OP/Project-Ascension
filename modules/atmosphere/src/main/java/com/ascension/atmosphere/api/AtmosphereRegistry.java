@@ -53,6 +53,19 @@ public final class AtmosphereRegistry {
     }
 
     /**
+     * Contribute extra lung capacity, typically from worn gear.
+     *
+     * <p>Named rather than overloaded: {@link LungCapacityModifier} and
+     * {@link AtmosphereProvider} are both functional interfaces taking an id, so an overload
+     * would make every lambda call site ambiguous.
+     *
+     * @throws IllegalStateException if setup has already completed
+     */
+    public static void registerLungCapacity(ResourceLocation id, LungCapacityModifier modifier) {
+        ProviderRegistry.get().addLungModifier(id, modifier);
+    }
+
+    /**
      * The atmosphere at a position.
      *
      * <p>Never null: with no provider claiming the position, the result is

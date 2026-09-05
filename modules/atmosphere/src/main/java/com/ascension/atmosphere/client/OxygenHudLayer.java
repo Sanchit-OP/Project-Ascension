@@ -6,7 +6,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -36,9 +35,6 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
     /** Vanilla draws the air-bubble row this far above the bottom of the screen. */
     private static final int AIR_ROW_FROM_BOTTOM = 49;
 
-    /** Lift clear of vanilla bubbles when the player is also short of breath underwater. */
-    private static final int UNDERWATER_LIFT = 10;
-
     private static final int BAR_WIDTH = 80;
     private static final int BAR_HEIGHT = 5;
 
@@ -55,8 +51,7 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
     @Override
     public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
-        LocalPlayer player = minecraft.player;
-        if (player == null || minecraft.options.hideGui) {
+        if (minecraft.player == null || minecraft.options.hideGui) {
             return;
         }
         if (!ClientOxygenState.shouldRender()) {
@@ -70,11 +65,9 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
         int barX = right - BAR_WIDTH;
         int barY = graphics.guiHeight() - AIR_ROW_FROM_BOTTOM;
 
-        // Vanilla only draws bubbles while the player is actually short of air, so shift up
-        // only then rather than permanently leaving a gap.
-        if (player.getAirSupply() < player.getMaxAirSupply()) {
-            barY -= UNDERWATER_LIFT;
-        }
+        // No vanilla-bubble dodging: that row is cancelled while this bar is showing, so the
+        // position is stable. The earlier version shifted up based on air supply, which jittered
+        // as the value changed and made the bar itself appear to flicker.
 
         float fill = state.capacity() <= 0
                 ? 0.0f
