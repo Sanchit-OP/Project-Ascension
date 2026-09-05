@@ -1,5 +1,13 @@
 # Planets
 
+> **Updated 2026-09-05.** Per [ADR-0005](../decisions/0005-v1-scope-vertical-slice.md), **v1
+> builds Earth + Moon + Planet 3 only**. The seven-step critical path below remains the design
+> target; only the *build* order is cut. Planet 3 is in the slice specifically because it
+> proves the framework generalises rather than being Moon-shaped.
+>
+> Per [ADR-0004](../decisions/0004-fully-custom-dimensions.md), planets are **data-driven
+> JSON**, so worlds 4-7 are authoring work rather than engineering work.
+
 ## Purpose
 
 Defines the role of each planet in the progression route.

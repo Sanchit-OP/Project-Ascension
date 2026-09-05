@@ -1,5 +1,20 @@
 # Oxygen
 
+> **Updated 2026-09-05.** Settled: oxygen is a **fully custom system**, built as
+> `ascension-atmosphere` — the first module we build
+> ([M1](../../plans/m1-atmosphere.md)), and the flagship reusable module of the project
+> ([ADR-0003](../decisions/0003-modular-architecture-and-compatibility-policy.md)).
+>
+> Two constraints now bind the design:
+> - **Zones must be anchorable to a moving region**, not only static world coordinates, or the
+>   Sable ship bridge becomes impossible later
+>   ([ADR-0006](../decisions/0006-sable-integration-posture.md)).
+> - **Extension is via provider registries** — any mod can register an `AtmosphereProvider` or
+>   `OxygenSource` without extending our classes.
+>
+> The "Authored Simulation Boundary" section below is the single most important part of this
+> document and remains fully in force.
+
 ## Purpose
 
 Defines oxygen as a progression and exploration system.
