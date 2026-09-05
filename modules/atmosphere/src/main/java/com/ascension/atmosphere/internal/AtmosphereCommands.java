@@ -56,7 +56,9 @@ public final class AtmosphereCommands {
                         : Component.literal("NOT breathable").withStyle(ChatFormatting.RED))
                 .append(Component.literal(String.format("  drain x%.2f", atmosphere.drainMultiplier())))
                 .append(Component.literal("  lungs " + state.lungUnits() + "/"
-                        + AtmosphereTuning.LUNG_CAPACITY + " units")), false);
+                        + OxygenTracker.lungCapacity(player) + " units ("
+                        + (OxygenTracker.lungCapacity(player)
+                                / AtmosphereTuning.BASE_UNITS_PER_SECOND) + "s)")), false);
         return 1;
     }
 
@@ -104,7 +106,8 @@ public final class AtmosphereCommands {
         state.setLungUnits(units);
         OxygenTracker.invalidate(player);
         source.sendSuccess(() -> Component.literal(
-                "Lung reserve set to " + units + " / " + AtmosphereTuning.LUNG_CAPACITY + " units"), false);
+                "Lung reserve set to " + units + " / " + OxygenTracker.lungCapacity(player)
+                        + " units"), false);
         return 1;
     }
 
