@@ -169,7 +169,7 @@ Kept deliberately short, and each one is recorded here with the reason it is pre
 
 | Mod | Why it is installed | Is it a dependency? |
 |---|---|---|
-| **JEI** (Just Enough Items) | Item search, and `U` / `R` to see what a thing is used in and how it is made. Turns "did the recipe load" from a guessing game into a lookup. | **No.** Client convenience only, never referenced in code. |
+| **JEI** (Just Enough Items) | Item search, and `U` / `R` to see what a thing is used in and how it is made. Turns "did the recipe load" from a guessing game into a lookup. | **Not a compile dependency.** Loaded into dev runs on both sides, because recipe *transfer* needs its server half. |
 | **Curios API** | Provides the accessory slot the tank valve will bind to. | **Yes, but Tier 2 only.** `ascension-compat-curios` compiles against it; Tier 1 must never require it (ADR-0003 rule 1, ADR-0009 §4). |
 
 Installed versions, as of 2026-09-05: `jei-1.21.1-neoforge-19.51.0.418`,
@@ -180,20 +180,24 @@ reading taken on this instance — see
 Install both through the CurseForge app's own mod browser for the instance, so it resolves the
 correct 1.21.1 / NeoForge build and any dependencies.
 
-#### Curios must be on the dev server too — it is, automatically
+#### The dev server carries these too — automatically
 
-Curios registers a network channel, so a client that has it **refuses to join a server that does
-not**:
+Both are loaded into the Gradle dev runs, client **and** server, from `curios_version` and
+`jei_version` in `gradle.properties`. `ascension.mod-conventions` puts them on the run
+classpaths, so `runServer` carries the same mods the instance does. Bumping the instance means
+bumping the property.
 
-```
-Curios break channel of mod curios api failed to connect:
-the channel is missing on the server side but required on the client
-```
+Each one needs its server half for a different reason, and both were found the hard way:
 
-That is now handled by the build rather than by hand. `curios_version` in `gradle.properties` is
-put on the client and server run classpaths by `ascension.mod-conventions`, so `runServer`
-carries the same Curios the instance does. Bumping the instance's Curios means bumping that
-property.
+- **Curios** registers a network channel, so a client that has it **refuses to join a server
+  that does not**:
+  ```
+  Curios break channel of mod curios api failed to connect:
+  the channel is missing on the server side but required on the client
+  ```
+- **JEI** shows recipes fine from a client alone — recipe data is synced anyway — but recipe
+  *transfer*, the `+` button that fills a crafting grid, sends a packet nothing was there to
+  receive. Which made the one thing JEI was installed for the one thing that did not work.
 
 **This does not weaken ADR-0003 rule 6.** What enforces "atmosphere works with only `core`
 present" is the *compile* classpath, and Curios is not on it — Tier 1 cannot reference a class it

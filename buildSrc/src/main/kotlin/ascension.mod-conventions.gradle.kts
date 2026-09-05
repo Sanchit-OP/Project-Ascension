@@ -63,12 +63,17 @@ val jfrRequested: Boolean = providers.gradleProperty("jfr").isPresent
 // check the standalone case explicitly, run with -PnoDevMods.
 val devModsEnabled: Boolean = !providers.gradleProperty("noDevMods").isPresent
 
+// Each repository is scoped to the group it actually serves, so a typo'd coordinate fails at
+// the one place that was supposed to have it instead of being hunted for across every
+// repository in the build.
 repositories {
-    // Curios. Scoped to the one group it serves, so a typo'd coordinate fails here instead of
-    // being hunted for across every repository in the build.
     maven("https://maven.theillusivec4.top") {
         name = "TheIllusiveC4"
         content { includeGroup("top.theillusivec4.curios") }
+    }
+    maven("https://maven.blamejared.com") {
+        name = "BlameJared"
+        content { includeGroup("mezz.jei") }
     }
 }
 
@@ -135,11 +140,21 @@ configure<NeoForgeExtension> {
 // `additionalRuntimeClasspath`: the data run generates resources and has no business loading
 // somebody else's mod.
 if (devModsEnabled) {
-    val curiosVersion = providers.gradleProperty("curios_version").get()
-    val curios = "top.theillusivec4.curios:curios-neoforge:$curiosVersion"
+    val devMods = listOf(
+        // Server-side too: it registers a network channel, so a client carrying it will not
+        // join a server without it.
+        "top.theillusivec4.curios:curios-neoforge:"
+            + providers.gradleProperty("curios_version").get(),
+        // Server-side too: recipe *viewing* works from synced recipe data alone, but recipe
+        // transfer needs JEI's server half to receive the packet.
+        "mezz.jei:jei-1.21.1-neoforge:"
+            + providers.gradleProperty("jei_version").get(),
+    )
     dependencies {
-        "clientAdditionalRuntimeClasspath"(curios)
-        "serverAdditionalRuntimeClasspath"(curios)
+        devMods.forEach {
+            "clientAdditionalRuntimeClasspath"(it)
+            "serverAdditionalRuntimeClasspath"(it)
+        }
     }
 }
 
