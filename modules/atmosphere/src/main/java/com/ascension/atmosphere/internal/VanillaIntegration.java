@@ -35,10 +35,21 @@ public final class VanillaIntegration {
     }
 
     /**
-     * Water is unbreathable, claimed at the {@code DIMENSION} band.
+     * Water is unbreathable, claimed just above the {@code DIMENSION} band.
      *
      * <p>The low band matters: a sealed volume, a structure or a vehicle all override it without
      * writing a line of code, so a pressurised submarine simply works.
+     *
+     * <p><strong>Raised from {@code DIMENSION} to {@code DIMENSION + 50} when
+     * {@code WorldEnvironmentAtmosphere} arrived.</strong> That provider answers "what is this
+     * whole dimension like", which is the definition of the {@code DIMENSION} band, and a
+     * breathable Earth claiming at the same priority as water would have made drowning depend on
+     * a tie-break. It resolved correctly by id ordering — {@code water} sorts before
+     * {@code world_environment} — and correct-by-alphabetical-accident is not a property worth
+     * keeping. Water is a fact about a <em>position</em> and should override the world baseline
+     * explicitly.
+     *
+     * <p>Still far below {@code STRUCTURE} at 1000, so the submarine argument above is untouched.
      */
     public static final class WaterAtmosphere implements AtmosphereProvider {
 
@@ -55,7 +66,7 @@ public final class VanillaIntegration {
 
         @Override
         public int priority() {
-            return AtmospherePriority.DIMENSION;
+            return AtmospherePriority.DIMENSION + 50;
         }
     }
 
