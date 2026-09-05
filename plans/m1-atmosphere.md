@@ -174,12 +174,45 @@ Four bugs testing found, none visible from the code:
 Every one of these was found by playing, not by reading — which is the entire argument of
 ADR-0008.
 
-### M1.7 — Tank item + refill station
+### M1.7 — Tank item + refill station  *(done — 2026-09-05)*
 
 Portable reserve, refill block. The reserve-versus-efficiency tradeoff from `oxygen.md` is
 designed here but not necessarily fully implemented in v0.1.
 
-**Verify:** full expedition loop — leave breathable air, survive on tank, return, refill.
+**Verified on the dedicated server.** Full expedition loop plays: leave breathable air, survive
+on the tank, watch it drain before lungs, return, refill.
+
+Tank charge is a **data component**, network-synced, so the client draws the durability-style
+bar and the tooltip without a packet of our own. Non-stacking, because each tank carries its
+own charge and stacking would have to either merge it or throw it away.
+
+**The refill station has exactly one rule: it only works where the air is breathable.** That is
+what makes the loop a loop, and it composes with M1.6 for nothing — a station inside a
+pressurised room on an airless world works, because a pressurised room *is* breathable air, and
+the same station one block outside does not. Breathability is read at the player's head, not at
+the block: the station is a full solid block, so the flood fill counts it as a wall and it is
+never inside its own room.
+
+Filling is instant and free, deliberately. Oxygen production is the Create generator chain in
+`atmosphere-api.md` section 7b, and that lands in Tier 2. Pricing a refill before that exists
+would mean inventing a currency we already intend to replace.
+
+`PlayerTankCollector` is the first real `OxygenSourceCollector`, and it is registered through
+the public API exactly the way a third party would register a curio slot. No privileged path.
+
+Two things came out of building and playing it:
+
+1. **A wasted inventory scan, introduced years earlier in spirit.** `OxygenTracker.update`
+   gathered supply once before the at-risk branch and discarded the result in both branches.
+   Harmless while no collector did any work; the moment a collector walked 41 inventory slots it
+   became a wasted scan per player per pass. Removed.
+2. **Tanks drain while casually swimming.** The draw order is working as designed — tanks first,
+   lungs last — but with a tank in the bag a two-second dip costs tank air you have to walk back
+   to a station to replace. Found by playing, and it is what prompted the equipped-tank question
+   now under discussion: a stowed tank should be a closed valve.
+
+Also closed here, because the module was otherwise creative-only: crafting recipes and recipe
+advancements for the tank, the station **and** the emitter, which never had one.
 
 ### M1.8 — Refactor + measurement
 

@@ -85,11 +85,14 @@ public final class OxygenTracker {
             }
         }
 
-        // One walk of the player's sources, reused for the failure check and the payload.
-        // Previously available and capacity were gathered separately, walking every collector
-        // twice more than necessary on every pass.
-        Supply supply = gatherSupply(player, state, lungCapacity);
-
+        // Change the supply first, then read it once. The reading is what the failure check and
+        // the payload both need, and it has to happen after the change or the client would
+        // always be shown the previous pass's number.
+        //
+        // Gathering before the branch as well used to look harmless. It stopped being harmless
+        // the moment a collector did real work: the tank collector walks 41 inventory slots, so
+        // the discarded gather was a wasted inventory scan per player per pass.
+        Supply supply;
         if (atRisk) {
             spend(player, state, drainPerSecond);
             supply = gatherSupply(player, state, lungCapacity);
@@ -111,7 +114,19 @@ public final class OxygenTracker {
      * and the sync payload both need it, and walking every registered collector twice per
      * player per half-second is exactly the kind of quiet waste ADR-0007 exists to prevent.
      */
-    private record Supply(int available, int capacity) {
+    public record Supply(int available, int capacity) {
+    }
+
+    /**
+     * One-shot reading of everything a player can breathe from.
+     *
+     * <p>For commands and diagnostics. The accounting path deliberately does not call this: it
+     * already knows the lung capacity it computed a few lines earlier and should not pay to work
+     * it out twice.
+     */
+    public static Supply supply(ServerPlayer player) {
+        return gatherSupply(player, player.getData(AtmosphereAttachments.OXYGEN),
+                lungCapacity(player));
     }
 
     private static Supply gatherSupply(ServerPlayer player, OxygenState state, int lungCapacity) {

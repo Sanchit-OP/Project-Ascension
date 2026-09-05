@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " T ",
+    "IPI",
+    "III"
+  ],
+  "key": {
+    "T": { "item": "ascension_atmosphere:oxygen_tank" },
+    "P": { "item": "minecraft:piston" },
+    "I": { "item": "minecraft:iron_ingot" }
+  },
+  "result": { "id": "ascension_atmosphere:oxygen_refill_station", "count": 1 }
+}
