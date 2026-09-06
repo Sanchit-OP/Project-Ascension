@@ -506,12 +506,27 @@ The cost is that "which way is Planet 4" needs an in-game answer: an instrument,
 coordinates earned as progression. `docs/gameplay/exploration.md` already asks whether map and
 scan data are progression items; this is what makes answering it mandatory.
 
-### Open: how tall is space?
+### Space height — settled 2026-09-06: `min_y: -512`, `height: 1024`
 
-A dimension's height is configurable and space needs almost none — planets lay out on a plane
-and flying is horizontal. A short world (a few hundred blocks) is the cheapest thing to load and
-reinforces that space is wide rather than tall. Against that, a ship with no vertical room to
-manoeuvre may feel like a corridor. Decide before M2.5.
+A short world, per this section's own reasoning: cheap, and reinforces that space is wide rather
+than tall. The planetary plane sits at `y: 0` — the middle of the symmetric range — giving 512
+blocks of manoeuvring room both above and below it (`SpaceDimension.VERTICAL_BOUND` in code),
+which is enough headroom for elytra flight without needing to feel tall. Revisit if
+Sable/Aeronautics ships later make "feels like a corridor" a real complaint rather than a
+hypothetical one; nothing here is load-bearing enough to be expensive to change.
+
+Not to be confused with `approach_radius` (§4) — that is a *horizontal* distance from a planet's
+`[x, z]` position within the plane, already settled per-planet in the schema. This section is
+about the dimension's own vertical build limit, a separate axis entirely.
+
+**This limit is a warning, not a wall.** Minecraft does not clamp entity movement to a
+dimension's declared height — only block placement and worldgen respect it — so a player who
+holds "up" can fly straight past `y: 512` with nothing stopping them, and vanilla's own void
+damage (keyed off `min_y - 64`, i.e. `y: -576` here) would eventually kill them below it. Both
+are handled explicitly by `SpaceMechanics`, on Sanchit's call: a repeating message beyond
+`±512`, no forced correction, and void damage suppressed entirely in this dimension — the
+player stays in full control in both directions, and only air is a real limiter, same as the
+horizontal case this document already argues for. See `plans/m2-worlds.md`'s M2.5 section.
 
 ## 4. The planet schema
 
@@ -627,9 +642,20 @@ Held as a registry, resolved on demand, never cached in a static map keyed by di
    The cost is that our registry claims a vanilla dimension, which an adopter might not expect.
    Mitigated by it being *data*: the Earth entry is a JSON file in our datapack, so anyone who
    wants `minecraft:overworld` left alone deletes one file.
-4. **How does a player reach the space dimension from Earth's surface?** Out of scope for the
-   schema, on M2's critical path, and the answer shapes what `approach_radius` means on the way
-   *out* as well as in.
+4. ~~**How does a player reach the space dimension from Earth's surface?**~~ **Settled
+   2026-09-06: vanilla elytra + firework rockets, no new gear.** No `gear` module exists yet and
+   ships (Sable, ADR-0006) are explicitly out of M2 v0.1's scope, so the ascent mechanism has to
+   work with what already exists in the base game. Crossing `y: 320` — the Overworld's own build
+   height, chosen so Earth's `dimension_type` needs no override — while airborne on Earth
+   transitions the player to `ascension_worlds:space` at Earth's `SpacePosition` (`[0, 0]`,
+   `y: 256`, the plane), velocity and heading preserved, per the "ascent triggers on altitude"
+   behaviour already described above.
+
+   **Create Aeronautics + Sable ship-based ascent is planned, later, as the Tier 2 upgrade** —
+   this does not block it and does not need to be designed around now. When it lands, it is
+   another way to cross the same threshold, not a replacement for it: `ascension-compat-sable`
+   bridges ships into the same dimension-change hook, per ADR-0006's own posture of ships as an
+   optional integration.
 
 ### Distant Horizons: tested when orbit exists, and it does not get a vote
 

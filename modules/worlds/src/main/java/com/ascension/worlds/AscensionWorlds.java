@@ -4,6 +4,9 @@ import com.ascension.core.api.WorldEnvironmentRegistry;
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
 import com.ascension.worlds.internal.PlanetEnvironments;
+import com.ascension.worlds.internal.SpaceAttachments;
+import com.ascension.worlds.internal.SpaceEnvironment;
+import com.ascension.worlds.internal.SpaceMechanics;
 import com.ascension.worlds.internal.WorldsContent;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -40,11 +43,13 @@ public final class AscensionWorlds {
 
     public AscensionWorlds(IEventBus modBus, ModContainer container) {
         WorldsContent.register(modBus);
+        SpaceAttachments.register(modBus);
         modBus.addListener(this::onRegisterDataPackRegistries);
         modBus.addListener(this::onCommonSetup);
 
         NeoForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(this::onServerStopped);
+        SpaceMechanics.register();
 
         LOGGER.info("Ascension Worlds loaded ({})", container.getModInfo().getVersion());
     }
@@ -62,9 +67,14 @@ public final class AscensionWorlds {
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> WorldEnvironmentRegistry.register(
-                ResourceLocation.fromNamespaceAndPath(MOD_ID, "planets"),
-                PlanetEnvironments.INSTANCE));
+        event.enqueueWork(() -> {
+            WorldEnvironmentRegistry.register(
+                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "planets"),
+                    PlanetEnvironments.INSTANCE);
+            WorldEnvironmentRegistry.register(
+                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "space"),
+                    SpaceEnvironment.INSTANCE);
+        });
     }
 
     /**

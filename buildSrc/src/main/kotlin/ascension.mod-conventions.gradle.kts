@@ -77,6 +77,10 @@ repositories {
         name = "BlameJared"
         content { includeGroup("mezz.jei") }
     }
+    maven("https://api.modrinth.com/maven") {
+        name = "Modrinth"
+        content { includeGroup("maven.modrinth") }
+    }
 }
 
 /**
@@ -383,7 +387,14 @@ tasks.register("devMods") {
 // Only version constraints are injected. Human-readable fields (display name,
 // description, credits) live literally in each module's own mods.toml, because
 // they are module-specific documentation rather than build configuration.
-val modsTomlProperties = mapOf(
+//
+// Mutable and published to project extra, so a module needing one extra token of its own (a
+// compat jar's third-party version floor, say -- chunky_version_range is the first) can add to
+// this same map from its own build script rather than duplicating the expand/filesMatching
+// wiring below. Groovy's template engine requires every ${...} in the file to resolve in one
+// pass, so a second independent expand() on the same file does not compose with this one; adding
+// to the map itself is what does.
+val modsTomlProperties: MutableMap<String, String> = mutableMapOf(
     "mod_id" to modId,
     "mod_version" to version.toString(),
     "mod_license" to providers.gradleProperty("mod_license").get(),
@@ -392,6 +403,7 @@ val modsTomlProperties = mapOf(
     "neoforge_version_range" to providers.gradleProperty("neoforge_version_range").get(),
     "loader_version_range" to providers.gradleProperty("loader_version_range").get(),
 )
+project.extra["modsTomlProperties"] = modsTomlProperties
 
 tasks.named<ProcessResources>("processResources") {
     inputs.properties(modsTomlProperties)

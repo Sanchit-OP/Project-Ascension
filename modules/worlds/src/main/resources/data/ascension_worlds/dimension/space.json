@@ -1,0 +1,11 @@
+{
+  "type": "ascension_worlds:space",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "layers": [],
+      "biome": "ascension_worlds:space_void",
+      "features": true
+    }
+  }
+}

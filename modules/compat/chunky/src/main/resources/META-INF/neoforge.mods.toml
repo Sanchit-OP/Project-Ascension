@@ -1,0 +1,52 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Chunky"
+authors = "${mod_authors}"
+description = '''
+Pre-generates every registered planet's surface in the background, one at a time, starting the
+moment the server finishes booting -- so worldgen is not part of the seam a dimension change
+already stutters on.
+
+Optional. Without Chunky installed, this jar simply is not present -- ascension-worlds notices
+nothing missing, because it never knew this existed in the first place.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# The one Tier 1 module this integrates -- ChunkySequentialPregen reads the planet registry
+# (WorldsRegistries.PLANET) directly, so its classes have to be present and registered.
+[[dependencies.${mod_id}]]
+modId = "ascension_worlds"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+# The actual integration target. Required, not optional -- this whole jar has no other reason to
+# exist, so if Chunky is absent NeoForge should refuse to load this rather than load it into a
+# no-op. That refusal, not a runtime null-check, is what "optional" means for a Tier 2 jar
+# (ADR-0003 rule 1 / ADR-0006's posture, applied to Chunky instead of Sable).
+[[dependencies.${mod_id}]]
+modId = "chunky"
+type = "required"
+versionRange = "${chunky_version_range}"
+ordering = "NONE"
+side = "BOTH"

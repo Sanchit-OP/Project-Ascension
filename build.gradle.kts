@@ -22,7 +22,11 @@
 //
 // The host is the module furthest down the dependency chain, since its run already loads
 // everything beneath it. Evaluation order follows real dependencies, so it cannot cycle.
-val devRunHost = ":modules:worlds"
+//
+// Moved to :modules:compat:chunky once that module existed: Tier 2 depends on the Tier 1 it
+// integrates, so it is now the furthest thing down the chain, and Chunky is already mirrored
+// into dev runs via dev_mods_dir, so the compat jar has something real to talk to.
+val devRunHost = ":modules:compat:chunky"
 
 tasks.register("runDevServer") {
     group = "ascension"
