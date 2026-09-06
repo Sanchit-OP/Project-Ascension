@@ -107,6 +107,66 @@ Flat across cycles is healthy. Climbing means something is holding a `Level`, `P
 
 ---
 
+## M2.6 — Dimension transition reading (Earth ↔ Moon round trip)
+
+**Date:** 2026-09-06
+**Configuration:** dedicated server (`localhost`) + CurseForge client, generational ZGC
+**Mods:** the full 15-mod optimisation stack, plus `ascension_core`/`ascension_atmosphere`/
+`ascension_worlds`/`ascension_compat_chunky` 0.1.0
+**Test:** Moon → Earth → Moon, two real dimension transitions through `ascension_worlds:space`
+(ascent, approach, descent — the full M2.5/M2.6 mechanism), captured with `/spark profiler start`
+/ `/spark profiler stop` across both trips
+**Report:** https://spark.lucko.me/LKUMbP2xmy
+
+| Metric | Reading |
+|---|---|
+| TPS | **20.00** flat for the entire ~148s window |
+| MSPT | median 3.15 ms, 95th %ile 24.3 ms, max 547 ms |
+| CPU (process) | 17.6–18.4% |
+| Memory (process) | 1.2 GB / 5.5 GB (21.5%) |
+
+### Our share: below a tenth of a percent
+
+Spark's per-mod time attribution (Server thread):
+
+| Mod | Share |
+|---|---|
+| `ascension_worlds` | 0.08% |
+| `ascension_atmosphere` | 0.02% |
+| `ascension_core` | 0.00% |
+| `ascension_compat_chunky` | didn't register at all |
+
+For scale: `neoforge` itself is 4.26%, and spark's own profiler overhead is 0.69% — both bigger
+than everything we've built combined.
+
+### Where the 547 ms spike and the 24.3 ms tail actually come from
+
+Not from us. The self-time-sorted flat view has no `com.ascension` frame anywhere in it. The real
+cost sits in vanilla chunk I/O around the transition: `ChunkMap.processUnloads` (9.60%),
+`ChunkSerializer.read`/`write` (4.25% / 1.29%), and the `com.mojang.serialization` codec
+decode/encode machinery underneath chunk NBT parsing (roughly 15% combined across several codec
+frames). That is the inherent cost of any dimension change touching real chunks, present in
+vanilla Minecraft with zero Ascension mods installed — not something M2.5 or M2.6 added.
+
+### Read
+
+**M2.6's own "measured, not asserted" verify step: satisfied for the cost question.** Two real
+round trips through `ascension_worlds:space` — the exact mechanism `SpaceMechanics` drives —
+held 20 TPS throughout, and the entire Ascension module set never clears a tenth of a percent of
+server thread time doing it. The transition-time cost that does exist is vanilla's own chunk
+churn, which is precisely what M2.6 lever #1 (pre-loading) and lever #2 (Chunky pre-generation)
+exist to get ahead of — this reading doesn't isolate how much they help (see caveat below), only
+confirms the cost sitting there isn't something our code is adding on top of vanilla's own.
+
+**Not an A/B, and not yet a "does pre-loading help" measurement.** This is a single reading with
+everything on, on a world Chunky had only partly pre-generated at the time — it doesn't isolate
+"cost of our code" from "cost of a vanilla dimension change" the rigorous way M1.9's
+atmosphere-on/off comparison did, and it doesn't compare against a run with the pre-load ticket
+disabled. The per-mod breakdown above is the next best thing to an A/B without a second run, and
+answers the question that actually mattered here: is any of this ours.
+
+---
+
 ## M1.8 — Full stack, first reading
 
 **Date:** 2026-09-05

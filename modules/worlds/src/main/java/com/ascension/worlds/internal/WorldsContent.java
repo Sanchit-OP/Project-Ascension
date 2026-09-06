@@ -5,6 +5,8 @@ import com.ascension.worlds.internal.terrain.CraterConfiguration;
 import com.ascension.worlds.internal.terrain.CraterFeature;
 import com.ascension.worlds.internal.terrain.CraterPiece;
 import com.ascension.worlds.internal.terrain.CraterStructure;
+import com.ascension.worlds.internal.terrain.RockDebrisConfiguration;
+import com.ascension.worlds.internal.terrain.RockDebrisFeature;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -104,6 +106,15 @@ public final class WorldsContent {
 
     public static final Supplier<StructurePieceType> CRATER_PIECE = STRUCTURE_PIECE_TYPES.register(
             "crater", () -> (StructurePieceType.ContextlessType) CraterPiece::new);
+
+    /**
+     * Loose rock scattered through the space dimension's vacuum. See
+     * {@link RockDebrisFeature}'s javadoc for why this is a cluster of small pieces rather than
+     * one asteroid, and {@code worldgen/placed_feature/rock_debris.json} for how rare it actually
+     * is &mdash; the space dimension is still overwhelmingly empty.
+     */
+    public static final Supplier<Feature<RockDebrisConfiguration>> ROCK_DEBRIS = FEATURES.register(
+            "rock_debris", () -> new RockDebrisFeature(RockDebrisConfiguration.CODEC));
 
     /**
      * The Moon's first exclusive resource: a fusion-fuel ore, mined in place rather than

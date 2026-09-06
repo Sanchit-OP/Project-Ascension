@@ -22,6 +22,7 @@ include(":modules:worlds")
 // include(":modules:gear")           // M4
 
 // --- Tier 2: optional integration jars, never depended on by Tier 1 ----------
+include(":modules:compat:chunky")
 // include(":modules:compat:curios")  // next, once Curios is installed in the test instance
 // include(":modules:compat:sable")   // M5
 // include(":modules:compat:create")

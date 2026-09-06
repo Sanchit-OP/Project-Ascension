@@ -30,12 +30,17 @@ import net.minecraft.world.level.Level;
  * @param space       where the planet sits in interplanetary space
  * @param environment what the air is like there; defaults to {@link WorldEnvironment#EARTHLIKE}
  * @param order       sort order for listings; ties broken by id
+ * @param color       packed {@code 0xRRGGBB} tint for the placeholder body rendered in space;
+ *                    defaults to {@code 0xFFFFFF} (no tint). Cosmetic only, read by
+ *                    {@code SpaceSkyRenderer} &mdash; the point is telling two placeholder discs
+ *                    apart at a glance before real per-planet art exists.
  */
 public record Planet(
         ResourceKey<Level> surface,
         SpacePosition space,
         WorldEnvironment environment,
-        int order) {
+        int order,
+        int color) {
 
     public static final Codec<Planet> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -44,7 +49,8 @@ public record Planet(
                     SpacePosition.CODEC.fieldOf("space").forGetter(Planet::space),
                     WorldEnvironment.CODEC.optionalFieldOf("environment", WorldEnvironment.EARTHLIKE)
                             .forGetter(Planet::environment),
-                    Codec.INT.optionalFieldOf("order", 0).forGetter(Planet::order))
+                    Codec.INT.optionalFieldOf("order", 0).forGetter(Planet::order),
+                    Codec.INT.optionalFieldOf("color", 0xFFFFFF).forGetter(Planet::color))
             .apply(instance, Planet::new));
 
     /**
