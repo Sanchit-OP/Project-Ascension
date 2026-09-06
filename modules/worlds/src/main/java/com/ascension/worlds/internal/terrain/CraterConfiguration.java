@@ -19,7 +19,7 @@ public record CraterConfiguration(IntProvider radius, int floorDepth, int rimHei
 
     public static final Codec<CraterConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    IntProvider.codec(1, 32).fieldOf("radius").forGetter(CraterConfiguration::radius),
+                    IntProvider.codec(1, 60).fieldOf("radius").forGetter(CraterConfiguration::radius),
                     Codec.intRange(0, 48).fieldOf("floor_depth").forGetter(CraterConfiguration::floorDepth),
                     Codec.intRange(0, 12).fieldOf("rim_height").forGetter(CraterConfiguration::rimHeight))
             .apply(instance, CraterConfiguration::new));

@@ -25,10 +25,15 @@
   "features": [
     [],
     [],
-    [ "ascension_worlds:small_crater", "ascension_worlds:large_crater" ],
+    [
+      "ascension_worlds:small_crater",
+      "ascension_worlds:large_crater"
+    ],
     [],
     [],
     [],
-    [ "ascension_worlds:lunar_helium_ore" ]
+    [
+      "ascension_worlds:lunar_helium_ore"
+    ]
   ]
 }
