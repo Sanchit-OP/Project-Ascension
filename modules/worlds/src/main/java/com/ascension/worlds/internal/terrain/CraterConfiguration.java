@@ -6,13 +6,13 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 /**
- * A crater's shape: how big, how deep, how tall the ejecta rim stands.
+ * A small crater's shape: how big, how deep, how tall the ejecta rim stands.
  *
  * <p>Radius is randomised per placement, the same way vanilla's own {@code DiskConfiguration}
- * randomises a disk's size &mdash; a crater feels wrong if every instance is identical. Depth and
- * rim height stay fixed per configuration; two configured features with different numbers
- * (small and common, large and rare) are how "most craters are small dents, a few are basins"
- * happens, without a second {@link CraterFeature} class.
+ * randomises a disk's size &mdash; a crater feels wrong if every instance is identical. Large
+ * craters use the same idea but aren't configured this way any more: see
+ * {@link CraterFeature}'s javadoc for why they moved to a {@code Structure}, which carries its
+ * own radius/depth/rim fields on {@link CraterStructure} instead of this record.
  */
 public record CraterConfiguration(IntProvider radius, int floorDepth, int rimHeight)
         implements FeatureConfiguration {

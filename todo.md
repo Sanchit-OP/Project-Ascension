@@ -162,6 +162,18 @@ off honestly.
   (ADR-0011). Not a blocker for M2 v0.1, which is Earth-gravity Moon and Planet 3 throughout.
 
 **Worldgen:**
+- **Moon terrain tuning: crater clipping and mountain pillars fixed and confirmed in a live
+  client.** Large craters were silently clipped because a `Feature` can only safely write within
+  one chunk of its origin (confirmed against the actual NeoForge source); fixed by converting
+  large craters to a `Structure`, which generates per-intersecting-chunk instead — this also gave
+  a natural hook to make craters check for and avoid overwriting other structures placed nearby,
+  ahead of more structures landing later. Mountains were vertical pillars with flat tops because
+  the baseline density gradient saturates above y=40; fixed by extending the gradient's range and
+  rescaling the multiplier. Sanchit didn't spot mountains at all in his playtest and is fine
+  leaving them as-is ("looked good overall") — that term is intentionally untouched. Crater
+  density was tuned down further afterward (large 1/5, small 1/6 of the already-reduced values)
+  without a re-verification pass, his call. Full writeup, including the exact root causes and the
+  verification method: [`docs/technical/moon-terrain-tuning.md`](docs/technical/moon-terrain-tuning.md).
 - **Curate Earth's modded ore spawns** once Create and whichever other mods actually land add
   their own overworld ores. Mechanism is already proven: `neoforge:remove_features` biome
   modifiers, the mirror image of the `add_features` one that placed Titanium Ore — see

@@ -14,22 +14,25 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * A bowl carved into the surface, with a raised rim of loose ejecta around it.
  *
- * <p>The one piece of real engineering M2.3's terrain needed. Vanilla's density-function
- * worldgen can shape rolling hills through pure JSON, but a ring-shaped rim around a bowl is not
- * expressible as noise &mdash; noise has no notion of "this shape, centred here, this size". A
- * crater needs code once; after that, every crater on the Moon (or a future airless world) is
- * one more {@link CraterConfiguration} and a {@code placed_feature} choosing how common it is.
- * Small and common, large and rare, are two configured features pointing at this same class, not
- * two classes (see {@code worldgen/configured_feature/small_crater.json} and
- * {@code large_crater.json}).
+ * <p>Vanilla's density-function worldgen can shape rolling hills through pure JSON, but a
+ * ring-shaped rim around a bowl is not expressible as noise &mdash; noise has no notion of "this
+ * shape, centred here, this size". Hence this class.
+ *
+ * <p><b>Small craters only.</b> Large craters use the exact same carve/rim algorithm but run it
+ * as a {@link net.minecraft.world.level.levelgen.structure.Structure} instead
+ * ({@link CraterStructure} / {@link CraterPiece}), because a {@code Feature} may only safely
+ * write blocks within one chunk of where it started, and a large crater's rim reaches up to
+ * ~52 blocks &mdash; two to three chunks further than that limit allows. Small craters (radius
+ * 5&ndash;10, see {@code worldgen/configured_feature/small_crater.json}) never get close to that
+ * limit, so there is nothing to gain from converting them; a {@code Feature} is simpler.
  *
  * <p>Runs at the {@code LOCAL_MODIFICATIONS} step, after terrain shape but before the ore feature
  * at {@code UNDERGROUND_ORES} &mdash; so ore placement correctly sees a crater's carved-out
  * interior as already-air, and never replaces stone that a crater already removed.
  *
  * <p>Column-by-column, not a 3D scan: the height at every position in range is read once from
- * the heightmap, and only the blocks that actually change are touched. A radius-32 crater is at
- * most a 65&times;65 column footprint, each column touching at most a few dozen blocks
+ * the heightmap, and only the blocks that actually change are touched. A radius-10 crater is at
+ * most a 24&times;24 column footprint, each column touching at most a few dozen blocks
  * vertically &mdash; a one-time cost paid during chunk generation, nothing that runs per tick
  * (ADR-0007 rule 3 is about ongoing cost; a single generation-time pass is not what it guards
  * against).

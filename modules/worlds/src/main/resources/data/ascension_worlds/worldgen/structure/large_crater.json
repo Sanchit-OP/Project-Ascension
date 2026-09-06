@@ -1,0 +1,9 @@
+{
+  "type": "ascension_worlds:crater",
+  "biomes": ["ascension_worlds:moon_highlands"],
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "radius": { "type": "minecraft:uniform", "min_inclusive": 25, "max_inclusive": 45 },
+  "floor_depth": 20,
+  "rim_height": 6
+}
