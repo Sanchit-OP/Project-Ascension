@@ -3,6 +3,8 @@ package com.ascension.worlds.internal;
 import com.ascension.worlds.AscensionWorlds;
 import com.ascension.worlds.internal.terrain.CraterConfiguration;
 import com.ascension.worlds.internal.terrain.CraterFeature;
+import com.ascension.worlds.internal.terrain.CraterPiece;
+import com.ascension.worlds.internal.terrain.CraterStructure;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -11,6 +13,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -39,6 +43,10 @@ public final class WorldsContent {
             DeferredRegister.create(Registries.ITEM, AscensionWorlds.MOD_ID);
     private static final DeferredRegister<Feature<?>> FEATURES =
             DeferredRegister.create(Registries.FEATURE, AscensionWorlds.MOD_ID);
+    private static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES =
+            DeferredRegister.create(Registries.STRUCTURE_TYPE, AscensionWorlds.MOD_ID);
+    private static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPES =
+            DeferredRegister.create(Registries.STRUCTURE_PIECE, AscensionWorlds.MOD_ID);
 
     /**
      * Loose surface dust. The one block every airless world shares, regardless of biome &mdash;
@@ -85,6 +93,17 @@ public final class WorldsContent {
      */
     public static final Supplier<Feature<CraterConfiguration>> CRATER = FEATURES.register(
             "crater", () -> new CraterFeature(CraterConfiguration.CODEC));
+
+    /**
+     * The large crater's shape, as a {@link net.minecraft.world.level.levelgen.structure.Structure}
+     * rather than a {@link Feature} &mdash; see {@link CraterStructure}'s javadoc for why large
+     * craters specifically need this and small ones don't.
+     */
+    public static final Supplier<StructureType<CraterStructure>> CRATER_STRUCTURE_TYPE = STRUCTURE_TYPES.register(
+            "crater", () -> () -> CraterStructure.CODEC);
+
+    public static final Supplier<StructurePieceType> CRATER_PIECE = STRUCTURE_PIECE_TYPES.register(
+            "crater", () -> (StructurePieceType.ContextlessType) CraterPiece::new);
 
     /**
      * The Moon's first exclusive resource: a fusion-fuel ore, mined in place rather than
@@ -148,6 +167,8 @@ public final class WorldsContent {
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         FEATURES.register(modBus);
+        STRUCTURE_TYPES.register(modBus);
+        STRUCTURE_PIECE_TYPES.register(modBus);
         modBus.addListener(WorldsContent::addToCreativeTabs);
     }
 

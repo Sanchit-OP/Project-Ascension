@@ -1,0 +1,11 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 481516,
+    "spacing": 16,
+    "separation": 7
+  },
+  "structures": [
+    { "structure": "ascension_worlds:large_crater", "weight": 1 }
+  ]
+}

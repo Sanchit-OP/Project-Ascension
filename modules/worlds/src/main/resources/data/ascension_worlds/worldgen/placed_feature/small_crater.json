@@ -1,7 +1,7 @@
 {
   "feature": "ascension_worlds:small_crater",
   "placement": [
-    { "type": "minecraft:rarity_filter", "chance": 4 },
+    { "type": "minecraft:rarity_filter", "chance": 96 },
     { "type": "minecraft:in_square" },
     { "type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG" },
     { "type": "minecraft:biome" }
