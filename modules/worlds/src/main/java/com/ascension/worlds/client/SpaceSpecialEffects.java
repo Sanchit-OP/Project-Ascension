@@ -1,6 +1,9 @@
 package com.ascension.worlds.client;
 
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -15,6 +18,14 @@ import net.minecraft.world.phys.Vec3;
  * lighting to track, the same reasoning nether uses. Fog is always off ({@code isFoggyAt} always
  * {@code false}) and the background is always pure black regardless of brightness &mdash; nothing
  * in the space dimension should ever fade distant objects out early or tint the void.
+ *
+ * <p>{@link #renderSnowAndRain} and {@link #tickRain} both unconditionally return {@code true}
+ * (per {@code IDimensionSpecialEffectsExtension}'s contract, "prevent vanilla snow/rain rendering
+ * and ticking") &mdash; belt-and-suspenders on top of {@code space_void}'s own
+ * {@code has_precipitation: false}. Space is vacuum; weather cannot exist there by construction,
+ * and this makes that a guarantee enforced in code rather than a property that happens to fall
+ * out of one biome JSON file staying correctly configured forever. See {@link MoonSpecialEffects}
+ * for the same reasoning applied to the Moon.
  */
 final class SpaceSpecialEffects extends DimensionSpecialEffects {
 
@@ -32,5 +43,17 @@ final class SpaceSpecialEffects extends DimensionSpecialEffects {
     @Override
     public boolean isFoggyAt(int x, int z) {
         return false;
+    }
+
+    @Override
+    public boolean renderSnowAndRain(
+            ClientLevel level, int ticks, float partialTick, LightTexture lightTexture,
+            double camX, double camY, double camZ) {
+        return true;
+    }
+
+    @Override
+    public boolean tickRain(ClientLevel level, int ticks, Camera camera) {
+        return true;
     }
 }

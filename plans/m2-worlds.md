@@ -100,6 +100,18 @@ compatibility check against the real thing at M2.5, not a design input before it
 
 **Verify:** nothing. This increment produces documents.
 
+**Resolved 2026-09-06 — dropped, then fixed the same day.** The M2.5/M2.6 compatibility check
+this section deferred to did happen, and found DH repeatedly corrupting already-generated chunks
+against this module's custom worldgen, not as one bad run. Dropped from the stack first. Root
+cause turned out to be specific: `distantGeneratorMode = "FEATURES"`, a setting DH's own config
+warns can misbehave against non-vanilla world generators — reinstalled with
+`distantGeneratorMode = "PRE_EXISTING_ONLY"` instead (DH renders only real, Chunky-generated
+terrain, never guesses at unexplored terrain), and a newer, far more field-tested build
+(`2.4.5-b`) in place of the beta that had corrupted. See `optimisation-stack.md`'s "Distant
+Horizons: dropped, then fixed, same day". Every mention of DH below, in the M2.3/M2.5 sections, is
+the historical record of that testing and is kept as written rather than edited after the fact —
+DH was genuinely present and genuinely tested against at the time.
+
 ### M2.2 — The Moon surface, authored as data  *(done, verified in game)*
 
 One dimension, registered from JSON through the schema M2.1 fixes, reachable by command. Airless.
@@ -506,6 +518,23 @@ performance claims more centrally than this one did.
 - [x] Two refactor passes done (M2.4, M2.7) — M2.7's code-review half is done (0 → 13 tests in
       `worlds`, one mis-justified public event removed); its performance half is the accepted
       per-mod evidence above rather than a formal A/B, per the same call
+
+**M2 called done 2026-09-06 — Sanchit: "mark M2 as done."** Nine of twelve items closed outright;
+the remaining three ([~]) are each accepted on the evidence already recorded above rather than
+reopened — a client-relog check, a formal performance A/B, and a live standalone-boot confirmation,
+all small, all concrete, and each explicitly better suited to whenever someone's next at the
+keyboard for an unrelated reason than to a dedicated session chasing checklist purity. The same
+judgment call this plan already made for M2.5 and M2.6 individually, now made for the milestone as
+a whole.
+
+Also closed out the same day, alongside the checklist itself: the Moon's weather system
+(`ascension_worlds:dust_storm`, a real custom particle, a Sodium-proof screen overlay, a 5-second
+build/wind-down ramp), the discovery and fix of vanilla weather silently being able to leak into
+airless dimensions (`SpaceSpecialEffects`/`MoonSpecialEffects`), and the Distant Horizons saga —
+dropped for corrupting chunks against this module's worldgen, root-caused to one specific
+generator-mode setting DH itself warns about, and reinstated fixed. None of that was in this
+plan's original scope; all of it came out of Sanchit actually playing the thing M2 built, which is
+the entire reason ADR-0008 requires playing it rather than trusting the compile.
 
 ## Explicitly out of scope for M2 v0.1
 

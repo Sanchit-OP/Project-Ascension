@@ -4,16 +4,21 @@ import com.ascension.core.api.WorldEnvironmentRegistry;
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
 import com.ascension.worlds.internal.PlanetEnvironments;
+import com.ascension.worlds.internal.PlanetWeatherMechanics;
+import com.ascension.worlds.internal.PlanetWeathers;
 import com.ascension.worlds.internal.SpaceAttachments;
 import com.ascension.worlds.internal.SpaceEnvironment;
 import com.ascension.worlds.internal.SpaceMechanics;
+import com.ascension.worlds.internal.WorldsCommands;
 import com.ascension.worlds.internal.WorldsContent;
+import com.ascension.worlds.internal.net.WorldsNetwork;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
@@ -46,10 +51,13 @@ public final class AscensionWorlds {
         SpaceAttachments.register(modBus);
         modBus.addListener(this::onRegisterDataPackRegistries);
         modBus.addListener(this::onCommonSetup);
+        modBus.addListener(WorldsNetwork::register);
 
         NeoForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(this::onServerStopped);
+        NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         SpaceMechanics.register();
+        PlanetWeatherMechanics.register();
 
         LOGGER.info("Ascension Worlds loaded ({})", container.getModInfo().getVersion());
     }
@@ -86,9 +94,15 @@ public final class AscensionWorlds {
      */
     private void onServerAboutToStart(ServerAboutToStartEvent event) {
         PlanetEnvironments.load(event.getServer());
+        PlanetWeathers.load(event.getServer());
     }
 
     private void onServerStopped(ServerStoppedEvent event) {
         PlanetEnvironments.unload();
+        PlanetWeathers.unload();
+    }
+
+    private void onRegisterCommands(RegisterCommandsEvent event) {
+        WorldsCommands.register(event.getDispatcher());
     }
 }

@@ -686,6 +686,17 @@ Held as a registry, resolved on demand, never cached in a static map keyed by di
 
 ### Distant Horizons: tested when orbit exists, and it does not get a vote
 
+**Resolved 2026-09-06.** The compatibility check this section calls for happened at M2.5/M2.6 and
+found DH repeatedly corrupting already-generated chunks against this module's custom worldgen.
+Root cause turned out to be specific and fixable: DH's `distantGeneratorMode` was set to
+`FEATURES`, a mode DH's own config explicitly warns can misbehave against non-vanilla world
+generators — exactly what this module is. Switched to `PRE_EXISTING_ONLY` (DH renders only real,
+already-generated terrain — Chunky's or a player's own — rather than guessing at unexplored
+terrain with a generator it wasn't built to approximate). See
+`docs/technical/optimisation-stack.md`'s "Distant Horizons: dropped, then fixed, same day" for the
+full story, including the brief same-day period where it was dropped entirely before this fix was
+found.
+
 Deliberately **not** answered with an early throwaway dimension, which is what this document
 originally proposed.
 
