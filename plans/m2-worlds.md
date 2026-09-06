@@ -457,7 +457,11 @@ performance claims more centrally than this one did.
 
 ## Definition of done
 
-- [ ] `docs/technical/worlds-api.md` written and **reviewed** (drafted 2026-09-05)
+- [x] `docs/technical/worlds-api.md` written and **reviewed** (drafted 2026-09-05, reviewed
+      2026-09-06 against the shipped M2.5/M2.6 implementation — two sections rewritten to match
+      what was actually built: "where you land" dropped the authored-landing-site proposal for
+      the ascent-memory design that shipped, and "dying in space" is now documented as an explicit
+      not-decided rather than an open question implying it still blocks something)
 - [x] Orbit representation decided, with an ADR superseding ADR-0004's deferral — ADR-0010
 - [x] Tier 1 → Tier 1 dependency policy decided, with an ADR — ADR-0011
 - [x] The Moon authored entirely as data — no per-planet Java
@@ -469,13 +473,39 @@ performance claims more centrally than this one did.
       (`AtmosphericEntryScreen`) shipped and renders during the same test session but was not
       itself specifically confirmed by Sanchit, so not checking this off outright
 - [x] Verified on a dedicated server — every M2.5/M2.6 test this whole increment ran on one
-- [ ] Survives world unload/reload **and** dimension change
+- [~] Survives world unload/reload **and** dimension change — partially covered by evidence
+      already on record rather than a dedicated test: M2.2 confirmed the Moon persists across
+      reload; the M2.6 live crash was only found *because* a save/reload cycle had already
+      happened and `PlanetArrivalMemory` decoded correctly (the bug was in what happened on the
+      next write, not in the round trip itself), and `PlanetArrivalMemoryTest` now pins that round
+      trip down as a regression test; the M2.6 Spark reading is a real, measured dimension change
+      in both directions. What's still missing specifically: quit-to-title and rejoin (not just a
+      server-side reload) with a player who has already ascended at least once, confirming their
+      remembered landing spot survives a full client relog, not just a save. Small, concrete, and
+      worth doing the next time someone's actually playing rather than as a special session.
 - [x] Atmosphere works on the Moon with `DebugAtmosphere` off
-- [ ] No regression against the M1.8 full-stack reading
-- [ ] Loads and works with **no other Ascension module present** (ADR-0003 rule 6)
-- [~] Two refactor passes done (M2.4, M2.7) — M2.7's code-review half is done (0 → 13 tests in
-      `worlds`, one mis-justified public event removed); the M1.8-style performance A/B it also
-      calls for is still outstanding
+- [~] No regression against the M1.8 full-stack reading — **accepted on the per-mod evidence
+      already taken, formal A/B deferred rather than done.** The M2.6 Spark reading's per-mod
+      breakdown (`ascension_worlds` 0.08%, `ascension_atmosphere` 0.02%, `ascension_core` 0.00%,
+      each smaller than spark's own 0.69% profiling overhead) answers "did our code cost anything"
+      directly, even without a toggle-off comparison run. A real mods-on/mods-off A/B would be
+      more rigorous but is real setup cost for a question this already has a strong answer to;
+      worth doing before a milestone that stresses performance harder than this one did, not
+      before closing this one out. Same call M2.7 already made, restated here rather than
+      re-opened.
+- [~] Loads and works with **no other Ascension module present** (ADR-0003 rule 6) — statically
+      confirmed 2026-09-06: no `com.ascension.atmosphere` import anywhere in `worlds`' source, and
+      `neoforge.mods.toml` declares only `ascension_core` as a dependency. **Not yet confirmed
+      live** — `worlds`' own dev run (`:modules:worlds:runServer`) always loads
+      `ascension_atmosphere` alongside it too, for the unrelated M2.2 cross-module test, so nothing
+      has actually booted `worlds` alone; a same-session attempt to do that by temporarily
+      disabling the atmosphere line in `modules/worlds/build.gradle.kts` hit a slow/stuck headless
+      boot (killed after several minutes with no log output) and wasn't worth fighting further
+      this session. Per ADR-0008, the static check is not itself evidence — worth a quick manual
+      run next time someone's at the keyboard to watch it boot.
+- [x] Two refactor passes done (M2.4, M2.7) — M2.7's code-review half is done (0 → 13 tests in
+      `worlds`, one mis-justified public event removed); its performance half is the accepted
+      per-mod evidence above rather than a formal A/B, per the same call
 
 ## Explicitly out of scope for M2 v0.1
 
