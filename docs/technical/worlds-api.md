@@ -1,8 +1,11 @@
 # `ascension-worlds` API design
 
-> **Status: draft for review.** Nothing here is implemented. Written before code, for the reason
-> M1.1 established: a module's API is the most expensive thing in it to change once other
-> modules couple to it.
+> **Status: reviewed 2026-09-06**, against the implementation that shipped in M2.5/M2.6. Two
+> sections below were rewritten during that review because the built system diverged from what
+> this document originally proposed — see "Where you land" (§3) and "An answer to dying in
+> space" (§3) for what actually shipped and why. Everything else in this document matches the
+> code as built. Written before code, for the reason M1.1 established: a module's API is the most
+> expensive thing in it to change once other modules couple to it.
 >
 > Settled going in: [ADR-0004](../decisions/0004-fully-custom-dimensions.md) (custom dimensions,
 > data-driven planets), [ADR-0010](../decisions/0010-orbit-is-one-shared-space-dimension.md)
@@ -261,8 +264,13 @@ Two things this makes non-optional rather than nice to have:
 - **A distance readout to the nearest body**, so a player can judge whether they can still get
   home. Air remaining and distance remaining are the two numbers this game is actually about, and
   one of them is already on the HUD.
-- **An answer to dying in space.** Respawn on Earth and the ship is lost is consistent, and
-  harsh; if it proves too harsh that is a design dial, not a bug. Decide before M2.6.
+- **An answer to dying in space.** **Not decided — left to vanilla, deliberately, not by
+  oversight.** `SpaceMechanics` cancels only the "fell out of the world" damage type; an ordinary
+  death in space (asphyxiation, a rocket accident) still runs vanilla's own respawn, which sends
+  the player to their bed or world spawn — on Earth, for anyone who hasn't set one elsewhere. No
+  code decides this; it falls out of not writing a special case. Revisit once dying in space with
+  cargo or a ship at stake is actually possible (Sable) and "you just respawn, nothing is lost"
+  stops being an accurate description of the stakes.
 
 ### How space coordinates relate to world coordinates
 
@@ -305,23 +313,38 @@ arrive at is **authored, not computed**.
 
 Worth writing down so nobody later tries to "fix" the mismatch. It is not a bug.
 
-#### Where you land — settled
+#### Where you land — settled, and revised once against this document's own original proposal
 
-**First arrival puts you at an authored landing site. Every arrival after that returns you to
-where you last departed from.**
+**Every arrival returns you near where you last ascended into space from — not where you were
+last standing, and not an authored landing site.**
 
-You build a base, you come back to your base. That is what makes a forward base a *place* rather
-than a waypoint, and it is what players will expect.
+This document originally proposed an authored landing structure for first arrival and "return to
+where you departed" after that. Both halves changed once the mechanism was actually built and
+tested live:
 
-Needs per-player, per-planet persisted state: a serialised player attachment holding a
-`ResourceKey<Level>` and a `BlockPos` per visited world — keys, never a `Level`
-(ADR-0007 rule 1).
+- **No authored landing site.** Sanchit's call, M2.6: Create Aeronautics is expected to own
+  physical landing once it integrates, and `worlds` has no reason to build or place a landing
+  structure of its own ahead of that. A planet nobody has ever ascended from yet lands near the
+  surface dimension's own ceiling instead — a deliberate placeholder (`SpaceMechanics
+  .resolveLandingSpot`), not a structure, so descent reads as falling back through atmosphere
+  rather than teleporting onto whatever the ground happens to be.
+- **"Where you departed" turned out to be the wrong anchor.** The natural reading — wherever a
+  player was last standing — breaks the moment a ship is involved: several players riding the
+  same ship into space each stand a block or two apart, and none of those ground positions relate
+  to each other once the ship is gone. The moment they all crossed into space together is the
+  shared anchor instead, so `PlanetArrivalMemory` records each player's own position at the
+  instant they cross into space (`SpaceMechanics.checkAscent`), not while standing around
+  beforehand or afterward.
+- **Landing is "near", not "on".** `resolveLandingSpot` resolves the remembered point to the
+  *nearest actually-standable spot* (`findSafeLandingSpot`, a small bounded ring search), never
+  the literal coordinate — which is what keeps several players who ascended a block or two apart
+  from being placed a block or two apart on solid ground on the way back, and also covers
+  ordinary terrain drift (built over, dug out) since they left.
 
-**The landing site is a structure, on an otherwise procedural world.** Worlds generate
-procedurally; the arrival point is marked by a guaranteed structure, so a player has somewhere to
-orient from, somewhere to put the first refill station, and something authored to read on a world
-that is otherwise machine-made. One per planet, near the surface origin — the same mechanism
-vanilla uses to guarantee a stronghold near spawn.
+Persisted state: `PlanetArrivalMemory`, a serialised per-player attachment holding a `BlockPos`
+and yaw per surface dimension a player has ascended from — a `ResourceLocation` key, never a
+`Level` (ADR-0007 rule 1). Full design and the live crash found in it: `plans/m2-worlds.md`'s
+M2.6 section.
 
 ### Seamless travel: what is actually possible
 
@@ -633,8 +656,12 @@ Held as a registry, resolved on demand, never cached in a static map keyed by di
 
 1. ~~**Distances.**~~ **Settled 2026-09-05: Earth `[0, 0]`, Moon `[8000, 0]`.** See §3.
    Planets 4–7 still need laying out, and should be laid out before any of them is built.
-2. **Does `body_radius` do two jobs badly?** It is currently both the rendered size and the
-   collision volume. Those may want to be separate once there is a renderer.
+2. **Does `body_radius` do two jobs badly?** It is both the rendered size and the collision
+   volume, and stays that way through M2 — the renderer exists now (`SpaceSkyRenderer`) and
+   `body_radius` still drives both without visible trouble at two planets. Left open rather than
+   resolved: worth revisiting once a planet's real rendered size and its "cannot fly into" volume
+   actually need to differ (an atmosphere entry effect keyed to a radius wider than the body, say),
+   not before.
 3. ~~**Is Earth a planet in this registry?**~~ **Settled 2026-09-05: yes.** Earth is
    `surface: minecraft:overworld` at `[0, 0]`. "Fly home" then falls out of the same mechanism
    as every other descent, with no special case for the one world that matters most.
