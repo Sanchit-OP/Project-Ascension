@@ -7,6 +7,8 @@ import com.ascension.worlds.internal.terrain.CraterPiece;
 import com.ascension.worlds.internal.terrain.CraterStructure;
 import com.ascension.worlds.internal.terrain.RockDebrisConfiguration;
 import com.ascension.worlds.internal.terrain.RockDebrisFeature;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -49,6 +51,17 @@ public final class WorldsContent {
             DeferredRegister.create(Registries.STRUCTURE_TYPE, AscensionWorlds.MOD_ID);
     private static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPES =
             DeferredRegister.create(Registries.STRUCTURE_PIECE, AscensionWorlds.MOD_ID);
+    private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
+            DeferredRegister.create(Registries.PARTICLE_TYPE, AscensionWorlds.MOD_ID);
+
+    /**
+     * The dust-storm particle. Registered here (common code) because {@link ParticleType} itself
+     * is a plain registry entry with no rendering behaviour attached &mdash; the actual look
+     * ({@code DustStormParticle}) is registered separately, client-only, in
+     * {@code SpaceClientSetup}, the same split every other particle type in the game uses.
+     */
+    public static final Supplier<SimpleParticleType> DUST_STORM_PARTICLE =
+            PARTICLE_TYPES.register("dust_storm", () -> new SimpleParticleType(false));
 
     /**
      * Loose surface dust. The one block every airless world shares, regardless of biome &mdash;
@@ -180,6 +193,7 @@ public final class WorldsContent {
         FEATURES.register(modBus);
         STRUCTURE_TYPES.register(modBus);
         STRUCTURE_PIECE_TYPES.register(modBus);
+        PARTICLE_TYPES.register(modBus);
         modBus.addListener(WorldsContent::addToCreativeTabs);
     }
 

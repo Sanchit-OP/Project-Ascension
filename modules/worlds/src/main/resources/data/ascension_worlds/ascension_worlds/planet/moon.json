@@ -10,5 +10,11 @@
     "drain_multiplier": 1.0
   },
   "order": 20,
-  "color": 11579568
+  "color": 11579568,
+  "weather": {
+    "type": "ascension_worlds:dust_storm",
+    "average_interval_ticks": 3000,
+    "duration_ticks": 1200,
+    "visibility_blocks": 12
+  }
 }

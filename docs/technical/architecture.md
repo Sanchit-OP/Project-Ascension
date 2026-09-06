@@ -72,7 +72,7 @@ run/                          dev client/server, gitignored
 |---|---|
 | `ascension-core` | Tier 0 stub. Registers nothing yet. |
 | `ascension-atmosphere` | **v0.1 feature-complete**, verified on a dedicated server through M1.8. Refactor pass M1.9 outstanding. |
-| `ascension-worlds` | M2, design pass — [`plans/m2-worlds.md`](../../plans/m2-worlds.md) |
+| `ascension-worlds` | **M2 done** (2026-09-06) — Earth + Moon, full orbit/descent/return loop, real Moon terrain, per-planet weather. [`plans/m2-worlds.md`](../../plans/m2-worlds.md) |
 | `ascension-gear`, `ascension-progression` | Not started |
 | `ascension-compat-curios` | Designed, not built. A tank slot that opens the valve (ADR-0009 §4). |
 | `ascension-compat-chunky` | **Built and confirmed live 2026-09-06** (M2.6 lever #2). Walks the planet registry in `Planet.order()` on server start and pre-generates each one's surface, one at a time, chained through Chunky's own completion callback. Reads `ascension-worlds`' planet registry directly rather than through an event — the original per-arrival-event design was retired the same day it shipped, once the proactive server-start approach replaced it. Compiles against Chunky's real API (Modrinth maven); confirmed running for real in a live client via a Spark profile. |

@@ -108,17 +108,37 @@ jar**, at Sanchit's call. M1.9's refactor pass and two-client testing are carrie
 [`plans/m2-worlds.md`](plans/m2-worlds.md) under "Carried over from M1, unresolved" — they are
 outstanding, not cancelled.
 
-**M2 state:** M2.1 design settled, **M2.2 done and verified in game**. Three modules now exist —
-`ascension-worlds` is the third. Orbit is one shared interplanetary space dimension (ADR-0010,
-superseding ADR-0004's deferral); Tier 1 modules never depend on each other and share contracts
-in `core` instead (ADR-0011, which amends ADR-0003 and makes `core` more than a stub for the
-first time). Planet schema in `docs/technical/worlds-api.md`.
+**M2 is done, called 2026-09-06.** Three modules now exist — `ascension-worlds` is the third.
+Orbit is one shared interplanetary space dimension (ADR-0010, superseding ADR-0004's deferral);
+Tier 1 modules never depend on each other and share contracts in `core` instead (ADR-0011, which
+amends ADR-0003 and makes `core` more than a stub for the first time). Planet schema in
+`docs/technical/worlds-api.md`; full increment-by-increment history in `plans/m2-worlds.md`.
 
 The Moon is a datapack planet with no per-planet Java, and **it suffocates you with
 `DebugAtmosphere` off** — so `atmosphere` has now been tested against a world it was not built
 alongside, and the debug vacuum is a dev tool rather than the only vacuum in the project. Its
-worldgen is still a flat gravel placeholder; terrain is M2.3. Distant Horizons compatibility
-with a custom dimension is still open.
+worldgen is real terrain (M2.3): two biomes, craters, mountains, no placeholder flat gravel left.
+The full loop — leave Earth, orbit, descend to the Moon, survive, return — is playable and
+confirmed live (M2.5/M2.6): ascent and descent through a shared void space dimension, a pre-load
+ticket plus Chunky pre-generation to keep the transition off the loading-screen's back, and
+per-player return-location memory keyed to where each player ascended from, not where they were
+standing (co-op-safe by construction). M2.7 pulled the pure logic out of that into 13 tests
+(`worlds` had zero before) and removed one public event that had no real use left.
+
+The Moon also has real weather now: `ascension_worlds:dust_storm`, a per-planet hazard timer
+independent of vanilla's weather clock (which turns out to be **shared with the Overworld
+regardless of dimension** — `SpaceSpecialEffects`/`MoonSpecialEffects` exist specifically to
+guarantee that can never leak into an airless world). A custom particle, a screen-space overlay
+that survives a renderer swap like Sodium's, and a five-second build/wind-down ramp rather than a
+snap on/off.
+
+**Distant Horizons is back in the stack**, after a same-day drop and fix. It was corrupting
+already-generated chunks against this module's own worldgen; root cause was one specific
+generator-mode setting (`distantGeneratorMode = FEATURES`) that DH's own config warns can
+misbehave against non-vanilla generators. Fixed by switching to `PRE_EXISTING_ONLY` — DH now only
+ever renders real, Chunky-generated terrain, never guesses at its own — which also means Chunky's
+pre-generation radius is now DH's effective view distance, not just an arrival-lag fix. See
+`docs/technical/optimisation-stack.md`.
 
 **M2.4 refactor pass done.** ADR-0008 schedules one every third increment; the last was M1.4
 and five had landed since (M1.5–M1.8, M2.2), so this closes that debt rather than adding to it.

@@ -36,6 +36,19 @@ public final class SpaceAttachments {
                     .serialize(PlanetArrivalMemory.CODEC)
                     .build());
 
+    /**
+     * A surface's own weather timer, attached to the {@code Level} itself rather than to any
+     * player &mdash; {@code Level} implements NeoForge's attachment holder same as
+     * {@code ServerPlayer} does, so this needs no separate {@code SavedData} plumbing. Serialised,
+     * so a storm mid-run survives a restart instead of silently resetting. See
+     * {@link PlanetWeatherState} and {@link PlanetWeatherMechanics}.
+     */
+    static final Supplier<AttachmentType<PlanetWeatherState>> WEATHER_STATE = TYPES.register(
+            "planet_weather_state",
+            () -> AttachmentType.builder(PlanetWeatherState::new)
+                    .serialize(PlanetWeatherState.CODEC)
+                    .build());
+
     private SpaceAttachments() {
     }
 

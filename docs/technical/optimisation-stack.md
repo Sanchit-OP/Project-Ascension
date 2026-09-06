@@ -22,7 +22,7 @@ Install order matters only where noted.
 | Mod | Version | Why |
 |---|---|---|
 | **Sodium** | `0.8.13-neoforge` | The one that actually raises usable render distance: threaded chunk meshing, batched draws, compact vertex format. |
-| **Distant Horizons** | `3.2.0-b-1.21.1` | Renders far terrain from an LOD database instead of loaded chunks. The only thing here that decouples apparent view distance from memory. |
+| **Distant Horizons** | `2.4.5-b-1.21.1` | Renders far terrain from an LOD database instead of loaded chunks. Back in the stack 2026-09-06 after being dropped and then un-dropped the same day — see "Distant Horizons: dropped, then fixed" below for why this specific version and this specific config. |
 | **EntityCulling** | | Skips entities the camera cannot see. |
 | **MoreCulling** | | Skips hidden block faces. |
 | **ImmediatelyFast** | `1.6.13+1.21.1-neoforge` | Batches immediate-mode rendering — GUIs, text, item entities. Pays for itself the moment a JEI screen or a full base of item frames is on screen. |
@@ -62,6 +62,60 @@ The bottleneck on render distance is not the graphics API. It is three things: c
 building on the CPU, draw-call count, and chunk data in RAM. Sodium attacks all three. Vulkan's
 main advantage is lower draw-call overhead, and Sodium's batching has already collapsed that
 count.
+
+## Distant Horizons: dropped, then fixed, same day
+
+It was the one mod in this stack whose whole job was decoupling apparent view distance from
+loaded-chunk memory, and losing it was a real loss, not a shrug — Sanchit's call 2026-09-06 after
+testing against `ascension_worlds`' own custom worldgen: **already-generated chunks kept getting
+visibly corrupted, repeatedly, not as a one-off.**
+
+**Checked, not assumed: this was not `ascension-compat-chunky` racing DH's own LOD builder.**
+That was the first suspicion — DH warns that Chunky generating chunks faster than DH can turn
+them into LODs produces exactly this symptom. **Ruled out**: the corruption was already happening
+back when Chunky was installed but its pre-generation had nothing active yet, before
+`ChunkySequentialPregen` existed to race anything.
+
+**The real cause, found after reinstalling to test a different build: `distantGeneratorMode`.**
+DH has four settings for how it fills in terrain beyond real chunk data, and the build we'd had
+installed was configured to `FEATURES` — which carries DH's own in-config warning, verbatim:
+*"may cause world generator bugs or instability when paired with certain world generator mods."*
+`ascension_worlds` leans hard on non-vanilla worldgen (a custom noise router, craters, a
+checkerboard biome source) for a small pack — exactly the case that warning names, and a much
+more specific explanation than "DH's own bug" was the first time this section was written.
+
+**The fix, applied 2026-09-06:** `distantGeneratorMode = "PRE_EXISTING_ONLY"` in both
+`config/DistantHorizons.toml` (client) and the dedicated server's copy. DH now only ever builds
+LOD terrain from chunks that actually exist — Chunky's pre-generated ones, or anything a player
+has visited — and shows a plain gap rather than a guess for anything beyond that, closing exactly
+the moment real terrain generates there (already how DH's LOD system works; this setting just
+stops it from ever inventing terrain of its own against a generator it wasn't built to guess at).
+Also picked up a newer build in the process — `2.4.5-b` (Dec 2025, 612K downloads, the most
+field-tested 1.21.1 release that exists) instead of the `3.2.0-b` beta that had been current —
+confirmed via a live Spark profile to cost 0.37% of server-thread time, in the same negligible
+company as every Ascension module.
+
+**What this means for Chunky.** With DH never generating its own guesses, Chunky's pre-generation
+radius *is* DH's effective long-range view distance now — the two systems are directly coupled in
+a way they weren't before. Widening Chunky's reach later is now also a rendering-distance lever,
+not just an arrival-lag one.
+
+**DH's own generator was never a substitute for Chunky, regardless of this fix.** Its "distant
+generation" produces approximate LOD data for rendering far-away terrain — it never creates real,
+minable, structure-bearing chunks. The moment a player actually gets close, real worldgen still
+has to run. Chunky (real chunks, so arrival isn't laggy) and DH (rendering far beyond that) solve
+different problems; `PRE_EXISTING_ONLY` just means DH no longer tries to do a version of Chunky's
+job badly on the side.
+
+**No replacement — genuinely nothing else does this job on NeoForge 1.21.1 today.** Every
+lighter-weight alternative already in "Do not install" above (C2ME, VMP, Krypton) lacks a NeoForge
+build entirely, and none of them do what DH does (long-range LOD terrain) even on Fabric — they
+solve chunk *generation* speed, not chunk *rendering* range. The honest consequence: apparent view
+distance is capped by ordinary server `view-distance`/`simulation-distance` again, same as any
+unmodified server. Chunky pre-generation (below) still removes worldgen from the travel hot path,
+which is the cost DH was never solving anyway — but the "see a planet's terrain from far away
+before you land" polish DH offered is gone until something more stable appears. Revisit if a
+NeoForge LOD mod with a real track record shows up later; nothing here rules that back in.
 
 ## Why Noisium was dropped
 
@@ -109,20 +163,17 @@ which cares which collector produced it.
 
 ## Configuration that actually matters
 
-Two mods here can be configured into doing nothing useful.
-
-**Server view distance versus Distant Horizons.** Raising server view distance is the expensive
-way to see further: loaded chunks cost memory and ticking on both sides, and the cost is
-quadratic. The point of Distant Horizons is that you *do not* raise it — keep server view
-distance modest and let DH cover everything beyond. Setting both high pays twice for one result.
+**Server view distance, on its own now that DH is gone.** Raising it is the expensive way to see
+further — loaded chunks cost memory and ticking on both sides, and the cost is quadratic in the
+radius. With no LOD mod covering the distance beyond it, this setting is the actual, hard ceiling
+on how far a player can see rather than one half of a DH/view-distance trade-off. Raise it
+deliberately and re-measure (`performance-log.md`), not as a reflexive fix for "space feels too
+close."
 
 **Chunky pre-generation is per dimension**, so it is an M2-and-later activity for our own worlds.
-Install it now; use it once dimensions exist.
-
-**Do not run Chunky and DH's LOD generation flat out at the same time.** DH warns about exactly
-this: Chunky generates chunks faster than DH can turn them into LODs, and the LODs come out with
-holes. Either raise DH's CPU thread count first, or pre-generate with Chunky and let DH build
-LODs over already-generated terrain afterwards. The second is the calmer order.
+Install it now; use it once dimensions exist. With DH gone, Chunky is no longer sharing the
+worldgen-vs-LOD-generation balancing act described in the previous version of this section — it
+just removes worldgen from the travel hot path, plainly, with nothing else racing it.
 
 ## Known gap: no lighting engine optimisation
 

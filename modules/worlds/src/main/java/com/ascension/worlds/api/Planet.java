@@ -5,8 +5,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 /**
@@ -34,13 +36,17 @@ import net.minecraft.world.level.Level;
  *                    defaults to {@code 0xFFFFFF} (no tint). Cosmetic only, read by
  *                    {@code SpaceSkyRenderer} &mdash; the point is telling two placeholder discs
  *                    apart at a glance before real per-planet art exists.
+ * @param weather     a hazardous weather event this surface can have, if any. Absent by default
+ *                    &mdash; most planets (Earth included) have none of this kind, and nothing
+ *                    about vanilla rain/snow is affected either way; see {@link Weather}.
  */
 public record Planet(
         ResourceKey<Level> surface,
         SpacePosition space,
         WorldEnvironment environment,
         int order,
-        int color) {
+        int color,
+        Optional<Weather> weather) {
 
     public static final Codec<Planet> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -50,8 +56,52 @@ public record Planet(
                     WorldEnvironment.CODEC.optionalFieldOf("environment", WorldEnvironment.EARTHLIKE)
                             .forGetter(Planet::environment),
                     Codec.INT.optionalFieldOf("order", 0).forGetter(Planet::order),
-                    Codec.INT.optionalFieldOf("color", 0xFFFFFF).forGetter(Planet::color))
+                    Codec.INT.optionalFieldOf("color", 0xFFFFFF).forGetter(Planet::color),
+                    Weather.CODEC.optionalFieldOf("weather").forGetter(Planet::weather))
             .apply(instance, Planet::new));
+
+    /**
+     * A recurring hazard that isn't vanilla rain or snow &mdash; both of which are structurally
+     * unavailable to a custom dimension anyway, since Minecraft's weather clock is shared with the
+     * Overworld regardless of what a datapack declares (see {@code SpaceSpecialEffects} and
+     * {@code MoonSpecialEffects}, which exist specifically to guarantee vanilla weather can never
+     * render on a world that has none). This is a second, independent mechanism this module owns
+     * outright: a per-surface timer that flips a boolean on and off, synced to whoever is standing
+     * on that surface, with {@link #type} selecting how it looks and what it costs.
+     *
+     * <p><strong>One field decides behaviour, not several types in Java.</strong> Per
+     * {@code worlds-api.md}'s "frugal in JSON, generous in Java" rule, adding a second kind of
+     * weather later (a planet 4-7 idea, a radiation storm, whatever) means a new {@code type} id
+     * and a new client-side renderer registered against it &mdash; not a new schema shape. The
+     * timing fields below are shared by every type; only the client-side visual/visibility
+     * treatment varies per {@link #type}.
+     *
+     * @param type               which renderer handles this &mdash; {@code ascension_worlds:dust_storm}
+     *                           is the only one that exists right now.
+     * @param averageIntervalTicks roughly how often a storm starts, in ticks, averaged over time
+     *                           (actual gaps are randomised around this, the same way vanilla
+     *                           varies rain timing rather than using a fixed clock)
+     * @param durationTicks      how long a storm lasts once it starts
+     * @param visibilityBlocks   render distance while a storm is active, in blocks &mdash; the
+     *                           mechanical teeth of the effect
+     */
+    public record Weather(
+            ResourceLocation type, int averageIntervalTicks, int durationTicks, int visibilityBlocks) {
+
+        public static final Codec<Weather> CODEC = RecordCodecBuilder.create(instance -> instance
+                .group(
+                        ResourceLocation.CODEC.fieldOf("type").forGetter(Weather::type),
+                        Codec.intRange(20, Integer.MAX_VALUE)
+                                .optionalFieldOf("average_interval_ticks", 24000)
+                                .forGetter(Weather::averageIntervalTicks),
+                        Codec.intRange(20, Integer.MAX_VALUE)
+                                .optionalFieldOf("duration_ticks", 3000)
+                                .forGetter(Weather::durationTicks),
+                        Codec.intRange(1, Integer.MAX_VALUE)
+                                .optionalFieldOf("visibility_blocks", 12)
+                                .forGetter(Weather::visibilityBlocks))
+                .apply(instance, Weather::new));
+    }
 
     /**
      * Where a planet sits in the shared interplanetary space dimension, and how big it is there.
