@@ -1,8 +1,8 @@
 {
   "type": "ascension_worlds:crater",
   "config": {
-    "radius": { "type": "minecraft:uniform", "min_inclusive": 3, "max_inclusive": 7 },
-    "floor_depth": 4,
-    "rim_height": 2
+    "radius": { "type": "minecraft:uniform", "min_inclusive": 5, "max_inclusive": 10 },
+    "floor_depth": 6,
+    "rim_height": 3
   }
 }
