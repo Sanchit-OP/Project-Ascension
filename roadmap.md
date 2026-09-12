@@ -31,6 +31,9 @@ v1 scope: **Earth + Moon + Planet 3, finished** ([ADR-0005](docs/decisions/0005-
 - [ ] M3 — `ascension-progression`: team capability state and gating
 - [ ] M4 — `ascension-gear`: suit modules, hazard protection
 - [ ] M5 — `ascension-compat-sable`: sub-levels as pressurised habitats
+- [ ] `ascension-combat` — stats, items, rune paths. Design doc and ADR done 2026-09-08
+      ([`docs/technical/combat-api.md`](docs/technical/combat-api.md)); not yet sequenced against
+      M3-M5 since it started as a parallel design track, not a numbered milestone.
 
 Ordering after M1 is provisional and will be revisited once M1 exposes what the API actually
 needs.

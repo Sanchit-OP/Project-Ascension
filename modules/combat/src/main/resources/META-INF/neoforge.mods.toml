@@ -1,0 +1,41 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Combat"
+authors = "${mod_authors}"
+description = '''
+Stats, items, and rune paths.
+
+Original items and rune identities, data-driven and not tied to any one damage source.
+Where another mod cares about whether a player is currently in combat, it reads
+ascension_core's shared combat-state contract rather than depending on this module directly.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# Tier 0, and the only Ascension module this one depends on (ADR-0011). Carries the shared
+# combat-state contract this module publishes into (ADR-0012).
+# BEFORE, so its registry is open when we register during setup.
+[[dependencies.${mod_id}]]
+modId = "ascension_core"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "BOTH"
