@@ -18,6 +18,7 @@ include(":modules:core")
 // --- Tier 1 (added as each milestone reaches them) ---------------------------
 include(":modules:atmosphere")
 include(":modules:worlds")
+include(":modules:combat")
 // include(":modules:progression")    // M3
 // include(":modules:gear")           // M4
 
