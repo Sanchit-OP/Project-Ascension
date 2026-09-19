@@ -27,6 +27,17 @@ evaluationDependsOn(":modules:worlds")
 // test (ADR-0003 rule 6); this only affects what the "everything on" dev run loads.
 evaluationDependsOn(":modules:atmosphere")
 
+// Same reasoning again, one Tier further: ascension-compat-create has no runtime relationship
+// with chunky at all -- it is carried here purely because this is devRunHost, and a Tier 2 jar
+// left out of the shared dev run would never get exercised by `runDevServer` even though its
+// entire job is reacting to another mod (Create) that only that run has installed.
+evaluationDependsOn(":modules:compat:create")
+
+// ascension-combat, same reasoning as atmosphere above: no runtime relationship with chunky or
+// worlds (ADR-0011), carried here purely so `runDevServer` exercises it. Its own module-alone
+// check is `:modules:combat:runServer -PnoDevMods` (ADR-0003 rule 6), not this run.
+evaluationDependsOn(":modules:combat")
+
 neoForge {
     mods {
         register("ascension_core") {
@@ -37,6 +48,12 @@ neoForge {
         }
         register("ascension_worlds") {
             sourceSet(project(":modules:worlds").sourceSets["main"])
+        }
+        register("ascension_compat_create") {
+            sourceSet(project(":modules:compat:create").sourceSets["main"])
+        }
+        register("ascension_combat") {
+            sourceSet(project(":modules:combat").sourceSets["main"])
         }
     }
 }

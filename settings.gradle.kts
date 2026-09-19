@@ -24,6 +24,8 @@ include(":modules:combat")
 
 // --- Tier 2: optional integration jars, never depended on by Tier 1 ----------
 include(":modules:compat:chunky")
+include(":modules:compat:create")
+include(":modules:compat:jade")
+include(":modules:compat:immersivedamageindicators")
 // include(":modules:compat:curios")  // next, once Curios is installed in the test instance
 // include(":modules:compat:sable")   // M5
-// include(":modules:compat:create")

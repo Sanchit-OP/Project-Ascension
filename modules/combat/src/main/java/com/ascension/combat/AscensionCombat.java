@@ -4,16 +4,28 @@ import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.armor.EdgeOfNightEffects;
+import com.ascension.combat.internal.armor.BootStats;
 import com.ascension.combat.internal.armor.CollectorsPantsEffects;
 import com.ascension.combat.internal.armor.GargoyleStoneplateEffects;
 import com.ascension.combat.internal.armor.GuardianWingEffects;
 import com.ascension.combat.internal.armor.ProteanMaskEffects;
 import com.ascension.combat.internal.armor.RocketbeltEffects;
+import com.ascension.combat.internal.armor.SterakHarnessEffects;
+import com.ascension.combat.internal.armor.TastedBloodEffects;
 import com.ascension.combat.internal.armor.UnendingDespairEffects;
+import com.ascension.combat.internal.armor.WizardsAgonyEffects;
+import com.ascension.combat.internal.armor.ZoniasHourglassEffects;
 import com.ascension.combat.internal.mechanics.CombatMobEffects;
 import com.ascension.combat.internal.mechanics.CombatStateTracking;
 import com.ascension.combat.internal.mechanics.GrievousWoundsHealing;
+import com.ascension.combat.internal.mechanics.PhysicalDamage;
+import com.ascension.combat.internal.mobs.MobStats;
 import com.ascension.combat.internal.net.CombatNetwork;
+import com.ascension.combat.internal.rune.vanguard.ConquerorsResolveEffects;
+import com.ascension.combat.internal.rune.vanguard.KillingSurgeEffects;
+import com.ascension.combat.internal.rune.vanguard.MomentumEffects;
+import com.ascension.combat.internal.rune.vanguard.RelentlessStrikesEffects;
+import com.ascension.combat.internal.rune.vanguard.SecondWindEffects;
 import com.ascension.combat.internal.weapons.DarkenBladeEffects;
 import com.ascension.combat.internal.weapons.DariusAxeEffects;
 import com.ascension.combat.internal.weapons.DivineSundererEffects;
@@ -23,6 +35,7 @@ import com.ascension.combat.internal.weapons.HeartwoodOfPallasEffects;
 import com.ascension.combat.internal.weapons.MortalReminderEffects;
 import com.ascension.combat.internal.weapons.RagefangEffects;
 import com.ascension.combat.internal.weapons.SpearOfShojinEffects;
+import com.ascension.combat.internal.weapons.TestMagicBladeEffects;
 import com.ascension.combat.internal.weapons.VeigosBladeEffects;
 import com.ascension.combat.internal.weapons.WraithbladeEffects;
 import net.neoforged.api.distmarker.Dist;
@@ -60,8 +73,13 @@ public final class AscensionCombat {
         CombatContent.register(modBus);
         CombatAttachments.register(modBus);
         CombatAttributes.register(modBus);
+        // Overrides CombatAttributes' own blanket Armor/Magic Resist defaults for select mobs --
+        // must register after it (see MobStats' own javadoc: EntityAttributeModificationEvent#add
+        // is last-write-wins per entity type).
+        MobStats.register(modBus);
         CombatMobEffects.register(modBus);
         modBus.addListener(CombatNetwork::register);
+        CombatNetwork.registerLoginSync(NeoForge.EVENT_BUS);
 
         // The one place non-client code names a client class (same isolation AtmosphereNetwork
         // uses for its own client-only handler reference) -- gated so the keybind never loads on
@@ -69,6 +87,11 @@ public final class AscensionCombat {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             com.ascension.combat.client.CombatKeybinds.register(modBus);
         }
+
+        // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before
+        // any per-weapon lethality/penetration effect that also touches the ARMOR reduction
+        // category, per PhysicalDamage's own javadoc on EventPriority ordering.
+        PhysicalDamage.register(NeoForge.EVENT_BUS);
 
         VeigosBladeEffects.register(NeoForge.EVENT_BUS);
         DariusAxeEffects.register(NeoForge.EVENT_BUS);
@@ -90,6 +113,19 @@ public final class AscensionCombat {
         RocketbeltEffects.register(NeoForge.EVENT_BUS);
         CollectorsPantsEffects.register(NeoForge.EVENT_BUS);
         UnendingDespairEffects.register(NeoForge.EVENT_BUS);
+        BootStats.register(NeoForge.EVENT_BUS);
+        WizardsAgonyEffects.register(NeoForge.EVENT_BUS);
+        TastedBloodEffects.register(NeoForge.EVENT_BUS);
+        ZoniasHourglassEffects.register(NeoForge.EVENT_BUS);
+        SterakHarnessEffects.register(NeoForge.EVENT_BUS);
+        TestMagicBladeEffects.register(NeoForge.EVENT_BUS);
+
+        // Vanguard, the first rune path out the door (docs/technical/combat-api.md section 7).
+        ConquerorsResolveEffects.register(NeoForge.EVENT_BUS);
+        RelentlessStrikesEffects.register(NeoForge.EVENT_BUS);
+        SecondWindEffects.register(NeoForge.EVENT_BUS);
+        KillingSurgeEffects.register(NeoForge.EVENT_BUS);
+        MomentumEffects.register(NeoForge.EVENT_BUS);
 
         LOGGER.info("Ascension Combat loaded ({})", container.getModInfo().getVersion());
     }

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "create:copper_backtank",
+    "create:netherite_backtank",
+    "create:copper_diving_helmet",
+    "create:netherite_diving_helmet"
+  ]
+}

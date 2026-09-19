@@ -1,12 +1,13 @@
 package com.ascension.combat.internal;
 
 import com.ascension.combat.AscensionCombat;
-import com.ascension.combat.internal.armor.ProteanMaskState;
 import com.ascension.combat.internal.armor.UnendingDespairState;
 import com.ascension.combat.internal.mechanics.ArmedState;
+import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.LastDamageTarget;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
+import com.ascension.combat.internal.rune.RunePageState;
 import com.ascension.combat.internal.weapons.RagefangState;
 import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
@@ -166,9 +167,9 @@ public final class CombatAttachments {
      *
      * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
      */
-    public static final Supplier<AttachmentType<ProteanMaskState>> PROTEAN_MASK_STATE = TYPES.register(
+    public static final Supplier<AttachmentType<CombatStackState>> PROTEAN_MASK_STATE = TYPES.register(
             "protean_mask_state",
-            () -> AttachmentType.builder(ProteanMaskState::new).build());
+            () -> AttachmentType.builder(CombatStackState::new).build());
 
     /**
      * Edge of Night's post-absorb burst window (docs/technical/combat-api.md section 6), attached
@@ -212,6 +213,98 @@ public final class CombatAttachments {
     public static final Supplier<AttachmentType<UnendingDespairState>> UNENDING_DESPAIR_STATE = TYPES.register(
             "unending_despair_state",
             () -> AttachmentType.builder(UnendingDespairState::new).build());
+
+    /**
+     * Zonia's Hourglass's stasis window (docs/technical/combat-api.md sections 5 and 6), attached
+     * to the wearer: the second real consumer of {@link
+     * com.ascension.combat.internal.mechanics.Stasis}, after {@link #GUARDIAN_WING_STASIS}.
+     * Deliberately a separate attachment rather than reusing that one &mdash; the two items have
+     * independent triggers, durations, and cooldowns, even though the stasis mechanics themselves
+     * are shared.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<DurationState>> ZONIAS_HOURGLASS_STASIS = TYPES.register(
+            "zonias_hourglass_stasis",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /**
+     * Sterak's Harness's post-shield lifesteal window (docs/technical/combat-api.md section 6),
+     * attached to the wearer: armed when the auto-shield procs, read on every hit the wearer deals
+     * while it's active.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<DurationState>> STERAKS_LIFESTEAL = TYPES.register(
+            "steraks_lifesteal",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /**
+     * A player's saved rune page (docs/technical/combat-api.md section 7): primary path (keystone
+     * plus two minors) and secondary path (two minors, no keystone). Attached to the player and,
+     * unlike the fight-local state above, meant to persist &mdash; a rune choice is a build
+     * decision, not combat bookkeeping, so this one attachment is serialized.
+     */
+    public static final Supplier<AttachmentType<RunePageState>> RUNE_PAGE = TYPES.register(
+            "rune_page",
+            () -> AttachmentType.builder(RunePageState::new)
+                    .serialize(RunePageState.CODEC)
+                    .build());
+
+    /**
+     * Vanguard's Conqueror's Resolve keystone (see {@code internal.rune.vanguard}): a damage/heal
+     * stack every second in combat, same shape as {@link #PROTEAN_MASK_STATE}, the mechanic's
+     * first consumer.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<CombatStackState>> CONQUERORS_RESOLVE_STATE = TYPES.register(
+            "conquerors_resolve_state",
+            () -> AttachmentType.builder(CombatStackState::new).build());
+
+    /**
+     * Relentless Strikes' (Vanguard minor) hit-stack, attached to the wielder: builds per hit
+     * landed, decays if the next hit doesn't come in time, same shape as {@link #ARMOR_SHRED}.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<StackingChargeState>> RELENTLESS_STRIKES_STACKS = TYPES.register(
+            "relentless_strikes_stacks",
+            () -> AttachmentType.builder(StackingChargeState::new).build());
+
+    /**
+     * Second Wind's (Vanguard minor) per-tick heal cooldown, attached to the wielder &mdash;
+     * reuses {@link DurationState} as a cooldown gate (skip while {@code isActive}, act and reset
+     * when it isn't) rather than a burst window, the same reuse
+     * {@link com.ascension.combat.internal.armor.RocketbeltEffects} makes of it for a delay timer
+     * instead of an active-window.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<DurationState>> SECOND_WIND_COOLDOWN = TYPES.register(
+            "second_wind_cooldown",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /**
+     * Killing Surge's (Vanguard minor) post-kill attack-speed window, attached to the wielder,
+     * same shape as {@link #EDGE_OF_NIGHT_BURST}.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<DurationState>> KILLING_SURGE_BURST = TYPES.register(
+            "killing_surge_burst",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /**
+     * Momentum's (Vanguard minor) chained-hit stack, attached to the wielder: builds per hit
+     * landed within the window, decays like {@link #RELENTLESS_STRIKES_STACKS}, scales the
+     * omnivamp-shaped heal on each hit while active.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<StackingChargeState>> MOMENTUM_STACKS = TYPES.register(
+            "momentum_stacks",
+            () -> AttachmentType.builder(StackingChargeState::new).build());
 
     private CombatAttachments() {
     }

@@ -4,13 +4,13 @@ import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
+import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.core.api.CombatStateRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -63,7 +63,7 @@ public final class ProteanMaskEffects {
             return;
         }
 
-        ProteanMaskState state = player.getData(CombatAttachments.PROTEAN_MASK_STATE);
+        CombatStackState state = player.getData(CombatAttachments.PROTEAN_MASK_STATE);
         long now = player.level().getGameTime();
         if (state.tryGainStack(now, MAX_STACKS, STACK_INTERVAL_TICKS)) {
             applyModifiers(player, state.stacks());
@@ -74,7 +74,7 @@ public final class ProteanMaskEffects {
     }
 
     private static void clearStacks(ServerPlayer player) {
-        ProteanMaskState state = player.getData(CombatAttachments.PROTEAN_MASK_STATE);
+        CombatStackState state = player.getData(CombatAttachments.PROTEAN_MASK_STATE);
         if (state.stacks() == 0) {
             return;
         }
@@ -84,7 +84,7 @@ public final class ProteanMaskEffects {
     }
 
     private static void applyModifiers(ServerPlayer player, int stacks) {
-        AttributeInstance armor = player.getAttribute(Attributes.ARMOR);
+        AttributeInstance armor = player.getAttribute(CombatAttributes.ARMOR);
         AttributeInstance magicResist = player.getAttribute(CombatAttributes.MAGIC_RESIST);
 
         if (armor != null) {
