@@ -1,0 +1,46 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Create"
+authors = "${mod_authors}"
+description = '''
+Disables Create's Copper/Netherite Backtank and Diving Helmet. A wearable tank of pressurised
+air that drains over time while worn is exactly what ascension-atmosphere's own oxygen tank
+already is, under a different name and different rules -- shipping both invites exactly the
+confusion ADR-0002 exists to avoid. Diving Boots are untouched: they are a movement item with
+no air mechanic of their own.
+
+Optional. Without Create installed, this jar simply is not present -- nothing else notices,
+because nothing else knew this existed in the first place.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# The actual integration target. Required, not optional -- same reasoning as
+# ascension-compat-chunky: this jar has no other reason to exist, so if Create is absent NeoForge
+# should refuse to load it rather than load it into a no-op. AFTER, not NONE: our recipe
+# overrides need Create's own recipes already registered so this pack's copies are the ones that
+# win the resource-location collision.
+[[dependencies.${mod_id}]]
+modId = "create"
+type = "required"
+versionRange = "${create_version_range}"
+ordering = "AFTER"
+side = "BOTH"

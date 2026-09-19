@@ -1,0 +1,49 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Jade"
+authors = "${mod_authors}"
+description = '''
+Adds this module's Armor and Magic Resist to Jade's entity tooltip, so a target's current defense
+stats are visible the same way its name and HP already are.
+
+Optional. Without Jade installed, this jar simply is not present -- ascension-combat notices
+nothing missing, because it never knew this existed in the first place.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+# The one Tier 1 module this integrates -- reads its api.CombatAttributes directly.
+[[dependencies.${mod_id}]]
+modId = "ascension_combat"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "CLIENT"
+
+# The actual integration target. Required, not optional -- this whole jar has no other reason to
+# exist, so if Jade is absent NeoForge should refuse to load this rather than load it into a
+# no-op, same posture as ascension-compat-chunky takes with Chunky.
+[[dependencies.${mod_id}]]
+modId = "jade"
+type = "required"
+versionRange = "${jade_version_range}"
+ordering = "NONE"
+side = "CLIENT"

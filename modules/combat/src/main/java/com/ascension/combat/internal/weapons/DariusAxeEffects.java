@@ -2,6 +2,7 @@ package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
 import java.util.HashMap;
@@ -15,7 +16,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -124,7 +124,7 @@ public final class DariusAxeEffects {
     }
 
     private static void applyModifier(LivingEntity target, int stacks) {
-        AttributeInstance armor = target.getAttribute(Attributes.ARMOR);
+        AttributeInstance armor = target.getAttribute(CombatAttributes.ARMOR);
         if (armor == null) {
             return;
         }

@@ -297,6 +297,98 @@ public final class CombatContent {
             "unending_despair",
             () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.LEGGINGS, new Item.Properties()));
 
+    /**
+     * Nineteenth out the door, and the first of six Boots (combat-api.md section 6): flat magic
+     * resist while worn. Applied by {@link com.ascension.combat.internal.armor.BootStats} as a
+     * {@link com.ascension.combat.internal.armor.StatBoots} rule, same as the next three. Same
+     * placeholder material reasoning as {@link #PROTEAN_MASK}.
+     */
+    public static final Supplier<Item> MERCURY_TREADS = ITEMS.register(
+            "mercury_treads",
+            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    /** Twentieth out the door. Flat armor while worn. */
+    public static final Supplier<Item> NINJA_TABI = ITEMS.register(
+            "ninja_tabi",
+            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    /** Twenty-first out the door (Boots of Swiftness). Move speed while worn. */
+    public static final Supplier<Item> SWIFTY = ITEMS.register(
+            "swifty",
+            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    /** Twenty-second out the door. Attack speed while worn. */
+    public static final Supplier<Item> BERSERKERS_GREAVES = ITEMS.register(
+            "berserkers_greaves",
+            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    /**
+     * Twenty-third out the door, {@code ORIGINAL}. Armor and magic penetration while worn. The
+     * armor half is ordinary per-hit reduction-modifier logic in
+     * {@link com.ascension.combat.internal.armor.WizardsAgonyEffects}; the magic half lives
+     * inside {@link com.ascension.combat.internal.mechanics.MagicDamage} itself, the one place
+     * every magic-damage consumer in the catalog already goes through &mdash; see that class's
+     * javadoc for why that's a deliberate exception to shared mechanics staying item-agnostic.
+     */
+    public static final Supplier<Item> WIZARDS_AGONY = ITEMS.register(
+            "wizards_agony",
+            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    /**
+     * Twenty-fourth out the door, and the sixth and last Boots (combat-api.md section 6),
+     * {@code ORIGINAL}. Omnivamp while worn, same shape as {@link #ENDLESS_HUNGER}'s own but
+     * gated on the boots slot. Applied by
+     * {@link com.ascension.combat.internal.armor.TastedBloodEffects}.
+     */
+    public static final Supplier<Item> TASTED_BLOOD = ITEMS.register(
+            "tasted_blood",
+            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+
+    /**
+     * Twenty-fifth out the door, and the first of two Off-hand items (combat-api.md section 6),
+     * the catalog's last slot. A plain {@link Item}, not an {@link ArmorItem} &mdash; there is no
+     * {@code ArmorItem.Type} for the off-hand slot, since vanilla doesn't treat it as armor (a
+     * shield isn't either). Active (the shared armor-ability key, same as {@link
+     * #GARGOYLE_STONEPLATE} and {@link #ROCKETBELT}): stasis for a short duration, on a cooldown.
+     * The third real consumer of that key, and the first not worn in a body-armor slot, confirming
+     * it was always "whatever's equipped with an active," not "armor specifically." Applied by
+     * {@link com.ascension.combat.internal.armor.ZoniasHourglassEffects}, reusing {@link
+     * com.ascension.combat.internal.mechanics.Stasis} from {@link #GUARDIAN_WING}. No art yet, same
+     * placeholder reasoning as {@link #DARIUS_AXE}.
+     */
+    public static final Supplier<Item> ZONIAS_HOURGLASS = ITEMS.register(
+            "zonias_hourglass",
+            () -> new Item(new Item.Properties()));
+
+    /**
+     * Twenty-sixth out the door, and the last item in the catalog (combat-api.md section 6).
+     * Converts a percentage of max HP into bonus attack damage while worn; taking a big hit
+     * auto-triggers a shield (vanilla absorption, same as every other Shield/Absorb consumer) plus
+     * a temporary lifesteal window, on a cooldown. Applied by
+     * {@link com.ascension.combat.internal.armor.SterakHarnessEffects}, whose javadoc explains why
+     * the temporary lifesteal is implemented the same shape as this catalog's omnivamp (heals off
+     * any damage dealt) rather than physical-only &mdash; nothing in the catalog tags a damage
+     * instance's type generically yet. A plain {@link Item}, same reasoning as
+     * {@link #ZONIAS_HOURGLASS}.
+     */
+    public static final Supplier<Item> STERAKS_HARNESS = ITEMS.register(
+            "steraks_harness",
+            () -> new Item(new Item.Properties()));
+
+    /**
+     * Not part of the catalog (section 6) &mdash; a debug-only weapon added 2026-09-19 to verify
+     * the new defense-stat curve (section 3, {@link com.ascension.combat.internal.mechanics.DefenseFormula}):
+     * every hit deals a flat 10 magic damage and nothing else, so a target's Magic Resist and its
+     * reduction can be watched in isolation, without a physical component muddying the number.
+     * Applied by {@link com.ascension.combat.internal.weapons.TestMagicBladeEffects}. Deliberately
+     * left out of {@link #addToCreativeTabs} &mdash; {@code /give} only, never meant to be found by
+     * playing normally.
+     */
+    public static final Supplier<Item> TEST_MAGIC_BLADE = ITEMS.register(
+            "test_magic_blade",
+            () -> new SwordItem(Tiers.WOOD, new Item.Properties()
+                    .attributes(SwordItem.createAttributes(Tiers.WOOD, 0.0f, -2.4f))));
+
     private CombatContent() {
     }
 
@@ -325,6 +417,14 @@ public final class CombatContent {
             event.accept(ROCKETBELT.get());
             event.accept(COLLECTORS_PANTS.get());
             event.accept(UNENDING_DESPAIR.get());
+            event.accept(MERCURY_TREADS.get());
+            event.accept(NINJA_TABI.get());
+            event.accept(SWIFTY.get());
+            event.accept(BERSERKERS_GREAVES.get());
+            event.accept(WIZARDS_AGONY.get());
+            event.accept(TASTED_BLOOD.get());
+            event.accept(ZONIAS_HOURGLASS.get());
+            event.accept(STERAKS_HARNESS.get());
         }
     }
 }

@@ -4,8 +4,11 @@ import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.MagicDamage;
 import com.ascension.core.api.CombatStateRegistry;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.IEventBus;
@@ -26,6 +29,13 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * <p>The pulse damage uses {@link MagicDamage#applyStandalone} &mdash; the first consumer that
  * needed a fresh magic hit rather than a bonus riding an existing one, since nothing is attacking
  * the wearer when a pulse fires.
+ *
+ * <p><b>Feedback, added after Sanchit's first test pass 2026-09-12</b> (the same problem
+ * Heartwood of Pallas had): every pulse is otherwise entirely invisible &mdash; no particle, no
+ * sound, nothing to distinguish "this did nothing because it hasn't been 10s yet" from "this fired
+ * and just didn't reach anything." {@link #pulse} now always plays a sound and spawns particles on
+ * the wearer, whether or not anything was in range to hit, specifically so a whiffed pulse is still
+ * perceptible as a pulse.
  */
 public final class UnendingDespairEffects {
 
@@ -70,6 +80,19 @@ public final class UnendingDespairEffects {
         if (!(player.level() instanceof ServerLevel level)) {
             return;
         }
+
+        level.playSound(
+                null, player.blockPosition(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 0.8f, 1.2f);
+        level.sendParticles(
+                ParticleTypes.WITCH,
+                player.getX(),
+                player.getY(1.0),
+                player.getZ(),
+                20,
+                PULSE_RADIUS * 0.5,
+                0.5,
+                PULSE_RADIUS * 0.5,
+                0.0);
 
         float totalDealt = 0.0f;
         for (LivingEntity target

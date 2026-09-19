@@ -1,6 +1,8 @@
 package com.ascension.combat.client;
 
+import com.ascension.combat.internal.net.RunePageSyncPayload;
 import com.ascension.combat.internal.net.StasisSyncPayload;
+import java.util.Set;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -29,5 +31,13 @@ public final class ClientNetworkHandlers {
                 cameraTypeBeforeStasis = null;
             }
         });
+    }
+
+    public static void onRunePageSync(RunePageSyncPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> ClientRunePageCache.update(
+                payload.primaryPath(),
+                Set.copyOf(payload.primaryMinors()),
+                payload.secondaryPath(),
+                Set.copyOf(payload.secondaryMinors())));
     }
 }

@@ -1,31 +1,18 @@
 package com.ascension.combat.internal.armor;
 
-import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DurationState;
-import com.ascension.combat.internal.net.StasisSyncPayload;
-import net.minecraft.resources.ResourceLocation;
+import com.ascension.combat.internal.mechanics.Stasis;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Guardian's Wing's identity (docs/technical/combat-api.md section 6): on death, while off
- * cooldown, stasis (section 5) instead of dying, then revive at half HP.
- *
- * <p>Stasis here is invulnerable ({@link net.minecraft.world.entity.Entity#setInvulnerable}),
- * immobile (a {@code -100%} {@link Attributes#MOVEMENT_SPEED} modifier), and the client's camera
- * forced to third person via {@link StasisSyncPayload}. "Untargetable" is approximated as
- * invulnerable rather than literally clearing every nearby mob's target lock &mdash; nothing can
- * land damage either way, and reaching into live mob AI state for the same practical result isn't
- * worth it.
+ * cooldown, stasis ({@link Stasis}, section 5) instead of dying, then revive at half HP.
  *
  * <p>Reuses {@link DurationState} for the stasis window, same shape as every other "active until
  * this game tick" state in this catalog. {@link DurationState#hasExpired}, added for this item, is
@@ -44,9 +31,6 @@ public final class GuardianWingEffects {
 
     private static final float REVIVE_HEALTH_PERCENT = 0.5f;
     private static final int COOLDOWN_TICKS = 6000;
-
-    private static final ResourceLocation MOVE_SPEED_MODIFIER_ID = ResourceLocation
-            .fromNamespaceAndPath(AscensionCombat.MOD_ID, "guardian_wing_stasis_immobile");
 
     private GuardianWingEffects() {
     }
@@ -75,8 +59,8 @@ public final class GuardianWingEffects {
 
         long now = player.level().getGameTime();
         player.getData(CombatAttachments.GUARDIAN_WING_STASIS).activateUntil(now + STASIS_DURATION_TICKS);
-        applyStasis(player, true);
-        PacketDistributor.sendToPlayer(player, new StasisSyncPayload(true));
+        Stasis.apply(player, true);
+        Stasis.syncToClient(player, true);
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {
@@ -88,32 +72,15 @@ public final class GuardianWingEffects {
         long now = player.level().getGameTime();
 
         if (stasis.isActive(now)) {
-            applyStasis(player, true);
+            Stasis.apply(player, true);
             return;
         }
 
         if (stasis.hasExpired(now)) {
             stasis.clear();
-            applyStasis(player, false);
+            Stasis.apply(player, false);
             player.setHealth(player.getMaxHealth() * REVIVE_HEALTH_PERCENT);
-            PacketDistributor.sendToPlayer(player, new StasisSyncPayload(false));
+            Stasis.syncToClient(player, false);
         }
-    }
-
-    private static void applyStasis(ServerPlayer player, boolean active) {
-        player.setInvulnerable(active);
-
-        AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (moveSpeed == null) {
-            return;
-        }
-
-        moveSpeed.removeModifier(MOVE_SPEED_MODIFIER_ID);
-        if (!active) {
-            return;
-        }
-
-        moveSpeed.addTransientModifier(new AttributeModifier(
-                MOVE_SPEED_MODIFIER_ID, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     }
 }

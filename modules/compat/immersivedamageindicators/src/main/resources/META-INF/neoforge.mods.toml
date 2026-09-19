@@ -1,0 +1,43 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Immersive Damage Indicators"
+authors = "${mod_authors}"
+description = '''
+Repositions and enlarges Immersive Damage Indicators' floating combat numbers so they render
+above a hit target instead of inside its model. No dependency on any Ascension module -- a pure
+rendering tweak to a third party mod's own display, not a bridge to anything of ours.
+
+Optional. Without Immersive Damage Indicators installed, this jar simply is not present.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+# The actual integration target. Required, not optional -- this whole jar has no other reason to
+# exist, so if Immersive Damage Indicators is absent NeoForge should refuse to load this rather
+# than load it into a no-op, same posture as ascension-compat-chunky takes with Chunky. Its own
+# neoforge.mods.toml already requires Immersive Messages and Forgified Fabric API, so both are
+# guaranteed present the moment this dependency is satisfied.
+[[dependencies.${mod_id}]]
+modId = "immersivedamageindicators"
+type = "required"
+versionRange = "${immersivedamageindicators_version_range}"
+ordering = "NONE"
+side = "CLIENT"

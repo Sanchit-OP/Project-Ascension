@@ -3,6 +3,7 @@ package com.ascension.combat.client;
 import com.ascension.combat.internal.net.ActivateArmorAbilityPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -29,6 +30,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * <p>{@code AscensionCombat} is the one place non-client code names this class, gated behind
  * {@code Dist.CLIENT} at the call site &mdash; the same isolation {@code AtmosphereNetwork} uses
  * for its own client-only handler reference.
+ *
+ * <p>{@link #OPEN_RUNE_PAGE} (docs/technical/combat-api.md section 7), added alongside {@link
+ * RuneScreen}, needs no payload of its own &mdash; opening a screen is purely local, unlike
+ * activating an armor ability, which has to reach the server.
  */
 public final class CombatKeybinds {
 
@@ -36,6 +41,11 @@ public final class CombatKeybinds {
 
     private static final KeyMapping ACTIVATE_ARMOR_ABILITY = new KeyMapping(
             "key.ascension_combat.activate_armor_ability",
+            InputConstants.UNKNOWN.getValue(),
+            CATEGORY);
+
+    private static final KeyMapping OPEN_RUNE_PAGE = new KeyMapping(
+            "key.ascension_combat.open_rune_page",
             InputConstants.UNKNOWN.getValue(),
             CATEGORY);
 
@@ -49,11 +59,15 @@ public final class CombatKeybinds {
 
     private static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(ACTIVATE_ARMOR_ABILITY);
+        event.register(OPEN_RUNE_PAGE);
     }
 
     private static void onClientTick(ClientTickEvent.Post event) {
         while (ACTIVATE_ARMOR_ABILITY.consumeClick()) {
             PacketDistributor.sendToServer(ActivateArmorAbilityPayload.INSTANCE);
+        }
+        while (OPEN_RUNE_PAGE.consumeClick()) {
+            Minecraft.getInstance().setScreen(new RuneScreen());
         }
     }
 }

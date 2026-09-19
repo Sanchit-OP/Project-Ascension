@@ -5,7 +5,12 @@ import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.ArmedState;
 import com.ascension.combat.internal.mechanics.MagicDamage;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +21,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
  * Heartwood of Pallas's identity (docs/technical/combat-api.md section 6): on-hit small magic
@@ -40,6 +46,16 @@ import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
  * carries it the rest of the way to the eventual {@link LivingDamageEvent.Pre}, since the arrow
  * may still be in flight after the wielder has already drawn and released another, uncharged,
  * shot.
+ *
+ * <p><b>Feedback, added after Sanchit's first test pass 2026-09-12.</b> Two real problems: the
+ * charge threshold felt unusably slow in an actual fight ("till when i do a 3x pull it will be
+ * gg's"), and there was no way to perceive corruption building up at all. Fixed with three
+ * things, none of which touch the underlying mechanic: {@link #CHARGE_THRESHOLD_TICKS} dropped
+ * from a literal 3x{@code MAX_DRAW_DURATION} (60 ticks) to a much shorter placeholder; {@link
+ * #onPlayerTick} plays a one-shot personal "ready" chime the exact tick a draw crosses the
+ * threshold, so releasing on time doesn't require watching a timer; and {@link #onDamagePre} now
+ * sends the shooter an action-bar readout of the target's current stack count and spawns a small
+ * particle burst on the target itself, visible to anyone nearby.
  */
 public final class HeartwoodOfPallasEffects {
 
@@ -49,8 +65,11 @@ public final class HeartwoodOfPallasEffects {
     /** Catalog-specified: refreshed while the target's been hit in the last 5s. */
     private static final long CORRUPTION_DECAY_TICKS = 100L;
 
-    /** Catalog-specified: 3x {@link BowItem#MAX_DRAW_DURATION}. */
-    private static final int CHARGE_THRESHOLD_TICKS = BowItem.MAX_DRAW_DURATION * 3;
+    /**
+     * Placeholder, lowered from a literal 3x {@link BowItem#MAX_DRAW_DURATION} (60 ticks) after
+     * Sanchit's first test pass found that draw unusably slow in a real fight.
+     */
+    private static final int CHARGE_THRESHOLD_TICKS = 25;
 
     private HeartwoodOfPallasEffects() {
     }
@@ -59,6 +78,23 @@ public final class HeartwoodOfPallasEffects {
         bus.addListener(HeartwoodOfPallasEffects::onArrowLoose);
         bus.addListener(HeartwoodOfPallasEffects::onEntityJoinLevel);
         bus.addListener(HeartwoodOfPallasEffects::onDamagePre);
+        bus.addListener(HeartwoodOfPallasEffects::onPlayerTick);
+    }
+
+    private static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        ItemStack usingItem = player.getUseItem();
+        if (!player.isUsingItem() || !usingItem.is(CombatContent.HEARTWOOD_OF_PALLAS.get())) {
+            return;
+        }
+
+        int ticksUsing = usingItem.getUseDuration(player) - player.getUseItemRemainingTicks();
+        if (ticksUsing == CHARGE_THRESHOLD_TICKS) {
+            player.playNotifySound(SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.6f, 1.6f);
+        }
     }
 
     private static void onArrowLoose(ArrowLooseEvent event) {
@@ -116,6 +152,13 @@ public final class HeartwoodOfPallasEffects {
             corruption.clear();
         }
         corruption.refresh(Integer.MAX_VALUE, now + CORRUPTION_DECAY_TICKS);
+
+        serverLevel.sendParticles(
+                ParticleTypes.SOUL, target.getX(), target.getY(1.0), target.getZ(), 6, 0.3, 0.3, 0.3, 0.01);
+        if (source.getEntity() instanceof ServerPlayer shooter) {
+            shooter.displayClientMessage(
+                    Component.literal("Corruption: " + corruption.stacks()), true);
+        }
 
         if (!(source.getDirectEntity() instanceof AbstractArrow arrow)) {
             return;

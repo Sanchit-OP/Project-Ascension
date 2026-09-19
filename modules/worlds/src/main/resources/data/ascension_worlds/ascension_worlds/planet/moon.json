@@ -1,7 +1,7 @@
 {
   "surface": "ascension_worlds:moon",
   "space": {
-    "position": [8000, 0],
+    "position": [1500, 0],
     "body_radius": 192,
     "approach_radius": 320
   },
