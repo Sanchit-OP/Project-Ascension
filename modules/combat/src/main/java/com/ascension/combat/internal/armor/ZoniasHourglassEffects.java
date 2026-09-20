@@ -47,7 +47,7 @@ public final class ZoniasHourglassEffects {
 
         long now = player.level().getGameTime();
         player.getData(CombatAttachments.ZONIAS_HOURGLASS_STASIS).activateUntil(now + STASIS_DURATION_TICKS);
-        Stasis.apply(player, true);
+        Stasis.enter(player);
         Stasis.syncToClient(player, true);
         player.getCooldowns().addCooldown(CombatContent.ZONIAS_HOURGLASS.get(), COOLDOWN_TICKS);
     }
@@ -61,13 +61,13 @@ public final class ZoniasHourglassEffects {
         long now = player.level().getGameTime();
 
         if (stasis.isActive(now)) {
-            Stasis.apply(player, true);
+            Stasis.tick(player);
             return;
         }
 
         if (stasis.hasExpired(now)) {
             stasis.clear();
-            Stasis.apply(player, false);
+            Stasis.exit(player);
             Stasis.syncToClient(player, false);
         }
     }

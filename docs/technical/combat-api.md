@@ -38,13 +38,31 @@ category of item that doesn't otherwise exist here.
 ## 3. The stat model
 
 **Confirmed base stats:** HP, Attack Damage, Attack Speed, Move Speed, Armor, Magic Resist,
-Lifesteal, Omnivamp.
+Omnivamp.
+
+**Lifesteal and Omnivamp collapsed into one stat, confirmed by Sanchit 2026-09-20.** Nothing in
+this catalog can tell a physical hit from a magic one at the generic point healing happens, so a
+real physical-only Lifesteal would need per-hit damage-type tagging this project doesn't have —
+and every "lifesteal-like" item already behaved Omnivamp-shaped regardless (Endless Hunger, Tasted
+Blood, Sterak's Harness, Conqueror's Resolve). `CombatAttributes.OMNIVAMP` is the one real
+attribute; `internal.mechanics.OmnivampHealing` is the one shared listener every source heals
+through, so two different Omnivamp sources stack into one real total instead of independent heals
+nobody can see summed.
+
+**Armor penetration / lethality and magic penetration, confirmed by Sanchit 2026-09-20** — shown
+together on the character sheet (§3c) as one line, "23/35%": `CombatAttributes.LETHALITY` (a flat
+number, League's own "Lethality," Armor-only) and `CombatAttributes.PENETRATION_PERCENT` (a
+percentage, deliberately universal — one stat cuts whichever of Armor or Magic Resist is relevant
+to the hit being dealt, rather than League's own separately-tracked Armor Pen % and Magic Pen %).
+Applied percent first, then flat off whatever's left. Both are attacker-side and read centrally by
+`PhysicalDamage` and `MagicDamage` — an item contributes to them the same tick-recomputed way it
+contributes to any other attribute, rather than registering its own mitigation-math modifier.
+Mortal Reminder's arrow-specific ignore is the one deliberate exception, composing on top of these
+rather than folding in — see that class's own javadoc for why.
 
 **Supporting stats/mechanics**, needed by the items in §6 and carried forward without objection
 during design:
 
-- **Armor penetration / lethality** and **magic penetration** — flat or percentage reduction of
-  the opposing mitigation stat.
 - **Grievous wounds** — a status effect, not a stat: reduces lifesteal/omnivamp healing received
   by whoever carries it.
 - **Shield / absorb** — a shared temporary-HP mechanic (§5).
@@ -136,6 +154,19 @@ in play rather than only in code:
   damage type anywhere in its own pipeline. Solving this would need a new, short-lived sync channel
   of this project's own, and would still be wrong the instant two differently-typed hits land on
   the same target in the same tick, since that mod only ever shows one combined number per tick.
+
+## 3c. Seeing your own stats — the character sheet
+
+Added 2026-09-20, once Lifesteal/Omnivamp and Armor Pen/Magic Pen were promoted from scattered
+per-item constants into real attributes (§3) — before that promotion, a screen like this had
+nothing real to read for four of its eight rows. `client.CharacterSheetScreen`, this module's
+second `Screen`, opened by its own unbound-by-default keybind. Needs no network payload at all,
+unlike `RuneScreen`: every stat it shows is already `setSyncable(true)`, so the client's own copy
+of the local player already carries the same numbers the server does.
+
+Shows HP (current/max), Attack Damage, Attack Speed, Move Speed, Armor, Magic Resist, Omnivamp,
+and Lethality/Penetration as one combined line ("23/35%", Sanchit's own spec) — every base stat
+from §3 except Grievous Wounds (a status effect on a target, not a stat on the viewer).
 
 ## 4. Combat state — the `core` contract
 

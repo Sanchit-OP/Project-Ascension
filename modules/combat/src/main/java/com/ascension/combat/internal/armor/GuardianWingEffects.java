@@ -3,6 +3,7 @@ package com.ascension.combat.internal.armor;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DurationState;
+import com.ascension.combat.internal.mechanics.PausableCooldown;
 import com.ascension.combat.internal.mechanics.Stasis;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -23,6 +24,13 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * setHealth(1)}, the same shape most "prevent death" effects use across the ecosystem &mdash; the
  * event's own contract is that a cancelled death simply doesn't happen, so nothing else needs to
  * be undone.
+ *
+ * <p><b>Cooldown, reworked 2026-09-20.</b> Used to track cooldown via vanilla {@code
+ * ItemCooldowns}, which ticks down unconditionally once started regardless of whether the
+ * chestplate is even worn &mdash; Sanchit's own call was that carrying it unequipped shouldn't
+ * quietly recharge it. Now {@link CombatAttachments#GUARDIAN_WING_COOLDOWN} ({@link
+ * PausableCooldown}), which only progresses on ticks where {@link #onPlayerTick} finds it actually
+ * worn.
  */
 public final class GuardianWingEffects {
 
@@ -49,17 +57,18 @@ public final class GuardianWingEffects {
             return;
         }
 
-        if (player.getCooldowns().isOnCooldown(CombatContent.GUARDIAN_WING.get())) {
+        PausableCooldown cooldown = player.getData(CombatAttachments.GUARDIAN_WING_COOLDOWN);
+        if (!cooldown.isReady()) {
             return;
         }
 
         event.setCanceled(true);
         player.setHealth(1.0f);
-        player.getCooldowns().addCooldown(CombatContent.GUARDIAN_WING.get(), COOLDOWN_TICKS);
+        cooldown.start(COOLDOWN_TICKS);
 
         long now = player.level().getGameTime();
         player.getData(CombatAttachments.GUARDIAN_WING_STASIS).activateUntil(now + STASIS_DURATION_TICKS);
-        Stasis.apply(player, true);
+        Stasis.enter(player);
         Stasis.syncToClient(player, true);
     }
 
@@ -68,17 +77,20 @@ public final class GuardianWingEffects {
             return;
         }
 
+        boolean wearing = player.getItemBySlot(EquipmentSlot.CHEST).is(CombatContent.GUARDIAN_WING.get());
+        player.getData(CombatAttachments.GUARDIAN_WING_COOLDOWN).tick(wearing);
+
         DurationState stasis = player.getData(CombatAttachments.GUARDIAN_WING_STASIS);
         long now = player.level().getGameTime();
 
         if (stasis.isActive(now)) {
-            Stasis.apply(player, true);
+            Stasis.tick(player);
             return;
         }
 
         if (stasis.hasExpired(now)) {
             stasis.clear();
-            Stasis.apply(player, false);
+            Stasis.exit(player);
             player.setHealth(player.getMaxHealth() * REVIVE_HEALTH_PERCENT);
             Stasis.syncToClient(player, false);
         }
