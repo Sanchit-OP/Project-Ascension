@@ -5,6 +5,7 @@ import com.ascension.combat.internal.armor.GargoyleStoneplateEffects;
 import com.ascension.combat.internal.armor.RocketbeltEffects;
 import com.ascension.combat.internal.armor.ZoniasHourglassEffects;
 import com.ascension.combat.internal.rune.RunePageState;
+import com.ascension.combat.internal.weapons.GaleforceEffects;
 import java.util.Set;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
@@ -76,6 +77,7 @@ public final class CombatNetwork {
                 GargoyleStoneplateEffects.tryActivate(player);
                 RocketbeltEffects.tryActivate(player);
                 ZoniasHourglassEffects.tryActivate(player);
+                GaleforceEffects.tryActivate(player);
             }
         });
     }

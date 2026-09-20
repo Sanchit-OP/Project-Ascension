@@ -43,12 +43,17 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public final class DariusAxeEffects {
 
     /**
-     * Cap and per-hit size confirmed by Sanchit 2026-09-08: 2.5% armor reduction per hit, up to
-     * 60% total (24 stacks). Duration (5s / 100 ticks) was already right.
+     * Cap confirmed by Sanchit 2026-09-08, per-hit size raised 2.5% -&gt; 5% on 2026-09-20 (Sanchit's
+     * own call after testing). At 24 stacks that is now 120%, past the point of full mitigation --
+     * deliberately left as-is rather than silently capping stacks lower or clamping the reduction,
+     * since combat-api.md section 3 treats every number here as Sanchit's own to tune, and a target
+     * shredded past 100% goes <em>negative</em> under {@link
+     * com.ascension.combat.internal.mechanics.DefenseFormula} (extra damage taken, not just zero
+     * mitigation) -- a real consequence worth knowing about, not a bug to quietly paper over.
      */
     private static final int MAX_STACKS = 24;
 
-    private static final float ARMOR_REDUCTION_PER_STACK = 0.025f;
+    private static final float ARMOR_REDUCTION_PER_STACK = 0.05f;
     private static final long DECAY_TICKS = 100L;
 
     private static final ResourceLocation SHRED_MODIFIER_ID =

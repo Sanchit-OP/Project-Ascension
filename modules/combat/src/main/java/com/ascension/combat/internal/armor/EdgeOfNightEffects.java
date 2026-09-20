@@ -4,6 +4,7 @@ import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DurationState;
+import com.ascension.combat.internal.mechanics.Shield;
 import com.ascension.core.api.CombatStateRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -65,7 +66,7 @@ public final class EdgeOfNightEffects {
 
         boolean wearing = player.getItemBySlot(EquipmentSlot.HEAD).is(CombatContent.EDGE_OF_NIGHT.get());
         if (wearing && !CombatStateRegistry.isInCombat(player) && player.getAbsorptionAmount() < SHIELD_AMOUNT) {
-            player.setAbsorptionAmount(SHIELD_AMOUNT);
+            Shield.grant(player, SHIELD_AMOUNT);
         }
 
         DurationState burst = player.getData(CombatAttachments.EDGE_OF_NIGHT_BURST);

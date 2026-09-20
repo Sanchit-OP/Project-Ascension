@@ -4,6 +4,7 @@ import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DurationState;
+import com.ascension.combat.internal.mechanics.Shield;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -112,7 +113,7 @@ public final class SterakHarnessEffects {
         }
 
         float shield = player.getMaxHealth() * SHIELD_MAX_HEALTH_PERCENT;
-        player.setAbsorptionAmount(Math.max(player.getAbsorptionAmount(), shield));
+        Shield.grant(player, shield);
         player.getData(CombatAttachments.STERAKS_LIFESTEAL)
                 .activateUntil(player.level().getGameTime() + LIFESTEAL_DURATION_TICKS);
         player.getCooldowns().addCooldown(CombatContent.STERAKS_HARNESS.get(), COOLDOWN_TICKS);

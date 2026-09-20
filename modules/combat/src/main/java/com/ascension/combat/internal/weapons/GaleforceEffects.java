@@ -22,7 +22,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
@@ -31,16 +30,24 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  * dealt damage to if that's more recent, dealing bonus physical damage scaling with the target's
  * missing HP. On a cooldown.
  *
- * <p><b>Input.</b> Unlike the sword actives, this doesn't fire on plain right-click: a bow's
- * right-click already means "start drawing" ({@code BowItem#use}), and a normal draw-and-release
- * shot needs to keep working untouched. The active is gated on {@code sneak + right-click}
- * instead, the standard way modded items disambiguate a secondary use from an item's own vanilla
- * one; that combination cancels {@link PlayerInteractEvent.RightClickItem} outright so vanilla's
- * draw never starts on that click.
+ * <p><b>Input, revised again 2026-09-20.</b> Originally gated on {@code sneak + right-click},
+ * cancelling {@code PlayerInteractEvent.RightClickItem} so vanilla's own bow-draw never started on
+ * that click. Dropped after Sanchit's test found the dash simply never fired: sneaking while aiming
+ * at an entity (exactly when you'd want a targeted dash) routes through a different interaction
+ * event entirely, one this listener never sees, so the whole combination was unreliable by
+ * construction, not just awkward. {@link #tryActivate} is now the second consumer of the same
+ * shared ability key {@link com.ascension.combat.internal.armor.GargoyleStoneplateEffects} and
+ * {@link com.ascension.combat.internal.armor.RocketbeltEffects} already use &mdash; the first held
+ * weapon to, confirming that key was always "whatever's equipped with an active you press a
+ * dedicated button for," not armor-specifically. Plain right-click stays untouched vanilla bow
+ * behaviour either way.
  *
  * <p><b>Dash, not blink.</b> Uses {@link Dash#forward}, not {@link
  * com.ascension.combat.internal.mechanics.Blink} &mdash; it's real movement that collides with
- * terrain and entities, unlike Wraithblade's instant teleport.
+ * terrain and entities, unlike Wraithblade's instant teleport. {@link #DASH_STRENGTH} is a
+ * knockback-impulse value, not a literal block count &mdash; {@code LivingEntity#knockback} has no
+ * distance parameter, so "at least 6 blocks" (Sanchit's own spec) is approximated empirically
+ * rather than guaranteed exactly.
  *
  * <p><b>The shot is spawned directly</b>, not read off the wielder's next normal release: it's
  * aimed at the resolved target (or the wielder's look direction if none is found) the instant the
@@ -56,8 +63,12 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  */
 public final class GaleforceEffects {
 
-    /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final double DASH_STRENGTH = 1.8;
+    /**
+     * Raised 1.8 -&gt; 4.0 on 2026-09-20 after Sanchit reported not seeing any dash at all -- see
+     * this class's own javadoc for why the input path, not this number, was the actual bug, but
+     * this was tuned up regardless since a 6-block dash was the explicit ask.
+     */
+    private static final double DASH_STRENGTH = 4.0;
 
     private static final float MISSING_HEALTH_BONUS_PERCENT = 0.20f;
     private static final int COOLDOWN_TICKS = 160;
@@ -73,23 +84,17 @@ public final class GaleforceEffects {
     }
 
     public static void register(IEventBus bus) {
-        bus.addListener(GaleforceEffects::onRightClickItem);
         bus.addListener(GaleforceEffects::onIncomingDamage);
         bus.addListener(GaleforceEffects::onDamagePost);
         bus.addListener(GaleforceEffects::onServerTick);
     }
 
-    private static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
+    /** Entry point for the shared ability key -- see this class's own javadoc for why. */
+    public static void tryActivate(ServerPlayer player) {
+        ItemStack stack = player.getMainHandItem();
+        if (!stack.is(CombatContent.GALEFORCE.get())) {
             return;
         }
-
-        ItemStack stack = event.getItemStack();
-        if (!stack.is(CombatContent.GALEFORCE.get()) || !player.isShiftKeyDown()) {
-            return;
-        }
-
-        event.setCanceled(true);
 
         if (player.getCooldowns().isOnCooldown(stack.getItem())) {
             return;

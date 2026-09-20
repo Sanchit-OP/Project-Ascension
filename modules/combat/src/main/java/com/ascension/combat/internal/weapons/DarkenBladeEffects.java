@@ -4,6 +4,7 @@ import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.ArmedState;
 import com.ascension.combat.internal.mechanics.MagicDamage;
+import com.ascension.combat.internal.mechanics.Shield;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,10 +26,9 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
  * burst landing on cooldown doesn't leave the wielder needing three hits instead of two to try
  * again &mdash; it just fires nothing that time and restarts the count.
  *
- * <p>The shield reuses vanilla's own absorption pool ({@code
- * LivingEntity#setAbsorptionAmount}) rather than a hand-rolled temporary-HP system &mdash; it
- * already renders as the golden extra hearts and already soaks damage before real HP, which is
- * exactly what combat-api.md section 5's Shield/Absorb entry asks for.
+ * <p>The shield goes through {@link Shield#grant}, not a raw {@code setAbsorptionAmount} call
+ * &mdash; found necessary 2026-09-20 after Sanchit's own test showed no shield at all against an
+ * Iron Golem hit; see that class's javadoc for why the raw call silently did nothing.
  */
 public final class DarkenBladeEffects {
 
@@ -73,7 +73,7 @@ public final class DarkenBladeEffects {
         float rawMagicBonus = target.getMaxHealth() * MAGIC_MAX_HP_PERCENT;
         MagicDamage.apply(event, rawMagicBonus);
 
-        attacker.setAbsorptionAmount(Math.max(attacker.getAbsorptionAmount(), SHIELD_AMOUNT));
+        Shield.grant(attacker, SHIELD_AMOUNT);
         attacker.getCooldowns().addCooldown(weapon.getItem(), PROC_COOLDOWN_TICKS);
     }
 }

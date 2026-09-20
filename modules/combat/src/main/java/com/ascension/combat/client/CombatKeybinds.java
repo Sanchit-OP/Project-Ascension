@@ -14,7 +14,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * The shared "activate armor ability" key (docs/technical/combat-api.md section 6). One key for
  * every worn item with an active, mirroring how a single item slot in League always means
  * "activate whatever is here" rather than each item needing its own bind. Gargoyle Stoneplate is
- * the first consumer; Zonia's Hourglass and Sterak's Harness are expected to be the next two.
+ * the first consumer; Rocketbelt and Zonia's Hourglass followed, and Galeforce (2026-09-20) is the
+ * first <em>held</em> weapon to use it, after sneak+right-click proved unreliable whenever aimed at
+ * an entity &mdash; confirming this key was never really armor-specific, just "whatever's equipped
+ * with an active you'd rather press a dedicated button for."
  *
  * <p>Unbound by default ({@link InputConstants#UNKNOWN}) &mdash; Sanchit binds it himself in
  * Controls rather than this claiming a key that might already mean something else to him.

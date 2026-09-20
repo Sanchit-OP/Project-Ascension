@@ -2,12 +2,15 @@ package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.Blink;
+import com.ascension.combat.internal.mechanics.DefenseFormula;
 import com.ascension.combat.internal.mechanics.DurationState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -30,13 +33,23 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * <p>The blink is {@link Blink#forward} &mdash; a one-shot reposition, not continuous collision
  * suppression, so it needs no per-tick bookkeeping of its own; the speed boost that follows it
  * does, via {@link DurationState}.
+ *
+ * <p><b>Fixed 2026-09-20</b> (Sanchit's own test: a diamond-sword-scale hit was landing for its
+ * full raw damage against a Warden with 100 Armor). {@link #onIncomingDamage} used to subtract a
+ * flat amount from the already-computed <em>damage-reduction amount</em> &mdash; a small number
+ * (a 7-damage hit against 100 Armor reduces by only ~3.5 damage) &mdash; rather than from the
+ * target's actual Armor stat, so even the old 4.0 lethality alone was enough to wipe the whole
+ * reduction to zero for a light hit. It now recomputes {@link DefenseFormula}'s own curve directly
+ * from {@code (target's Armor &minus; lethality)}, the same "effective Armor" reading Sanchit
+ * described &mdash; which also means it composes correctly with Darius's Axe's shred, since both
+ * read the same live {@link CombatAttributes#ARMOR} value.
  */
 public final class WraithbladeEffects {
 
-    /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final float FLAT_LETHALITY = 4.0f;
+    /** Raised 4.0 -&gt; 20.0 on 2026-09-20, alongside the fix above -- see this class's own javadoc. */
+    private static final float FLAT_LETHALITY = 20.0f;
 
-    private static final double BLINK_DISTANCE = 6.0;
+    private static final double BLINK_DISTANCE = 12.0;
     private static final long SPEED_BOOST_DURATION_TICKS = 60L;
     private static final double MOVE_SPEED_BONUS_PERCENT = 0.30;
     private static final int COOLDOWN_TICKS = 200;
@@ -68,9 +81,17 @@ public final class WraithbladeEffects {
             return;
         }
 
+        LivingEntity target = event.getEntity();
         event.addReductionModifier(
                 DamageContainer.Reduction.ARMOR,
-                (container, reductionIn) -> Math.max(0.0f, reductionIn - FLAT_LETHALITY));
+                (container, reductionIn) -> {
+                    AttributeInstance armor = target.getAttribute(CombatAttributes.ARMOR);
+                    if (armor == null) {
+                        return reductionIn;
+                    }
+                    double effectiveArmor = Math.max(0.0, armor.getValue() - FLAT_LETHALITY);
+                    return container.getNewDamage() * (float) (1.0 - DefenseFormula.multiplier(effectiveArmor));
+                });
     }
 
     private static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
