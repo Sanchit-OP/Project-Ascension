@@ -323,12 +323,13 @@ public final class CombatContent {
             () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
 
     /**
-     * Twenty-third out the door, {@code ORIGINAL}. Armor and magic penetration while worn. The
-     * armor half is ordinary per-hit reduction-modifier logic in
-     * {@link com.ascension.combat.internal.armor.WizardsAgonyEffects}; the magic half lives
-     * inside {@link com.ascension.combat.internal.mechanics.MagicDamage} itself, the one place
-     * every magic-damage consumer in the catalog already goes through &mdash; see that class's
-     * javadoc for why that's a deliberate exception to shared mechanics staying item-agnostic.
+     * Twenty-third out the door, {@code ORIGINAL}. Armor and magic penetration while worn.
+     * Originally split across two files (an armor-only reduction modifier plus a
+     * {@code MagicDamage}-specific special case); since 2026-09-20 it's one plain {@link
+     * com.ascension.combat.internal.armor.BootStats} contribution to {@link
+     * com.ascension.combat.internal.CombatAttributes#PENETRATION_PERCENT}, a single stat now read
+     * centrally by both {@link com.ascension.combat.internal.mechanics.PhysicalDamage} and {@link
+     * com.ascension.combat.internal.mechanics.MagicDamage}.
      */
     public static final Supplier<Item> WIZARDS_AGONY = ITEMS.register(
             "wizards_agony",
@@ -336,9 +337,10 @@ public final class CombatContent {
 
     /**
      * Twenty-fourth out the door, and the sixth and last Boots (combat-api.md section 6),
-     * {@code ORIGINAL}. Omnivamp while worn, same shape as {@link #ENDLESS_HUNGER}'s own but
-     * gated on the boots slot. Applied by
-     * {@link com.ascension.combat.internal.armor.TastedBloodEffects}.
+     * {@code ORIGINAL}. Omnivamp while worn, same shape as {@link #ENDLESS_HUNGER}'s own but a
+     * flat contribution rather than a dynamic one. A plain {@link
+     * com.ascension.combat.internal.armor.BootStats} rule since 2026-09-20, once {@link
+     * com.ascension.combat.internal.CombatAttributes#OMNIVAMP} became a real attribute.
      */
     public static final Supplier<Item> TASTED_BLOOD = ITEMS.register(
             "tasted_blood",

@@ -45,8 +45,10 @@ public final class UnendingDespairEffects {
     /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
     private static final long PULSE_INTERVAL_TICKS = 40L;
 
-    private static final double PULSE_RADIUS = 4.0;
-    private static final float PULSE_DAMAGE = 4.0f;
+    /** Radius 4.0 -&gt; 6.0, damage 4.0 -&gt; 12.0 on 2026-09-20 (Sanchit's own call: "too low"). */
+    private static final double PULSE_RADIUS = 6.0;
+
+    private static final float PULSE_DAMAGE = 12.0f;
 
     private UnendingDespairEffects() {
     }

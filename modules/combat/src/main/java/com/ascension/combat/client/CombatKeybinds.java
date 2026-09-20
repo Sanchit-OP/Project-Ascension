@@ -34,9 +34,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * {@code Dist.CLIENT} at the call site &mdash; the same isolation {@code AtmosphereNetwork} uses
  * for its own client-only handler reference.
  *
- * <p>{@link #OPEN_RUNE_PAGE} (docs/technical/combat-api.md section 7), added alongside {@link
- * RuneScreen}, needs no payload of its own &mdash; opening a screen is purely local, unlike
- * activating an armor ability, which has to reach the server.
+ * <p>{@link #OPEN_RUNE_PAGE} (docs/technical/combat-api.md section 7) and {@link
+ * #OPEN_CHARACTER_SHEET} (section 3) both need no payload of their own &mdash; opening a screen is
+ * purely local, unlike activating an armor ability, which has to reach the server. {@link
+ * CharacterSheetScreen} needs even less: unlike the rune page, it has no server-saved state to
+ * pull down first, since every stat it shows is already a synced attribute the client already has.
  */
 public final class CombatKeybinds {
 
@@ -52,6 +54,11 @@ public final class CombatKeybinds {
             InputConstants.UNKNOWN.getValue(),
             CATEGORY);
 
+    private static final KeyMapping OPEN_CHARACTER_SHEET = new KeyMapping(
+            "key.ascension_combat.open_character_sheet",
+            InputConstants.UNKNOWN.getValue(),
+            CATEGORY);
+
     private CombatKeybinds() {
     }
 
@@ -63,6 +70,7 @@ public final class CombatKeybinds {
     private static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(ACTIVATE_ARMOR_ABILITY);
         event.register(OPEN_RUNE_PAGE);
+        event.register(OPEN_CHARACTER_SHEET);
     }
 
     private static void onClientTick(ClientTickEvent.Post event) {
@@ -71,6 +79,9 @@ public final class CombatKeybinds {
         }
         while (OPEN_RUNE_PAGE.consumeClick()) {
             Minecraft.getInstance().setScreen(new RuneScreen());
+        }
+        while (OPEN_CHARACTER_SHEET.consumeClick()) {
+            Minecraft.getInstance().setScreen(new CharacterSheetScreen());
         }
     }
 }

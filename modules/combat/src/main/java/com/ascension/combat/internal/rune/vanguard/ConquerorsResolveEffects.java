@@ -3,6 +3,7 @@ package com.ascension.combat.internal.rune.vanguard;
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.api.rune.RunePath;
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.core.api.CombatStateRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +12,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
@@ -27,9 +27,13 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * only one keystone exists per path so far (section 7), so there's no separate pick within the
  * path yet, unlike the path selection itself.
  *
- * <p>The healing half reads {@link LivingDamageEvent.Post} for the same reason every omnivamp-
- * shaped heal in this catalog does (see {@code TastedBloodEffects}): it needs the final damage
- * actually dealt, after every reduction on the target's side, not the pre-mitigation amount.
+ * <p><b>The healing half, reworked 2026-09-20.</b> Used to heal the wielder directly in its own
+ * {@code LivingDamageEvent.Post} listener. Now that {@link CombatAttributes#OMNIVAMP} is a real
+ * attribute, this only keeps that attribute topped up with {@code stacks * HEAL_PERCENT_PER_STACK}
+ * whenever the stack count changes; {@link
+ * com.ascension.combat.internal.mechanics.OmnivampHealing} is the one place that actually turns it
+ * into healing now, the same shared payoff every other Omnivamp source goes through &mdash; this
+ * keystone was the one direct-heal holdout left after the item catalog's own pass.
  */
 public final class ConquerorsResolveEffects {
 
@@ -42,13 +46,14 @@ public final class ConquerorsResolveEffects {
 
     private static final ResourceLocation ATTACK_DAMAGE_MODIFIER_ID =
             ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "conquerors_resolve_attack_damage");
+    private static final ResourceLocation OMNIVAMP_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "conquerors_resolve_omnivamp");
 
     private ConquerorsResolveEffects() {
     }
 
     public static void register(IEventBus bus) {
         bus.addListener(ConquerorsResolveEffects::onPlayerTick);
-        bus.addListener(ConquerorsResolveEffects::onDamagePost);
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {
@@ -65,24 +70,8 @@ public final class ConquerorsResolveEffects {
         long now = player.level().getGameTime();
         if (state.tryGainStack(now, MAX_STACKS, STACK_INTERVAL_TICKS)) {
             applyModifier(player, state.stacks());
+            applyOmnivamp(player, state.stacks());
         }
-    }
-
-    private static void onDamagePost(LivingDamageEvent.Post event) {
-        if (event.getNewDamage() <= 0.0f) {
-            return;
-        }
-
-        if (!(event.getSource().getEntity() instanceof ServerPlayer attacker) || !hasKeystone(attacker)) {
-            return;
-        }
-
-        int stacks = attacker.getData(CombatAttachments.CONQUERORS_RESOLVE_STATE).stacks();
-        if (stacks <= 0) {
-            return;
-        }
-
-        attacker.heal(event.getNewDamage() * HEAL_PERCENT_PER_STACK * stacks);
     }
 
     private static boolean hasKeystone(ServerPlayer player) {
@@ -97,6 +86,7 @@ public final class ConquerorsResolveEffects {
 
         state.clear();
         applyModifier(player, 0);
+        applyOmnivamp(player, 0);
     }
 
     private static void applyModifier(ServerPlayer player, int stacks) {
@@ -112,5 +102,20 @@ public final class ConquerorsResolveEffects {
 
         attackDamage.addTransientModifier(new AttributeModifier(
                 ATTACK_DAMAGE_MODIFIER_ID, stacks * ATTACK_DAMAGE_PER_STACK, AttributeModifier.Operation.ADD_VALUE));
+    }
+
+    private static void applyOmnivamp(ServerPlayer player, int stacks) {
+        AttributeInstance omnivamp = player.getAttribute(CombatAttributes.OMNIVAMP);
+        if (omnivamp == null) {
+            return;
+        }
+
+        omnivamp.removeModifier(OMNIVAMP_MODIFIER_ID);
+        if (stacks <= 0) {
+            return;
+        }
+
+        omnivamp.addTransientModifier(new AttributeModifier(
+                OMNIVAMP_MODIFIER_ID, stacks * HEAL_PERCENT_PER_STACK, AttributeModifier.Operation.ADD_VALUE));
     }
 }

@@ -6,6 +6,7 @@ import com.ascension.combat.internal.mechanics.ArmedState;
 import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.LastDamageTarget;
+import com.ascension.combat.internal.mechanics.PausableCooldown;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
 import com.ascension.combat.internal.rune.RunePageState;
 import com.ascension.combat.internal.weapons.RagefangState;
@@ -199,15 +200,41 @@ public final class CombatAttachments {
             () -> AttachmentType.builder(CombatStackState::new).build());
 
     /**
-     * Edge of Night's post-absorb burst window (docs/technical/combat-api.md section 6), attached
-     * to the wearer: set the instant their shield absorbs a hit, read by both the move-speed
-     * modifier and the temporary lethality check while it's active.
+     * Edge of Night's post-dodge burst window (docs/technical/combat-api.md section 6), attached
+     * to the wearer: set the instant their immunity ({@link #EDGE_OF_NIGHT_IMMUNITY}) negates a
+     * hit, read by both the move-speed modifier and the temporary lethality check while active.
      *
      * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
      */
     public static final Supplier<AttachmentType<DurationState>> EDGE_OF_NIGHT_BURST = TYPES.register(
             "edge_of_night_burst",
             () -> AttachmentType.builder(DurationState::new).build());
+
+    /**
+     * Edge of Night's "the next hit is fully negated" flag (docs/technical/combat-api.md section
+     * 6), attached to the wearer &mdash; reworked 2026-09-20 from a vanilla-absorption shield
+     * (which capped at a small flat amount) into a true one-hit dodge: armed after a few seconds
+     * out of combat, consumed entirely by the next incoming hit regardless of its size or damage
+     * type, the same "whatever that attack could have been" spec Sanchit gave. Same shape as
+     * {@link #DIVINE_SUNDERER_PRIMED}, just on the defending side instead of the attacking one.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<ArmedState>> EDGE_OF_NIGHT_IMMUNITY = TYPES.register(
+            "edge_of_night_immunity",
+            () -> AttachmentType.builder(ArmedState::new).build());
+
+    /**
+     * Guardian's Wing's own death-save cooldown (docs/technical/combat-api.md section 6), attached
+     * to the wearer &mdash; deliberately not vanilla {@code ItemCooldowns} (see {@link
+     * PausableCooldown}'s own javadoc): it should only count against a player actually wearing the
+     * chestplate, not tick down in the background while it sits unequipped in their inventory.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<PausableCooldown>> GUARDIAN_WING_COOLDOWN = TYPES.register(
+            "guardian_wing_cooldown",
+            () -> AttachmentType.builder(PausableCooldown::new).build());
 
     /**
      * Guardian's Wing's stasis window (docs/technical/combat-api.md sections 5 and 6), attached to
@@ -257,14 +284,17 @@ public final class CombatAttachments {
 
     /**
      * Sterak's Harness's post-shield lifesteal window (docs/technical/combat-api.md section 6),
-     * attached to the wearer: armed when the auto-shield procs, read on every hit the wearer deals
-     * while it's active.
+     * attached to the wearer: armed when the auto-shield procs. Reworked 2026-09-20 from a fixed
+     * 10s {@link DurationState} into an {@link ArmedState} that lasts until the wearer leaves
+     * combat instead (Sanchit's own spec: "10% life steal till we are out of combat") &mdash; a
+     * fixed timer doesn't fit "until X happens," only "until this game tick," so this needed the
+     * consumed-on-exit shape instead. See {@code SterakHarnessEffects} for where it's consumed.
      *
      * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
      */
-    public static final Supplier<AttachmentType<DurationState>> STERAKS_LIFESTEAL = TYPES.register(
+    public static final Supplier<AttachmentType<ArmedState>> STERAKS_LIFESTEAL = TYPES.register(
             "steraks_lifesteal",
-            () -> AttachmentType.builder(DurationState::new).build());
+            () -> AttachmentType.builder(ArmedState::new).build());
 
     /**
      * A player's saved rune page (docs/technical/combat-api.md section 7): primary path (keystone

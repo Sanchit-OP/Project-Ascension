@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.AscensionCombat;
+import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -8,9 +9,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
@@ -24,10 +23,12 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * the same cheap per-player-tick idiom {@code ascension-atmosphere} uses for its own always-on
  * bookkeeping. The modifier is removed the instant the weapon leaves the main hand.
  *
- * <p>Omnivamp is read in {@link LivingDamageEvent.Post}, not {@code .Pre} like every other weapon
- * in the catalog so far: it needs to know what damage was <em>actually</em> dealt after every
- * reduction, not a pre-mitigation or manually-mitigated number, since healing for more than what
- * really landed would make armor and magic resist worse than useless against this weapon.
+ * <p><b>Omnivamp, reworked 2026-09-20.</b> Used to heal the wielder directly in a {@code
+ * LivingDamageEvent.Post} listener, computing its own missing-HP-scaled percentage on every hit.
+ * Now that {@link CombatAttributes#OMNIVAMP} is a real attribute, this only keeps that attribute
+ * topped up with the same dynamic percentage, recomputed every tick alongside the attack-speed
+ * link; {@link com.ascension.combat.internal.mechanics.OmnivampHealing} is the one place that
+ * actually turns it into healing now, the same shared payoff every Omnivamp source goes through.
  */
 public final class EndlessHungerEffects {
 
@@ -39,13 +40,14 @@ public final class EndlessHungerEffects {
 
     private static final ResourceLocation ATTACK_SPEED_MODIFIER_ID = ResourceLocation
             .fromNamespaceAndPath(AscensionCombat.MOD_ID, "endless_hunger_attack_speed");
+    private static final ResourceLocation OMNIVAMP_MODIFIER_ID = ResourceLocation
+            .fromNamespaceAndPath(AscensionCombat.MOD_ID, "endless_hunger_omnivamp");
 
     private EndlessHungerEffects() {
     }
 
     public static void register(IEventBus bus) {
         bus.addListener(EndlessHungerEffects::onPlayerTick);
-        bus.addListener(EndlessHungerEffects::onDamagePost);
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {
@@ -55,6 +57,7 @@ public final class EndlessHungerEffects {
 
         boolean holding = player.getMainHandItem().is(CombatContent.ENDLESS_HUNGER.get());
         applyAttackSpeedFromDamage(player, holding);
+        applyOmnivamp(player, holding);
     }
 
     private static void applyAttackSpeedFromDamage(Player player, boolean holding) {
@@ -82,23 +85,21 @@ public final class EndlessHungerEffects {
                 ATTACK_SPEED_MODIFIER_ID, bonusPercent, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     }
 
-    private static void onDamagePost(LivingDamageEvent.Post event) {
-        if (event.getNewDamage() <= 0.0f) {
+    private static void applyOmnivamp(Player player, boolean holding) {
+        AttributeInstance omnivamp = player.getAttribute(CombatAttributes.OMNIVAMP);
+        if (omnivamp == null) {
             return;
         }
 
-        if (!(event.getSource().getEntity() instanceof Player attacker)) {
+        omnivamp.removeModifier(OMNIVAMP_MODIFIER_ID);
+        if (!holding) {
             return;
         }
 
-        ItemStack weapon = attacker.getMainHandItem();
-        if (!weapon.is(CombatContent.ENDLESS_HUNGER.get())) {
-            return;
-        }
-
-        float missingHealthFraction = 1.0f - clamp01(attacker.getHealth() / attacker.getMaxHealth());
-        float omnivampPercent = BASE_OMNIVAMP_PERCENT + missingHealthFraction * MAX_BONUS_OMNIVAMP_PERCENT;
-        attacker.heal(event.getNewDamage() * omnivampPercent);
+        float missingHealthFraction = 1.0f - clamp01(player.getHealth() / player.getMaxHealth());
+        double omnivampPercent = BASE_OMNIVAMP_PERCENT + missingHealthFraction * MAX_BONUS_OMNIVAMP_PERCENT;
+        omnivamp.addTransientModifier(new AttributeModifier(
+                OMNIVAMP_MODIFIER_ID, omnivampPercent, AttributeModifier.Operation.ADD_VALUE));
     }
 
     private static float clamp01(float value) {

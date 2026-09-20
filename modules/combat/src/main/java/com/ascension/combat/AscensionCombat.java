@@ -11,13 +11,12 @@ import com.ascension.combat.internal.armor.GuardianWingEffects;
 import com.ascension.combat.internal.armor.ProteanMaskEffects;
 import com.ascension.combat.internal.armor.RocketbeltEffects;
 import com.ascension.combat.internal.armor.SterakHarnessEffects;
-import com.ascension.combat.internal.armor.TastedBloodEffects;
 import com.ascension.combat.internal.armor.UnendingDespairEffects;
-import com.ascension.combat.internal.armor.WizardsAgonyEffects;
 import com.ascension.combat.internal.armor.ZoniasHourglassEffects;
 import com.ascension.combat.internal.mechanics.CombatMobEffects;
 import com.ascension.combat.internal.mechanics.CombatStateTracking;
 import com.ascension.combat.internal.mechanics.GrievousWoundsHealing;
+import com.ascension.combat.internal.mechanics.OmnivampHealing;
 import com.ascension.combat.internal.mechanics.PhysicalDamage;
 import com.ascension.combat.internal.mobs.MobStats;
 import com.ascension.combat.internal.net.CombatNetwork;
@@ -93,6 +92,7 @@ public final class AscensionCombat {
         // any per-weapon lethality/penetration effect that also touches the ARMOR reduction
         // category, per PhysicalDamage's own javadoc on EventPriority ordering.
         PhysicalDamage.register(NeoForge.EVENT_BUS);
+        OmnivampHealing.register(NeoForge.EVENT_BUS);
 
         VeigosBladeEffects.register(NeoForge.EVENT_BUS);
         DariusAxeEffects.register(NeoForge.EVENT_BUS);
@@ -115,8 +115,6 @@ public final class AscensionCombat {
         CollectorsPantsEffects.register(NeoForge.EVENT_BUS);
         UnendingDespairEffects.register(NeoForge.EVENT_BUS);
         BootStats.register(NeoForge.EVENT_BUS);
-        WizardsAgonyEffects.register(NeoForge.EVENT_BUS);
-        TastedBloodEffects.register(NeoForge.EVENT_BUS);
         ZoniasHourglassEffects.register(NeoForge.EVENT_BUS);
         SterakHarnessEffects.register(NeoForge.EVENT_BUS);
         TestMagicBladeEffects.register(NeoForge.EVENT_BUS);
