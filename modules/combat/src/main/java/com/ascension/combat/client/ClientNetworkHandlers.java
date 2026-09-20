@@ -1,5 +1,6 @@
 package com.ascension.combat.client;
 
+import com.ascension.combat.internal.net.AbilityCooldownSyncPayload;
 import com.ascension.combat.internal.net.RunePageSyncPayload;
 import com.ascension.combat.internal.net.StasisSyncPayload;
 import java.util.Set;
@@ -39,5 +40,10 @@ public final class ClientNetworkHandlers {
                 Set.copyOf(payload.primaryMinors()),
                 payload.secondaryPath(),
                 Set.copyOf(payload.secondaryMinors())));
+    }
+
+    public static void onAbilityCooldownSync(AbilityCooldownSyncPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> ClientAbilityCooldowns.update(
+                payload.key(), payload.endsAtGameTime(), payload.durationTicks()));
     }
 }

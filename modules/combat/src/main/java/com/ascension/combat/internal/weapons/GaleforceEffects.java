@@ -2,8 +2,11 @@ package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
-import com.ascension.combat.internal.mechanics.Dash;
+import com.ascension.combat.internal.mechanics.Blink;
+import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.LastDamageTarget;
+import com.ascension.combat.internal.net.AbilityCooldownSyncPayload;
+import com.ascension.combat.internal.net.AbilityKey;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,6 +26,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Galeforce's identity (docs/technical/combat-api.md section 6), revised by Sanchit 2026-09-08:
@@ -42,12 +46,26 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  * dedicated button for," not armor-specifically. Plain right-click stays untouched vanilla bow
  * behaviour either way.
  *
- * <p><b>Dash, not blink.</b> Uses {@link Dash#forward}, not {@link
- * com.ascension.combat.internal.mechanics.Blink} &mdash; it's real movement that collides with
- * terrain and entities, unlike Wraithblade's instant teleport. {@link #DASH_STRENGTH} is a
- * knockback-impulse value, not a literal block count &mdash; {@code LivingEntity#knockback} has no
- * distance parameter, so "at least 6 blocks" (Sanchit's own spec) is approximated empirically
- * rather than guaranteed exactly.
+ * <p><b>Cooldown, also revised 2026-09-20.</b> Sanchit's next test found the bow itself unusable
+ * for the whole cooldown after one activation. It had always tracked the cooldown via vanilla
+ * {@code ItemCooldowns} on the item, which gates the item's entire right-click use, not just this
+ * active &mdash; and a bow's own ordinary draw goes through that same path (unlike a sword's
+ * left-click attack, which never touches it). Moved to a private cooldown ({@link
+ * CombatAttachments#GALEFORCE_COOLDOWN}), the same fix and the same reasoning as {@link
+ * HeartwoodOfPallasEffects}'s own fourth pass, paired with the same {@link
+ * com.ascension.combat.client.AbilityCooldownDecorator} for the hotbar swipe.
+ *
+ * <p><b>Dash mechanic, replaced 2026-09-20.</b> Originally {@link
+ * com.ascension.combat.internal.mechanics.Dash#forward} (real, collidable knockback-based
+ * movement) rather than a teleport, since the two were deliberately built as different mechanics
+ * (docs/technical/combat-api.md section 5). Even at a strength of 4.0 Sanchit still saw no movement
+ * at all -- knockback on a player is a velocity change the client has to actually integrate, and
+ * whatever's suppressing that here (most likely the same class of server/client movement
+ * reconciliation that makes large server-set player velocities unreliable in general) was never
+ * pinned down. Rather than keep guessing at a strength value, this now calls {@link Blink#forward}
+ * instead &mdash; the same raycast-clamped, wall-safe teleport Wraithblade uses and that Sanchit
+ * confirmed actually works. Trades away real collidable travel (you can dash a couple blocks short
+ * of a wall instead of thudding into it) for something that reliably moves the wielder at all.
  *
  * <p><b>The shot is spawned directly</b>, not read off the wielder's next normal release: it's
  * aimed at the resolved target (or the wielder's look direction if none is found) the instant the
@@ -63,12 +81,8 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  */
 public final class GaleforceEffects {
 
-    /**
-     * Raised 1.8 -&gt; 4.0 on 2026-09-20 after Sanchit reported not seeing any dash at all -- see
-     * this class's own javadoc for why the input path, not this number, was the actual bug, but
-     * this was tuned up regardless since a 6-block dash was the explicit ask.
-     */
-    private static final double DASH_STRENGTH = 4.0;
+    /** A real block distance now (Blink is raycast-clamped), matching Sanchit's own "at least 6 blocks" spec exactly. */
+    private static final double DASH_DISTANCE = 6.0;
 
     private static final float MISSING_HEALTH_BONUS_PERCENT = 0.20f;
     private static final int COOLDOWN_TICKS = 160;
@@ -96,7 +110,9 @@ public final class GaleforceEffects {
             return;
         }
 
-        if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+        long now = player.level().getGameTime();
+        DurationState cooldown = player.getData(CombatAttachments.GALEFORCE_COOLDOWN);
+        if (cooldown.isActive(now)) {
             return;
         }
 
@@ -110,9 +126,12 @@ public final class GaleforceEffects {
         }
 
         LivingEntity target = findTarget(player, level);
-        Dash.forward(player, DASH_STRENGTH);
+        Blink.forward(player, DASH_DISTANCE);
         fireHomingShot(player, level, stack, ammo, target);
-        player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN_TICKS);
+
+        cooldown.activateUntil(now + COOLDOWN_TICKS);
+        PacketDistributor.sendToPlayer(
+                player, new AbilityCooldownSyncPayload(AbilityKey.GALEFORCE, now + COOLDOWN_TICKS, COOLDOWN_TICKS));
     }
 
     private static LivingEntity findTarget(ServerPlayer player, ServerLevel level) {

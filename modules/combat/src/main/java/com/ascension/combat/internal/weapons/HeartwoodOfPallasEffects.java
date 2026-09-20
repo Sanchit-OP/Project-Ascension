@@ -3,8 +3,11 @@ package com.ascension.combat.internal.weapons;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.ArmedState;
+import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.MagicDamage;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
+import com.ascension.combat.internal.net.AbilityCooldownSyncPayload;
+import com.ascension.combat.internal.net.AbilityKey;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +25,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Heartwood of Pallas's identity (docs/technical/combat-api.md section 6): on-hit small magic
@@ -85,12 +89,15 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * Integer#MAX_VALUE} as its cap) now actually matters: past 100 stacks the execute deals more
  * than the target's current missing HP, deliberately.
  *
- * <p><b>Fourth pass, 2026-09-20.</b> The charge cooldown used a private {@link
- * com.ascension.combat.internal.mechanics.DurationState} attachment, which works but is invisible
- * &mdash; every other actived item in this catalog goes through vanilla's own {@code
- * ItemCooldowns}, which is also what paints the diagonal cooldown swipe on the hotbar icon.
- * Switched to that (via {@link CombatContent#HEARTWOOD_OF_PALLAS}) purely so the bow gets the same
- * visible cooldown feedback every sword already has, with no behavior change.
+ * <p><b>Fourth pass, 2026-09-20.</b> First tried switching the cooldown to vanilla {@code
+ * ItemCooldowns} purely to get the same hotbar swipe every sword already has. That broke ordinary
+ * shooting outright: {@code ItemCooldowns} gates the whole item's right-click use, not just this
+ * ability, and a bow's <em>normal</em> draw goes through that exact same interaction path (unlike a
+ * sword, whose normal attack is left-click and never touches it) &mdash; confirmed in vanilla's own
+ * {@code ServerPlayerGameMode}, which skips {@code Item#use} outright while on cooldown. Reverted
+ * to a private cooldown ({@link CombatAttachments#HEARTWOOD_CHARGE_COOLDOWN}) so the bow stays
+ * fully usable, and paired it with {@link com.ascension.combat.client.AbilityCooldownDecorator},
+ * which draws the identical swipe by hand from {@link AbilityCooldownSyncPayload} instead.
  */
 public final class HeartwoodOfPallasEffects {
 
@@ -142,7 +149,8 @@ public final class HeartwoodOfPallasEffects {
             return;
         }
 
-        if (player.getCooldowns().isOnCooldown(CombatContent.HEARTWOOD_OF_PALLAS.get())) {
+        DurationState cooldown = player.getData(CombatAttachments.HEARTWOOD_CHARGE_COOLDOWN);
+        if (cooldown.isActive(player.level().getGameTime())) {
             return;
         }
 
@@ -162,11 +170,15 @@ public final class HeartwoodOfPallasEffects {
             return;
         }
 
-        if (player.getCooldowns().isOnCooldown(CombatContent.HEARTWOOD_OF_PALLAS.get())) {
+        long now = player.level().getGameTime();
+        DurationState cooldown = player.getData(CombatAttachments.HEARTWOOD_CHARGE_COOLDOWN);
+        if (cooldown.isActive(now)) {
             return;
         }
 
-        player.getCooldowns().addCooldown(CombatContent.HEARTWOOD_OF_PALLAS.get(), CHARGE_COOLDOWN_TICKS);
+        cooldown.activateUntil(now + CHARGE_COOLDOWN_TICKS);
+        PacketDistributor.sendToPlayer(
+                player, new AbilityCooldownSyncPayload(AbilityKey.HEARTWOOD, now + CHARGE_COOLDOWN_TICKS, CHARGE_COOLDOWN_TICKS));
         player.getData(CombatAttachments.HEARTWOOD_CHARGE_PENDING).arm();
     }
 

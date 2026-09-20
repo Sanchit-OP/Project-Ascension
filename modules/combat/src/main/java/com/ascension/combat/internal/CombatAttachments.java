@@ -126,6 +126,33 @@ public final class CombatAttachments {
             () -> AttachmentType.builder(ArmedState::new).build());
 
     /**
+     * Heartwood of Pallas's charged-shot cooldown, attached to the wielder &mdash; deliberately
+     * <em>not</em> vanilla {@code ItemCooldowns}, despite every other actived weapon in this
+     * catalog using exactly that: {@code ItemCooldowns} gates the whole item, not just this one
+     * ability, so putting the 15s cooldown there blocked ordinary uncharged shooting for the full
+     * duration too (confirmed in vanilla's own {@code ServerPlayerGameMode}, which skips {@code
+     * Item#use} outright while a stack's item is on cooldown). This tracks only whether a charged
+     * shot can be armed; {@link com.ascension.combat.client.HeartwoodCooldownDecorator} draws the
+     * matching hotbar swipe by hand instead, fed by {@link
+     * com.ascension.combat.internal.net.HeartwoodCooldownSyncPayload}.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<DurationState>> HEARTWOOD_CHARGE_COOLDOWN = TYPES.register(
+            "heartwood_charge_cooldown",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /**
+     * Galeforce's dash-and-shot cooldown, attached to the wielder &mdash; same reasoning as {@link
+     * #HEARTWOOD_CHARGE_COOLDOWN}: vanilla {@code ItemCooldowns} would block ordinary shooting for
+     * the cooldown's full duration too, which is exactly what Sanchit's own test found ("unusable
+     * after ability"). Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<DurationState>> GALEFORCE_COOLDOWN = TYPES.register(
+            "galeforce_cooldown",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /**
      * Galeforce's "this specific arrow is the empowered dash-shot" flag (docs/technical/combat-api.md
      * section 6), attached to the arrow entity itself, not the wielder &mdash; the dash's shot is
      * spawned directly rather than riding the wielder's next normal draw, so there's exactly one

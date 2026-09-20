@@ -57,12 +57,19 @@ public final class CombatNetwork {
                     RunePageSyncPayload.TYPE,
                     RunePageSyncPayload.STREAM_CODEC,
                     com.ascension.combat.client.ClientNetworkHandlers::onRunePageSync);
+            registrar.playToClient(
+                    AbilityCooldownSyncPayload.TYPE,
+                    AbilityCooldownSyncPayload.STREAM_CODEC,
+                    com.ascension.combat.client.ClientNetworkHandlers::onAbilityCooldownSync);
         } else {
             // Registered so the server can encode and send; never received here.
             registrar.playToClient(StasisSyncPayload.TYPE, StasisSyncPayload.STREAM_CODEC, (payload, context) -> {
             });
             registrar.playToClient(RunePageSyncPayload.TYPE, RunePageSyncPayload.STREAM_CODEC, (payload, context) -> {
             });
+            registrar.playToClient(
+                    AbilityCooldownSyncPayload.TYPE, AbilityCooldownSyncPayload.STREAM_CODEC, (payload, context) -> {
+                    });
         }
     }
 
