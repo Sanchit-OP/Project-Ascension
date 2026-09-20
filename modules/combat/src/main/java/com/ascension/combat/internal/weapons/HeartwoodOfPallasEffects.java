@@ -25,9 +25,10 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
  * Heartwood of Pallas's identity (docs/technical/combat-api.md section 6): on-hit small magic
- * damage plus an uncapped stack of corruption on the target, refreshed within a 5s window; a shot
- * drawn for 3x the normal time consumes every corruption stack on its target as magic damage equal
- * to that target's missing HP.
+ * damage plus an uncapped stack of corruption on the target, refreshed within a 5s window; a
+ * charged shot consumes every corruption stack on its target for magic damage equal to that
+ * stack count as a percentage of the target's missing HP (10 stacks -&gt; 10% of missing HP, 100
+ * stacks -&gt; the full missing HP, uncapped past that) -- see {@link #STACK_PERCENT_DIVISOR}.
  *
  * <p>Corruption reuses {@link StackingChargeState} exactly as Darius's Axe does, just with {@link
  * Integer#MAX_VALUE} as the cap instead of a real one &mdash; same "count and expiry" shape, no
@@ -56,6 +57,40 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * threshold, so releasing on time doesn't require watching a timer; and {@link #onDamagePre} now
  * sends the shooter an action-bar readout of the target's current stack count and spawns a small
  * particle burst on the target itself, visible to anyone nearby.
+ *
+ * <p><b>Second pass, after Sanchit's next test 2026-09-20.</b> Three changes:
+ * <ul>
+ *   <li>{@link #CHARGE_THRESHOLD_TICKS} raised 25 -&gt; 35: the shorter draw from the first pass
+ *       turned out too easy to hit by accident.</li>
+ *   <li>The charged shot is now a real ability with a cooldown ({@link
+ *       #CHARGE_COOLDOWN_TICKS}, 15s), armed the instant a charged shot is loosed rather than on
+ *       hit -- a cast-time cooldown, not a hit-confirm one, the same way a League ability goes on
+ *       cooldown whether or not it connects. While it's active, holding the draw past threshold
+ *       produces an ordinary arrow: no ready chime ({@link #onPlayerTick}), no charged-arrow flag
+ *       ({@link #onArrowLoose}) -- the draw itself is never blocked, only what it produces.</li>
+ *   <li>Fixed a real bug in {@link #onDamagePre}, found by Sanchit stacking corruption and then
+ *       firing repeated charged shots: the corruption stack was being refreshed (+1) for
+ *       <em>every</em> hit, charged or not, before the execute check ran -- so a charged shot
+ *       against a target with zero prior corruption would still see {@code stacks() == 1} (its
+ *       own contribution) and execute anyway, and every subsequent charged shot did the same
+ *       regardless of real build-up. The execute check now reads the stack count from <em>before</em>
+ *       this hit's own contribution, and only refreshes the stack when the hit does not execute.
+ * </ul>
+ *
+ * <p><b>Third pass, same day.</b> A flat "missing HP, full stop" execute made the stack count
+ * itself pointless -- one stack was exactly as strong as a hundred. The payoff is now scaled by
+ * how many stacks are actually being consumed ({@link #STACK_PERCENT_DIVISOR}), so a lightly
+ * stacked target only takes a sliver of their missing HP and a heavily corrupted one takes most
+ * or all of it -- which is also why corruption being uncapped (the whole point of using {@link
+ * Integer#MAX_VALUE} as its cap) now actually matters: past 100 stacks the execute deals more
+ * than the target's current missing HP, deliberately.
+ *
+ * <p><b>Fourth pass, 2026-09-20.</b> The charge cooldown used a private {@link
+ * com.ascension.combat.internal.mechanics.DurationState} attachment, which works but is invisible
+ * &mdash; every other actived item in this catalog goes through vanilla's own {@code
+ * ItemCooldowns}, which is also what paints the diagonal cooldown swipe on the hotbar icon.
+ * Switched to that (via {@link CombatContent#HEARTWOOD_OF_PALLAS}) purely so the bow gets the same
+ * visible cooldown feedback every sword already has, with no behavior change.
  */
 public final class HeartwoodOfPallasEffects {
 
@@ -67,9 +102,20 @@ public final class HeartwoodOfPallasEffects {
 
     /**
      * Placeholder, lowered from a literal 3x {@link BowItem#MAX_DRAW_DURATION} (60 ticks) after
-     * Sanchit's first test pass found that draw unusably slow in a real fight.
+     * Sanchit's first test pass found that draw unusably slow in a real fight, then raised again
+     * (25 -&gt; 35) after the second pass found the shorter draw too easy to trigger by accident.
      */
-    private static final int CHARGE_THRESHOLD_TICKS = 25;
+    private static final int CHARGE_THRESHOLD_TICKS = 35;
+
+    /** Placeholder -- how long after loosing a charged shot before another can be armed. */
+    private static final int CHARGE_COOLDOWN_TICKS = 300;
+
+    /**
+     * Catalog-specified shape (not itself a placeholder, though the numbers it divides are): the
+     * execute deals {@code stacks / STACK_PERCENT_DIVISOR} of the target's missing HP, so this is
+     * "how many stacks equal a 100% missing-HP execute" -- 100 means 10 stacks is a 10% execute.
+     */
+    private static final float STACK_PERCENT_DIVISOR = 100.0f;
 
     private HeartwoodOfPallasEffects() {
     }
@@ -92,13 +138,19 @@ public final class HeartwoodOfPallasEffects {
         }
 
         int ticksUsing = usingItem.getUseDuration(player) - player.getUseItemRemainingTicks();
-        if (ticksUsing == CHARGE_THRESHOLD_TICKS) {
-            player.playNotifySound(SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.6f, 1.6f);
+        if (ticksUsing != CHARGE_THRESHOLD_TICKS) {
+            return;
         }
+
+        if (player.getCooldowns().isOnCooldown(CombatContent.HEARTWOOD_OF_PALLAS.get())) {
+            return;
+        }
+
+        player.playNotifySound(SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.6f, 1.6f);
     }
 
     private static void onArrowLoose(ArrowLooseEvent event) {
-        if (event.getCharge() < CHARGE_THRESHOLD_TICKS) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
 
@@ -106,7 +158,16 @@ public final class HeartwoodOfPallasEffects {
             return;
         }
 
-        event.getEntity().getData(CombatAttachments.HEARTWOOD_CHARGE_PENDING).arm();
+        if (event.getCharge() < CHARGE_THRESHOLD_TICKS) {
+            return;
+        }
+
+        if (player.getCooldowns().isOnCooldown(CombatContent.HEARTWOOD_OF_PALLAS.get())) {
+            return;
+        }
+
+        player.getCooldowns().addCooldown(CombatContent.HEARTWOOD_OF_PALLAS.get(), CHARGE_COOLDOWN_TICKS);
+        player.getData(CombatAttachments.HEARTWOOD_CHARGE_PENDING).arm();
     }
 
     private static void onEntityJoinLevel(EntityJoinLevelEvent event) {
@@ -151,31 +212,30 @@ public final class HeartwoodOfPallasEffects {
         if (corruption.expiresAtGameTime() <= now) {
             corruption.clear();
         }
-        corruption.refresh(Integer.MAX_VALUE, now + CORRUPTION_DECAY_TICKS);
+
+        // Read before this hit adds its own contribution -- a charged shot only executes stacks
+        // that already existed from earlier hits, never the stack this very hit would produce.
+        boolean isCharged = source.getDirectEntity() instanceof AbstractArrow arrow
+                && arrow.getData(CombatAttachments.HEARTWOOD_CHARGED_ARROW).isArmed();
+        boolean executes = isCharged && corruption.stacks() > 0;
+
+        if (executes) {
+            int stacksConsumed = corruption.stacks();
+            corruption.clear();
+            float missingHealth = target.getMaxHealth() - target.getHealth();
+            float executeDamage = missingHealth * (stacksConsumed / STACK_PERCENT_DIVISOR);
+            if (executeDamage > 0.0f) {
+                MagicDamage.apply(event, executeDamage);
+            }
+        } else {
+            corruption.refresh(Integer.MAX_VALUE, now + CORRUPTION_DECAY_TICKS);
+        }
 
         serverLevel.sendParticles(
                 ParticleTypes.SOUL, target.getX(), target.getY(1.0), target.getZ(), 6, 0.3, 0.3, 0.3, 0.01);
         if (source.getEntity() instanceof ServerPlayer shooter) {
             shooter.displayClientMessage(
                     Component.literal("Corruption: " + corruption.stacks()), true);
-        }
-
-        if (!(source.getDirectEntity() instanceof AbstractArrow arrow)) {
-            return;
-        }
-
-        if (!arrow.getData(CombatAttachments.HEARTWOOD_CHARGED_ARROW).isArmed()) {
-            return;
-        }
-
-        if (corruption.stacks() <= 0) {
-            return;
-        }
-
-        corruption.clear();
-        float missingHealth = target.getMaxHealth() - target.getHealth();
-        if (missingHealth > 0.0f) {
-            MagicDamage.apply(event, missingHealth);
         }
     }
 }

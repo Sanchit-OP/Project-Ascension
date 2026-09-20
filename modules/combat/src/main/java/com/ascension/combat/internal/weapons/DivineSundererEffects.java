@@ -37,10 +37,10 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
  */
 public final class DivineSundererEffects {
 
-    /** Confirmed by Sanchit 2026-09-08: 3% max HP physical + 3% max HP magic, 5s cooldown. */
-    private static final float PHYSICAL_MAX_HP_PERCENT = 0.03f;
+    /** Raised 3% -&gt; 4% each (physical and magic) on 2026-09-20 (Sanchit's own call). 5s cooldown. */
+    private static final float PHYSICAL_MAX_HP_PERCENT = 0.04f;
 
-    private static final float MAGIC_MAX_HP_PERCENT = 0.03f;
+    private static final float MAGIC_MAX_HP_PERCENT = 0.04f;
     private static final int COOLDOWN_TICKS = 100;
 
     private DivineSundererEffects() {

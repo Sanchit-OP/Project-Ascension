@@ -42,8 +42,15 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  */
 public final class RagefangEffects {
 
-    /** Confirmed by Sanchit 2026-09-08. */
-    private static final float ATTACK_SPEED_PERCENT_PER_HIT = 0.01f;
+    /**
+     * Raised 1% -&gt; 5% per hit on 2026-09-20 (Sanchit's own call after testing): at 1%, reaching
+     * even a noticeable ramp needed dozens of consecutive hits within the grace window, since
+     * {@link #ATTACK_SPEED_SHADOW_LIMIT} only ever bites once the desired percent is huge relative
+     * to a diamond-sword-scale base attack speed. The math itself was correct -- {@code
+     * Attributes.ATTACK_SPEED} genuinely drives the live swing-cooldown timer -- the increment was
+     * just too small to read as "ramping" over a realistic combo length.
+     */
+    private static final float ATTACK_SPEED_PERCENT_PER_HIT = 0.05f;
 
     private static final double ATTACK_SPEED_SHADOW_LIMIT = 5.0;
     private static final long DECAY_GRACE_TICKS = 20L;

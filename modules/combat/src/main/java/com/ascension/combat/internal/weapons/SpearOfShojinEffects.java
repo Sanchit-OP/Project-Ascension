@@ -36,12 +36,13 @@ public final class SpearOfShojinEffects {
 
     /**
      * Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec.
-     * 4 consecutive hits resolve into a burst of true damage equal to the target's max HP
-     * percentage below, then the counter resets.
+     * Every 3rd consecutive hit (was 4th) resolves into a burst of true damage equal to the target's
+     * max HP percentage below, then the counter resets. Raised to 5% max HP (was 4%) the same pass,
+     * 2026-09-20.
      */
-    private static final int STACKS_TO_RESOLVE = 4;
+    private static final int STACKS_TO_RESOLVE = 3;
 
-    private static final float TRUE_DAMAGE_MAX_HP_PERCENT = 0.04f;
+    private static final float TRUE_DAMAGE_MAX_HP_PERCENT = 0.05f;
     private static final long COMBO_WINDOW_TICKS = 60L;
 
     private SpearOfShojinEffects() {
