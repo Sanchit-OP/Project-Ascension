@@ -86,6 +86,7 @@ public final class AscensionCombat {
         // a dedicated server.
         if (FMLEnvironment.dist == Dist.CLIENT) {
             com.ascension.combat.client.CombatKeybinds.register(modBus);
+            com.ascension.combat.client.AbilityCooldownDecorator.register(modBus);
         }
 
         // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before
