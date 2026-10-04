@@ -64,11 +64,26 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
   discretionary.
 - Every milestone ends with a recorded measurement in `docs/technical/performance-log.md`.
 
-## Current state (2026-09-06)
+## Current state (2026-10-05)
 
-Three modules exist. **`ascension-core`** holds shared contracts (no behaviour).
-**`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** is new and has
-one real world in it.
+Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behaviour).
+**`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
+the Moon. **`ascension-combat`** (ADR-0012) is the League-style item/stat/rune system, built in a
+separate parallel session — do not fold its work into this one's without asking. Tier 2 compat
+jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators
+(`docs/technical/architecture.md` has the table).
+
+**M3 is in progress** — [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md). Built but
+**not yet seen in a client** (Sanchit deferred live testing on 2026-10-05 and asked for building
+to continue): the Moon's boss chain (Cataclysm's Ruined Citadel relocated via the project's first
+mixins, ADR-0013; Ender Golem → Ender Guardian → gateway key), End Islands Endermen and rare
+wild citadels on the Moon, the gateway network (portals on Earth and the Moon, Relay Coil /
+gateway key activation, a destination screen), the M3 refactor pass (closed a free-teleport hole
+in the gateway travel command; `worlds` tests 18 → 34), and share-air rescue. **The next live
+session has a long checklist** — every "not yet confirmed live" line in the M3 plan. Planet 3
+(M3.3) is next to build and needs Sanchit's design input first.
+
+The history below is M0–M2, kept for context.
 
 Done and verified in game on a dedicated server:
 
