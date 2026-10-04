@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder texture: reuses vanilla's trial key for a 'key to something ancient' look. Swap this one line once real art exists.",
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/trial_key"
+  }
+}
