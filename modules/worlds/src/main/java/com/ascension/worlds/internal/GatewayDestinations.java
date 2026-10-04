@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -28,10 +29,8 @@ import net.minecraft.server.level.ServerPlayer;
  * mechanism today with zero new client-side plumbing.
  *
  * <p>Each line's {@link ClickEvent} runs {@code /ascension worlds gateway travel <planet>} &mdash;
- * see {@link WorldsCommands} &mdash; rather than this class calling {@link SpaceMechanics}
- * directly, because a chat click is exactly a player-issued command from the server's point of
- * view, and going through the same command the picker could also be typed by hand keeps there
- * being exactly one entry point to "teleport me to this planet's surface right now."
+ * see {@link WorldsCommands}. Because that makes the command typeable by anyone, opening this list
+ * also opens a {@link GatewayPickerSession}, which the command requires.
  */
 final class GatewayDestinations {
 
@@ -41,14 +40,11 @@ final class GatewayDestinations {
     static void sendPicker(ServerPlayer player, ServerLevel level) {
         GatewayNetworkState network = level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
         Registry<Planet> planets = level.getServer().registryAccess().registryOrThrow(WorldsRegistries.PLANET);
+        ResourceLocation here = level.dimension().location();
 
         List<Map.Entry<ResourceKey<Planet>, Planet>> reachable = new ArrayList<>();
         for (Map.Entry<ResourceKey<Planet>, Planet> entry : planets.entrySet()) {
-            Planet planet = entry.getValue();
-            if (planet.surface().equals(level.dimension())) {
-                continue;
-            }
-            if (network.isActive(planet.surface().location())) {
+            if (network.canTravel(here, entry.getValue().surface().location())) {
                 reachable.add(entry);
             }
         }
@@ -61,16 +57,18 @@ final class GatewayDestinations {
             return;
         }
 
+        player.getData(SpaceAttachments.GATEWAY_PICKER_SESSION).open(here, level.getGameTime());
         player.displayClientMessage(
                 Component.translatable("block.ascension_worlds.gateway_portal.pick_destination")
                         .withStyle(ChatFormatting.AQUA),
                 false);
         for (Map.Entry<ResourceKey<Planet>, Planet> entry : reachable) {
-            ResourceKey<Planet> planetKey = entry.getKey();
+            ResourceLocation planetId = entry.getKey().location();
+            Component planetName = Component.translatable(
+                    "planet." + planetId.getNamespace() + "." + planetId.getPath());
             String dimensionId = entry.getValue().surface().location().toString();
             MutableComponent line = Component.literal("  > ")
-                    .append(Component.translatable("planet." + planetKey.location().getNamespace()
-                            + "." + planetKey.location().getPath()))
+                    .append(planetName)
                     .withStyle(style -> style
                             .withColor(ChatFormatting.GREEN)
                             .withUnderlined(true)
@@ -79,7 +77,7 @@ final class GatewayDestinations {
                                     "/ascension worlds gateway travel " + dimensionId))
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
-                                    Component.literal("Travel to " + dimensionId))));
+                                    Component.translatable("block.ascension_worlds.gateway_portal.travel_to", planetName))));
             player.displayClientMessage(line, false);
         }
     }

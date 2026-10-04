@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 
@@ -31,8 +32,12 @@ public final class GuardianAwakening {
     private GuardianAwakening() {
     }
 
+    /**
+     * {@code LOWEST}, and canceled deaths skipped (the default): {@code LivingDeathEvent} is
+     * cancelable, and a Golem some other mod revives must not leave a Guardian behind it.
+     */
     public static void register(IEventBus bus) {
-        bus.addListener(GuardianAwakening::onDeath);
+        bus.addListener(EventPriority.LOWEST, GuardianAwakening::onDeath);
     }
 
     private static void onDeath(LivingDeathEvent event) {

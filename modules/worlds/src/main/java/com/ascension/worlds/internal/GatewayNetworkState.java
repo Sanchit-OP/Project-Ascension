@@ -49,6 +49,14 @@ public final class GatewayNetworkState {
         return activePlanets.add(planetDimension);
     }
 
+    /**
+     * Whether a portal on {@code from} can send a player to {@code to}: both ends active, and not
+     * the same planet. The one rule both the destination list and the travel command apply.
+     */
+    public boolean canTravel(ResourceLocation from, ResourceLocation to) {
+        return !from.equals(to) && isActive(from) && isActive(to);
+    }
+
     public Set<ResourceLocation> activePlanets() {
         return Set.copyOf(activePlanets);
     }
