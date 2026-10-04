@@ -96,9 +96,9 @@ full-stack reading is in `docs/technical/performance-log.md`: our whole heap foo
 ADR-0007 rule 1 holds.
 
 **Outstanding from M1, carried not cancelled:** the M1.9 refactor pass (ADR-0008 schedules one
-every third increment; see the refactor-debt note below), two-client testing, and share-air
-rescue. All
-three are listed in `plans/m2-worlds.md`.
+every third increment; see the refactor-debt note below) and two-client testing. Share-air
+rescue is now built (2026-10-05) but, needing two players, is verified by that same two-client
+session. All three are listed in `plans/m2-worlds.md`.
 
 The M0.5 baseline is **retired as a comparison target** — it was taken in single-player with no
 third-party mods, and neither is true of how we test now. See `performance-log.md`.

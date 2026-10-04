@@ -547,6 +547,7 @@ argument ADR-0005 makes for the campaign as a whole.
 - **Two-client testing.** Unticked in M1's definition of done and deliberately skipped for lack
   of a second client. Oxygen is per-player state with per-player sync, and that has never been
   observed with two players.
-- **Share-air rescue.** Designed at the M1.1 review, the reason `accept` exists on
-  `OxygenSource`, still unbuilt. Needs two players to mean anything.
+- **Share-air rescue.** Designed at the M1.1 review; **built 2026-10-05** (`AirSharing`, tank
+  right-click on a player fills their lungs). Still unverified — needs two players to mean
+  anything, so it rides on the two-client session above.
 - **M1.9 refactor + measurement.** Scheduled by ADR-0008 and not yet done.

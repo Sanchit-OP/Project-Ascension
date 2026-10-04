@@ -16,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -140,6 +141,22 @@ public final class OxygenTankItem extends Item {
             toggleValve(serverPlayer, context.getItemInHand());
         }
         return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+    }
+
+    /**
+     * Right-click a player: share air with them ({@link AirSharing}). Anything else that is not a
+     * player passes, so the click falls through to {@link #use} and flips the valve as usual.
+     */
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target,
+                                                  InteractionHand hand) {
+        if (!(target instanceof Player)) {
+            return InteractionResult.PASS;
+        }
+        if (player instanceof ServerPlayer giver && target instanceof ServerPlayer receiver) {
+            AirSharing.share(giver, stack, receiver);
+        }
+        return InteractionResult.sidedSuccess(player.level().isClientSide);
     }
 
     /**
