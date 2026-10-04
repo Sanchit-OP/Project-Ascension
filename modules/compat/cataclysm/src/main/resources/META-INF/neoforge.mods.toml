@@ -17,9 +17,10 @@ authors = "${mod_authors}"
 description = '''
 Relocates L_Ender's Cataclysm's Ruined Citadel structure onto the Moon at a fixed, known spot
 (ascension-worlds' own fixed_position structure placement type), instead of its default random
-placement in the End. Overrides the Ender Golem's loot table to drop this project's own gateway
-key instead of Cataclysm's void_core, so clearing it means something in this campaign's own
-progression rather than in Cataclysm's.
+placement in the End, grounded on real terrain and reskinned in Moon rock. When the Ender Golem
+dies, the Ender Guardian awakens in its place; the Guardian drops this project's own gateway key
+alongside its usual loot, so clearing the citadel means something in this campaign's own
+progression rather than only in Cataclysm's.
 
 Also scatters additional, optional copies of the same Ruined Citadel across the Moon via ordinary
 random_spread placement -- rare but findable side content, distinct from the one fixed, mandatory

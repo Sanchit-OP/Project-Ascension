@@ -3,13 +3,13 @@ plugins {
 }
 
 description =
-    "Places L_Ender's Cataclysm's Ruined Citadel on the Moon at a chosen spot, and points its " +
-    "Ender Golem's drop at our own gateway key instead of Cataclysm's own reward."
+    "Places L_Ender's Cataclysm's Ruined Citadel on the Moon at a chosen spot, and adds our own " +
+    "gateway key to its Ender Guardian's drops."
 
-// No `dependencies {}` block: this jar never calls a line of Cataclysm's Java API. The whole
-// integration is a datapack (a structure biome override, a structure_set placement override
-// using ascension-worlds' own fixed_position placement type, and a loot table override), so
-// there is nothing to compile against.
+// No `dependencies {}` block: nothing here compiles against Cataclysm. Most of the integration is
+// datapack (structure biome + structure_set overrides, a loot table override). The two ADR-0013
+// mixins name their targets by string (`@Mixin(targets = "...")`), and GuardianAwakening looks the
+// Guardian up by registry id -- so a Cataclysm rename fails at mod load, not at compile time.
 
 @Suppress("UNCHECKED_CAST")
 val modsTomlProperties = project.extra["modsTomlProperties"] as MutableMap<String, String>

@@ -24,9 +24,13 @@ Defines boss progression, encounter roles, and unlock rewards.
 
 ## Current Boss Sources
 
-- L_Ender's Cataclysm
-- Bosses of Mass Destruction
-- One additional boss-focused mod still to be chosen
+- **L_Ender's Cataclysm — confirmed, active.** The Moon's boss chain (M3.1) is Cataclysm's Ruined
+  Citadel, relocated to a fixed spot on the Moon: the Ender Golem guards it, and on its death the
+  Ender Guardian awakens and drops this project's own gateway key alongside its usual loot. See
+  `plans/m3-vertical-slice.md` for the recipe
+  (`ascension-compat-cataclysm`) — reused per-planet as more bosses get sourced.
+- Bosses of Mass Destruction — still just a reference point, not yet used.
+- More boss-source mods expected as later planets need bosses this one mod's roster doesn't fit.
 
 ## Design Warning
 

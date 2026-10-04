@@ -19,17 +19,25 @@ us, and where an optional integration jar would be worth building.
 | Mod | Version | Notes |
 |---|---|---|
 | Create: Aeronautics | 1.3.2, MC 1.21.1 NeoForge | Actively maintained. Requires Create 6.0.10 + Sable. The version anchor (ADR-0001). |
-| Sable | 1.21.1, NeoForge + Fabric | Physics sub-levels via Rapier. Moving block regions that stay interactive. Mixin-heavy, self-described as compat-risky. |
-| Create | 6.0.10 | Required by Aeronautics. |
+| Sable | 2.0.5, NeoForge-native | Physics sub-levels via Rapier. Moving block regions that stay interactive. Mixin-heavy, self-described as compat-risky. Boot-verified alongside Create/Aeronautics 2026-09-07 — no real `ascension-compat-sable` bridge built yet. |
+| Create | 6.0.10 | Required by Aeronautics. `ascension-compat-create` (built) disables its Copper/Netherite Backtank and Diving Helmet — a wearable pressurised-air tank duplicating `ascension-atmosphere`'s own oxygen tank under different rules. |
+| L_Ender's Cataclysm | 3.33, MC 1.21.1 NeoForge | **Confirmed boss source, active.** `ascension-compat-cataclysm` relocates its Ruined Citadel to the Moon (via two ADR-0013 mixins) and adds this project's own gateway key to the Ender Guardian's drops. See `plans/m3-vertical-slice.md`. Requires Curios + LionfishAPI. |
+| Enderman Overhaul | 2.0.3, MC 1.21.1 NeoForge | **Confirmed ambient-population source, active.** `ascension-compat-endermanoverhaul` adds its End Islands Enderman to the Moon via one NeoForge `add_spawns` biome modifier -- no structure work, no Java called. Chosen because the Moon's boss chain is already Ender-lore (Ender Golem/Ender Guardian), so End-adjacent creatures in the same ruins reads as intentional. Requires ResourcefulLib, ResourcefulConfig, GeckoLib. |
 
 ## Integration candidates
 
 Mods worth an optional Tier-2 connector jar:
 
 - **Sable** — the ships pillar. See [ADR-0006](../decisions/0006-sable-integration-posture.md).
-  `ascension-compat-sable` makes sub-levels carry pressurised atmosphere zones.
+  `ascension-compat-sable` makes sub-levels carry pressurised atmosphere zones. Not built —
+  boot-tested only.
 - **Create / Create: Aeronautics** — in-game vehicle construction on top of Sable.
 - **JEI / FTB Quests** — presentation and quest surfacing.
+- **More boss-source mods** — Cataclysm covers the Moon; later planets will need bosses its
+  roster doesn't fit, following the same relocate/redrop/rebalance recipe.
+- **More ambient-population mods** — Enderman Overhaul covers the Moon; later planets will need
+  their own fitting ambient life, following the same reuse-by-registry-id, spawn-via-biome-modifier
+  recipe.
 
 ## Reference points (studied, not depended on)
 
@@ -37,9 +45,7 @@ Mods worth an optional Tier-2 connector jar:
   [ADR-0004](../decisions/0004-fully-custom-dimensions.md): menu travel, flat-timer oxygen,
   orbit as a loading layer.
 - **Mekanism / AE2** — reference for automation and processing pacing.
-- **L_Ender's Cataclysm / Bosses of Mass Destruction** — reference for encounter construction.
-  Their bosses have fixed AI; the adaptive-boss requirement in `docs/progression/combat.md`
-  cannot be met by retuning them.
+- **Bosses of Mass Destruction** — reference for encounter construction, not yet used.
 - **TacZ** — reference for firearm feel and ammo logistics.
 
 ## Per-mod evaluation fields

@@ -59,11 +59,17 @@ modules/
   core/
   atmosphere/
   worlds/
+  combat/
   gear/
   progression/
   compat/
-    sable/
+    chunky/
     create/
+    cataclysm/
+    endermanoverhaul/
+    jade/
+    immersivedamageindicators/
+    sable/
 run/                          dev client/server, gitignored
 ```
 
@@ -73,11 +79,15 @@ run/                          dev client/server, gitignored
 |---|---|
 | `ascension-core` | Tier 0 stub. Registers nothing yet. |
 | `ascension-atmosphere` | **v0.1 feature-complete**, verified on a dedicated server through M1.8. Refactor pass M1.9 outstanding. |
-| `ascension-worlds` | **M2 done** (2026-09-06) — Earth + Moon, full orbit/descent/return loop, real Moon terrain, per-planet weather. [`plans/m2-worlds.md`](../../plans/m2-worlds.md) |
+| `ascension-worlds` | **M2 done** (2026-09-06); M3 in progress. Earth + Moon, full orbit/descent/return loop, real Moon terrain, per-planet weather, plus a reusable `fixed_position` structure placement type (2026-09-21) for pinning sourced structures to a planet. [`plans/m2-worlds.md`](../../plans/m2-worlds.md), [`plans/m3-vertical-slice.md`](../../plans/m3-vertical-slice.md) |
 | `ascension-gear`, `ascension-progression` | Not started |
-| `ascension-combat` | **Design phase.** [`docs/technical/combat-api.md`](combat-api.md) and [ADR-0012](../decisions/0012-ascension-combat-module.md) drafted and reviewed 2026-09-08. `core` gained `CombatStateSource`/`CombatStateRegistry` (contract only) the same day; the module itself — items, stats, rune paths, the combat-state event listener — is not yet scaffolded. |
+| `ascension-combat` | **Built.** [ADR-0012](../decisions/0012-ascension-combat-module.md) plus [`combat-api.md`](combat-api.md); 19 items, physical/magic/true damage, armor/magic-resist, rune pages. This table was stale until 2026-09-21 — five commits landed it after the ADR was accepted, never reflected here. |
 | `ascension-compat-curios` | Designed, not built. A tank slot that opens the valve (ADR-0009 §4). |
 | `ascension-compat-chunky` | **Built and confirmed live 2026-09-06** (M2.6 lever #2). Walks the planet registry in `Planet.order()` on server start and pre-generates each one's surface, one at a time, chained through Chunky's own completion callback. Reads `ascension-worlds`' planet registry directly rather than through an event — the original per-arrival-event design was retired the same day it shipped, once the proactive server-start approach replaced it. Compiles against Chunky's real API (Modrinth maven); confirmed running for real in a live client via a Spark profile. |
+| `ascension-compat-create` | **Built** (2026-09-07). Disables Create's Copper/Netherite Backtank and Diving Helmet recipes and hides them from recipe viewers — a wearable pressurised-air tank is exactly `ascension-atmosphere`'s own oxygen tank under a different name. Pure datapack, no Java integration. |
+| `ascension-compat-cataclysm` | **Built, boot-verified** (2026-09-21). Relocates L_Ender's Cataclysm's Ruined Citadel to a fixed spot on the Moon (plus rarer wild copies), spawns the Ender Guardian when the Golem dies, and adds `ascension-worlds`' own gateway key to the Guardian's drops. Carries the project's only mixins (ADR-0013). First of what M3 expects to be several boss-source compat jars. Not yet confirmed live in a client. |
+| `ascension-compat-endermanoverhaul` | **Built, boot-verified** (2026-09-24). One NeoForge `add_spawns` biome modifier adding Enderman Overhaul's End Islands Enderman to `ascension_worlds:moon_biomes`. First of what M3's Moon content backlog expects to be several ambient-population compat jars. Not yet confirmed live in a client. |
+| `ascension-compat-jade`, `ascension-compat-immersivedamageindicators` | **Built.** Client-only QoL: Armor/Magic Resist on Jade's tooltip, floating combat-text tuning. |
 
 ## Constraints inherited from the register
 
