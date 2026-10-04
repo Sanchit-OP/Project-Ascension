@@ -49,6 +49,19 @@ public final class SpaceAttachments {
                     .serialize(PlanetWeatherState.CODEC)
                     .build());
 
+    /**
+     * Which planets' gateway portals are active, network-wide. Attached to a {@code Level} the
+     * same way {@link #WEATHER_STATE} is, for the same reason (no separate {@code SavedData}
+     * plumbing needed) &mdash; but read and written only via the Overworld's own instance, since
+     * {@link GatewayNetworkState} is a fact about the whole network rather than about any one
+     * planet's surface. See its javadoc.
+     */
+    public static final Supplier<AttachmentType<GatewayNetworkState>> GATEWAY_NETWORK_STATE = TYPES.register(
+            "gateway_network_state",
+            () -> AttachmentType.builder(GatewayNetworkState::new)
+                    .serialize(GatewayNetworkState.CODEC)
+                    .build());
+
     private SpaceAttachments() {
     }
 

@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "active=false": { "model": "ascension_worlds:block/gateway_portal_inactive" },
+    "active=true": { "model": "ascension_worlds:block/gateway_portal_active" }
+  }
+}

@@ -7,7 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -30,7 +32,27 @@ public final class WorldsCommands {
                                 .executes(ctx -> weather(ctx.getSource()))
                                 .then(Commands.literal("force")
                                         .requires(source -> source.hasPermission(2))
-                                        .executes(ctx -> forceWeather(ctx.getSource()))))));
+                                        .executes(ctx -> forceWeather(ctx.getSource()))))
+                        .then(Commands.literal("gateway")
+                                .then(Commands.literal("travel")
+                                        .then(Commands.argument("planet", ResourceLocationArgument.id())
+                                                .executes(ctx -> gatewayTravel(ctx.getSource(),
+                                                        ResourceLocationArgument.getId(ctx, "planet"))))))));
+    }
+
+    /**
+     * What a gateway destination-picker line's click event actually runs &mdash; see
+     * {@link GatewayDestinations}'s javadoc for why this goes through a command rather than
+     * {@link SpaceMechanics#travelViaGateway} being called directly from there. Not gated behind
+     * an activation check here: the picker only ever lists planets {@link GatewayNetworkState}
+     * already says are active, so a player who did not get this from the picker typing it by hand
+     * is asking for exactly what an active portal would have given them anyway.
+     */
+    private static int gatewayTravel(CommandSourceStack source, ResourceLocation planetDimension)
+            throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        SpaceMechanics.travelViaGateway(player, planetDimension);
+        return 1;
     }
 
     private static int weather(CommandSourceStack source) throws CommandSyntaxException {
