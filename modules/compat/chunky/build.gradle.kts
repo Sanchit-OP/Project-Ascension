@@ -38,6 +38,15 @@ evaluationDependsOn(":modules:compat:create")
 // check is `:modules:combat:runServer -PnoDevMods` (ADR-0003 rule 6), not this run.
 evaluationDependsOn(":modules:combat")
 
+// Same reasoning as compat:create -- server-side (unlike compat:jade/immersivedamageindicators,
+// both CLIENT-only per their own neoforge.mods.toml and so absent from this list), so
+// `runDevServer` needs it here to actually exercise the Ruined Citadel relocation.
+evaluationDependsOn(":modules:compat:cataclysm")
+
+// Same reasoning again -- server-side spawn population, so `runDevServer` needs it here to
+// actually exercise the Moon's new biome spawn modifier.
+evaluationDependsOn(":modules:compat:endermanoverhaul")
+
 neoForge {
     mods {
         register("ascension_core") {
@@ -54,6 +63,12 @@ neoForge {
         }
         register("ascension_combat") {
             sourceSet(project(":modules:combat").sourceSets["main"])
+        }
+        register("ascension_compat_cataclysm") {
+            sourceSet(project(":modules:compat:cataclysm").sourceSets["main"])
+        }
+        register("ascension_compat_endermanoverhaul") {
+            sourceSet(project(":modules:compat:endermanoverhaul").sourceSets["main"])
         }
     }
 }

@@ -27,5 +27,7 @@ include(":modules:compat:chunky")
 include(":modules:compat:create")
 include(":modules:compat:jade")
 include(":modules:compat:immersivedamageindicators")
+include(":modules:compat:cataclysm")
+include(":modules:compat:endermanoverhaul")
 // include(":modules:compat:curios")  // next, once Curios is installed in the test instance
 // include(":modules:compat:sable")   // M5

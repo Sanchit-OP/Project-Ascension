@@ -1,0 +1,14 @@
+[mobs]
+	[mobs.ender_golem]
+		[mobs.ender_golem.combat_config]
+			# Default: 1.0. Sanchit's call 2026-09-21: the Moon's boss "should not be easy" --
+			# this is a first pass to tune from after a live fight, not a final number.
+			health_multiplier = 2.5
+			attack_multiplier = 1.5
+
+	[mobs.ender_guardian]
+		[mobs.ender_guardian.combat_config]
+			# Same reasoning as ender_golem above -- the true final boss of the two should hit
+			# at least as hard, relative to its own out-of-the-box numbers.
+			health_multiplier = 2.5
+			attack_multiplier = 1.5

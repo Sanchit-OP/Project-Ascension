@@ -1,0 +1,52 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Enderman Overhaul"
+authors = "${mod_authors}"
+description = '''
+Populates the Moon with Enderman Overhaul's End Islands Enderman, via a single NeoForge
+add_spawns biome modifier targeting ascension-worlds' own Moon biomes. No structure work, no loot
+redirection -- just ambient/lightly-hostile population for a world that currently has none.
+
+Optional. Without both Enderman Overhaul and ascension-worlds installed, this jar simply is not
+present.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# Needed before this jar's own data is meaningful: the biome modifier below references
+# ascension_worlds:moon_biomes, a tag ascension-worlds owns.
+[[dependencies.${mod_id}]]
+modId = "ascension_worlds"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+# The actual integration target. Required, not optional -- same reasoning as
+# ascension-compat-cataclysm: this jar has no other reason to exist, so if Enderman Overhaul is
+# absent NeoForge should refuse to load it rather than load it into a no-op. AFTER, not NONE: the
+# biome modifier below needs Enderman Overhaul's entity type already registered.
+[[dependencies.${mod_id}]]
+modId = "endermanoverhaul"
+type = "required"
+versionRange = "${endermanoverhaul_version_range}"
+ordering = "AFTER"
+side = "BOTH"
