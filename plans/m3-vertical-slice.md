@@ -220,8 +220,18 @@ fixed coordinate, whether activation/consumption feels right, and whether the ch
 event actually fires a working teleport all need a real playthrough, same as everything else in
 this plan.
 
+**Increment 2, 2026-10-05: the real destination screen.** Sanchit's call to keep building while
+live testing is deferred, so this landed ahead of increment 1's live check rather than after it.
+The chat list is gone: an active portal sends `GatewayDestinationsPayload` (the reachable list,
+computed server-side) and the client opens `GatewayDestinationScreen`, one button per planet; a
+click sends `GatewayTravelPayload` back. A plain `Screen`, not the `AbstractContainerMenu` the
+note above anticipated — there is no inventory to sync, just a list in and a choice out. Both the
+screen and the typed command go through `GatewayDestinations.tryTravel`, the single place the
+picker-session and `canTravel` rules from the refactor pass are applied; the client is never
+trusted. Non-pausing in single-player, because the session it rides on expires in game time.
+Payload protocol version 1 → 2. Not yet seen in a client.
+
 **Still open / explicitly deferred:**
-- The real destination-picker screen (see above).
 - Any lore/flavor text for the two structures (currently unnamed placeholder blocks — obsidian
   reused for inactive, sea lantern for active, both flagged `_comment` placeholders same as
   `moon_regolith`'s own calcite stand-in).

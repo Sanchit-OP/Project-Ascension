@@ -2,37 +2,35 @@ package com.ascension.worlds.internal;
 
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
+import com.ascension.worlds.internal.net.GatewayDestinationsPayload;
+import com.ascension.worlds.internal.net.GatewayTravelPayload;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Where an already-active gateway portal sends a player who uses it: a clickable list of every
- * other planet whose own portal is active, in chat.
+ * Where an active gateway portal can send a player, and the one place that decides whether a
+ * given trip is allowed.
  *
- * <p><strong>A placeholder, the same way {@code OxygenRefillStationBlock}'s instant, free fill
- * is.</strong> A real destination-picker screen is new surface area &mdash; {@code Screen} +
- * {@code AbstractContainerMenu} + a {@code MenuType} + client registration &mdash; that this
- * project has never needed before, and {@code plans/m3-vertical-slice.md} flagged it as exactly
- * that: worth its own focused pass once the underlying network (activation, shared state, instant
- * travel) is proven live, not before. A clickable chat message exercises that whole underlying
- * mechanism today with zero new client-side plumbing.
- *
- * <p>Each line's {@link ClickEvent} runs {@code /ascension worlds gateway travel <planet>} &mdash;
- * see {@link WorldsCommands}. Because that makes the command typeable by anyone, opening this list
- * also opens a {@link GatewayPickerSession}, which the command requires.
+ * <p>Using an active portal sends the player the reachable destinations
+ * ({@link GatewayDestinationsPayload}), which the client shows as a screen; picking one comes back
+ * as a {@link GatewayTravelPayload}. The typed {@code /ascension worlds gateway travel} command is
+ * a second way in. Both go through {@link #tryTravel}, so there is exactly one rule: a
+ * non-operator needs a live {@link GatewayPickerSession} &mdash; opened only here, by an active
+ * portal &mdash; and a destination {@link GatewayNetworkState#canTravel} allows. The client is
+ * never trusted with any of it.
  */
-final class GatewayDestinations {
+public final class GatewayDestinations {
 
     private GatewayDestinations() {
     }
@@ -42,10 +40,11 @@ final class GatewayDestinations {
         Registry<Planet> planets = level.getServer().registryAccess().registryOrThrow(WorldsRegistries.PLANET);
         ResourceLocation here = level.dimension().location();
 
-        List<Map.Entry<ResourceKey<Planet>, Planet>> reachable = new ArrayList<>();
+        List<GatewayDestinationsPayload.Destination> reachable = new ArrayList<>();
         for (Map.Entry<ResourceKey<Planet>, Planet> entry : planets.entrySet()) {
-            if (network.canTravel(here, entry.getValue().surface().location())) {
-                reachable.add(entry);
+            ResourceLocation surface = entry.getValue().surface().location();
+            if (network.canTravel(here, surface)) {
+                reachable.add(new GatewayDestinationsPayload.Destination(entry.getKey().location(), surface));
             }
         }
 
@@ -53,32 +52,49 @@ final class GatewayDestinations {
             player.displayClientMessage(
                     Component.translatable("block.ascension_worlds.gateway_portal.no_destinations")
                             .withStyle(ChatFormatting.GRAY),
-                    false);
+                    true);
             return;
         }
 
         player.getData(SpaceAttachments.GATEWAY_PICKER_SESSION).open(here, level.getGameTime());
-        player.displayClientMessage(
-                Component.translatable("block.ascension_worlds.gateway_portal.pick_destination")
-                        .withStyle(ChatFormatting.AQUA),
-                false);
-        for (Map.Entry<ResourceKey<Planet>, Planet> entry : reachable) {
-            ResourceLocation planetId = entry.getKey().location();
-            Component planetName = Component.translatable(
-                    "planet." + planetId.getNamespace() + "." + planetId.getPath());
-            String dimensionId = entry.getValue().surface().location().toString();
-            MutableComponent line = Component.literal("  > ")
-                    .append(planetName)
-                    .withStyle(style -> style
-                            .withColor(ChatFormatting.GREEN)
-                            .withUnderlined(true)
-                            .withClickEvent(new ClickEvent(
-                                    ClickEvent.Action.RUN_COMMAND,
-                                    "/ascension worlds gateway travel " + dimensionId))
-                            .withHoverEvent(new HoverEvent(
-                                    HoverEvent.Action.SHOW_TEXT,
-                                    Component.translatable("block.ascension_worlds.gateway_portal.travel_to", planetName))));
-            player.displayClientMessage(line, false);
+        PacketDistributor.sendToPlayer(player, new GatewayDestinationsPayload(List.copyOf(reachable)));
+    }
+
+    /**
+     * Move {@code player} to {@code surface} if the gateway rules allow it. Returns null on
+     * success, or the reason it was refused. Operators skip the session check as a debug tool,
+     * the same way {@code weather force} is operator-only.
+     */
+    @Nullable
+    static Component tryTravel(ServerPlayer player, ResourceLocation surface, boolean operator) {
+        ServerLevel level = player.serverLevel();
+        ResourceLocation here = level.dimension().location();
+
+        if (!operator) {
+            GatewayPickerSession session = player.getData(SpaceAttachments.GATEWAY_PICKER_SESSION);
+            GatewayNetworkState network = level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
+            if (!session.isValidIn(here, level.getGameTime()) || !network.canTravel(here, surface)) {
+                return Component.translatable("block.ascension_worlds.gateway_portal.use_a_portal");
+            }
+            session.close();
         }
+
+        if (!SpaceMechanics.travelViaGateway(player, surface)) {
+            return Component.literal(surface + " is not a planet surface.");
+        }
+        return null;
+    }
+
+    /** {@link GatewayTravelPayload} handler: a destination picked on the screen. */
+    public static void onTravelRequest(GatewayTravelPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (!(context.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            Component refusal = tryTravel(player, payload.surface(), false);
+            if (refusal != null) {
+                player.displayClientMessage(refusal.copy().withStyle(ChatFormatting.RED), true);
+            }
+        });
     }
 }
