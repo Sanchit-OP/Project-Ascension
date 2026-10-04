@@ -1,0 +1,64 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+# ADR-0013: this project's first mixin. Two surgical fixes to Cataclysm's own
+# RuinedCitadelStructure -- a hardcoded placement height that ignores real terrain, and a
+# hardcoded processor list with no hook for a block-swap. Neither is reachable from JSON.
+[[mixins]]
+config = "cataclysm_compat.mixins.json"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Cataclysm"
+authors = "${mod_authors}"
+description = '''
+Relocates L_Ender's Cataclysm's Ruined Citadel structure onto the Moon at a fixed, known spot
+(ascension-worlds' own fixed_position structure placement type), instead of its default random
+placement in the End. Overrides the Ender Golem's loot table to drop this project's own gateway
+key instead of Cataclysm's void_core, so clearing it means something in this campaign's own
+progression rather than in Cataclysm's.
+
+Also scatters additional, optional copies of the same Ruined Citadel across the Moon via ordinary
+random_spread placement -- rare but findable side content, distinct from the one fixed, mandatory
+copy the gateway story hinges on.
+
+Optional. Without both Cataclysm and ascension-worlds installed, this jar simply is not present.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# Needed before this jar's own data is meaningful: the structure_set override below references
+# ascension_worlds:fixed_position, a placement type ascension-worlds registers.
+[[dependencies.${mod_id}]]
+modId = "ascension_worlds"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+# The actual integration target. Required, not optional -- same reasoning as
+# ascension-compat-create: this jar has no other reason to exist, so if Cataclysm is absent
+# NeoForge should refuse to load it rather than load it into a no-op. AFTER, not NONE: our
+# structure/structure_set/loot table overrides need Cataclysm's own data already registered so
+# this pack's copies are the ones that win the resource-location collision.
+[[dependencies.${mod_id}]]
+modId = "cataclysm"
+type = "required"
+versionRange = "${cataclysm_version_range}"
+ordering = "AFTER"
+side = "BOTH"
