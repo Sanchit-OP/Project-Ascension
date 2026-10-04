@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.CombatMobEffects;
 import net.minecraft.world.damagesource.DamageSource;
@@ -28,8 +29,8 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  */
 public final class MortalReminderEffects {
 
-    /** Confirmed by Sanchit 2026-09-08: 50% armor ignore. */
-    private static final float ARMOR_IGNORE_PERCENT = 0.50f;
+    /** Bumped by Sanchit 2026-09-21: 50% -> 60% armor ignore. */
+    private static final float ARMOR_IGNORE_PERCENT = 0.60f;
 
     private static final int GRIEVOUS_WOUNDS_DURATION_TICKS = 60;
 
@@ -56,6 +57,11 @@ public final class MortalReminderEffects {
                 (container, reductionIn) -> reductionIn * (1.0f - ARMOR_IGNORE_PERCENT));
 
         LivingEntity target = event.getEntity();
+        // The real gate: an attachment, not the effect below. addEffect is routinely a no-op on
+        // exactly the targets this item cares most about -- see CombatAttachments.GRIEVOUS_WOUNDS_STATE.
+        target.getData(CombatAttachments.GRIEVOUS_WOUNDS_STATE)
+                .activateUntil(target.level().getGameTime() + GRIEVOUS_WOUNDS_DURATION_TICKS);
+        // Cosmetic only from here: gives a status icon on targets that actually accept effects.
         target.addEffect(new MobEffectInstance(
                 CombatMobEffects.GRIEVOUS_WOUNDS, GRIEVOUS_WOUNDS_DURATION_TICKS, 0));
     }

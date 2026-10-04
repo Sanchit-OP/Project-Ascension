@@ -3,6 +3,7 @@ package com.ascension.combat.internal;
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.armor.UnendingDespairState;
 import com.ascension.combat.internal.mechanics.ArmedState;
+import com.ascension.combat.internal.mechanics.CombatMobEffects;
 import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.LastDamageTarget;
@@ -362,6 +363,25 @@ public final class CombatAttachments {
     public static final Supplier<AttachmentType<StackingChargeState>> MOMENTUM_STACKS = TYPES.register(
             "momentum_stacks",
             () -> AttachmentType.builder(StackingChargeState::new).build());
+
+    /**
+     * Grievous Wounds' real heal-block gate, attached to the target carrying it. Not the vanilla
+     * {@code MobEffectInstance} {@link CombatMobEffects#GRIEVOUS_WOUNDS} still applies alongside
+     * this for the status icon &mdash; that effect is cosmetic now, because {@code addEffect} is
+     * routinely a no-op on exactly the targets this item cares most about. Confirmed live
+     * 2026-09-21: the Wither's own {@code addEffect} unconditionally returns {@code false}, and
+     * every Cataclysm boss extends a shared base class whose {@code canBeAffected} only admits
+     * effects tagged {@code cataclysm:effective_for_bosses} &mdash; a common, reasonable
+     * "bosses ignore arbitrary debuffs" convention that just happens to make a vanilla
+     * {@code MobEffect} the wrong tool for a mechanic that specifically exists to matter against
+     * tough, healing enemies. This attachment bypasses that path entirely: nothing about it asks
+     * the target's permission.
+     *
+     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
+     */
+    public static final Supplier<AttachmentType<DurationState>> GRIEVOUS_WOUNDS_STATE = TYPES.register(
+            "grievous_wounds_state",
+            () -> AttachmentType.builder(DurationState::new).build());
 
     private CombatAttachments() {
     }
