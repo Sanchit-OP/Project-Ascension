@@ -325,6 +325,35 @@ empty terrain.
   sure," without a more specific spec yet. Not a checklist item so much as a standing signal that
   the Moon is still thin relative to what a finished world should feel like.
 
+## M3 refactor pass (2026-10-05)
+
+ADR-0008's scheduled pass: M3.1, the Moon content backlog and M3.2 increment 1 had all landed
+since M2.7's. Same method as M2.4/M2.7 — pull the pure decisions out of event and block code into
+classes that take ids in and give answers back, then test those. Found and fixed two real bugs
+doing it:
+
+- **The gateway travel command was a free teleport.** `/ascension worlds gateway travel <planet>`
+  had no permission and no checks — its javadoc reasoned that the picker only lists active
+  planets, but anyone could type the command directly, from anywhere, to any planet, skipping the
+  entire spaceflight loop. Now a non-operator needs a `GatewayPickerSession` (opened only by
+  clicking an active portal, tied to that dimension, one minute, spent by one trip) and a
+  destination `GatewayNetworkState.canTravel` allows. Operators skip the session as a debug tool.
+- **Two copies of "what opens this portal" that disagreed.** `satisfies` hardcoded the Moon and
+  refused every other dimension; `describeRequirement` told those same dimensions to bring a key.
+  Both now read `GatewayRules`: Earth takes a Relay Coil, every other planet its own key, matched
+  on the key's `gateway_key_for_planet` component. That also means Planet 3's portal needs no new
+  branch — its boss's key naming it is enough — which supersedes M3.2's "Planet 3 needs a third
+  branch" note above.
+
+Smaller: `GuardianAwakening` now listens at `LOWEST` so a Golem death another mod cancels never
+leaves a Guardian behind; the picker's hover text is translatable; and earlier the same day, the
+gateway key got the item model it shipped without.
+
+**Tests: `worlds` 18 → 34** (`GatewayNetworkStateTest`, `GatewayPickerSessionTest`,
+`GatewayRulesTest`). Build and `tools/check-dist-separation.sh` clean. Like all of M3, not yet
+confirmed in a live client — the session gate in particular should be exercised by clicking a
+picker line, waiting past a minute, and typing the command by hand as a non-op.
+
 ## M3.3 — Planet 3
 
 Deferred until M3.1 and M3.2 are live-verified. `planets.md` already defines it: the radiated

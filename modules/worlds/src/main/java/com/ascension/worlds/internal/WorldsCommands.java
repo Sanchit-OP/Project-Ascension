@@ -18,7 +18,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * Debug and diagnostic commands, mirroring {@code AtmosphereCommands}'s reasoning: a storm timer
  * ticking silently server-side is exactly the kind of state a bug report cannot describe
  * precisely without a way to read it directly ("I think it lasted 10 seconds" is not a
- * measurement).
+ * measurement). The one gameplay command, {@code gateway travel}, is guarded separately &mdash; see
+ * {@code gatewayTravel}.
  */
 public final class WorldsCommands {
 
@@ -41,17 +42,32 @@ public final class WorldsCommands {
     }
 
     /**
-     * What a gateway destination-picker line's click event actually runs &mdash; see
-     * {@link GatewayDestinations}'s javadoc for why this goes through a command rather than
-     * {@link SpaceMechanics#travelViaGateway} being called directly from there. Not gated behind
-     * an activation check here: the picker only ever lists planets {@link GatewayNetworkState}
-     * already says are active, so a player who did not get this from the picker typing it by hand
-     * is asking for exactly what an active portal would have given them anyway.
+     * What a gateway destination-picker line's click event runs. Anyone can type it, so a
+     * non-operator needs a live {@link GatewayPickerSession} &mdash; proof they just opened the list
+     * on an active portal in this dimension &mdash; and a destination the network actually connects
+     * to. Without both, this would be a free teleport around the entire spaceflight loop.
+     * Operators (permission 2) skip the session check as a debug tool, like {@code weather force}.
      */
     private static int gatewayTravel(CommandSourceStack source, ResourceLocation planetDimension)
             throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
-        SpaceMechanics.travelViaGateway(player, planetDimension);
+        ServerLevel level = player.serverLevel();
+        ResourceLocation here = level.dimension().location();
+
+        if (!source.hasPermission(2)) {
+            GatewayPickerSession session = player.getData(SpaceAttachments.GATEWAY_PICKER_SESSION);
+            GatewayNetworkState network = level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
+            if (!session.isValidIn(here, level.getGameTime()) || !network.canTravel(here, planetDimension)) {
+                source.sendFailure(Component.translatable("block.ascension_worlds.gateway_portal.use_a_portal"));
+                return 0;
+            }
+            session.close();
+        }
+
+        if (!SpaceMechanics.travelViaGateway(player, planetDimension)) {
+            source.sendFailure(Component.literal(planetDimension + " is not a planet surface."));
+            return 0;
+        }
         return 1;
     }
 

@@ -62,6 +62,14 @@ public final class SpaceAttachments {
                     .serialize(GatewayNetworkState.CODEC)
                     .build());
 
+    /**
+     * The player's current gateway destination-list session, if any. Deliberately not serialized
+     * &mdash; see {@link GatewayPickerSession}.
+     */
+    public static final Supplier<AttachmentType<GatewayPickerSession>> GATEWAY_PICKER_SESSION = TYPES.register(
+            "gateway_picker_session",
+            () -> AttachmentType.builder(GatewayPickerSession::new).build());
+
     private SpaceAttachments() {
     }
 
