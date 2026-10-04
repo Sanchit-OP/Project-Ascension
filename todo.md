@@ -1,128 +1,45 @@
 # Todo
 
 Open questions only. **Settled decisions live in [`docs/decisions/`](docs/decisions/)** — check
-there before reopening anything.
+there before reopening anything. Milestone work in flight lives in [`plans/`](plans/) — currently
+[`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md).
 
-Last reviewed: 2026-09-05.
+Last reviewed: 2026-10-05.
 
 ---
 
-## Resolved on 2026-09-05
+## Resolved — moved out of this list
 
-Moved out of this list — see the register for reasoning:
+See the register or the linked doc for reasoning:
 
 - ~~Define what requires a custom mod~~ → ADR-0002
 - ~~Target Minecraft and loader version~~ → ADR-0001
 - ~~Planet framework approach~~ → ADR-0004
 - ~~v1 scope~~ → ADR-0005
 - ~~Whether oxygen is custom or mod-based~~ → ADR-0003 / M1
+- ~~Atmosphere API review questions (UI visibility, rescue, `drainMultiplier`, units)~~ →
+  settled when the API froze, 2026-09-05; [`atmosphere-api.md`](docs/technical/atmosphere-api.md)
+- ~~Optimisation mods at the M2 boundary, and Spark~~ → installed;
+  [`optimisation-stack.md`](docs/technical/optimisation-stack.md)
+- ~~Is orbit a separate dimension or a high-Y band?~~ → ADR-0010, one shared space dimension
+- ~~`ascension-compat-chunky`~~ → built and confirmed live 2026-09-06; pre-generates every planet
+  on server start rather than per arrival (see `architecture.md`)
+- ~~Does a custom dimension work with Distant Horizons?~~ → yes, with
+  `distantGeneratorMode = PRE_EXISTING_ONLY`; see `optimisation-stack.md`
+- ~~Where do ancient gateways physically exist?~~ → one portal per planet at a fixed coordinate,
+  M3.2 in `plans/m3-vertical-slice.md`
+- ~~Moon terrain tuning~~ → crater clipping and mountain pillars fixed and confirmed live;
+  [`moon-terrain-tuning.md`](docs/technical/moon-terrain-tuning.md)
 
-## Blocking the next milestones
+## Still open from milestone planning
 
-These need answers during the milestone that touches them, not before.
-
-**M1.1 (atmosphere API design) — draft written, awaiting review**
-
-See [`docs/technical/atmosphere-api.md`](docs/technical/atmosphere-api.md). Answered there:
-
-- ~~Does sprinting or combat increase consumption?~~ Yes, via a short named `activityMultiplier` list.
-- ~~Sealed bases: zones or refill points?~~ Zones — same mechanism ships need later.
-- ~~Can players create temporary field refills?~~ Yes, but not in v0.1.
-
-Still open, and blocking the API being frozen:
-
-- How visible should oxygen information be in the UI? (bar only, or bar + hazard readout)
-- How do multiplayer rescue and recovery work? Decides whether `OxygenSource` needs a transfer
-  operation in its first version.
-- Ship `drainMultiplier` in v0.1, or add it when `worlds` lands? Changing a record's shape after
-  third parties depend on it is a breaking change.
-- Oxygen units: integer units, or seconds of remaining air?
-
-**Before M2 (`ascension-worlds`) — optimisation mods.** *Decided 2026-09-05 to happen at this
-boundary, not sooner.*
-
-M2 is the right gate: custom dimensions and chunk generation are where the real performance
-cliffs are, and knowing early whether our worldgen fights a chunk-optimisation mod, or a custom
-sky renderer fights a rendering one, is compatibility information we want *before* building
-dimensions rather than after.
-
-Two things must not be confused when we do it:
-
-1. **The ADR-0007 rule 12 measurement stays on a clean instance.** Optimisation mods change
-   exactly the numbers the baseline tracks — tick time, heap, allocation rate. Measuring our own
-   code against a Canary/FerriteCore-modified instance would make "no regression vs. M0.5"
-   unfalsifiable: we could never tell our inefficiency from something else's optimisation
-   covering for it. And per ADR-0003 our modules have to be fast *standalone*, because that is
-   how most adopters will run them.
-2. **So: two instances.** `Ascension Dev` stays clean and remains the measurement reference.
-   A duplicate carries the optimisation mods and exists to catch compatibility breakage.
-
-### The set
-
-Chosen and recorded in [`docs/technical/optimisation-stack.md`](docs/technical/optimisation-stack.md) — what goes in, what must not, the two configuration traps, and the one gap
-(no lighting-engine optimisation exists for NeoForge 1.21.1).
-
-**Sequencing, revised 2026-09-05.** The optimisation stack goes in *before* M1.9, not after,
-and before `ascension-compat-curios`. Reason: M1.9's measurement should be taken once, on the
-stack we intend to keep, rather than taken now and immediately invalidated by adding a dozen
-mods. Order is therefore: install the stack, establish the full-stack baseline, M1.9 refactor
-plus the A/B, then the Curios compat jar, then M2.
-
-**Spark is different and should go in now, not at M2.** It is a profiler, not an optimiser.
-`docs/technical/performance-log.md` currently tells you to read numbers off F3 by hand, which is
-why the M0.5 baseline is still missing its sawtooth low point and its three reload cycles. Spark
-gives per-call-site allocation and tick distribution, which is what M1.9 actually needs to sign
-off honestly.
-
-**Before M2 (`ascension-worlds`):**
-- **Is orbit a separate dimension or a high-Y band of the surface dimension?**
-  (Deferred deliberately by ADR-0004 — real memory and chunk cost either way.)
-
-  > **New constraint, 2026-09-05.** Sanchit: high render distance is *necessary* for space
-  > travel to read well, not a nice-to-have. That is a design input to this question, and it
-  > pushes hard toward **separate dimensions**.
-  >
-  > A high-Y band means the planet's surface chunks are loaded while you are in orbit. At the
-  > render distance this requirement implies, that is the most expensive configuration
-  > available — and it is expensive in exactly the resource ADR-0007 rule 1 is about.
-  >
-  > It also reframes what "see far" means. From orbit you do not need *terrain*; you need a
-  > planet, which is one rendered body, not thousands of loaded chunks. Distance on the
-  > **surface** is a chunk problem. Distance in **orbit** should be a rendering problem with
-  > almost no chunks behind it. Conflating them would buy the worst of both.
-- **`ascension-compat-chunky`: pre-generate a dimension when a player first arrives.**
-  Wanted for multiplayer. Deliberately scheduled with M2 rather than now, because until our own
-  dimensions exist there is nothing to trigger it — the Nether is closed and the End is gated,
-  so the feature would be built untestable.
-
-  The API is there and was checked against `Chunky-NeoForge-1.4.23`:
-
-  ```java
-  boolean isRunning(String world);
-  boolean startTask(String world, String shape,
-                    double centerX, double centerZ,
-                    double radiusX, double radiusZ, String pattern);
-  void onGenerationComplete(Consumer<GenerationCompleteEvent> listener);
-  ```
-
-  Design notes worth keeping, because the obvious version of this is wrong:
-
-  - **Centre on where the player arrived, not on 0,0.** `startTask` takes a centre for exactly
-    this. A player who lands on the Moon needs terrain where they landed.
-  - **Small radius — a few hundred blocks, not thousands.** The trigger fires with the player
-    standing right there, so a 250,000-chunk task is the worst possible thing to start: it is
-    the 118 ms tick spike from the M1.8 reading, aimed at the person who just arrived. 512
-    blocks is ~4,000 chunks and finishes in seconds.
-  - Spawn pre-generation is the opposite job — huge, one-off, run deliberately. Different tool,
-    different sizing. Both use Chunky; only one should be automatic.
-  - Persist "this dimension is done" as a **serialised level attachment** per level rather than
-    a static set, per ADR-0007 rule 3.
-- **Does a custom dimension work with Distant Horizons' LOD generation?** DH is the mechanism
-  that makes high surface render distance affordable, so this is a compatibility question worth
-  answering before dimension design is finished rather than after.
-- What is the exact order and identity of the seven mandatory off-world steps?
-- Where do ancient gateways physically exist?
-- How are failed landings handled?
+- **What is the exact order and identity of the seven mandatory off-world steps?**
+  (`planets.md`, `tech-tree.md`.) The Moon covers one; Planet 3 (M3.3) will be the second.
+- **How are failed landings handled?** Deliberately deferred to v2 at M2.6 — landing damage
+  belongs to whichever module ends up owning ships/landing, not `worlds` (see
+  `SpaceMechanics.descendTo`'s javadoc).
+- **Why are the ancient gateways present?** Where they are is settled (M3.2); the lore is not
+  (`docs/lore/world.md`). The portal blocks are still unnamed placeholders until this is answered.
 
 ## Outstanding before calling the server multiplayer-ready
 
@@ -162,23 +79,14 @@ off honestly.
   (ADR-0011). Not a blocker for M2 v0.1, which is Earth-gravity Moon and Planet 3 throughout.
 
 **Worldgen:**
-- **Moon terrain tuning: crater clipping and mountain pillars fixed and confirmed in a live
-  client.** Large craters were silently clipped because a `Feature` can only safely write within
-  one chunk of its origin (confirmed against the actual NeoForge source); fixed by converting
-  large craters to a `Structure`, which generates per-intersecting-chunk instead — this also gave
-  a natural hook to make craters check for and avoid overwriting other structures placed nearby,
-  ahead of more structures landing later. Mountains were vertical pillars with flat tops because
-  the baseline density gradient saturates above y=40; fixed by extending the gradient's range and
-  rescaling the multiplier. Sanchit didn't spot mountains at all in his playtest and is fine
-  leaving them as-is ("looked good overall") — that term is intentionally untouched. Crater
-  density was tuned down further afterward (large 1/5, small 1/6 of the already-reduced values)
-  without a re-verification pass, his call. Full writeup, including the exact root causes and the
-  verification method: [`docs/technical/moon-terrain-tuning.md`](docs/technical/moon-terrain-tuning.md).
 - **Curate Earth's modded ore spawns** once Create and whichever other mods actually land add
   their own overworld ores. Mechanism is already proven: `neoforge:remove_features` biome
   modifiers, the mirror image of the `add_features` one that placed Titanium Ore — see
   `docs/technical/datapacks.md`. Deliberately not started now, per Sanchit's call 2026-09-06:
   nothing to remove yet.
+- **Real textures.** Every Ascension block and item still reuses a vanilla texture as a
+  placeholder (each model file's `_comment` says which). Sanchit is sourcing CC0 packs; swapping
+  is one line per model.
 
 **Systems gaps identified 2026-09-05:**
 - **Nether removal has an uncosted recipe debt.** Cutting Nether access means re-sourcing
@@ -219,4 +127,3 @@ Captured during M1.6 testing; none block v0.1.
 - Resource ledger — seven gating materials with no single page tracking what each is and which
   recipes consume it
 - Testing and playtest plan
-- `docs/technical/performance-log.md` — created in M0.5
