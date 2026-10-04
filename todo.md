@@ -50,9 +50,9 @@ See the register or the linked doc for reasoning:
 - **`online-mode=false` on the dev server must not survive onto a real one.** Offline mode
   authenticates nobody — anyone can connect as any username, an operator's included. See
   [`serverpack/README.md`](serverpack/README.md).
-- **Share-air rescue is designed and not built.** Decided at the M1.1 review, it is the reason
-  `accept` exists on `OxygenSource`, and it is the one atmosphere feature that only means
-  anything with two players. Small — an `interactLivingEntity` on the tank.
+- **Share-air rescue is built (2026-10-05) and unverified.** Right-click a player with an oxygen
+  tank to fill their lungs from it (`AirSharing`). It only means anything with two players, so it
+  is verified by the same two-client session as the item above, not before.
 
 ## Design questions, not yet blocking
 

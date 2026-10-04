@@ -389,6 +389,13 @@ prevents adding it later, because reviving does not change how oxygen moves.
 The decision had to be made now rather than later: adding a transfer operation to
 `OxygenSource` after third parties implement the interface is a breaking change.
 
+**Built 2026-10-05** as `internal/supply/AirSharing`: right-click a player while holding an
+oxygen tank. The air goes from that tank (valve open or closed) into the receiver's *lungs*, up to
+their gear-adjusted lung capacity — a rescue breath, not a tank refill, so a teammate never
+becomes a refill station on legs. It refuses with a reason when the receiver can already breathe
+where they stand, when their lungs are full, or when the tank is empty. Not yet verified with two
+clients.
+
 ---
 
 ## API status
