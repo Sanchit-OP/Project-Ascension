@@ -292,6 +292,28 @@ public final class SpaceMechanics {
     }
 
     /**
+     * The gateway network's own entry point (M3.2): sends a player straight to a planet's surface
+     * with no space flight at all, reusing {@link #descendTo}'s landing resolution &mdash; a
+     * repaired portal is a shortcut around the approach/descent sequence, not a different one.
+     * Package-private since {@link GatewayDestinations} is the only caller; a command is what
+     * exposes this to a player, per its own javadoc on why a click event runs a command instead
+     * of calling straight into this class.
+     */
+    static void travelViaGateway(ServerPlayer player, ResourceLocation planetDimension) {
+        MinecraftServer server = player.getServer();
+        if (server == null) {
+            return;
+        }
+        Registry<Planet> planets = server.registryAccess().registryOrThrow(WorldsRegistries.PLANET);
+        for (Planet planet : planets) {
+            if (planet.surface().location().equals(planetDimension)) {
+                descendTo(player, server, planet);
+                return;
+            }
+        }
+    }
+
+    /**
      * Sends a player down to a planet's surface, at the spot {@link #resolveLandingSpot} resolves
      * for them right now.
      *

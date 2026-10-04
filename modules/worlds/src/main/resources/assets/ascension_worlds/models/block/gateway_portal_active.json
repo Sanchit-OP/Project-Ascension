@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder texture: reuses vanilla's sea lantern to read as 'powered on'. Swap this one line once real art exists.",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "minecraft:block/sea_lantern"
+  }
+}

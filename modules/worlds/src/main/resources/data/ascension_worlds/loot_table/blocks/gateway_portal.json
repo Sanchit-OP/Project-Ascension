@@ -1,0 +1,5 @@
+{
+  "_comment": "No drops -- unbreakable in survival (strength -1) and a story fixture, not a resource. Explicit and empty rather than omitted, matching this module's own convention that every block has a loot table.",
+  "type": "minecraft:block",
+  "pools": []
+}

@@ -10,5 +10,15 @@
 
   "block.ascension_worlds.moon_regolith": "Lunar Regolith",
   "block.ascension_worlds.anorthosite": "Anorthosite",
-  "block.ascension_worlds.moon_basalt": "Lunar Basalt"
+  "block.ascension_worlds.moon_basalt": "Lunar Basalt",
+
+  "item.ascension_worlds.gateway_key": "Gateway Key",
+  "item.ascension_worlds.relay_coil": "Relay Coil",
+  "block.ascension_worlds.gateway_portal": "Ancient Gateway Portal",
+
+  "block.ascension_worlds.gateway_portal.activated": "The gateway hums to life.",
+  "block.ascension_worlds.gateway_portal.needs_relay_coil": "This gateway needs a Relay Coil to wake it up.",
+  "block.ascension_worlds.gateway_portal.needs_gateway_key": "This gateway needs this planet's own Gateway Key.",
+  "block.ascension_worlds.gateway_portal.pick_destination": "The gateway is open. Choose a destination:",
+  "block.ascension_worlds.gateway_portal.no_destinations": "No other gateway is active yet."
 }

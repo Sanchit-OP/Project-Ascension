@@ -7,9 +7,16 @@ import com.ascension.worlds.internal.terrain.CraterPiece;
 import com.ascension.worlds.internal.terrain.CraterStructure;
 import com.ascension.worlds.internal.terrain.RockDebrisConfiguration;
 import com.ascension.worlds.internal.terrain.RockDebrisFeature;
+import com.ascension.worlds.internal.worldgen.FixedPositionStructurePlacement;
+import com.ascension.worlds.internal.worldgen.GatewayPortalPiece;
+import com.ascension.worlds.internal.worldgen.GatewayPortalStructure;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -18,6 +25,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
@@ -51,6 +59,10 @@ public final class WorldsContent {
             DeferredRegister.create(Registries.STRUCTURE_TYPE, AscensionWorlds.MOD_ID);
     private static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPES =
             DeferredRegister.create(Registries.STRUCTURE_PIECE, AscensionWorlds.MOD_ID);
+    private static final DeferredRegister<StructurePlacementType<?>> STRUCTURE_PLACEMENT_TYPES =
+            DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, AscensionWorlds.MOD_ID);
+    private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES =
+            DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AscensionWorlds.MOD_ID);
     private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
             DeferredRegister.create(Registries.PARTICLE_TYPE, AscensionWorlds.MOD_ID);
 
@@ -121,6 +133,16 @@ public final class WorldsContent {
             "crater", () -> (StructurePieceType.ContextlessType) CraterPiece::new);
 
     /**
+     * Pins a {@code structure_set} to one exact chunk, every world, every seed. See
+     * {@link FixedPositionStructurePlacement}'s javadoc &mdash; this is the reusable half of
+     * sourcing a boss (or any other prebuilt structure) from a third-party mod: every
+     * {@code ascension-compat-<bossmod>} jar references this same placement type by id
+     * ({@code ascension_worlds:fixed_position}) rather than each writing its own.
+     */
+    public static final Supplier<StructurePlacementType<FixedPositionStructurePlacement>> FIXED_POSITION_PLACEMENT_TYPE =
+            STRUCTURE_PLACEMENT_TYPES.register("fixed_position", () -> () -> FixedPositionStructurePlacement.CODEC);
+
+    /**
      * Loose rock scattered through the space dimension's vacuum. See
      * {@link RockDebrisFeature}'s javadoc for why this is a cluster of small pieces rather than
      * one asteroid, and {@code worldgen/placed_feature/rock_debris.json} for how rare it actually
@@ -184,6 +206,65 @@ public final class WorldsContent {
     public static final Supplier<Item> RAW_TITANIUM = ITEMS.register(
             "raw_titanium", () -> new Item(new Item.Properties()));
 
+    /**
+     * Which planet's gateway a {@link #GATEWAY_KEY} unlocks &mdash; the surface dimension's own
+     * {@link ResourceLocation}, the same identity {@link PlanetArrivalMemory} already keys its own
+     * per-player state by. One item id for every planet rather than one item per planet: per
+     * ADR-0007 rule 10, adding a planet must not mean adding a class, and it should not mean
+     * adding an item either.
+     */
+    public static final Supplier<DataComponentType<ResourceLocation>> GATEWAY_KEY_FOR_PLANET = DATA_COMPONENT_TYPES.register(
+            "gateway_key_for_planet",
+            () -> DataComponentType.<ResourceLocation>builder()
+                    .persistent(ResourceLocation.CODEC)
+                    .networkSynchronized(ResourceLocation.STREAM_CODEC)
+                    .build());
+
+    /**
+     * What a mandatory boss drops instead of whatever reward its source mod originally intended
+     * &mdash; see {@code plans/m3-vertical-slice.md}'s M3.1/M3.2. Consumed by that planet's
+     * gateway repair; {@link #GATEWAY_KEY_FOR_PLANET} is what stops a Moon key from repairing a
+     * later planet's gateway.
+     */
+    public static final Supplier<Item> GATEWAY_KEY = ITEMS.register(
+            "gateway_key", () -> new Item(new Item.Properties().stacksTo(1)));
+
+    /**
+     * Earth's own small crafted cost to activate its gateway portal &mdash; Sanchit's call,
+     * 2026-09-26: not free (Earth is meant to teach "long-term preparation, engineering, and
+     * resource discipline", per {@code docs/progression/planets.md}), but not a boss either, since
+     * Earth has none. See {@link GatewayPortalActivation}.
+     */
+    public static final Supplier<Item> RELAY_COIL = ITEMS.register(
+            "relay_coil", () -> new Item(new Item.Properties()));
+
+    /**
+     * The structural core of every planet's gateway portal &mdash; see
+     * {@code plans/m3-vertical-slice.md}'s M3.2 and {@link GatewayPortalStructure}. Unbreakable,
+     * bedrock's own hardness/resistance values, for the same reason bedrock uses them: this is a
+     * story fixture, not a minable resource.
+     */
+    public static final Supplier<Block> GATEWAY_PORTAL = BLOCKS.register(
+            "gateway_portal",
+            () -> new GatewayPortalBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .sound(SoundType.DEEPSLATE)
+                    .strength(-1.0f, 3600000.0f)
+                    .lightLevel(state -> state.getValue(GatewayPortalBlock.ACTIVE) ? 7 : 0)));
+
+    public static final Supplier<Item> GATEWAY_PORTAL_ITEM = ITEMS.register(
+            "gateway_portal", () -> new BlockItem(GATEWAY_PORTAL.get(), new Item.Properties()));
+
+    /**
+     * One structure type, reused by every planet's own {@code gateway_portal_<planet>.json} &mdash;
+     * see {@link GatewayPortalStructure}'s javadoc.
+     */
+    public static final Supplier<StructureType<GatewayPortalStructure>> GATEWAY_PORTAL_STRUCTURE_TYPE =
+            STRUCTURE_TYPES.register("gateway_portal", () -> () -> GatewayPortalStructure.CODEC);
+
+    public static final Supplier<StructurePieceType> GATEWAY_PORTAL_PIECE = STRUCTURE_PIECE_TYPES.register(
+            "gateway_portal", () -> (StructurePieceType.ContextlessType) GatewayPortalPiece::new);
+
     private WorldsContent() {
     }
 
@@ -193,6 +274,8 @@ public final class WorldsContent {
         FEATURES.register(modBus);
         STRUCTURE_TYPES.register(modBus);
         STRUCTURE_PIECE_TYPES.register(modBus);
+        STRUCTURE_PLACEMENT_TYPES.register(modBus);
+        DATA_COMPONENT_TYPES.register(modBus);
         PARTICLE_TYPES.register(modBus);
         modBus.addListener(WorldsContent::addToCreativeTabs);
     }
@@ -204,10 +287,13 @@ public final class WorldsContent {
             event.accept(MOON_REGOLITH_ITEM.get());
             event.accept(ANORTHOSITE_ITEM.get());
             event.accept(MOON_BASALT_ITEM.get());
+            event.accept(GATEWAY_PORTAL_ITEM.get());
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(RAW_HELIUM.get());
             event.accept(RAW_TITANIUM.get());
+            event.accept(GATEWAY_KEY.get());
+            event.accept(RELAY_COIL.get());
         }
     }
 }

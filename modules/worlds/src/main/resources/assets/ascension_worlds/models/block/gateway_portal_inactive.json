@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder texture: reuses vanilla's obsidian for the dormant look. Swap this one line once real art exists.",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "minecraft:block/obsidian"
+  }
+}
