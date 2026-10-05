@@ -8,6 +8,6 @@
   "placement": {
     "type": "ascension_worlds:fixed_position",
     "salt": 2,
-    "locate_at": [-800, 0, 0]
+    "locate_at": [-160, 0, 0]
   }
 }

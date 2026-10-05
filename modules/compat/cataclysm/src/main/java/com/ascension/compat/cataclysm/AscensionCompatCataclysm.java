@@ -1,6 +1,9 @@
 package com.ascension.compat.cataclysm;
 
+import com.ascension.compat.cataclysm.internal.CataclysmBossStats;
 import com.ascension.compat.cataclysm.internal.GuardianAwakening;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
@@ -32,8 +35,13 @@ public final class AscensionCompatCataclysm {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AscensionCompatCataclysm.class);
 
-    public AscensionCompatCataclysm() {
+    public AscensionCompatCataclysm(IEventBus modBus) {
         GuardianAwakening.register(NeoForge.EVENT_BUS);
+        // Checked before CataclysmBossStats is ever touched: it links against ascension-combat's
+        // api, which is an optional dependency of this jar.
+        if (ModList.get().isLoaded("ascension_combat")) {
+            CataclysmBossStats.register(modBus);
+        }
         LOGGER.info("Ascension Compat: Cataclysm loaded -- Ruined Citadel relocated to the Moon");
     }
 }
