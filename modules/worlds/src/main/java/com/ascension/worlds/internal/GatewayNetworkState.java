@@ -27,11 +27,11 @@ import org.jetbrains.annotations.Nullable;
  * <p>Keyed by a planet's surface dimension id, the same identity {@link PlanetArrivalMemory} and
  * {@code WorldsContent.GATEWAY_KEY_FOR_PLANET} already key their own state by.
  *
- * <p><strong>Where the portal is</strong> is recorded at activation, from the block actually
- * clicked, so gateway travel lands a player at the destination's portal rather than at the
- * planet's generic arrival point. Taken from the click rather than from worldgen data so it is
- * right for any portal block, generated or placed. A planet activated before positions were
- * tracked has none; travel there falls back to the ordinary landing.
+ * <p><strong>Where to arrive</strong> is recorded when a portal is attuned (or re-lit): the spot
+ * in front of its field that the frame itself names ({@code GatewayFrame.Placement.arrivalSpot}),
+ * so gateway travel lands a player facing the destination's portal rather than at the planet's
+ * generic arrival point. A planet activated before arrival spots were tracked has none; travel
+ * there falls back to the ordinary landing.
  *
  * <p>Owned by {@code ascension-worlds} for now rather than a hypothetical
  * {@code ascension-progression} module, per ADR-0011: Tier 1 modules do not reach for a module
@@ -93,8 +93,8 @@ public final class GatewayNetworkState {
     }
 
     /**
-     * Marks this planet's portal active, remembering where it is. Re-activating updates the
-     * position, so the most recently used portal on a planet is the one travel lands at.
+     * Marks this planet's portal active, remembering where arrivals should stand. Re-activating
+     * updates it, so the most recently attuned or re-lit portal on a planet is where travel lands.
      *
      * @return true if this planet's gateway was not already active.
      */
@@ -103,7 +103,7 @@ public final class GatewayNetworkState {
         return activePlanets.add(planetDimension);
     }
 
-    /** Where this planet's active portal is, or null if it is inactive or predates tracking. */
+    /** Where arrivals at this planet's portal stand, or null if inactive or predating tracking. */
     @Nullable
     public BlockPos portalAt(ResourceLocation planetDimension) {
         return portals.get(planetDimension);

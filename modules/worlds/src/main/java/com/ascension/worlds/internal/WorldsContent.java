@@ -8,8 +8,8 @@ import com.ascension.worlds.internal.terrain.CraterStructure;
 import com.ascension.worlds.internal.terrain.RockDebrisConfiguration;
 import com.ascension.worlds.internal.terrain.RockDebrisFeature;
 import com.ascension.worlds.internal.worldgen.FixedPositionStructurePlacement;
-import com.ascension.worlds.internal.worldgen.GatewayPortalPiece;
-import com.ascension.worlds.internal.worldgen.GatewayPortalStructure;
+import com.ascension.worlds.internal.worldgen.GatewayFramePiece;
+import com.ascension.worlds.internal.worldgen.GatewayFrameStructure;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
@@ -28,6 +28,7 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -240,40 +241,43 @@ public final class WorldsContent {
             "gateway_key", () -> new Item(new Item.Properties().stacksTo(1)));
 
     /**
-     * Earth's own small crafted cost to activate its gateway portal &mdash; Sanchit's call,
-     * 2026-09-26: not free (Earth is meant to teach "long-term preparation, engineering, and
-     * resource discipline", per {@code docs/progression/planets.md}), but not a boss either, since
-     * Earth has none. See {@link GatewayPortalActivation}.
+     * The block players right-click in a gateway frame &mdash; see {@link GatewayKeystoneBlock} and
+     * {@code docs/technical/gateway-frame-format.md}. Obsidian-hard and breakable: Earth's players
+     * craft and place their own (recipe from the gateway design session).
      */
-    public static final Supplier<Item> RELAY_COIL = ITEMS.register(
-            "relay_coil", () -> new Item(new Item.Properties()));
-
-    /**
-     * The structural core of every planet's gateway portal &mdash; see
-     * {@code plans/m3-vertical-slice.md}'s M3.2 and {@link GatewayPortalStructure}. Unbreakable,
-     * bedrock's own hardness/resistance values, for the same reason bedrock uses them: this is a
-     * story fixture, not a minable resource.
-     */
-    public static final Supplier<Block> GATEWAY_PORTAL = BLOCKS.register(
-            "gateway_portal",
-            () -> new GatewayPortalBlock(BlockBehaviour.Properties.of()
+    public static final Supplier<Block> GATEWAY_KEYSTONE = BLOCKS.register(
+            "gateway_keystone",
+            () -> new GatewayKeystoneBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLACK)
                     .sound(SoundType.DEEPSLATE)
-                    .strength(-1.0f, 3600000.0f)
-                    .lightLevel(state -> state.getValue(GatewayPortalBlock.ACTIVE) ? 7 : 0)));
+                    .requiresCorrectToolForDrops()
+                    .strength(50.0f, 1200.0f)
+                    .lightLevel(state -> state.getValue(GatewayKeystoneBlock.ACTIVE) ? 10 : 0)));
 
-    public static final Supplier<Item> GATEWAY_PORTAL_ITEM = ITEMS.register(
-            "gateway_portal", () -> new BlockItem(GATEWAY_PORTAL.get(), new Item.Properties()));
+    public static final Supplier<Item> GATEWAY_KEYSTONE_ITEM = ITEMS.register(
+            "gateway_keystone", () -> new BlockItem(GATEWAY_KEYSTONE.get(), new Item.Properties()));
 
     /**
-     * One structure type, reused by every planet's own {@code gateway_portal_<planet>.json} &mdash;
-     * see {@link GatewayPortalStructure}'s javadoc.
+     * A lit gateway's walk-through opening &mdash; see {@link GatewayFieldBlock}. Nether-portal
+     * properties: no collision, unbreakable by hand, no item, glows.
      */
-    public static final Supplier<StructureType<GatewayPortalStructure>> GATEWAY_PORTAL_STRUCTURE_TYPE =
-            STRUCTURE_TYPES.register("gateway_portal", () -> () -> GatewayPortalStructure.CODEC);
+    public static final Supplier<Block> GATEWAY_FIELD = BLOCKS.register(
+            "gateway_field",
+            () -> new GatewayFieldBlock(BlockBehaviour.Properties.of()
+                    .noCollission()
+                    .noOcclusion()
+                    .noLootTable()
+                    .strength(-1.0f)
+                    .sound(SoundType.GLASS)
+                    .lightLevel(state -> 11)
+                    .pushReaction(PushReaction.BLOCK)));
 
-    public static final Supplier<StructurePieceType> GATEWAY_PORTAL_PIECE = STRUCTURE_PIECE_TYPES.register(
-            "gateway_portal", () -> (StructurePieceType.ContextlessType) GatewayPortalPiece::new);
+    /** Pre-generated gateways ({@code worldgen/structure/gateway_frame_*.json}) &mdash; see {@link GatewayFrameStructure}. */
+    public static final Supplier<StructureType<GatewayFrameStructure>> GATEWAY_FRAME_STRUCTURE_TYPE =
+            STRUCTURE_TYPES.register("gateway_frame", () -> () -> GatewayFrameStructure.CODEC);
+
+    public static final Supplier<StructurePieceType> GATEWAY_FRAME_PIECE = STRUCTURE_PIECE_TYPES.register(
+            "gateway_frame", () -> (StructurePieceType.ContextlessType) GatewayFramePiece::new);
 
     private WorldsContent() {
     }
@@ -297,14 +301,13 @@ public final class WorldsContent {
             event.accept(MOON_REGOLITH_ITEM.get());
             event.accept(ANORTHOSITE_ITEM.get());
             event.accept(MOON_BASALT_ITEM.get());
-            event.accept(GATEWAY_PORTAL_ITEM.get());
+            event.accept(GATEWAY_KEYSTONE_ITEM.get());
         }
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(RAW_HELIUM.get());
             event.accept(RAW_TITANIUM.get());
             event.accept(WARDEN_TENDRIL.get());
             event.accept(GATEWAY_KEY.get());
-            event.accept(RELAY_COIL.get());
         }
     }
 }

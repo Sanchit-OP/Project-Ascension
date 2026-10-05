@@ -1,0 +1,11 @@
+{
+  "_comment": "Drops itself, unattuned: breaking a keystone loses its attunement (GatewayKeystoneBlock).",
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [ { "type": "minecraft:item", "name": "ascension_worlds:gateway_keystone" } ],
+      "conditions": [ { "condition": "minecraft:survives_explosion" } ]
+    }
+  ]
+}

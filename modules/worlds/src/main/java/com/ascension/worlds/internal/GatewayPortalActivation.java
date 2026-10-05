@@ -1,5 +1,7 @@
 package com.ascension.worlds.internal;
 
+import com.ascension.worlds.internal.gateway.GatewayFrame;
+import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -11,56 +13,84 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Applies {@link GatewayRules} to a real click on a portal: checks the held item, consumes it, and
- * flips this planet's network-wide flag. The rules themselves (what each planet's portal needs)
- * live in {@link GatewayRules}, so the check and the "what does this need?" hint below can never
- * disagree.
+ * What a click on a keystone does: checks the held item against {@link GatewayRules}, checks the
+ * frame around the keystone against the {@link GatewayFrame}, and attunes and lights it.
+ *
+ * <p>The item rule and the frame check are separate on purpose: holding the right item next to an
+ * incomplete frame says "the frame is incomplete" and keeps the item, rather than spending a
+ * Warden tendril on nothing.
  */
 final class GatewayPortalActivation {
 
     private GatewayPortalActivation() {
     }
 
+    static boolean satisfies(ServerLevel level, ItemStack stack) {
+        ResourceLocation portalDimension = level.dimension().location();
+        return switch (GatewayRules.requirementFor(portalDimension)) {
+            case WARDEN_TENDRIL -> stack.is(WorldsContent.WARDEN_TENDRIL.get());
+            case PLANET_KEY -> stack.is(WorldsContent.GATEWAY_KEY.get())
+                    && GatewayRules.keyOpens(stack.get(WorldsContent.GATEWAY_KEY_FOR_PLANET.get()), portalDimension);
+        };
+    }
+
     /**
-     * If {@code stack} satisfies this planet's own requirement, consumes one and activates the
-     * network-wide flag for this planet. Returns whether it was satisfied &mdash; not whether the
-     * network flag actually changed, since re-activating an already-active portal with the right
-     * item should still feel like it worked rather than silently failing.
+     * {@code stack} already satisfies this planet's requirement. If the frame around the keystone
+     * at {@code keystone} is whole, consume one, attune the keystone, light the field and register
+     * the portal with the network.
      */
-    static boolean tryActivate(ServerLevel level, BlockPos portal, ServerPlayer player, ItemStack stack) {
-        ResourceLocation planetId = level.dimension().location();
-        if (!satisfies(planetId, stack)) {
-            return false;
+    static void tryAttune(ServerLevel level, BlockPos keystone, ServerPlayer player, ItemStack stack) {
+        Optional<GatewayFrame.Placement> placement = findFrame(level, keystone, GatewayFrames.Opening.CLEAR);
+        if (placement.isEmpty()) {
+            say(player, "block.ascension_worlds.gateway_keystone.frame_incomplete", ChatFormatting.RED);
+            return;
         }
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
         }
-        ServerLevel overworld = level.getServer().overworld();
-        boolean changed = overworld.getData(SpaceAttachments.GATEWAY_NETWORK_STATE).activate(planetId, portal);
-        level.playSound(null, player.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0f, 1.0f);
-        if (changed) {
-            player.displayClientMessage(
-                    Component.translatable("block.ascension_worlds.gateway_portal.activated")
-                            .withStyle(ChatFormatting.AQUA),
-                    true);
-        }
-        return true;
+        level.setBlock(keystone, level.getBlockState(keystone).setValue(GatewayKeystoneBlock.ACTIVE, true), 3);
+        GatewayFrames.light(level, placement.get());
+        register(level, placement.get());
+
+        level.playSound(null, keystone, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.0f, 1.0f);
+        say(player, "block.ascension_worlds.gateway_keystone.activated", ChatFormatting.AQUA);
     }
 
-    /** Empty-handed, or a wrong item, on an inactive portal: say what it actually needs. */
+    /** An attuned keystone: put the field back if it collapsed, then offer destinations. */
+    static void relightAndOpen(ServerLevel level, BlockPos keystone, ServerPlayer player) {
+        Optional<GatewayFrame.Placement> placement = findFrame(level, keystone, GatewayFrames.Opening.CLEAR_OR_FIELD);
+        if (placement.isEmpty()) {
+            say(player, "block.ascension_worlds.gateway_keystone.frame_incomplete", ChatFormatting.RED);
+            return;
+        }
+        GatewayFrames.light(level, placement.get());
+        register(level, placement.get());
+        GatewayDestinations.sendPicker(player, level);
+    }
+
+    /** Empty-handed, or a wrong item, on an unattuned keystone: say what it actually needs. */
     static void describeRequirement(ServerLevel level, ServerPlayer player) {
         String key = switch (GatewayRules.requirementFor(level.dimension().location())) {
-            case RELAY_COIL -> "block.ascension_worlds.gateway_portal.needs_relay_coil";
-            case PLANET_KEY -> "block.ascension_worlds.gateway_portal.needs_gateway_key";
+            case WARDEN_TENDRIL -> "block.ascension_worlds.gateway_keystone.needs_warden_tendril";
+            case PLANET_KEY -> "block.ascension_worlds.gateway_keystone.needs_gateway_key";
         };
-        player.displayClientMessage(Component.translatable(key).withStyle(ChatFormatting.GRAY), true);
+        say(player, key, ChatFormatting.GRAY);
     }
 
-    private static boolean satisfies(ResourceLocation portalDimension, ItemStack stack) {
-        return switch (GatewayRules.requirementFor(portalDimension)) {
-            case RELAY_COIL -> stack.is(WorldsContent.RELAY_COIL.get());
-            case PLANET_KEY -> stack.is(WorldsContent.GATEWAY_KEY.get())
-                    && GatewayRules.keyOpens(stack.get(WorldsContent.GATEWAY_KEY_FOR_PLANET.get()), portalDimension);
-        };
+    private static Optional<GatewayFrame.Placement> findFrame(ServerLevel level, BlockPos keystone,
+                                                              GatewayFrames.Opening opening) {
+        return GatewayFrames.get(level.registryAccess()).flatMap(frame -> frame.match(
+                keystone.getX(), keystone.getY(), keystone.getZ(), GatewayFrames.testIn(level, frame, opening)));
+    }
+
+    /** Record this planet's portal, and where arrivals should stand, network-wide. */
+    static void register(ServerLevel level, GatewayFrame.Placement placement) {
+        int[] arrival = placement.arrivalSpot();
+        level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE)
+                .activate(level.dimension().location(), new BlockPos(arrival[0], arrival[1], arrival[2]));
+    }
+
+    private static void say(ServerPlayer player, String key, ChatFormatting colour) {
+        player.displayClientMessage(Component.translatable(key).withStyle(colour), true);
     }
 }

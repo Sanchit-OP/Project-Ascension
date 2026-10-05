@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ascension_worlds:titanium_ore"
+    "ascension_worlds:titanium_ore",
+    "ascension_worlds:gateway_keystone"
   ]
 }

@@ -1,13 +1,13 @@
 {
   "structures": [
     {
-      "structure": "ascension_worlds:gateway_portal_earth",
+      "structure": "ascension_worlds:gateway_frame_moon",
       "weight": 1
     }
   ],
   "placement": {
     "type": "ascension_worlds:fixed_position",
-    "salt": 1,
-    "locate_at": [300, 0, 0]
+    "salt": 2,
+    "locate_at": [-160, 0, 0]
   }
 }

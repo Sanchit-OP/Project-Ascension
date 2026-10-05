@@ -31,7 +31,7 @@ public final class GatewayDestinationScreen extends Screen {
     private final List<Destination> destinations;
 
     public GatewayDestinationScreen(List<Destination> destinations) {
-        super(Component.translatable("block.ascension_worlds.gateway_portal.pick_destination"));
+        super(Component.translatable("block.ascension_worlds.gateway_keystone.pick_destination"));
         this.destinations = destinations;
     }
 

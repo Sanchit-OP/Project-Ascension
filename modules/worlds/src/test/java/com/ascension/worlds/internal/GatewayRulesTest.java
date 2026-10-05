@@ -14,8 +14,8 @@ class GatewayRulesTest {
     private static final ResourceLocation PLANET_3 = ResourceLocation.fromNamespaceAndPath("ascension_worlds", "planet_3");
 
     @Test
-    void earthTakesARelayCoil() {
-        assertEquals(GatewayRules.Requirement.RELAY_COIL, GatewayRules.requirementFor(GatewayRules.EARTH));
+    void earthTakesAWardenTendril() {
+        assertEquals(GatewayRules.Requirement.WARDEN_TENDRIL, GatewayRules.requirementFor(GatewayRules.EARTH));
     }
 
     @Test

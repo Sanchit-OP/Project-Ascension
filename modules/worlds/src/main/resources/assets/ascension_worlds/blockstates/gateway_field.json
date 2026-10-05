@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "axis=x": { "model": "ascension_worlds:block/gateway_field_x" },
+    "axis=z": { "model": "ascension_worlds:block/gateway_field_z" }
+  }
+}
