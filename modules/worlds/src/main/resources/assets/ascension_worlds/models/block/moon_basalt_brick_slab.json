@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "ascension_worlds:block/moon_basalt_bricks",
+    "top": "ascension_worlds:block/moon_basalt_bricks",
+    "side": "ascension_worlds:block/moon_basalt_bricks"
+  }
+}

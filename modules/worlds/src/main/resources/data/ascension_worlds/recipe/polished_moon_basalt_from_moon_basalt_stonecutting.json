@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "ascension_worlds:moon_basalt"
+  },
+  "result": {
+    "id": "ascension_worlds:polished_moon_basalt",
+    "count": 1
+  }
+}

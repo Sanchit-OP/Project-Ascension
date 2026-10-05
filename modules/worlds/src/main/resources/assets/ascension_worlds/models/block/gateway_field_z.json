@@ -1,5 +1,0 @@
-{
-  "_comment": "Placeholder: vanilla's Nether portal shape and texture, translucent. The gateway design session replaces this with the field's own look.",
-  "parent": "minecraft:block/nether_portal_ew",
-  "render_type": "minecraft:translucent"
-}

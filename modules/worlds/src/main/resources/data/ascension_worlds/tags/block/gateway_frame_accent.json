@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "ascension_worlds:chiseled_anorthosite",
+    "minecraft:chiseled_quartz_block",
+    "minecraft:chiseled_deepslate",
+    "minecraft:chiseled_polished_blackstone",
+    "minecraft:chiseled_stone_bricks",
+    "minecraft:chiseled_tuff_bricks"
+  ]
+}

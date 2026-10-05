@@ -3,6 +3,7 @@ package com.ascension.worlds;
 import com.ascension.core.api.WorldEnvironmentRegistry;
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
+import com.ascension.worlds.internal.GatewayDecorBlocks;
 import com.ascension.worlds.internal.GatewayFrames;
 import com.ascension.worlds.internal.PlanetEnvironments;
 import com.ascension.worlds.internal.PlanetWeatherMechanics;
@@ -53,6 +54,7 @@ public final class AscensionWorlds {
 
     public AscensionWorlds(IEventBus modBus, ModContainer container) {
         WorldsContent.register(modBus);
+        GatewayDecorBlocks.register(modBus);
         SpaceAttachments.register(modBus);
         modBus.addListener(this::onRegisterDataPackRegistries);
         modBus.addListener(this::onCommonSetup);
