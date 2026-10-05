@@ -330,6 +330,11 @@ public final class GatewayFrame {
             return facing;
         }
 
+        /** The frame this is a placement of. */
+        public GatewayFrame frame() {
+            return GatewayFrame.this;
+        }
+
         /** World position of a local cell, as {@code {x, y, z}}. */
         public int[] world(int x, int y, int z) {
             int[] offset = facing.toWorld(x, y, z);

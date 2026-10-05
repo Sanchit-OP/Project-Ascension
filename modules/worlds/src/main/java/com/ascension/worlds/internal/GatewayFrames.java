@@ -17,6 +17,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,15 @@ public final class GatewayFrames {
         CLEAR,
         /** Re-lighting an attuned frame: clear, or already holding field blocks. */
         CLEAR_OR_FIELD
+    }
+
+    /**
+     * As {@link #testIn}, but the keystone cell always passes &mdash; for finding a frame whose
+     * keystone has just been broken.
+     */
+    public static GatewayFrame.CellTest testInWithoutKeystone(LevelAccessor level, GatewayFrame frame, Opening opening) {
+        GatewayFrame.CellTest test = testIn(level, frame, opening);
+        return (symbol, x, y, z) -> symbol == frame.keystoneSymbol() || test.matches(symbol, x, y, z);
     }
 
     /** A {@link GatewayFrame.CellTest} that reads real blocks from {@code level}. */
@@ -116,6 +126,9 @@ public final class GatewayFrames {
                 state = keystone;
             } else {
                 state = placedState(frame.key().get(cell.symbol()));
+                if (state.hasProperty(BlockStateProperties.LIT)) {
+                    state = state.setValue(BlockStateProperties.LIT, lit);
+                }
             }
             level.setBlock(cursor, state, Block.UPDATE_CLIENTS);
         }
@@ -127,6 +140,27 @@ public final class GatewayFrames {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int[] at : placement.fieldPositions()) {
             level.setBlock(cursor.set(at[0], at[1], at[2]), field, Block.UPDATE_CLIENTS);
+        }
+    }
+
+    /**
+     * Switches every frame block that carries vanilla's {@code lit} property &mdash; the Inscribed
+     * Gatestone ring, and anything else a design puts in a frame that has one &mdash; to
+     * {@code lit}. This is how an attuned gate's runes wake: no format field needed, the blocks
+     * themselves say whether they can glow. Bounded by the pattern, run once per attunement.
+     */
+    public static void setLit(LevelAccessor level, GatewayFrame.Placement placement, boolean lit) {
+        GatewayFrame frame = placement.frame();
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (GatewayFrame.Cell cell : frame.cells()) {
+            if (!frame.key().containsKey(cell.symbol())) {
+                continue;
+            }
+            int[] at = placement.world(cell.x(), cell.y(), cell.z());
+            BlockState state = level.getBlockState(cursor.set(at[0], at[1], at[2]));
+            if (state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT) != lit) {
+                level.setBlock(cursor, state.setValue(BlockStateProperties.LIT, lit), Block.UPDATE_ALL);
+            }
         }
     }
 

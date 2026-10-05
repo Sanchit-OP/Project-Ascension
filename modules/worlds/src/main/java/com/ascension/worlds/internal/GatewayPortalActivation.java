@@ -50,6 +50,7 @@ final class GatewayPortalActivation {
         }
         level.setBlock(keystone, level.getBlockState(keystone).setValue(GatewayKeystoneBlock.ACTIVE, true), 3);
         GatewayFrames.light(level, placement.get());
+        GatewayFrames.setLit(level, placement.get(), true);
         register(level, placement.get());
 
         level.playSound(null, keystone, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.0f, 1.0f);
@@ -64,8 +65,21 @@ final class GatewayPortalActivation {
             return;
         }
         GatewayFrames.light(level, placement.get());
+        GatewayFrames.setLit(level, placement.get(), true);
         register(level, placement.get());
         GatewayDestinations.sendPicker(player, level);
+    }
+
+    /**
+     * An attuned keystone was broken: its frame's runes go dark. (The field collapses on its own,
+     * since the keystone is part of the opening's border.) If the rest of the frame is already
+     * incomplete there is nothing left to recognise, and the runes stay as they are.
+     */
+    static void onKeystoneRemoved(ServerLevel level, BlockPos keystone) {
+        GatewayFrames.get(level.registryAccess())
+                .flatMap(frame -> frame.match(keystone.getX(), keystone.getY(), keystone.getZ(),
+                        GatewayFrames.testInWithoutKeystone(level, frame, GatewayFrames.Opening.CLEAR_OR_FIELD)))
+                .ifPresent(placement -> GatewayFrames.setLit(level, placement, false));
     }
 
     /** Empty-handed, or a wrong item, on an unattuned keystone: say what it actually needs. */

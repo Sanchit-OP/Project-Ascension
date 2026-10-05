@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "lit=false": {
       "model": "ascension_worlds:block/inscribed_gatestone"
+    },
+    "lit=true": {
+      "model": "ascension_worlds:block/inscribed_gatestone_lit"
     }
   }
 }
