@@ -250,6 +250,30 @@ def gatestone(rng):
     return img
 
 
+def rune_pixels():
+    """Every carved rune pixel on the gatestone, top line first."""
+    for y0, glyphs in RUNE_LINES:
+        for gx, g in zip(RUNE_X, glyphs):
+            for dy, row in enumerate(RUNES[g]):
+                for dx, ch in enumerate(row):
+                    if ch == '#':
+                        yield gx + dx, y0 + dy
+
+
+def gatestone_glow(frames=24):
+    """Emissive overlay for an attuned gate's ring: only the runes, drawn full-bright by the lit
+    model. A slow glint runs down the three lines of script, so a whole ring of gatestones reads
+    as one inscription waking up rather than as many separate blinking blocks."""
+    strip = new(16, 16 * frames)
+    px = strip.load()
+    for f in range(frames):
+        for x, y in rune_pixels():
+            wave = 0.5 + 0.5 * math.cos(2 * math.pi * (f / frames) - y * 0.42)
+            c = mix(TEAL[3], TEAL[5], 0.15 + 0.85 * wave ** 2)
+            px[x, y + 16 * f] = c + (255,)
+    return strip
+
+
 KEY_GLYPH = [
     "................",
     ".#............#.",
@@ -438,6 +462,8 @@ def main():
     put('block/anorthosite_pillar_top.png', pillar_top(ANORTH, random.Random(7)))
     put('block/chiseled_anorthosite.png', chiseled(ANORTH, random.Random(8)))
     put('block/inscribed_gatestone.png', gatestone(random.Random(9)))
+    put('block/inscribed_gatestone_glow.png', gatestone_glow())
+    write_mcmeta('block/inscribed_gatestone_glow.png', frametime=3, interpolate=True)
     put('block/gateway_keystone.png', keystone_base(random.Random(), lit=False))
     put('block/gateway_keystone_active.png', keystone_base(random.Random(), lit=True))
     put('block/gateway_keystone_glow.png', keystone_glow())

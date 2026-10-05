@@ -95,6 +95,14 @@ The site's **bottom layer is extended down** through anything replaceable to sol
 8 blocks), so the ruin never floats over a crater rim. With no site, the frame's own bottom layer
 gets the same treatment.
 
+### Blocks that light up (added 2026-10-06)
+
+Any frame block that has vanilla's `lit` blockstate property is switched to `lit=true` when the
+gate is attuned (or re-lit), and back to `lit=false` when its keystone is broken. No format field:
+the block itself says it can glow. The Inscribed Gatestone ring uses this (its runes wake with a
+running glint); a design can also put e.g. redstone lamps in a frame and they will light with it.
+Pre-generated and freshly built frames place these unlit.
+
 ## What logic does with it
 
 - **Validate (Earth):** on keystone right-click with the activation item, check every non-space

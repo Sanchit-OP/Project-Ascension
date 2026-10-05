@@ -77,15 +77,17 @@ public final class GatewayDecorBlocks {
     /**
      * The stone that borders every gateway's field, on every planet, in the builders' script.
      * The one frame block with no tag alternative: a gateway's body is local stone, its ring is
-     * always this. Crafted on Earth from polished deepslate and an echo shard.
+     * always this. Crafted on Earth from polished deepslate and an echo shard. The one block here
+     * with a state: its runes light when the gate is attuned ({@link InscribedGatestoneBlock}).
      */
-    public static final Supplier<Block> INSCRIBED_GATESTONE = block(
+    public static final Supplier<InscribedGatestoneBlock> INSCRIBED_GATESTONE = block(
             "inscribed_gatestone",
-            () -> new Block(BlockBehaviour.Properties.of()
+            () -> new InscribedGatestoneBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLACK)
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 9.0f)
-                    .sound(SoundType.DEEPSLATE_TILES)));
+                    .sound(SoundType.DEEPSLATE_TILES)
+                    .lightLevel(state -> state.getValue(InscribedGatestoneBlock.LIT) ? 9 : 0)));
 
     private GatewayDecorBlocks() {
     }

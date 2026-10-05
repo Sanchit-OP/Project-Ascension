@@ -30,7 +30,8 @@ import net.minecraft.world.phys.BlockHitResult;
  * </ul>
  *
  * <p>Breakable and craftable (Earth's players build their own), unlike the old single-block
- * portal. Breaking a keystone loses its attunement: it drops as a plain keystone.
+ * portal. Breaking a keystone loses its attunement: it drops as a plain keystone, and the frame's
+ * runes go dark.
  */
 public final class GatewayKeystoneBlock extends Block {
 
@@ -44,6 +45,14 @@ public final class GatewayKeystoneBlock extends Block {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(ACTIVE);
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (state.getValue(ACTIVE) && !newState.is(this) && level instanceof ServerLevel serverLevel) {
+            GatewayPortalActivation.onKeystoneRemoved(serverLevel, pos);
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Override
