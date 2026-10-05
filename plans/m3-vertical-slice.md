@@ -8,6 +8,50 @@ build the boss, the gateway, or the third world ADR-0005 lists as part of "finis
 repeat-travel shortcut, and a third world proving the framework is not Moon-shaped, on top of
 everything M2 already delivered.
 
+## Where M3 stands — start here (2026-10-06)
+
+Written as a handoff: a fresh session should be able to pick up from this section alone. All of
+it is committed and pushed. Details live in the sections below and the linked docs.
+
+**Built, and how far each is verified:**
+
+| What | Verified |
+|---|---|
+| M3.1 Moon boss chain (Cataclysm citadel on the Moon, Golem → Guardian → gateway key; ADR-0013 mixins) | Live 2026-10-05: bosses spawn and fight, 2.5x health applies. The Armor/MR fix (`CataclysmBossStats`) not yet seen. |
+| Moon content: End Islands Endermen, rare wild citadels | Wild citadels confirmed from the world's structure data; Endermen not seen. |
+| Gateways: walk-through multiblock frames, Moon pre-generated in a ruin site, Earth player-built, rune ring lights on attunement, destination screen, debug `goto` / `build` | Moon generation confirmed headlessly on a throwaway server world. **Sanchit was testing it in a client at handoff** — ask for the result first. |
+| Vanilla Nether/End portals dormant (ADR-0014), Warden tendril drop | Not yet seen. |
+| Share-air rescue | Needs two clients; rides on the two-client test. |
+
+**Decisions waiting on Sanchit:**
+
+1. **The Earth gateway cannot be built in survival.** The keystone recipe needs a lodestone (a
+   netherite ingot), and ADR-0014 locks the Nether out. Options offered: change the recipe to
+   Earth materials, add a substitute netherite source, or leave it until the Nether planet exists.
+   Same debt covers blaze rods, nether quartz, End items (`todo.md`, "Systems gaps").
+2. **Planet 3 (M3.3)** needs his direction before building: terrain feel, unique resource, which
+   mod supplies its boss, ambient creatures. `planets.md` only says "radiated power world".
+3. **More Moon content** — wanted, not yet specified.
+4. **Gateway lore** — why they exist (`docs/lore/world.md`).
+
+**Next, in order:** whatever Sanchit's live gateway test turns up → the keystone-recipe decision →
+Planet 3. Carried from M1, still open: the two-client test (also covers share-air) and the M1.9
+measurement. A separate task chip was offered to fix `tools/check-dist-separation.sh` missing
+client references written as method references — check `git log` for whether it landed.
+
+**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); the next is due after
+three more increments (ADR-0008).
+
+**Where things are:**
+- Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
+  design and its live checklist: [`docs/technical/gateway-portal-design.md`](../docs/technical/gateway-portal-design.md)
+  (art regenerates from `tools/generate-gateway-art.py`).
+- Debug commands, test items, and how to check worldgen without a client:
+  [`docs/technical/dev-environment.md`](../docs/technical/dev-environment.md).
+- How design and logic were split across two sessions: a written contract doc first, then a
+  prompt for the design session in its own git worktree, merged back. Worked well; reuse it for
+  Planet 3's art.
+
 ## Sequencing decision
 
 **The Moon's boss and gateway first, then Planet 3.** Not arbitrary — `planets.md`'s own

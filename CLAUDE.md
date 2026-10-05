@@ -73,6 +73,10 @@ separate parallel session — do not fold its work into this one's without askin
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators
 (`docs/technical/architecture.md` has the table).
 
+**Start a new session at [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md), section
+"Where M3 stands — start here"**: what is built, what is verified, the decisions waiting on
+Sanchit, and what is next.
+
 **M3 is in progress** — [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md). Built but
 **not yet seen in a client** (Sanchit deferred live testing on 2026-10-05 and asked for building
 to continue): the Moon's boss chain (Cataclysm's Ruined Citadel relocated via the project's first
