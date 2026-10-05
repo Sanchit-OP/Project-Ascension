@@ -2,9 +2,9 @@
 
 **Status:** design, 2026-10-06. Built against
 [`gateway-frame-format.md`](gateway-frame-format.md) without changing it. **Not yet seen in a
-running client** (ADR-0008): everything here compiles and passes a contract checker, but the
-keystone, the field and the warden tendril have no look in game until the logic session registers
-them, and none of it has been looked at live.
+running client** (ADR-0008). Everything here compiles, passes a contract checker, and loads and
+matches through the logic session's own `GatewayFrame` parser. But the keystone and field have
+no look in game until the logic session registers them, and none of it has been looked at live.
 
 | | |
 |---|---|
@@ -230,6 +230,19 @@ Things this design assumes or needs from the other side, none of which this bran
    correctly in its default state (bottom slabs, upright pillars). Nothing depends on rotation.
 5. **The keystone is a border cell.** It sits in the field's bottom border row, so breaking it
    collapses the field like any other border block.
+6. **Checked against `GatewayFrame` (9ff126f).** A throwaway test (not committed) ran the
+   shipped `gateway.json` through `GatewayFrame.CODEC` and `match()`. It loads: 453 cells, 418
+   blocks. It is recognised built in all four facings. A missing ring stone breaks the match,
+   and junk in the hidden core or the blade slots does not. Two findings from that run:
+   - **The frame is front/back symmetric**, so a build facing north is recognised as facing
+     south (and east as west); `match()` returns the first facing that fits. The opening is the
+     same either way, and both sides have identical steps, so arrivals may come out the "back".
+     That is harmless, but worth knowing before anything starts to rely on `facing()`.
+   - **`arrivalSpot()` lands one block above the reveal floor.** It assumes ground level with
+     the field's bottom row, but this design's threshold stands one block proud of the dais, so
+     arrivals drop one block (no damage). Either snap the arrival down to the first solid block,
+     or ask design to raise the reveal floor. That would bury the keystone's front face, which
+     is why it wasn't done.
 
 ## What the format could not express
 
