@@ -9,13 +9,16 @@ import com.ascension.worlds.internal.PlanetWeathers;
 import com.ascension.worlds.internal.SpaceAttachments;
 import com.ascension.worlds.internal.SpaceEnvironment;
 import com.ascension.worlds.internal.SpaceMechanics;
+import com.ascension.worlds.internal.VanillaPortals;
 import com.ascension.worlds.internal.WorldsCommands;
+import com.ascension.worlds.internal.WorldsConfig;
 import com.ascension.worlds.internal.WorldsContent;
 import com.ascension.worlds.internal.net.WorldsNetwork;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -58,6 +61,8 @@ public final class AscensionWorlds {
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         SpaceMechanics.register();
         PlanetWeatherMechanics.register();
+        VanillaPortals.register();
+        container.registerConfig(ModConfig.Type.SERVER, WorldsConfig.SPEC);
 
         LOGGER.info("Ascension Worlds loaded ({})", container.getModInfo().getVersion());
     }
