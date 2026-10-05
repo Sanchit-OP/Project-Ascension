@@ -40,3 +40,4 @@ forgets it.
 | [0011](0011-tier-1-modules-share-contracts-through-core.md) | Tier 1 modules share contracts through `core` | Accepted |
 | [0012](0012-ascension-combat-module.md) | `ascension-combat` — a new Tier 1 module for stats, items, and runes | Accepted |
 | [0013](0013-mixins-in-ascension-compat-cataclysm.md) | `ascension-compat-cataclysm` uses mixins, the project's first | Accepted |
+| [0014](0014-vanilla-nether-and-end-portals-are-dormant.md) | Vanilla Nether and End portals are dormant | Accepted |

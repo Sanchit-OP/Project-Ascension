@@ -38,8 +38,8 @@ See the register or the linked doc for reasoning:
 - **How are failed landings handled?** Deliberately deferred to v2 at M2.6 — landing damage
   belongs to whichever module ends up owning ships/landing, not `worlds` (see
   `SpaceMechanics.descendTo`'s javadoc).
-- **Why are the ancient gateways present?** Where they are is settled (M3.2); the lore is not
-  (`docs/lore/world.md`). The portal blocks are still unnamed placeholders until this is answered.
+- **Why are the ancient gateways present?** Where they are and what they look like are settled
+  (M3.2, `gateway-portal-design.md`); the lore is not (`docs/lore/world.md`).
 
 ## Outstanding before calling the server multiplayer-ready
 
@@ -89,9 +89,12 @@ See the register or the linked doc for reasoning:
   is one line per model.
 
 **Systems gaps identified 2026-09-05:**
-- **Nether removal has an uncosted recipe debt.** Cutting Nether access means re-sourcing
-  blaze, nether quartz, netherite and ancient debris wherever our progression needs them. This
-  is concrete authoring work, not a policy line.
+- **Nether removal has an uncosted recipe debt — now live (ADR-0014, 2026-10-06).** Vanilla
+  Nether/End portals are dormant, so blaze, nether quartz, netherite, ancient debris and End-only
+  items are unobtainable in survival until those worlds exist as planets. **Concrete blocker:** the
+  gateway keystone's recipe uses a lodestone (a netherite ingot), so Earth's player-built gateway
+  cannot be crafted yet; the frame's quartz trim has a no-quartz "budget" route already. Needs a
+  decision: re-source these, or change the recipes.
 - **The late-joiner gap.** "Joins at the team's current tier" collides with "unique planetary
   resources gate progression" — they get the dimension unlocked and no gear to survive it.
   Needs a catch-up mechanism, not just a permission flag.
