@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#E#",
+    "###"
+  ],
+  "key": {
+    "#": [
+      {
+        "item": "minecraft:polished_deepslate"
+      },
+      {
+        "item": "ascension_worlds:polished_moon_basalt"
+      }
+    ],
+    "E": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "result": {
+    "id": "ascension_worlds:inscribed_gatestone",
+    "count": 8
+  }
+}
