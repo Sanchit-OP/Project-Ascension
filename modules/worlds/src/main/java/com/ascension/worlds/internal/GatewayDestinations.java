@@ -35,6 +35,13 @@ public final class GatewayDestinations {
     private GatewayDestinations() {
     }
 
+    /** A player standing in a field: open the screen once per entry. */
+    static void onStepIn(ServerPlayer player, ServerLevel level) {
+        if (player.getData(SpaceAttachments.GATEWAY_PICKER_SESSION).stepIntoField(level.getGameTime())) {
+            sendPicker(player, level);
+        }
+    }
+
     static void sendPicker(ServerPlayer player, ServerLevel level) {
         GatewayNetworkState network = level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
         Registry<Planet> planets = level.getServer().registryAccess().registryOrThrow(WorldsRegistries.PLANET);
@@ -50,7 +57,7 @@ public final class GatewayDestinations {
 
         if (reachable.isEmpty()) {
             player.displayClientMessage(
-                    Component.translatable("block.ascension_worlds.gateway_portal.no_destinations")
+                    Component.translatable("block.ascension_worlds.gateway_keystone.no_destinations")
                             .withStyle(ChatFormatting.GRAY),
                     true);
             return;
@@ -74,7 +81,7 @@ public final class GatewayDestinations {
         if (!operator) {
             GatewayPickerSession session = player.getData(SpaceAttachments.GATEWAY_PICKER_SESSION);
             if (!session.isValidIn(here, level.getGameTime()) || !network.canTravel(here, surface)) {
-                return Component.translatable("block.ascension_worlds.gateway_portal.use_a_portal");
+                return Component.translatable("block.ascension_worlds.gateway_keystone.use_a_portal");
             }
             session.close();
         }

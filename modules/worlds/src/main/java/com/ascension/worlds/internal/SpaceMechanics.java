@@ -286,6 +286,12 @@ public final class SpaceMechanics {
     }
 
     private static boolean isSafeToStandOn(ServerLevel level, BlockPos pos) {
+        // A gateway field has no collision, so it would otherwise pass as open air -- and landing
+        // in one would open the destination screen the moment you arrived.
+        if (level.getBlockState(pos).is(WorldsContent.GATEWAY_FIELD.get())
+                || level.getBlockState(pos.above()).is(WorldsContent.GATEWAY_FIELD.get())) {
+            return false;
+        }
         return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
                 && level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()
                 && level.getBlockState(pos.above()).getCollisionShape(level, pos.above()).isEmpty();
@@ -307,16 +313,15 @@ public final class SpaceMechanics {
     }
 
     /**
-     * The gateway network's own entry point (M3.2): sends a player straight to a planet's surface
-     * with no space flight at all. Lands them on the ground in front of the destination's own
-     * portal &mdash; the {@code GatewayPortalPiece} face it sits in faces south, so "in front" is one
-     * block south, facing north back at it. Falls back to {@link #descendTo}'s ordinary landing when
-     * the portal's position is unknown (a network saved before positions were tracked) or nothing
-     * standable is near it. Package-private: {@link GatewayDestinations#tryTravel} is the only
-     * caller, and is where the "may this player go there?" check lives. Returns false if
-     * {@code planetDimension} is not any registered planet's surface.
+     * The gateway network's own entry point: sends a player straight to a planet's surface with no
+     * space flight, standing in front of the destination's gateway &mdash; {@code arrival} is the
+     * spot the frame itself names ({@code GatewayFrame.Placement.arrivalSpot}), recorded when that
+     * portal was attuned. Falls back to {@link #descendTo}'s ordinary landing when it is unknown
+     * (a network saved before arrival spots were recorded) or nothing standable is near it.
+     * Package-private: {@link GatewayDestinations#tryTravel} and the debug {@code goto} command
+     * are the only callers. Returns false if {@code planetDimension} is not a planet's surface.
      */
-    static boolean travelViaGateway(ServerPlayer player, ResourceLocation planetDimension, @Nullable BlockPos portal) {
+    static boolean travelViaGateway(ServerPlayer player, ResourceLocation planetDimension, @Nullable BlockPos arrival) {
         MinecraftServer server = player.getServer();
         if (server == null) {
             return false;
@@ -327,14 +332,14 @@ public final class SpaceMechanics {
                 continue;
             }
             ServerLevel surface = server.getLevel(planet.surface());
-            BlockPos spot = (surface == null || portal == null)
+            BlockPos spot = (surface == null || arrival == null)
                     ? null
-                    : findSafeLandingSpot(surface, portal.south().below(), GATEWAY_LANDING_VERTICAL_TOLERANCE);
+                    : findSafeLandingSpot(surface, arrival, GATEWAY_LANDING_VERTICAL_TOLERANCE);
             if (spot == null) {
                 descendTo(player, server, planet);
             } else {
                 player.changeDimension(new DimensionTransition(
-                        surface, Vec3.atBottomCenterOf(spot), Vec3.ZERO, FACING_NORTH, 0.0f,
+                        surface, Vec3.atBottomCenterOf(spot), Vec3.ZERO, player.getYRot(), 0.0f,
                         DimensionTransition.DO_NOTHING));
             }
             return true;
@@ -342,11 +347,8 @@ public final class SpaceMechanics {
         return false;
     }
 
-    /** How far above or below the portal's front step to look for ground. Bounded, one-off. */
+    /** How far above or below a gateway's arrival spot to look for ground. Bounded, one-off. */
     private static final int GATEWAY_LANDING_VERTICAL_TOLERANCE = 4;
-
-    /** Minecraft yaw: 0 faces south (+z), 180 faces north. */
-    private static final float FACING_NORTH = 180.0f;
 
     /**
      * Sends a player down to a planet's surface, at the spot {@link #resolveLandingSpot} resolves

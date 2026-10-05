@@ -1,0 +1,17 @@
+{
+  "_comment": "PLACEHOLDER frame so the gateway logic can be tested before the real design lands. The gateway design session replaces this whole file; format: docs/technical/gateway-frame-format.md.",
+  "key": {
+    "#": { "block": "minecraft:crying_obsidian" },
+    "K": { "block": "ascension_worlds:gateway_keystone" }
+  },
+  "keystone": "K",
+  "field": "O",
+  "layers": [
+    ["##K##"],
+    ["#OOO#"],
+    ["#OOO#"],
+    ["#OOO#"],
+    ["#OOO#"],
+    ["#####"]
+  ]
+}

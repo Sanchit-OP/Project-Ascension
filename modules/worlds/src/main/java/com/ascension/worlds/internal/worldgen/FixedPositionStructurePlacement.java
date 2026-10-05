@@ -55,7 +55,7 @@ public final class FixedPositionStructurePlacement extends StructurePlacement {
         this.chunkZ = SectionPos.blockToSectionCoord(locateAt.getZ());
     }
 
-    private Vec3i locateAt() {
+    public Vec3i locateAt() {
         return this.locateAt;
     }
 

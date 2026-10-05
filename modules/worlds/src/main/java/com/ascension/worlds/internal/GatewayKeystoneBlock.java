@@ -16,23 +16,27 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * The one block every planet's gateway portal is, structurally &mdash; see
- * {@code plans/m3-vertical-slice.md}'s M3.2. {@link #ACTIVE} mirrors what
- * {@link GatewayNetworkState} says about this planet; it is a rendering/interaction convenience,
- * not the source of truth.
+ * The one block in a gateway frame players interact with &mdash; see
+ * {@code docs/technical/gateway-frame-format.md}. {@link #ACTIVE} means <em>attuned</em>: this
+ * keystone has been activated once and lights its frame for free from then on.
  *
- * <p>Right-clicking an inactive portal with the item this planet requires
- * ({@link GatewayPortalActivation}) consumes it and flips the block active. Right-clicking an
- * already-active portal opens the destination list instead ({@link GatewayDestinations}), and an
- * empty-handed click on either state reports what is needed or what is possible &mdash; the same
- * "a machine that silently refuses looks like a bug" reasoning
- * {@code OxygenRefillStationBlock} already uses.
+ * <ul>
+ *   <li>Unattuned, holding what this planet's portal needs ({@link GatewayPortalActivation}):
+ *       checks the frame and, if it is whole, attunes and lights it.</li>
+ *   <li>Unattuned, anything else: says what it needs.</li>
+ *   <li>Attuned: re-lights the frame if its field has collapsed (a border block was broken and
+ *       put back), then opens the destination screen &mdash; the same thing walking into the
+ *       field does.</li>
+ * </ul>
+ *
+ * <p>Breakable and craftable (Earth's players build their own), unlike the old single-block
+ * portal. Breaking a keystone loses its attunement: it drops as a plain keystone.
  */
-public final class GatewayPortalBlock extends Block {
+public final class GatewayKeystoneBlock extends Block {
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public GatewayPortalBlock(Properties properties) {
+    public GatewayKeystoneBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false));
     }
@@ -51,8 +55,8 @@ public final class GatewayPortalBlock extends Block {
                 || !(player instanceof ServerPlayer serverPlayer)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        if (GatewayPortalActivation.tryActivate(serverLevel, pos, serverPlayer, stack)) {
-            level.setBlock(pos, state.setValue(ACTIVE, true), 3);
+        if (GatewayPortalActivation.satisfies(serverLevel, stack)) {
+            GatewayPortalActivation.tryAttune(serverLevel, pos, serverPlayer, stack);
         } else {
             GatewayPortalActivation.describeRequirement(serverLevel, serverPlayer);
         }
@@ -66,7 +70,7 @@ public final class GatewayPortalBlock extends Block {
             return InteractionResult.SUCCESS;
         }
         if (state.getValue(ACTIVE)) {
-            GatewayDestinations.sendPicker(serverPlayer, serverLevel);
+            GatewayPortalActivation.relightAndOpen(serverLevel, pos, serverPlayer);
         } else {
             GatewayPortalActivation.describeRequirement(serverLevel, serverPlayer);
         }

@@ -13,15 +13,16 @@
   "block.ascension_worlds.moon_basalt": "Lunar Basalt",
 
   "item.ascension_worlds.gateway_key": "Gateway Key",
-  "item.ascension_worlds.relay_coil": "Relay Coil",
   "item.ascension_worlds.warden_tendril": "Warden Tendril",
-  "block.ascension_worlds.gateway_portal": "Ancient Gateway Portal",
+  "block.ascension_worlds.gateway_keystone": "Gateway Keystone",
+  "block.ascension_worlds.gateway_field": "Gateway Field",
 
-  "block.ascension_worlds.gateway_portal.activated": "The gateway hums to life.",
-  "block.ascension_worlds.gateway_portal.needs_relay_coil": "This gateway needs a Relay Coil to wake it up.",
-  "block.ascension_worlds.gateway_portal.needs_gateway_key": "This gateway needs this planet's own Gateway Key.",
-  "block.ascension_worlds.gateway_portal.pick_destination": "The gateway is open. Choose a destination",
-  "block.ascension_worlds.gateway_portal.no_destinations": "No other gateway is active yet.",
+  "block.ascension_worlds.gateway_keystone.activated": "The gateway hums to life.",
+  "block.ascension_worlds.gateway_keystone.needs_warden_tendril": "This gateway needs a Warden Tendril to wake it up.",
+  "block.ascension_worlds.gateway_keystone.frame_incomplete": "The gateway frame around this keystone is incomplete or blocked.",
+  "block.ascension_worlds.gateway_keystone.needs_gateway_key": "This gateway needs this planet's own Gateway Key.",
+  "block.ascension_worlds.gateway_keystone.pick_destination": "The gateway is open. Choose a destination",
+  "block.ascension_worlds.gateway_keystone.no_destinations": "No other gateway is active yet.",
   "ascension_worlds.vanilla_portal.dormant": "This portal is dormant. Its world must be reached another way.",
-  "block.ascension_worlds.gateway_portal.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
+  "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
 }

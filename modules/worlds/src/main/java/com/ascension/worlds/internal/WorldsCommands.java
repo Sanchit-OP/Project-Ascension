@@ -2,7 +2,13 @@ package com.ascension.worlds.internal;
 
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.internal.net.PlanetWeatherSyncPayload;
+import com.ascension.worlds.api.WorldsRegistries;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.commands.SharedSuggestionProvider;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -37,8 +43,40 @@ public final class WorldsCommands {
                         .then(Commands.literal("gateway")
                                 .then(Commands.literal("travel")
                                         .then(Commands.argument("planet", ResourceLocationArgument.id())
+                                                .suggests(WorldsCommands::suggestPlanetSurfaces)
                                                 .executes(ctx -> gatewayTravel(ctx.getSource(),
-                                                        ResourceLocationArgument.getId(ctx, "planet"))))))));
+                                                        ResourceLocationArgument.getId(ctx, "planet")))))
+                                .then(Commands.literal("goto")
+                                        .requires(source -> source.hasPermission(2))
+                                        .then(Commands.argument("planet", ResourceLocationArgument.id())
+                                                .suggests(WorldsCommands::suggestPlanetSurfaces)
+                                                .executes(ctx -> report(ctx.getSource(), GatewayDebug.goTo(
+                                                        ctx.getSource().getPlayerOrException(),
+                                                        ResourceLocationArgument.getId(ctx, "planet"))))))
+                                .then(Commands.literal("build")
+                                        .requires(source -> source.hasPermission(2))
+                                        .executes(ctx -> report(ctx.getSource(), GatewayDebug.build(
+                                                ctx.getSource().getPlayerOrException(), false)))
+                                        .then(Commands.literal("active")
+                                                .executes(ctx -> report(ctx.getSource(), GatewayDebug.build(
+                                                        ctx.getSource().getPlayerOrException(), true))))))));
+    }
+
+    private static CompletableFuture<Suggestions> suggestPlanetSurfaces(
+            CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggestResource(
+                context.getSource().registryAccess().registryOrThrow(WorldsRegistries.PLANET).stream()
+                        .map(planet -> planet.surface().location()),
+                builder);
+    }
+
+    /** A debug command's outcome: null is success, anything else is why it failed. */
+    private static int report(CommandSourceStack source, Component failure) {
+        if (failure != null) {
+            source.sendFailure(failure);
+            return 0;
+        }
+        return 1;
     }
 
     /**

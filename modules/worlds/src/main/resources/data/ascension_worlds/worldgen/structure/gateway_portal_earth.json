@@ -1,6 +1,0 @@
-{
-  "type": "ascension_worlds:gateway_portal",
-  "biomes": "#minecraft:is_overworld",
-  "spawn_overrides": {},
-  "step": "surface_structures"
-}
