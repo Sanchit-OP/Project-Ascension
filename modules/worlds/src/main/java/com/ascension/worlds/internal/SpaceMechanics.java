@@ -19,6 +19,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -261,10 +262,24 @@ public final class SpaceMechanics {
      * player somewhere arbitrary far from where they meant to be.
      */
     private static BlockPos findSafeLandingSpot(ServerLevel level, BlockPos preferred) {
+        return findSafeLandingSpot(level, preferred, 0);
+    }
+
+    /**
+     * As above, but each ring column is also tried up to {@code verticalTolerance} blocks above and
+     * below (nearest first). Gateway arrivals need it: a portal's own Y says nothing exact about
+     * where the ground in front of it is on hilly terrain, unlike a remembered ascent point, which
+     * was a spot a player was actually standing on.
+     */
+    private static BlockPos findSafeLandingSpot(ServerLevel level, BlockPos preferred, int verticalTolerance) {
         for (RingSearch.Offset offset : RingSearch.offsetsUpTo(SAFE_SPOT_SEARCH_RADIUS)) {
-            BlockPos candidate = preferred.offset(offset.dx(), 0, offset.dz());
-            if (isSafeToStandOn(level, candidate)) {
-                return candidate;
+            for (int step = 0; step <= verticalTolerance * 2; step++) {
+                // 0, +1, -1, +2, -2, ...
+                int dy = (step % 2 == 1) ? (step + 1) / 2 : -(step / 2);
+                BlockPos candidate = preferred.offset(offset.dx(), dy, offset.dz());
+                if (isSafeToStandOn(level, candidate)) {
+                    return candidate;
+                }
             }
         }
         return null;
@@ -293,26 +308,45 @@ public final class SpaceMechanics {
 
     /**
      * The gateway network's own entry point (M3.2): sends a player straight to a planet's surface
-     * with no space flight at all, reusing {@link #descendTo}'s landing resolution &mdash; a
-     * repaired portal is a shortcut around the approach/descent sequence, not a different one.
-     * Package-private: the gateway travel command in {@link WorldsCommands} is the only caller,
-     * and is where the "may this player go there?" check lives. Returns false if
+     * with no space flight at all. Lands them on the ground in front of the destination's own
+     * portal &mdash; the {@code GatewayPortalPiece} face it sits in faces south, so "in front" is one
+     * block south, facing north back at it. Falls back to {@link #descendTo}'s ordinary landing when
+     * the portal's position is unknown (a network saved before positions were tracked) or nothing
+     * standable is near it. Package-private: {@link GatewayDestinations#tryTravel} is the only
+     * caller, and is where the "may this player go there?" check lives. Returns false if
      * {@code planetDimension} is not any registered planet's surface.
      */
-    static boolean travelViaGateway(ServerPlayer player, ResourceLocation planetDimension) {
+    static boolean travelViaGateway(ServerPlayer player, ResourceLocation planetDimension, @Nullable BlockPos portal) {
         MinecraftServer server = player.getServer();
         if (server == null) {
             return false;
         }
         Registry<Planet> planets = server.registryAccess().registryOrThrow(WorldsRegistries.PLANET);
         for (Planet planet : planets) {
-            if (planet.surface().location().equals(planetDimension)) {
-                descendTo(player, server, planet);
-                return true;
+            if (!planet.surface().location().equals(planetDimension)) {
+                continue;
             }
+            ServerLevel surface = server.getLevel(planet.surface());
+            BlockPos spot = (surface == null || portal == null)
+                    ? null
+                    : findSafeLandingSpot(surface, portal.south().below(), GATEWAY_LANDING_VERTICAL_TOLERANCE);
+            if (spot == null) {
+                descendTo(player, server, planet);
+            } else {
+                player.changeDimension(new DimensionTransition(
+                        surface, Vec3.atBottomCenterOf(spot), Vec3.ZERO, FACING_NORTH, 0.0f,
+                        DimensionTransition.DO_NOTHING));
+            }
+            return true;
         }
         return false;
     }
+
+    /** How far above or below the portal's front step to look for ground. Bounded, one-off. */
+    private static final int GATEWAY_LANDING_VERTICAL_TOLERANCE = 4;
+
+    /** Minecraft yaw: 0 faces south (+z), 180 faces north. */
+    private static final float FACING_NORTH = 180.0f;
 
     /**
      * Sends a player down to a planet's surface, at the spot {@link #resolveLandingSpot} resolves

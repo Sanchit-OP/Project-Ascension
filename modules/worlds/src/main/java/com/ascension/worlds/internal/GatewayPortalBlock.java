@@ -51,7 +51,7 @@ public final class GatewayPortalBlock extends Block {
                 || !(player instanceof ServerPlayer serverPlayer)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        if (GatewayPortalActivation.tryActivate(serverLevel, serverPlayer, stack)) {
+        if (GatewayPortalActivation.tryActivate(serverLevel, pos, serverPlayer, stack)) {
             level.setBlock(pos, state.setValue(ACTIVE, true), 3);
         } else {
             GatewayPortalActivation.describeRequirement(serverLevel, serverPlayer);

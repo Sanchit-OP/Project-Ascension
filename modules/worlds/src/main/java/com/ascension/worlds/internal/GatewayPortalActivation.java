@@ -1,6 +1,7 @@
 package com.ascension.worlds.internal;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +27,7 @@ final class GatewayPortalActivation {
      * network flag actually changed, since re-activating an already-active portal with the right
      * item should still feel like it worked rather than silently failing.
      */
-    static boolean tryActivate(ServerLevel level, ServerPlayer player, ItemStack stack) {
+    static boolean tryActivate(ServerLevel level, BlockPos portal, ServerPlayer player, ItemStack stack) {
         ResourceLocation planetId = level.dimension().location();
         if (!satisfies(planetId, stack)) {
             return false;
@@ -35,7 +36,7 @@ final class GatewayPortalActivation {
             stack.shrink(1);
         }
         ServerLevel overworld = level.getServer().overworld();
-        boolean changed = overworld.getData(SpaceAttachments.GATEWAY_NETWORK_STATE).activate(planetId);
+        boolean changed = overworld.getData(SpaceAttachments.GATEWAY_NETWORK_STATE).activate(planetId, portal);
         level.playSound(null, player.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0f, 1.0f);
         if (changed) {
             player.displayClientMessage(

@@ -19,9 +19,9 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
  * {@code ascension_worlds:fixed_position} coordinate. Per ADR-0007 rule 10, a planet's own portal
  * is authoring, not a new class; Planet 3's copy reuses this Java unchanged.
  *
- * <p>A single block is small enough that the one-chunk write limit
- * {@link com.ascension.worlds.internal.terrain.CraterPiece}'s javadoc explains never applies here
- * &mdash; see {@link GatewayPortalPiece}.
+ * <p>The pillar {@link GatewayPortalPiece} builds is 3&times;3 around the chunk's middle block, so
+ * it stays inside one chunk and the one-chunk write limit
+ * {@link com.ascension.worlds.internal.terrain.CraterPiece}'s javadoc explains never applies.
  */
 public final class GatewayPortalStructure extends Structure {
 

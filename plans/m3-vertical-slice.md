@@ -231,6 +231,25 @@ picker-session and `canTravel` rules from the refactor pass are applied; the cli
 trusted. Non-pausing in single-player, because the session it rides on expires in game time.
 Payload protocol version 1 → 2. Not yet seen in a client.
 
+**First live test, 2026-10-05 (fresh world, dedicated server).** Confirmed: both bosses spawn
+and fight, the 2.5x health multiplier applies (Golem 375 HP), the destination screen opens and
+travels. Found and fixed the same day:
+
+- **Bosses had 0 Armor / 0 Magic Resist.** `ascension-combat` only assigns its two attributes to
+  vanilla mob types. `CataclysmBossStats` (compat jar, optional dependency on combat's api, loads
+  AFTER it) gives the Golem HEAVY (50/20) and the Guardian BOSS (100/40) values.
+- **Gateway travel landed at 0,0**, the generic first-arrival point, not at the destination's
+  portal. `GatewayNetworkState` now remembers each portal's position at activation (from the
+  clicked block, so a hand-placed portal works too), and travel lands one block south of it,
+  facing it. Old saves without positions still load and fall back to the ordinary landing.
+- **The Moon portal was unfindable.** A single block 800 blocks from the arrival point, and its
+  chunk had never even generated (Chunky was stopped before reaching it). Now a 3&times;3 obsidian
+  pillar 10 tall with the portal set in its south face (Sanchit's design), and the Moon's copy
+  moved to x=-160 so it is in view of where players first land. Needs a fresh world to see.
+- **The citadel at 0,0 was a wild copy**, confirmed by reading the world's structure starts: the
+  story citadel generated correctly at chunk (50,0); three wild ones generated within ~1,000
+  blocks. Working as designed.
+
 **Still open / explicitly deferred:**
 - Any lore/flavor text for the two structures (currently unnamed placeholder blocks — obsidian
   reused for inactive, sea lantern for active, both flagged `_comment` placeholders same as

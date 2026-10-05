@@ -69,17 +69,17 @@ public final class GatewayDestinations {
     static Component tryTravel(ServerPlayer player, ResourceLocation surface, boolean operator) {
         ServerLevel level = player.serverLevel();
         ResourceLocation here = level.dimension().location();
+        GatewayNetworkState network = level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
 
         if (!operator) {
             GatewayPickerSession session = player.getData(SpaceAttachments.GATEWAY_PICKER_SESSION);
-            GatewayNetworkState network = level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
             if (!session.isValidIn(here, level.getGameTime()) || !network.canTravel(here, surface)) {
                 return Component.translatable("block.ascension_worlds.gateway_portal.use_a_portal");
             }
             session.close();
         }
 
-        if (!SpaceMechanics.travelViaGateway(player, surface)) {
+        if (!SpaceMechanics.travelViaGateway(player, surface, network.portalAt(surface))) {
             return Component.literal(surface + " is not a planet surface.");
         }
         return null;
