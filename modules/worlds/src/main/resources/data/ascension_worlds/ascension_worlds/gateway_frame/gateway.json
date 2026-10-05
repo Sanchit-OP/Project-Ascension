@@ -1,0 +1,196 @@
+{
+  "key": {
+    "D": {"tag": "ascension_worlds:gateway_frame_dark", "place": "ascension_worlds:moon_basalt_bricks"},
+    "d": {"tag": "ascension_worlds:gateway_frame_dark", "place": "ascension_worlds:polished_moon_basalt"},
+    "P": {"tag": "ascension_worlds:gateway_frame_pale", "place": "ascension_worlds:anorthosite_bricks"},
+    "I": {"tag": "ascension_worlds:gateway_frame_pillar", "place": "ascension_worlds:anorthosite_pillar"},
+    "C": {"tag": "ascension_worlds:gateway_frame_accent", "place": "ascension_worlds:chiseled_anorthosite"},
+    "_": {"tag": "ascension_worlds:gateway_frame_step", "place": "ascension_worlds:moon_basalt_brick_slab"},
+    "G": {"block": "ascension_worlds:inscribed_gatestone"},
+    "K": {"block": "ascension_worlds:gateway_keystone"}
+  },
+  "keystone": "K",
+  "field": "O",
+  "layers": [
+    [
+      "_______________",
+      "DDDDDDDDDDDDDDD",
+      "D             D",
+      "D             D",
+      "D             D",
+      "DDDDDDDDDDDDDDD",
+      "_______________"
+    ],
+    [
+      "               ",
+      " _____________ ",
+      " ddddddddddddd ",
+      " d           d ",
+      " ddddddddddddd ",
+      " _____________ ",
+      "               "
+    ],
+    [
+      "               ",
+      "DDD         DDD",
+      "D  C       C  D",
+      "D   GGGKGGG   D",
+      "D  C       C  D",
+      "DDD         DDD",
+      "               "
+    ],
+    [
+      "               ",
+      "PPP         PPP",
+      "P  I       I  P",
+      "P   GOOOOOG   P",
+      "P  I       I  P",
+      "PPP         PPP",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "dddI       Iddd",
+      "I   GOOOOOG   I",
+      "dddI       Iddd",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "dddI       Iddd",
+      "I d GOOOOOG d I",
+      "dddI       Iddd",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "dd I       I dd",
+      "Id PGOOOOOGP dI",
+      "dd I       I dd",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "PP I       I PP",
+      "IP PGOOOOOGP PI",
+      "PP I       I PP",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "dd I       I dd",
+      "Id PGOOOOOGP dI",
+      "dd I       I dd",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "dd I       I dd",
+      "Id PGOOOOOGP dI",
+      "dd I       I dd",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "dd I       I dd",
+      "Id PGGGGGGGP dI",
+      "dd I       I dd",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "PPPCCCCCCCCCPPP",
+      "P PC       CP P",
+      "PPPCCCCCCCCCPPP",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      " dd DDDDDDD dd ",
+      " dd D     D dd ",
+      " dd DDDDDDD dd ",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "               ",
+      " Pd  DDDDD  dP ",
+      "               ",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "               ",
+      " Pd         dP ",
+      "               ",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "               ",
+      "  Pd   P   dP  ",
+      "               ",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "               ",
+      "  Pd  P P  dP  ",
+      "               ",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "               ",
+      "   P P G P P   ",
+      "               ",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "               ",
+      "    C P P C    ",
+      "               ",
+      "               ",
+      "               "
+    ],
+    [
+      "               ",
+      "               ",
+      "               ",
+      "       P       ",
+      "               ",
+      "               ",
+      "               "
+    ]
+  ]
+}

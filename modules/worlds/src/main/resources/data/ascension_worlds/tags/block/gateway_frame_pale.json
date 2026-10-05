@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "ascension_worlds:anorthosite_bricks",
+    "ascension_worlds:anorthosite",
+    "minecraft:quartz_bricks",
+    "minecraft:quartz_block",
+    "minecraft:smooth_quartz",
+    "minecraft:calcite",
+    "minecraft:polished_diorite"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "ascension_worlds:moon_basalt_brick_slab",
+    "ascension_worlds:anorthosite_brick_slab",
+    "minecraft:deepslate_brick_slab",
+    "minecraft:deepslate_tile_slab",
+    "minecraft:polished_deepslate_slab",
+    "minecraft:polished_blackstone_brick_slab",
+    "minecraft:polished_blackstone_slab"
+  ]
+}
