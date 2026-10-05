@@ -16,6 +16,7 @@ import com.ascension.worlds.internal.WorldsCommands;
 import com.ascension.worlds.internal.WorldsConfig;
 import com.ascension.worlds.internal.WorldsContent;
 import com.ascension.worlds.internal.gateway.GatewayFrame;
+import com.ascension.worlds.internal.gateway.GatewaySite;
 import com.ascension.worlds.internal.net.WorldsNetwork;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -83,6 +84,7 @@ public final class AscensionWorlds {
         event.dataPackRegistry(WorldsRegistries.PLANET, Planet.CODEC, Planet.CODEC);
         // Server-only: no client ever needs a frame's pattern.
         event.dataPackRegistry(GatewayFrames.REGISTRY, GatewayFrame.CODEC);
+        event.dataPackRegistry(GatewayFrames.SITE_REGISTRY, GatewaySite.CODEC);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
