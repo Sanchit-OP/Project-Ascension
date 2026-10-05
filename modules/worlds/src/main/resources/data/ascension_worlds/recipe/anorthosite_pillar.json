@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "ascension_worlds:anorthosite_bricks"
+    }
+  },
+  "result": {
+    "id": "ascension_worlds:anorthosite_pillar",
+    "count": 2
+  }
+}

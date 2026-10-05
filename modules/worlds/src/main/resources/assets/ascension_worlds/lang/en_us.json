@@ -23,6 +23,17 @@
   "block.ascension_worlds.gateway_keystone.needs_gateway_key": "This gateway needs this planet's own Gateway Key.",
   "block.ascension_worlds.gateway_keystone.pick_destination": "The gateway is open. Choose a destination",
   "block.ascension_worlds.gateway_keystone.no_destinations": "No other gateway is active yet.",
+  "block.ascension_worlds.inscribed_gatestone": "Inscribed Gatestone",
+  "block.ascension_worlds.polished_moon_basalt": "Polished Lunar Basalt",
+  "block.ascension_worlds.moon_basalt_bricks": "Lunar Basalt Bricks",
+  "block.ascension_worlds.cracked_moon_basalt_bricks": "Cracked Lunar Basalt Bricks",
+  "block.ascension_worlds.moon_basalt_brick_slab": "Lunar Basalt Brick Slab",
+  "block.ascension_worlds.anorthosite_bricks": "Anorthosite Bricks",
+  "block.ascension_worlds.cracked_anorthosite_bricks": "Cracked Anorthosite Bricks",
+  "block.ascension_worlds.anorthosite_brick_slab": "Anorthosite Brick Slab",
+  "block.ascension_worlds.anorthosite_pillar": "Anorthosite Pillar",
+  "block.ascension_worlds.chiseled_anorthosite": "Chiseled Anorthosite",
+
   "ascension_worlds.vanilla_portal.dormant": "This portal is dormant. Its world must be reached another way.",
   "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
 }

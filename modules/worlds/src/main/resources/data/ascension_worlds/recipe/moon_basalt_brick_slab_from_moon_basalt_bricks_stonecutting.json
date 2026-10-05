@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "ascension_worlds:moon_basalt_bricks"
+  },
+  "result": {
+    "id": "ascension_worlds:moon_basalt_brick_slab",
+    "count": 2
+  }
+}

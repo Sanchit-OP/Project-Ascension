@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": {
+    "item": "ascension_worlds:moon_basalt_bricks"
+  },
+  "result": {
+    "id": "ascension_worlds:cracked_moon_basalt_bricks"
+  }
+}

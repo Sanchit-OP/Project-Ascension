@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "ascension_worlds:block/anorthosite_pillar"
+    },
+    "axis=z": {
+      "model": "ascension_worlds:block/anorthosite_pillar_horizontal",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "ascension_worlds:block/anorthosite_pillar_horizontal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}
