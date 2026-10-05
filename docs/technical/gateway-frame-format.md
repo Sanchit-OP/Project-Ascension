@@ -83,9 +83,17 @@ One file: `modules/worlds/src/main/resources/data/ascension_worlds/ascension_wor
 ### Optional: the Moon site
 
 Pre-generation can wrap the Moon's frame in extra decoration (a plaza, ruined pillars, steps):
-`.../gateway_frame/gateway_moon_site.json`, same `key`/`layers` format (no `keystone`/`field`),
-plus `"frame_offset": [x, y, z]` — where the frame's own cell `(0,0,0)` sits inside the site
-grid. Decoration is placed on the Moon only and never validated. Same size limit, ×2.
+`data/<ns>/ascension_worlds/gateway_site/<id>.json` &mdash; its **own folder** (each datapack
+registry parses every file in its folder with one codec, and a site is not a frame; amended
+2026-10-06, it was first specified beside the frames). Same `key`/`layers` format (no
+`keystone`/`field`), plus `"frame_offset": [x, y, z]` &mdash; where the frame's own cell `(0,0,0)`
+sits inside the site grid. Decoration is placed on the Moon only and never validated. Same size
+limit, &times;2. A pre-generated structure names its site: `"site": "<id>"` in
+`worldgen/structure/gateway_frame_*.json`.
+
+The site's **bottom layer is extended down** through anything replaceable to solid ground (at most
+8 blocks), so the ruin never floats over a crater rim. With no site, the frame's own bottom layer
+gets the same treatment.
 
 ## What logic does with it
 
@@ -96,4 +104,6 @@ grid. Decoration is placed on the Moon only and never validated. Same size limit
 - **Pre-generate (Moon):** place the site (if any) and the frame at a fixed spot near the arrival
   point, front facing south, `place`/`block` per cell, field cells left as air, keystone
   `active=false`.
-- **Arrive:** travellers land on the ground just in front of the destination frame's field.
+- **Arrive:** travellers land on the ground just in front of the destination frame's field: the
+  spot one block out from the field's bottom-centre, searched a few blocks up and down (and a few
+  out) for real standable ground, never inside a field.

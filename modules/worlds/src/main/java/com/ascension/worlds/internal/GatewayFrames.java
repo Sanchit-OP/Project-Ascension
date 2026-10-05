@@ -2,6 +2,7 @@ package com.ascension.worlds.internal;
 
 import com.ascension.worlds.AscensionWorlds;
 import com.ascension.worlds.internal.gateway.GatewayFrame;
+import com.ascension.worlds.internal.gateway.GatewaySite;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,6 +36,10 @@ public final class GatewayFrames {
     public static final ResourceKey<Registry<GatewayFrame>> REGISTRY = ResourceKey.createRegistryKey(
             ResourceLocation.fromNamespaceAndPath(AscensionWorlds.MOD_ID, "gateway_frame"));
 
+    /** Decoration around a pre-generated frame: {@code data/<ns>/ascension_worlds/gateway_site/<id>.json}. */
+    public static final ResourceKey<Registry<GatewaySite>> SITE_REGISTRY = ResourceKey.createRegistryKey(
+            ResourceLocation.fromNamespaceAndPath(AscensionWorlds.MOD_ID, "gateway_site"));
+
     /** The one frame every gateway uses today. Per-planet frames would be a field on the planet. */
     public static final ResourceKey<GatewayFrame> DEFAULT = ResourceKey.create(
             REGISTRY, ResourceLocation.fromNamespaceAndPath(AscensionWorlds.MOD_ID, "gateway"));
@@ -48,6 +53,10 @@ public final class GatewayFrames {
 
     public static Optional<GatewayFrame> get(RegistryAccess access) {
         return get(access, DEFAULT);
+    }
+
+    public static Optional<GatewaySite> getSite(RegistryAccess access, ResourceKey<GatewaySite> id) {
+        return access.registry(SITE_REGISTRY).flatMap(registry -> registry.getOptional(id));
     }
 
     /** What the opening may hold when an unlit frame is checked: nothing in the way. */

@@ -1,6 +1,7 @@
 {
   "type": "ascension_worlds:gateway_frame",
   "frame": "ascension_worlds:gateway",
+  "site": "ascension_worlds:gateway_moon_site",
   "biomes": "#ascension_worlds:moon_biomes",
   "spawn_overrides": {},
   "step": "surface_structures"

@@ -252,7 +252,7 @@ public final class WorldsContent {
                     .sound(SoundType.DEEPSLATE)
                     .requiresCorrectToolForDrops()
                     .strength(50.0f, 1200.0f)
-                    .lightLevel(state -> state.getValue(GatewayKeystoneBlock.ACTIVE) ? 10 : 0)));
+                    .lightLevel(state -> state.getValue(GatewayKeystoneBlock.ACTIVE) ? 12 : 0)));
 
     public static final Supplier<Item> GATEWAY_KEYSTONE_ITEM = ITEMS.register(
             "gateway_keystone", () -> new BlockItem(GATEWAY_KEYSTONE.get(), new Item.Properties()));
