@@ -21,5 +21,6 @@
   "block.ascension_worlds.gateway_portal.needs_gateway_key": "This gateway needs this planet's own Gateway Key.",
   "block.ascension_worlds.gateway_portal.pick_destination": "The gateway is open. Choose a destination",
   "block.ascension_worlds.gateway_portal.no_destinations": "No other gateway is active yet.",
+  "ascension_worlds.vanilla_portal.dormant": "This portal is dormant. Its world must be reached another way.",
   "block.ascension_worlds.gateway_portal.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
 }
