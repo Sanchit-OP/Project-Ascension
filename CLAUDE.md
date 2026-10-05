@@ -77,9 +77,12 @@ jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicato
 **not yet seen in a client** (Sanchit deferred live testing on 2026-10-05 and asked for building
 to continue): the Moon's boss chain (Cataclysm's Ruined Citadel relocated via the project's first
 mixins, ADR-0013; Ender Golem → Ender Guardian → gateway key), End Islands Endermen and rare
-wild citadels on the Moon, the gateway network (portals on Earth and the Moon, Relay Coil /
-gateway key activation, a destination screen), the M3 refactor pass (closed a free-teleport hole
-in the gateway travel command; `worlds` tests 18 → 34), and share-air rescue. **The next live
+wild citadels on the Moon, and share-air rescue. **Gateways are walk-through multiblock
+frames** (2026-10-06): the frame is data (`docs/technical/gateway-frame-format.md`, designed in a
+separate session — `gateway-portal-design.md`), pre-generated on the Moon inside a ruin and
+attuned with the boss's key, player-built on Earth and attuned with a Warden tendril; walking in
+opens a destination screen; the rune ring lights when a gate wakes. Vanilla Nether and End portals
+are dormant (ADR-0014). Two refactor passes this milestone; `worlds` tests 18 → 68. **The next live
 session has a long checklist** — every "not yet confirmed live" line in the M3 plan. Planet 3
 (M3.3) is next to build and needs Sanchit's design input first.
 

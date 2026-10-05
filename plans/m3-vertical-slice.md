@@ -147,6 +147,12 @@ for the status icon on targets that do accept it.
 
 ## M3.2 — The gateway network (redesigned 2026-09-21, supersedes the single-shortcut draft below)
 
+> **Current state, 2026-10-06 — read increment 3 below first.** Gateways are now walk-through
+> multiblock frames (`docs/technical/gateway-frame-format.md`, design in
+> `docs/technical/gateway-portal-design.md`). Increment 1's single-block portal, its Earth copy,
+> the Relay Coil and the later obsidian pillar are all gone; the sections describing them are kept
+> as history.
+
 **Sanchit's correction: this is not an Earth&harr;Moon shortcut, it's a network.** The same
 portal structure exists on every planet (Earth included). Built/found on Earth first — trying to
 use it there does nothing, it's inert. The **same structure** on the Moon is the one that
@@ -250,12 +256,36 @@ travels. Found and fixed the same day:
   story citadel generated correctly at chunk (50,0); three wild ones generated within ~1,000
   blocks. Working as designed.
 
+**Increment 3, 2026-10-05/06: walk-through multiblock gateways.** Sanchit's call after the live
+test: the pillar "doesn't even feel like a portal" — he wanted something in the league of the
+Nether and End portals. Split into two sessions against one written contract,
+`docs/technical/gateway-frame-format.md`: a design session authored the frame, the Moon ruin
+site, ten decorative Moon-stone blocks and all the art (`gateway-portal-design.md`); this side
+built the logic.
+
+- **The frame is data** (`ascension_worlds/gateway_frame/gateway.json`, a 15&times;20&times;7
+  crescent arch with a 5&times;7 opening), read by the pure, unit-tested `GatewayFrame`.
+- **Earth: player-built**, attuned by right-clicking the keystone with a **Warden tendril** (new
+  item, Warden drop via a loot modifier). **Moon: pre-generated** inside its ruin site at x=-160
+  (in view of the arrival point), attuned with the boss's gateway key. No Earth pre-generation,
+  no Relay Coil.
+- **Attuning** checks the frame in all four facings, fills the opening with `gateway_field`, lights
+  every frame block with a `lit` property (the Inscribed Gatestone ring), and records the arrival
+  spot network-wide. Attuned keystones re-light a collapsed field for free; breaking one darkens
+  the ring.
+- **Walking into the field opens the destination screen** (once per entry), Sanchit's pick over a
+  per-portal tuned destination. The field collapses like a Nether portal when its border breaks.
+- **Arrivals** land in front of the destination's field, never inside one.
+- **Vanilla Nether and End portals are dormant** (ADR-0014) — those worlds become planets.
+- **Debug:** `/ascension worlds gateway goto <planet>` and `build [active]`, operator-only.
+
+Verified on a throwaway dedicated-server world: the Moon gateway generates with its full site,
+keystone dormant, opening clear, ring in place, arrival spot clear. **Not yet seen in a client.**
+
 **Still open / explicitly deferred:**
-- Any lore/flavor text for the two structures (currently unnamed placeholder blocks — obsidian
-  reused for inactive, sea lantern for active, both flagged `_comment` placeholders same as
-  `moon_regolith`'s own calcite stand-in).
-- Planet 3's own activation branch, once Planet 3 exists (`GatewayPortalActivation`'s javadoc
-  flags exactly where a third branch goes).
+- Lore: why the gateways exist at all (`docs/lore/world.md`).
+- The format proposals in `gateway-portal-design.md` that are not done: block states in key
+  entries (real stairs), "must be air" cells, and clearing terrain above the Moon plaza.
 
 <details>
 <summary>Original single-shortcut draft (2026-09-21, superseded by the network redesign above)</summary>
@@ -382,6 +412,26 @@ gateway key got the item model it shipped without.
 `GatewayRulesTest`). Build and `tools/check-dist-separation.sh` clean. Like all of M3, not yet
 confirmed in a live client — the session gate in particular should be exercised by clicking a
 picker line, waiting past a minute, and typing the command by hand as a non-op.
+
+## Refactor pass, 2026-10-06
+
+ADR-0008's pass after ten increments (share-air rescue through the rune glow). No behaviour
+change:
+
+- **One grid parser.** `GatewayFrame` and `GatewaySite` each carried a near-identical copy of the
+  key/layers parser and its size checks; now `PatternGrid`, with the same error messages.
+- **Placement maths in the model.** Centring a frame, putting its arrival spot on a chosen block,
+  and its world bounds were computed in the worldgen structure, the piece and the debug command
+  respectively; now `GatewayFrame.placeCentredAt` / `placeArrivalAt` / `Placement.bounds`, pure and
+  tested.
+- **`GatewayPortalActivation`**: the two copies of "a frame becomes a working gate" are `wake()`;
+  the keystone-removed lookup is `findFrame`'s `keystoneGone`.
+- **Docs**: this plan, `CLAUDE.md`, `architecture.md` and `todo.md` brought up to date; the
+  vanilla-portal decision recorded as ADR-0014.
+
+**Tests: `worlds` 58 → 68** (and 34 → 58 across the increments themselves). Build and
+`tools/check-dist-separation.sh` clean — though that check is known to miss client references
+written as method references; a fix is queued as its own task.
 
 ## M3.3 — Planet 3
 
