@@ -1,0 +1,7 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    { "condition": "neoforge:loot_table_id", "loot_table_id": "minecraft:entities/warden" }
+  ],
+  "table": "ascension_worlds:entities/warden_tendril"
+}

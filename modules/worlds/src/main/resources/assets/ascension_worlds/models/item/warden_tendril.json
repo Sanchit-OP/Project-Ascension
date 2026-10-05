@@ -1,0 +1,7 @@
+{
+  "_comment": "Placeholder texture: reuses vanilla's echo shard until the gateway design session supplies real art.",
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/echo_shard"
+  }
+}
