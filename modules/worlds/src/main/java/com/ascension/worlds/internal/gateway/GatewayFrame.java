@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,13 +108,11 @@ public final class GatewayFrame {
         char keystoneSymbol = raw.keystone.charAt(0);
         char fieldSymbol = raw.field.charAt(0);
 
-        Map<Character, Key> key = new HashMap<>();
-        for (Map.Entry<String, Key> entry : raw.key.entrySet()) {
-            if (entry.getKey().length() != 1 || entry.getKey().charAt(0) == ' ') {
-                return DataResult.error(() -> "key \"" + entry.getKey() + "\" must be one non-space character");
-            }
-            key.put(entry.getKey().charAt(0), entry.getValue());
+        DataResult<Map<Character, Key>> parsedKey = PatternGrid.parseKey(raw.key, "");
+        if (parsedKey.error().isPresent()) {
+            return parsedKey.map(k -> null);
         }
+        Map<Character, Key> key = parsedKey.getOrThrow();
         if (key.containsKey(fieldSymbol)) {
             return DataResult.error(() -> "the field character '" + fieldSymbol + "' must not also be in \"key\"");
         }
@@ -123,36 +120,12 @@ public final class GatewayFrame {
             return DataResult.error(() -> "the keystone character '" + keystoneSymbol + "' must be in \"key\"");
         }
 
-        if (raw.layers.isEmpty() || raw.layers.size() > MAX_HEIGHT) {
-            return DataResult.error(() -> "need 1 to " + MAX_HEIGHT + " layers, got " + raw.layers.size());
+        DataResult<List<Cell>> parsedCells = PatternGrid.parseLayers(raw.layers, MAX_WIDTH, MAX_HEIGHT, MAX_DEPTH,
+                symbol -> symbol == fieldSymbol || key.containsKey(symbol), "");
+        if (parsedCells.error().isPresent()) {
+            return parsedCells.map(c -> null);
         }
-        List<Cell> cells = new ArrayList<>();
-        for (int y = 0; y < raw.layers.size(); y++) {
-            List<String> rows = raw.layers.get(y);
-            if (rows.size() > MAX_DEPTH) {
-                int layer = y;
-                return DataResult.error(() -> "layer " + layer + " is deeper than " + MAX_DEPTH);
-            }
-            for (int z = 0; z < rows.size(); z++) {
-                String row = rows.get(z);
-                if (row.length() > MAX_WIDTH) {
-                    int layer = y;
-                    int depth = z;
-                    return DataResult.error(() -> "layer " + layer + " row " + depth + " is wider than " + MAX_WIDTH);
-                }
-                for (int x = 0; x < row.length(); x++) {
-                    char symbol = row.charAt(x);
-                    if (symbol == ' ') {
-                        continue;
-                    }
-                    if (symbol != fieldSymbol && !key.containsKey(symbol)) {
-                        String where = "layer " + y + " row " + z + " column " + x;
-                        return DataResult.error(() -> "unknown character '" + symbol + "' at " + where);
-                    }
-                    cells.add(new Cell(x, y, z, symbol));
-                }
-            }
-        }
+        List<Cell> cells = parsedCells.getOrThrow();
 
         List<Cell> keystones = cells.stream().filter(c -> c.symbol == keystoneSymbol).toList();
         if (keystones.size() != 1) {
@@ -187,7 +160,7 @@ public final class GatewayFrame {
                     + " tall, got " + width + "x" + height);
         }
 
-        GatewayFrame frame = new GatewayFrame(raw, Map.copyOf(key), keystoneSymbol, fieldSymbol, List.copyOf(cells),
+        GatewayFrame frame = new GatewayFrame(raw, key, keystoneSymbol, fieldSymbol, cells,
                 keystones.get(0), minX, maxX, minY, maxY, fieldZ);
 
         for (int x = minX; x <= maxX; x++) {
@@ -268,6 +241,30 @@ public final class GatewayFrame {
     /** This frame laid out with its local origin {@code (0,0,0)} at the given world position. */
     public Placement placeOriginAt(int ox, int oy, int oz, Facing facing) {
         return new Placement(ox, oy, oz, facing);
+    }
+
+    /**
+     * This frame laid out with its footprint centred on {@code (x, z)} and its bottom layer at
+     * {@code y} &mdash; how worldgen stands a frame on a chosen spot.
+     */
+    public Placement placeCentredAt(int x, int y, int z, Facing facing) {
+        int maxX = 0;
+        int maxZ = 0;
+        for (Cell cell : cells) {
+            maxX = Math.max(maxX, cell.x);
+            maxZ = Math.max(maxZ, cell.z);
+        }
+        int[] centre = facing.toWorld(maxX / 2, 0, maxZ / 2);
+        return new Placement(x - centre[0], y, z - centre[2], facing);
+    }
+
+    /**
+     * This frame laid out so that its {@link Placement#arrivalSpot} lands exactly on
+     * {@code (x, y, z)} &mdash; how a frame is put in front of someone standing there.
+     */
+    public Placement placeArrivalAt(int x, int y, int z, Facing facing) {
+        int[] arrival = new Placement(0, 0, 0, facing).arrivalSpot();
+        return new Placement(x - arrival[0], y - arrival[1], z - arrival[2], facing);
     }
 
     /**
@@ -373,6 +370,20 @@ public final class GatewayFrame {
 
         public int[] keystone() {
             return world(GatewayFrame.this.keystone.x, GatewayFrame.this.keystone.y, GatewayFrame.this.keystone.z);
+        }
+
+        /** World-space bounds of every cell, as {@code {minX, minY, minZ, maxX, maxY, maxZ}}. */
+        public int[] bounds() {
+            int[] bounds = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE,
+                    Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE};
+            for (Cell cell : cells) {
+                int[] at = world(cell.x, cell.y, cell.z);
+                for (int i = 0; i < 3; i++) {
+                    bounds[i] = Math.min(bounds[i], at[i]);
+                    bounds[i + 3] = Math.max(bounds[i + 3], at[i]);
+                }
+            }
+            return bounds;
         }
     }
 }

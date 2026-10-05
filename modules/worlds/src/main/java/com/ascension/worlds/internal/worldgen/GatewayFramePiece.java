@@ -50,7 +50,7 @@ public final class GatewayFramePiece extends StructurePiece {
     GatewayFramePiece(ResourceKey<GatewayFrame> frame, GatewayFrame loaded,
                       Optional<ResourceKey<GatewaySite>> site, Optional<GatewaySite> loadedSite,
                       GatewayFrame.Placement placement) {
-        super(WorldsContent.GATEWAY_FRAME_PIECE.get(), 0, bounds(loaded, loadedSite, placement));
+        super(WorldsContent.GATEWAY_FRAME_PIECE.get(), 0, bounds(loadedSite, placement));
         this.frame = frame;
         this.site = site;
         int[] at = placement.world(0, 0, 0);
@@ -70,12 +70,10 @@ public final class GatewayFramePiece extends StructurePiece {
         this.setOrientation(null);
     }
 
-    private static BoundingBox bounds(GatewayFrame frame, Optional<GatewaySite> site, GatewayFrame.Placement placement) {
-        int[] min = {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE};
-        int[] max = {Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE};
-        for (GatewayFrame.Cell cell : frame.cells()) {
-            include(min, max, placement.world(cell.x(), cell.y(), cell.z()));
-        }
+    private static BoundingBox bounds(Optional<GatewaySite> site, GatewayFrame.Placement placement) {
+        int[] frameBounds = placement.bounds();
+        int[] min = {frameBounds[0], frameBounds[1], frameBounds[2]};
+        int[] max = {frameBounds[3], frameBounds[4], frameBounds[5]};
         site.ifPresent(s -> s.cells().forEach(cell -> include(min, max, s.world(placement, cell))));
         return new BoundingBox(min[0], min[1] - FOUNDATION_DEPTH, min[2], max[0], max[1], max[2]);
     }

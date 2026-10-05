@@ -129,6 +129,35 @@ class GatewayFrameTest {
     }
 
     @Test
+    void placeArrivalAtPutsTheArrivalSpotExactlyThere() {
+        for (GatewayFrame.Facing facing : GatewayFrame.Facing.values()) {
+            GatewayFrame.Placement placement = ring().placeArrivalAt(-40, 70, 13, facing);
+            assertArrayEquals(new int[] {-40, 70, 13}, placement.arrivalSpot(), "facing " + facing);
+        }
+    }
+
+    @Test
+    void placeCentredAtCentresTheFootprint() {
+        // The ring is 5 wide, 1 deep: centred on x=100 it spans 98..102, whichever way it faces.
+        GatewayFrame.Placement south = ring().placeCentredAt(100, 64, 50, GatewayFrame.Facing.SOUTH);
+        int[] bounds = south.bounds();
+        assertEquals(98, bounds[0]);
+        assertEquals(102, bounds[3]);
+        assertEquals(50, bounds[2]);
+        assertEquals(64, bounds[1], "bottom layer at the given y");
+
+        int[] east = ring().placeCentredAt(100, 64, 50, GatewayFrame.Facing.EAST).bounds();
+        assertEquals(48, east[2]);
+        assertEquals(52, east[5], "an east-facing ring runs along z instead");
+    }
+
+    @Test
+    void boundsCoverEveryCellAndNothingMore() {
+        int[] bounds = ring().placeOriginAt(0, 64, 0, GatewayFrame.Facing.SOUTH).bounds();
+        assertArrayEquals(new int[] {0, 64, 0, 4, 69, 0}, bounds);
+    }
+
+    @Test
     void fieldAxisFollowsTheFacing() {
         assertTrue(GatewayFrame.Facing.SOUTH.fieldAlongX());
         assertTrue(GatewayFrame.Facing.NORTH.fieldAlongX());
