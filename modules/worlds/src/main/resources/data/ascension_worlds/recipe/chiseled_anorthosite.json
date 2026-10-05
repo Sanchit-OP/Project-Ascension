@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "ascension_worlds:anorthosite_brick_slab"
+    }
+  },
+  "result": {
+    "id": "ascension_worlds:chiseled_anorthosite",
+    "count": 1
+  }
+}

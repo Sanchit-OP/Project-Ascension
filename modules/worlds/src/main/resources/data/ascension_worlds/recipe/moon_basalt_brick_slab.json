@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "ascension_worlds:moon_basalt_bricks"
+    }
+  },
+  "result": {
+    "id": "ascension_worlds:moon_basalt_brick_slab",
+    "count": 6
+  }
+}
