@@ -3,8 +3,6 @@ package com.ascension.worlds.internal.gateway;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.Vec3i;
@@ -46,44 +44,9 @@ public final class GatewaySite {
     }
 
     static DataResult<GatewaySite> build(Raw raw) {
-        Map<Character, GatewayFrame.Key> key = new HashMap<>();
-        for (Map.Entry<String, GatewayFrame.Key> entry : raw.key.entrySet()) {
-            if (entry.getKey().length() != 1 || entry.getKey().charAt(0) == ' ') {
-                return DataResult.error(() -> "site key \"" + entry.getKey() + "\" must be one non-space character");
-            }
-            key.put(entry.getKey().charAt(0), entry.getValue());
-        }
-        if (raw.layers.isEmpty() || raw.layers.size() > MAX_HEIGHT) {
-            return DataResult.error(() -> "site needs 1 to " + MAX_HEIGHT + " layers, got " + raw.layers.size());
-        }
-        List<GatewayFrame.Cell> cells = new ArrayList<>();
-        for (int y = 0; y < raw.layers.size(); y++) {
-            List<String> rows = raw.layers.get(y);
-            if (rows.size() > MAX_DEPTH) {
-                int layer = y;
-                return DataResult.error(() -> "site layer " + layer + " is deeper than " + MAX_DEPTH);
-            }
-            for (int z = 0; z < rows.size(); z++) {
-                String row = rows.get(z);
-                if (row.length() > MAX_WIDTH) {
-                    int layer = y;
-                    int depth = z;
-                    return DataResult.error(() -> "site layer " + layer + " row " + depth + " is wider than " + MAX_WIDTH);
-                }
-                for (int x = 0; x < row.length(); x++) {
-                    char symbol = row.charAt(x);
-                    if (symbol == ' ') {
-                        continue;
-                    }
-                    if (!key.containsKey(symbol)) {
-                        String where = "layer " + y + " row " + z + " column " + x;
-                        return DataResult.error(() -> "unknown site character '" + symbol + "' at " + where);
-                    }
-                    cells.add(new GatewayFrame.Cell(x, y, z, symbol));
-                }
-            }
-        }
-        return DataResult.success(new GatewaySite(raw, Map.copyOf(key), List.copyOf(cells)));
+        return PatternGrid.parseKey(raw.key, "site ").flatMap(key ->
+                PatternGrid.parseLayers(raw.layers, MAX_WIDTH, MAX_HEIGHT, MAX_DEPTH, key::containsKey, "site ")
+                        .map(cells -> new GatewaySite(raw, key, cells)));
     }
 
     public Map<Character, GatewayFrame.Key> key() {

@@ -59,23 +59,11 @@ public final class GatewayFrameStructure extends Structure {
         int y = context.chunkGenerator().getFirstOccupiedHeight(
                 x, z, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
 
-        GatewayFrame.Placement centred = centredOn(loaded.get(), x, y, z);
+        GatewayFrame.Placement centred = loaded.get().placeCentredAt(x, y, z, FACING);
         Optional<GatewaySite> loadedSite = site.flatMap(key -> GatewayFrames.getSite(context.registryAccess(), key));
         BlockPos stub = new BlockPos(x, y, z);
         return Optional.of(new GenerationStub(stub, builder ->
                 builder.addPiece(new GatewayFramePiece(frame, loaded.get(), site, loadedSite, centred))));
-    }
-
-    /** The placement whose footprint is centred on {@code (x, z)}, bottom layer at {@code y}. */
-    private static GatewayFrame.Placement centredOn(GatewayFrame frame, int x, int y, int z) {
-        int maxX = 0;
-        int maxZ = 0;
-        for (GatewayFrame.Cell cell : frame.cells()) {
-            maxX = Math.max(maxX, cell.x());
-            maxZ = Math.max(maxZ, cell.z());
-        }
-        // South-facing: local +x is world +x, local +z (back) is world -z.
-        return frame.placeOriginAt(x - maxX / 2, y, z + maxZ / 2, FACING);
     }
 
     @Override

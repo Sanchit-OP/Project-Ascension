@@ -40,7 +40,7 @@ final class GatewayPortalActivation {
      * the portal with the network.
      */
     static void tryAttune(ServerLevel level, BlockPos keystone, ServerPlayer player, ItemStack stack) {
-        Optional<GatewayFrame.Placement> placement = findFrame(level, keystone, GatewayFrames.Opening.CLEAR);
+        Optional<GatewayFrame.Placement> placement = findFrame(level, keystone, GatewayFrames.Opening.CLEAR, false);
         if (placement.isEmpty()) {
             say(player, "block.ascension_worlds.gateway_keystone.frame_incomplete", ChatFormatting.RED);
             return;
@@ -49,9 +49,7 @@ final class GatewayPortalActivation {
             stack.shrink(1);
         }
         level.setBlock(keystone, level.getBlockState(keystone).setValue(GatewayKeystoneBlock.ACTIVE, true), 3);
-        GatewayFrames.light(level, placement.get());
-        GatewayFrames.setLit(level, placement.get(), true);
-        register(level, placement.get());
+        wake(level, placement.get());
 
         level.playSound(null, keystone, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.0f, 1.0f);
         say(player, "block.ascension_worlds.gateway_keystone.activated", ChatFormatting.AQUA);
@@ -59,14 +57,12 @@ final class GatewayPortalActivation {
 
     /** An attuned keystone: put the field back if it collapsed, then offer destinations. */
     static void relightAndOpen(ServerLevel level, BlockPos keystone, ServerPlayer player) {
-        Optional<GatewayFrame.Placement> placement = findFrame(level, keystone, GatewayFrames.Opening.CLEAR_OR_FIELD);
+        Optional<GatewayFrame.Placement> placement = findFrame(level, keystone, GatewayFrames.Opening.CLEAR_OR_FIELD, false);
         if (placement.isEmpty()) {
             say(player, "block.ascension_worlds.gateway_keystone.frame_incomplete", ChatFormatting.RED);
             return;
         }
-        GatewayFrames.light(level, placement.get());
-        GatewayFrames.setLit(level, placement.get(), true);
-        register(level, placement.get());
+        wake(level, placement.get());
         GatewayDestinations.sendPicker(player, level);
     }
 
@@ -76,9 +72,7 @@ final class GatewayPortalActivation {
      * incomplete there is nothing left to recognise, and the runes stay as they are.
      */
     static void onKeystoneRemoved(ServerLevel level, BlockPos keystone) {
-        GatewayFrames.get(level.registryAccess())
-                .flatMap(frame -> frame.match(keystone.getX(), keystone.getY(), keystone.getZ(),
-                        GatewayFrames.testInWithoutKeystone(level, frame, GatewayFrames.Opening.CLEAR_OR_FIELD)))
+        findFrame(level, keystone, GatewayFrames.Opening.CLEAR_OR_FIELD, true)
                 .ifPresent(placement -> GatewayFrames.setLit(level, placement, false));
     }
 
@@ -91,10 +85,24 @@ final class GatewayPortalActivation {
         say(player, key, ChatFormatting.GRAY);
     }
 
+    /**
+     * The frame laid out around the keystone at {@code keystone}, if the blocks there form one.
+     * {@code keystoneGone}: the keystone itself was just broken, so its cell is taken as given.
+     */
     private static Optional<GatewayFrame.Placement> findFrame(ServerLevel level, BlockPos keystone,
-                                                              GatewayFrames.Opening opening) {
+                                                              GatewayFrames.Opening opening, boolean keystoneGone) {
         return GatewayFrames.get(level.registryAccess()).flatMap(frame -> frame.match(
-                keystone.getX(), keystone.getY(), keystone.getZ(), GatewayFrames.testIn(level, frame, opening)));
+                keystone.getX(), keystone.getY(), keystone.getZ(),
+                keystoneGone
+                        ? GatewayFrames.testInWithoutKeystone(level, frame, opening)
+                        : GatewayFrames.testIn(level, frame, opening)));
+    }
+
+    /** A whole frame becoming a working gate: field in, runes lit, arrival spot on the network. */
+    private static void wake(ServerLevel level, GatewayFrame.Placement placement) {
+        GatewayFrames.light(level, placement);
+        GatewayFrames.setLit(level, placement, true);
+        register(level, placement);
     }
 
     /** Record this planet's portal, and where arrivals should stand, network-wide. */

@@ -119,9 +119,7 @@ final class GatewayDebug {
         GatewayFrame.Facing facing = GatewayFrame.Facing.valueOf(looking.getOpposite().name());
 
         BlockPos arrival = player.blockPosition().relative(looking, 2);
-        int[] offset = frame.placeOriginAt(0, 0, 0, facing).arrivalSpot();
-        GatewayFrame.Placement placement = frame.placeOriginAt(
-                arrival.getX() - offset[0], arrival.getY() - offset[1], arrival.getZ() - offset[2], facing);
+        GatewayFrame.Placement placement = frame.placeArrivalAt(arrival.getX(), arrival.getY(), arrival.getZ(), facing);
 
         GatewayFrames.write(level, frame, placement, lit, null);
         if (lit) {
