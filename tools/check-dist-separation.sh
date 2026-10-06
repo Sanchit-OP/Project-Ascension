@@ -38,17 +38,37 @@ echo "Checking ${#candidates[@]} non-client class(es) under $CLASSES_ROOT"
 
 violations=0
 for f in "${candidates[@]}"; do
-    refs="$("$JAVAP" -p -c "$f" \
+    # -v, not -c: a method reference (Foo::bar) compiles to an invokedynamic whose target class
+    # appears only in the constant pool and BootstrapMethods table, which -c never prints. The
+    # constant pool lists every class the file can touch, so it misses nothing -c would see.
+    refs="$("$JAVAP" -p -v "$f" \
         | grep -oE 'net/minecraft/client/[A-Za-z0-9/$]*|com/ascension/[a-z_]+/client/[A-Za-z0-9/$]*' \
         | sort -u || true)"
     [ -z "$refs" ] && continue
 
     rel="${f#"$CLASSES_ROOT"/}"
 
-    # Sole allowed exception: the network registrar names its client handler inside a
-    # dist-guarded branch that a dedicated server never executes. See AtmosphereNetwork.
-    if [[ "$rel" == *"net/AtmosphereNetwork.class" ]]; then
-        echo "  ALLOWED  $rel (dist-guarded client handler reference)"
+    # Allowed: classes that name client code only inside an `if (FMLEnvironment.dist ==
+    # Dist.CLIENT)` branch, which a dedicated server never executes (a method handle in the
+    # constant pool is resolved only when its invokedynamic runs). Each was read and checked
+    # by hand; add a class here only after doing the same.
+    allowed=0
+    for ok in \
+        "com/ascension/atmosphere/internal/net/AtmosphereNetwork.class" \
+        "com/ascension/worlds/internal/net/WorldsNetwork.class" \
+        "com/ascension/combat/internal/net/CombatNetwork.class" \
+        "com/ascension/combat/AscensionCombat.class"; do
+        [ "$rel" == "$ok" ] && allowed=1
+    done
+    if [ "$allowed" -eq 1 ]; then
+        echo "  ALLOWED  $rel (dist-guarded client reference)"
+        continue
+    fi
+
+    # Allowed: the whole mod is client-only (`@Mod(dist = Dist.CLIENT)`, every dependency
+    # `side = "CLIENT"`), so a dedicated server never loads any of its classes.
+    if [[ "$rel" == com/ascension/compat/immersivedamageindicators/* ]]; then
+        echo "  ALLOWED  $rel (client-only mod)"
         continue
     fi
 
