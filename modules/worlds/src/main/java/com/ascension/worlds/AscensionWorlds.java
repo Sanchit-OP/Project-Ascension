@@ -5,6 +5,7 @@ import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
 import com.ascension.worlds.internal.GatewayDecorBlocks;
 import com.ascension.worlds.internal.archive.ArchiveContent;
+import com.ascension.worlds.internal.archive.ArchiveDecorBlocks;
 import com.ascension.worlds.internal.archive.ArchiveEntry;
 import com.ascension.worlds.internal.GatewayFrames;
 import com.ascension.worlds.internal.PlanetEnvironments;
@@ -59,6 +60,7 @@ public final class AscensionWorlds {
         WorldsContent.register(modBus);
         GatewayDecorBlocks.register(modBus);
         ArchiveContent.register(modBus);
+        ArchiveDecorBlocks.register(modBus);
         SpaceAttachments.register(modBus);
         modBus.addListener(this::onRegisterDataPackRegistries);
         modBus.addListener(this::onCommonSetup);

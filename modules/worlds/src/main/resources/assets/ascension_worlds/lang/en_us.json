@@ -33,6 +33,13 @@
   "block.ascension_worlds.anorthosite_brick_slab": "Anorthosite Brick Slab",
   "block.ascension_worlds.anorthosite_pillar": "Anorthosite Pillar",
   "block.ascension_worlds.chiseled_anorthosite": "Chiseled Anorthosite",
+  "block.ascension_worlds.moon_basalt_brick_stairs": "Lunar Basalt Brick Stairs",
+  "block.ascension_worlds.anorthosite_brick_stairs": "Anorthosite Brick Stairs",
+
+  "block.ascension_worlds.archive_plinth": "Archive Plinth",
+  "block.ascension_worlds.archive_orrery": "Archive Orrery",
+  "item.ascension_worlds.archive_tablet": "Archive Tablet",
+  "block.ascension_worlds.archive_mural": "Archive Mural",
 
   "ascension_worlds.vanilla_portal.dormant": "This portal is dormant. Its world must be reached another way.",
   "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
