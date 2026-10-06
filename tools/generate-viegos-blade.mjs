@@ -1,6 +1,11 @@
+// SUPERSEDED (2026-10-07): Veigo's Blade's 3D model is now drawn by tools/generate-combat-models.py.
+// Kept for history: it made the first, 373-cuboid Blockbench model (design/weapons/viegos-blade/).
+// Running it would overwrite the new veigos_blade_3d.json and .png, so it refuses to.
+//
 // Authoring helper for the initial Blockbench model. No build/runtime dependency.
 // Run from the repository root: node tools/generate-viegos-blade.mjs
 // This regenerates the .bbmodel and game assets; preserve manual Blockbench edits first.
+throw new Error('superseded by tools/generate-combat-models.py; see the comment at the top of this file');
 import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';

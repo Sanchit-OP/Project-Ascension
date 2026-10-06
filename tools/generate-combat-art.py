@@ -5,8 +5,9 @@ Run from the repository root:
     python tools/generate-combat-art.py
 
 Writes textures/item/, textures/models/armor/ and models/item/ under the combat module's assets
-(not veigos_blade_3d.json, which tools/generate-viegos-blade.mjs owns), and the previews in
-design/combat-items/. Hand edits to any of those are lost on the next run: edit this file.
+(not the 3D in-hand models, <id>_3d.json and <id>_3d.png, which tools/generate-combat-models.py
+owns), and the previews in design/combat-items/. Hand edits to any of those are lost on the next
+run: edit this file.
 
 These are League of Legends items, drawn to look like their League counterparts (Sanchit,
 2026-10-06): same silhouette, palette and signature details, in our own pixels. Every sprite is a
@@ -1009,6 +1010,22 @@ def item_model(parent, tex, has_glow, **extra):
     return m
 
 
+# Weapons held as a 3D model (tools/generate-combat-models.py writes <id>_3d.json). Their flat
+# sprite becomes <id>_icon.json, and <id>.json picks between the two: the 3D model in hand, the
+# icon in the inventory, on the ground and in item frames, where a 3D model reads as a thin line.
+# Model id -> the icon's texture.
+HELD_3D = {'veigos_blade': 'veigos_blade_icon', 'darken_blade': 'darken_blade', 'darius_axe': 'darius_axe'}
+
+
+def held_3d_model(name):
+    icon = {'parent': 'ascension_combat:item/%s_icon' % name}
+    return {
+        'loader': 'neoforge:separate_transforms', 'gui_light': 'front',
+        'base': {'parent': 'ascension_combat:item/%s_3d' % name},
+        'perspectives': {'gui': icon, 'ground': icon, 'fixed': icon},
+    }
+
+
 def build_all():
     """Every 16 x 16 sprite, base and glow composited: what the inventory shows. For previews."""
     for b in BOWS:
@@ -1036,7 +1053,12 @@ def write():
             f.write(json.dumps(m, indent=2) + '\n')
 
     for n in SWORDS:
-        save_model(n, item_model('minecraft:item/handheld', n, save_sprite(n, n)))
+        m = item_model('minecraft:item/handheld', n, save_sprite(n, n))
+        if n in HELD_3D:
+            save_model(n + '_icon', m)
+            save_model(n, held_3d_model(n))
+        else:
+            save_model(n, m)
     for n in FLAT:
         save_model(n, item_model('minecraft:item/generated', n, save_sprite(n, n)))
     for n in BOWS:
@@ -1052,16 +1074,10 @@ def write():
             overrides.append({'predicate': pred, 'model': 'ascension_combat:item/' + tex})
         save_model(n, item_model('minecraft:item/generated', n, glow, display=BOW_DISPLAY,
                                  overrides=overrides))
-    # Veigo's Blade: the 3D model stays in hand; the flat icon is used in the inventory, on the
-    # ground and in item frames, where the 3D one read as a thin line.
+    # Veigo's sprite is drawn as 'veigos_blade' but saved as its icon's texture.
     save_model('veigos_blade_icon', item_model('minecraft:item/handheld', 'veigos_blade_icon',
                                                save_sprite('veigos_blade', 'veigos_blade_icon')))
-    icon = {'parent': 'ascension_combat:item/veigos_blade_icon'}
-    save_model('veigos_blade', {
-        'loader': 'neoforge:separate_transforms', 'gui_light': 'front',
-        'base': {'parent': 'ascension_combat:item/veigos_blade_3d'},
-        'perspectives': {'gui': icon, 'ground': icon, 'fixed': icon},
-    })
+    save_model('veigos_blade', held_3d_model('veigos_blade'))
     for n in ARMOUR:
         layer, img = armour_layer(n)
         img.save(os.path.join(armour_dir, '%s_layer_%d.png' % (n, layer)))
