@@ -1,29 +1,89 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "neoforge:item/default",
+  "loader": "neoforge:item_layers",
   "textures": {
-    "layer0": "minecraft:item/bow"
+    "layer0": "ascension_combat:item/galeforce",
+    "layer1": "ascension_combat:item/galeforce_glow"
+  },
+  "neoforge_data": {
+    "layers": {
+      "1": {
+        "block_light": 15,
+        "sky_light": 15,
+        "ambient_occlusion": false
+      }
+    }
   },
   "display": {
     "thirdperson_righthand": {
-      "rotation": [-80, 260, -40],
-      "translation": [-1, -2, 2.5]
+      "rotation": [
+        -80,
+        260,
+        -40
+      ],
+      "translation": [
+        -1,
+        -2,
+        2.5
+      ]
     },
     "thirdperson_lefthand": {
-      "rotation": [-80, -280, 40],
-      "translation": [-1, -2, 2.5]
+      "rotation": [
+        -80,
+        -280,
+        40
+      ],
+      "translation": [
+        -1,
+        -2,
+        2.5
+      ]
     },
     "firstperson_righthand": {
-      "rotation": [0, -90, 25],
-      "translation": [1.13, 3.2, 1.13]
+      "rotation": [
+        0,
+        -90,
+        25
+      ],
+      "translation": [
+        1.13,
+        3.2,
+        1.13
+      ]
     },
     "firstperson_lefthand": {
-      "rotation": [0, 90, -25],
-      "translation": [1.13, 3.2, 1.13]
+      "rotation": [
+        0,
+        90,
+        -25
+      ],
+      "translation": [
+        1.13,
+        3.2,
+        1.13
+      ]
     }
   },
   "overrides": [
-    {"predicate": {"pulling": 1}, "model": "minecraft:item/bow_pulling_0"},
-    {"predicate": {"pulling": 1, "pull": 0.65}, "model": "minecraft:item/bow_pulling_1"},
-    {"predicate": {"pulling": 1, "pull": 0.9}, "model": "minecraft:item/bow_pulling_2"}
+    {
+      "predicate": {
+        "pulling": 1
+      },
+      "model": "ascension_combat:item/galeforce_pulling_0"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.65
+      },
+      "model": "ascension_combat:item/galeforce_pulling_1"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.9
+      },
+      "model": "ascension_combat:item/galeforce_pulling_2"
+    }
   ]
 }

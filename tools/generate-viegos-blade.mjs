@@ -214,5 +214,5 @@ for(const e of game.elements) {
   if(e.from.some((n,i)=>n>=e.to[i] || n< -16 || e.to[i]>32)) throw new Error('Invalid cuboid '+e.name);
 }
 fs.writeFileSync(path.join(artDir,'veigos_blade.bbmodel'),JSON.stringify(bbmodel,null,2)+'\n');
-fs.writeFileSync(path.join(assets,'models/item/veigos_blade.json'),JSON.stringify(game,null,2)+'\n');
+fs.writeFileSync(path.join(assets,'models/item/veigos_blade_3d.json'),JSON.stringify(game,null,2)+'\n');
 console.log(`Created ${elements.length} cuboids in ${groups.size} groups; 64x64 material atlas.`);

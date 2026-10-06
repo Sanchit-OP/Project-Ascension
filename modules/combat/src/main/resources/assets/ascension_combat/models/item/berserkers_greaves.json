@@ -1,6 +1,17 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "neoforge:item/default",
+  "loader": "neoforge:item_layers",
   "textures": {
-    "layer0": "minecraft:item/diamond_boots"
+    "layer0": "ascension_combat:item/berserkers_greaves",
+    "layer1": "ascension_combat:item/berserkers_greaves_glow"
+  },
+  "neoforge_data": {
+    "layers": {
+      "1": {
+        "block_light": 15,
+        "sky_light": 15,
+        "ambient_occlusion": false
+      }
+    }
   }
 }

@@ -1,0 +1,17 @@
+{
+  "parent": "neoforge:item/default-tool",
+  "loader": "neoforge:item_layers",
+  "textures": {
+    "layer0": "ascension_combat:item/veigos_blade_icon",
+    "layer1": "ascension_combat:item/veigos_blade_icon_glow"
+  },
+  "neoforge_data": {
+    "layers": {
+      "1": {
+        "block_light": 15,
+        "sky_light": 15,
+        "ambient_occlusion": false
+      }
+    }
+  }
+}
