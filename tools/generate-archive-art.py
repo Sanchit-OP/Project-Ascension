@@ -858,7 +858,7 @@ def plinth_model():
     b, s = f'{NS}:block/', 'minecraft:block/'
     tex = {
         'particle': b + 'anorthosite_bricks',
-        'base': b + 'polished_moon_basalt', 'foot': b + 'moon_basalt_bricks',
+        'base': b + 'polished_moon_basalt', 'foot': b + 'polished_moon_basalt',
         'column': b + 'anorthosite_pillar', 'column_top': b + 'anorthosite_pillar_top',
         'desk': b + 'anorthosite_bricks', 'face': b + 'archive_tablet_face', 'edge': b + 'chiseled_anorthosite',
         'glow': b + 'archive_tablet_face_glow',
@@ -878,20 +878,23 @@ def plinth_model():
             f['down']['cullface'] = 'down'
         return f
 
-    tilt = {'origin': [8, 13, 8], 'axis': 'x', 'angle': -22.5}
+    tilt = {'origin': [8, 13, 8], 'axis': 'x', 'angle': -22.5}      # front edge down, toward the reader
+    # An up face lays its texture's top along the north edge -- the edge nearest a reader standing
+    # north -- so the inscription is turned half round (uv flipped both ways) to read upright.
+    READ_UV = [14, 13, 2, 3]
     elements = [
         box([0, 0, 0], [16, 2, 16], all_faces('#base', 0, 0, 0, 16, 2, 16, cull_down=True)),
         box([2, 2, 2], [14, 4, 14], all_faces('#foot', 2, 2, 2, 14, 4, 14)),
         box([4, 4, 4], [12, 11, 12], {**all_faces('#column', 4, 4, 4, 12, 11, 12)}),
         box([2, 11, 3], [14, 13, 13], all_faces('#desk', 2, 11, 3, 14, 13, 13)),
         {'from': [2, 13, 3], 'to': [14, 14.5, 13], 'rotation': tilt,
-         'faces': {'up': {'texture': '#face', 'uv': [2, 3, 14, 13]},
+         'faces': {'up': {'texture': '#face', 'uv': READ_UV},
                    'north': {'texture': '#edge', 'uv': [2, 6, 14, 7.5]},
                    'south': {'texture': '#edge', 'uv': [2, 6, 14, 7.5]},
                    'west': {'texture': '#edge', 'uv': [3, 6, 13, 7.5]},
                    'east': {'texture': '#edge', 'uv': [3, 6, 13, 7.5]}}},
         {'from': [2, 13, 3], 'to': [14, 14.5, 13], 'rotation': tilt, 'shade': False, 'neoforge_data': GLOW,
-         'faces': {'up': {'texture': '#glow', 'uv': [2, 3, 14, 13]}}},
+         'faces': {'up': {'texture': '#glow', 'uv': READ_UV}}},
     ]
     elements[2]['faces']['up']['texture'] = '#column_top'
     write_json('models/block/archive_plinth.json', {
@@ -908,11 +911,12 @@ def plinth_model():
 
 def orrery_model():
     """A squat drum on a full-footprint base (same reason as the plinth), its sides cut with the
-    gatestone script and its top the star map. The hologram is logic's, drawn above this."""
+    gatestone script and its top the star map. Only the top glows: the hologram logic draws above
+    it is the thing to look at, and a glowing drum competed with it."""
     b = f'{NS}:block/'
     tex = {'particle': b + 'polished_moon_basalt', 'base': b + 'polished_moon_basalt',
            'drum': b + 'inscribed_gatestone', 'rim': b + 'anorthosite_bricks', 'top': b + 'archive_orrery_top',
-           'glow': b + 'archive_orrery_top_glow', 'runes': b + 'inscribed_gatestone_glow'}
+           'glow': b + 'archive_orrery_top_glow'}
 
     def faces(t, x0, y0, z0, x1, y1, z1, top=None, cull_down=False):
         f = {}
@@ -926,16 +930,14 @@ def orrery_model():
             f['down']['cullface'] = 'down'
         return f
 
-    side_glow = {n: {'texture': '#runes', 'uv': [2, 5, 14, 13]} for n in ('north', 'south', 'west', 'east')}
     elements = [
         {'from': [0, 0, 0], 'to': [16, 3, 16], 'faces': faces('#base', 0, 0, 0, 16, 3, 16, cull_down=True)},
         {'from': [2, 3, 2], 'to': [14, 11, 14], 'faces': {k: v for k, v in faces('#drum', 2, 3, 2, 14, 11, 14).items()}},
-        {'from': [2, 3, 2], 'to': [14, 11, 14], 'shade': False, 'neoforge_data': GLOW, 'faces': side_glow},
         {'from': [1, 11, 1], 'to': [15, 13, 15], 'faces': faces('#rim', 1, 11, 1, 15, 13, 15, top='#top')},
         {'from': [1, 11, 1], 'to': [15, 13, 15], 'shade': False, 'neoforge_data': GLOW,
          'faces': {'up': {'texture': '#glow', 'uv': [1, 1, 15, 15]}}},
     ]
-    # the drum's side uv must show its runes, and the glow layer the same window of them
+    # the drum's sides show the middle of the gatestone's three lines of script
     for n in ('north', 'south', 'west', 'east'):
         elements[1]['faces'][n]['uv'] = [2, 5, 14, 13]
     write_json('models/block/archive_orrery.json', {
@@ -1005,6 +1007,22 @@ def in_wall(murals, path, scale=3):
     out.save(path)
 
 
+def blocks_preview(path):
+    """The plinth from its reader's side and from behind, and the orrery, drawn from their own
+    model files by the structure preview tool."""
+    rsp = _load('render_structure_preview', 'render-structure-preview.py')
+    views = [rsp.render_block_model(f'{NS}:block/archive_plinth', view=(0.8, -0.75, 1.25)),
+             rsp.render_block_model(f'{NS}:block/archive_plinth', view=(-1, -0.9, -1.25)),
+             rsp.render_block_model(f'{NS}:block/archive_orrery', view=(-1, -0.9, -1.25))]
+    crop = [v.crop((v.width // 8, v.height // 5, v.width * 7 // 8, v.height * 7 // 8)) for v in views]
+    out = Image.new('RGBA', (sum(c.width for c in crop), crop[0].height), (40, 42, 50, 255))
+    x = 0
+    for c in crop:
+        out.paste(c, (x, 0))
+        x += c.width
+    out.save(path)
+
+
 def check_java():
     src = open(JAVA_MURAL, encoding='utf-8').read()
     m = re.search(r'TILES\s*=\s*(\d+)\s*;', src)
@@ -1060,6 +1078,7 @@ def main():
     art.sheet(list(made.items()), os.path.join(DESIGN, 'textures.png'))
     mural_sheet(list(full.items()), os.path.join(DESIGN, 'murals.png'))
     in_wall(full, os.path.join(DESIGN, 'murals-in-the-hall.png'))
+    blocks_preview(os.path.join(DESIGN, 'plinth-and-orrery.png'))
     item = made['item/archive_tablet.png'].resize((192, 192), Image.NEAREST)
     bg = Image.new('RGBA', item.size, (110, 110, 112, 255))
     Image.alpha_composite(bg, item).save(os.path.join(DESIGN, 'tablet-item-12x.png'))

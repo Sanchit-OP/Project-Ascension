@@ -7,8 +7,7 @@
     "drum": "ascension_worlds:block/inscribed_gatestone",
     "rim": "ascension_worlds:block/anorthosite_bricks",
     "top": "ascension_worlds:block/archive_orrery_top",
-    "glow": "ascension_worlds:block/archive_orrery_top_glow",
-    "runes": "ascension_worlds:block/inscribed_gatestone_glow"
+    "glow": "ascension_worlds:block/archive_orrery_top_glow"
   },
   "elements": [
     {
@@ -144,62 +143,6 @@
             2,
             14,
             14
-          ]
-        }
-      }
-    },
-    {
-      "from": [
-        2,
-        3,
-        2
-      ],
-      "to": [
-        14,
-        11,
-        14
-      ],
-      "shade": false,
-      "neoforge_data": {
-        "block_light": 15,
-        "sky_light": 15,
-        "ambient_occlusion": false
-      },
-      "faces": {
-        "north": {
-          "texture": "#runes",
-          "uv": [
-            2,
-            5,
-            14,
-            13
-          ]
-        },
-        "south": {
-          "texture": "#runes",
-          "uv": [
-            2,
-            5,
-            14,
-            13
-          ]
-        },
-        "west": {
-          "texture": "#runes",
-          "uv": [
-            2,
-            5,
-            14,
-            13
-          ]
-        },
-        "east": {
-          "texture": "#runes",
-          "uv": [
-            2,
-            5,
-            14,
-            13
           ]
         }
       }
