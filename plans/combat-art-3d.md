@@ -42,10 +42,13 @@ account, 2026-10-07). Self-contained: you need nothing from the old session's me
 | `4658af7` | one armour material per armour item (`CombatContent.armor`): diamond's stats copied, own layer texture. The only Java. |
 | `e592fe9` | generator docstring |
 | `eb468a4` | redraws of the four weakest: Rocketbelt (now the belt itself), Sterak's, Mortal Reminder, Spellslinger's |
+| `e42a83d` | `tools/render-item-model.py`: an item model previewed in hand, through the game's own transforms |
+| `c247e8d` | 3D in-hand models: Veigo's Blade (redone), the Darkin Blade, the Black Cleaver (`tools/generate-combat-models.py`) |
 
-- **Generator:** `tools/generate-combat-art.py` (run from repo root). It writes item textures,
+- **Generators:** `tools/generate-combat-art.py` (run from repo root) writes item textures,
   armour layers, item models and the previews `design/combat-items/icons.png` and `worn.png`.
-  Rerunning reproduces every PNG byte for byte.
+  `tools/generate-combat-models.py` writes the `<id>_3d` models and textures and the previews in
+  `design/combat-items/3d/`. Rerunning either reproduces every PNG byte for byte.
 - **Builds:** `./gradlew :modules:combat:build -PnoDevMods --offline` passes.
 - **Not seen in a client yet.** The live checklist is at the end of `combat-art.md`. Sanchit
   tests; you can't drive the Minecraft window.
@@ -70,77 +73,46 @@ account, 2026-10-07). Self-contained: you need nothing from the old session's me
   (`git worktree add -b <branch> ../Project-Ascension-<name> main`), rebase onto `main`, then
   `git merge --ff-only` from the main checkout.
 
-## Next: 3D in-hand models (was just starting; nothing written yet)
+## 3D in-hand models: the first three are built (2026-10-07), waiting on Sanchit
 
-**Scope:** the three headline weapons first: **Veigo's Blade** (a full redo; Sanchit said the
-current one "is not looking great"), **Darken Blade** (Aatrox's Darkin Blade), **Darius's Axe**
-(the Black Cleaver). Show Sanchit, then the other swords.
+Veigo's Blade, the Darkin Blade and the Black Cleaver are drawn, wired and previewed:
+`docs/technical/combat-art.md`, "3D in-hand models", says how and shows the previews. **Not seen
+in a client.** Sanchit asked to see the previews before the other swords are started.
 
-**What exists for Veigo:** `models/item/veigos_blade_3d.json`, 373 cuboids on a 64 × 64 atlas,
-from `tools/generate-viegos-blade.mjs` (Blockbench source in `design/weapons/viegos-blade/`). Its
-look is wrong: thin, dark, slate-teal, no glow, small guards. The structure is right. Bottom to
-top: crescent pommel (y 0–3), lower hilt, the **great guard** (two crescent arms, x 3–13,
-y 5.4–8.8, around a jewel), wrapped grip (y 7.6–12), small blade guard (y 12–13.5), long narrow
-blade (y 12.5–32). It stands **upright, 32 units tall, centred on x = 8, z = 8**.
-`VeigosBladeClient` gives it a custom first-person swing, and its `display` transforms were tuned
-live for that. **Keep the new Veigo model in that same frame and reuse those display values**,
-or the swing breaks. Once replaced, stop the `.mjs` from clobbering the new file: make it throw
-"superseded", and keep it for history.
+**What the plan got right, and where it changed:**
 
-**The plan:**
+- The method held: an upright pixel map, a thickness per symbol, greedy-merged cuboids, the map
+  as the 32 × 32 texture, glow in its own cuboids, palettes imported from the sprites. 43-65
+  cuboids a weapon. Grids may be odd-width (15) for a centre ridge, or even (18, the Cleaver) for a
+  two-pixel haft; `x0 = 8 - width / 2` keeps either centred.
+- **First person does not use vanilla-minus-45.** At 32 pixels tall that pose juts out of the
+  right of the view. All three stand upright at the right, face on, guard in view (fitted with a
+  small least-squares script: model points to screen spots). Third person does use the recipe
+  (`upright_handheld()`, grip at the model point the hand holds).
+- **Veigo's old display values were not "tuned live".** They put the great guard below the view;
+  the 2026-09-09 screenshot shows a different, vanilla-like pose and predates them. The new pose
+  replaces them, and the preview's swing strip (`--swing greatsword`, a copy of
+  `VeigosBladeClient`'s arithmetic) shows the swing still reads. If the Java changes, update
+  `greatsword_hand()` in the renderer to match.
+- **Glow is not neon in hand.** The item shader shades emissive faces by direction like any other
+  (0.4 ambient up to 1); emissive only means "ignores darkness". Bright glow colours survive best.
+- Viego's S-offset guard arms read as a tangle at 15 pixels, so they're level.
 
-1. **Model = a pixel-art front view, extruded.** Draw each weapon as a char-grid pixel map like
-   the sprites, upright, 1 model unit per pixel (up to 16 wide × 32 tall). Give each pixel
-   class a thickness: thin bevelled edges, a thicker spine or ridge, thicker guards, a bulging
-   gem. Greedy-merge same-thickness cells into rectangular cuboid elements, z centred on 8. The
-   pixel map is also the texture (32 × 32, `texture_size [32, 32]`): south faces map their
-   rectangle, north faces the mirror (`[c1, r0, c0, r1]`), side faces stretch the edge texel
-   column or row. Skip faces fully hidden by a thicker neighbour. Glowing pixels go in their
-   own elements with element-level `neoforge_data`. Put this in a new
-   `tools/generate-combat-models.py` that imports palettes from `generate-combat-art.py` (art
-   guide: import, don't copy).
-2. **Wiring, per weapon:** `<id>_3d.json` (elements and hand display) and `<id>_icon.json` (the
-   existing 2D sprite model). `<id>.json` is a `separate_transforms` wrapper like Veigo's: 3D in
-   hand, flat icon in the inventory, on the ground and in frames. `generate-combat-art.py`
-   currently writes `<id>.json` as the 2D model for darken_blade and darius_axe; change it to
-   write `<id>_icon.json` for those.
-3. **Display transforms for upright models without a custom animation** (Darken Blade, Black
-   Cleaver): start from vanilla handheld and subtract 45° from the Z rotation. That's exact,
-   because `ItemTransform` is `T · Rx · Ry · Rz · S`, so an extra `Rz(-45)` folds into Z. Then add
-   a translation so the grip lands where vanilla's handle is:
-   `t = t_handheld + s · R(handheld) · shift`, in model units (clamped to ±80). Vanilla
-   handheld: third person `[0,-90,55] / [0,4,0.5] / 0.85`, first person
-   `[0,-90,25] / [1.13,3.2,1.13] / 0.68`. A 32-tall model rotated 45° spans about 1.4× a
-   vanilla sword at the same scale, which suits greatswords.
-4. **Preview before Sanchit tests.** Write `tools/render-item-model.py`, a numpy/Pillow
-   rasteriser. The old session drafted it but it was never saved. It should:
-   - resolve the model (parents, textures, `separate_transforms` base);
-   - build quads from elements, or extrude `item/generated` layers;
-   - apply the game's chain: first person `T(0.56,-0.52,-0.72) · display · T(-0.5,-0.5,-0.5)`
-     with a 70° perspective camera; third person `ItemInHandLayer`: arm,
-     `Rx(-90) · Ry(180) · T(1/16, 0.125, -0.625)`, then display;
-   - light faces like items in the world (two lights, (0.2, 1, -0.7) and (-0.2, 1, 0.7), plus
-     0.4 ambient);
-   - also draw a three-angle turntable.
+## Next
 
-   Check the old Veigo model renders sensibly first, as calibration. Then the new ones. Commit
-   the previews in `design/combat-items/`.
-5. **Docs:** add a 3D section and live checklist lines to `combat-art.md`, update
-   `design/weapons/viegos-blade/README.md`, and note it in the `todo.md` "Real textures" entry.
-
-**Palettes for the three:**
-- **Veigo:** spectral jade-mint, edges `#c8ffee`, light `#7ff0c8`, mid `#3fc89a`, dark `#1f7a62`,
-  deep `#0e3a30`. The blade core, jewel and grip socket glow.
-- **Darkin Blade:** dark gunmetal `#262532` → `#a9aec6`, a crimson channel `#c0183a` with a hot
-  core `#ff5a6e` that glows, saw teeth on both edges, a swept spiky guard.
-- **Black Cleaver:** near-black plates `#15151b` / `#25262e` / `#3c414c`, a polished lower edge
-  `#b8c4cc`, spikes on the blade edges, a brown haft `#4a2c1c`.
-
-Pull these from the sprites in `generate-combat-art.py` so they match.
+1. **Sanchit's review of the three previews** (`design/combat-items/3d/*_hand.png`), then his live
+   test with the checklist in `combat-art.md`. The first live check is whether the in-game
+   first-person pose matches the preview: if not, the renderer is wrong somewhere; find out how
+   before tuning numbers.
+2. **The other swords in 3D:** Endless Hunger, Rageblade (Guinsoo's), Spear of Shojin, Youmuu's
+   (Wraithblade), Divine Sunderer. Per weapon: a `weapon()` call in `generate-combat-models.py`
+   (pixel map, depths, glow, grip), add it to `HELD_3D` in `generate-combat-art.py`, run both
+   generators, read the preview, iterate. Use `BIG_FIRST_PERSON` for anything 32 tall, or fit a
+   pose for smaller ones with the same approach. The Spear of Shojin is a polearm: its grip sits
+   low on a long haft.
 
 ## Still open after 3D
 
-- The other swords in 3D (Endless Hunger, Rageblade, Shojin, Youmuu's, Divine Sunderer).
 - Worn armour textures are simple (flat colour, trim and one detail each); they could get a
   richer pass.
 - Sanchit's live test of everything, using the checklist in `combat-art.md`.
