@@ -1,5 +1,16 @@
 # Viego-inspired sword
 
+> **Superseded 2026-10-07.** The model in game is now drawn by `tools/generate-combat-models.py`
+> (a jade, glowing, 43-cuboid redo with bolder guards and new hand transforms); see
+> `docs/technical/combat-art.md`, "3D in-hand models", and the preview
+> `design/combat-items/3d/veigos_blade_hand.png`. `tools/generate-viegos-blade.mjs` now refuses to
+> run, so it can't overwrite that. Everything below describes the first model and is kept for
+> history: the `.bbmodel` files here no longer match what the game loads.
+>
+> One correction to the history: `first-person.png` (2026-09-09) shows a pose close to vanilla's
+> `[0, -90, 25]`, not the `[0, -25, 35]` / `[1, -3, -3]` display values committed on 2026-09-12.
+> Those values were never photographed in game.
+
 Minecraft Java 1.21.1 / NeoForge. Uses the existing item ID
 `ascension_combat:veigos_blade` (the original spelling is preserved).
 

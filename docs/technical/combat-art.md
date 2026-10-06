@@ -1,13 +1,14 @@
 # Combat items — art
 
-**Status:** art, 2026-10-07, first pass. **Not yet seen in a running client** (ADR-0008). The
-module builds and the generator reproduces every PNG byte for byte, but nobody has held these
-items, drawn the bows or worn the armour in game.
+**Status:** art, 2026-10-07: sprites and worn armour (first pass), then 3D in-hand models for
+three weapons (see [3D in-hand models](#3d-in-hand-models)). **Not yet seen in a running client**
+(ADR-0008). The module builds and the generators reproduce every PNG byte for byte, but nobody
+has held these items, drawn the bows or worn the armour in game.
 
 | | |
 |---|---|
-| Generator | `tools/generate-combat-art.py` (hand-placed pixel maps; rerun it, never edit a PNG) |
-| Previews | `design/combat-items/icons.png` (every sprite, plus the bows' draw frames), `worn.png` (each armour piece on a figure) |
+| Generators | `tools/generate-combat-art.py` (sprites, worn armour, item models), `tools/generate-combat-models.py` (3D in-hand models); hand-placed pixel maps, rerun them, never edit a PNG |
+| Previews | `design/combat-items/icons.png` (every sprite, plus the bows' draw frames), `worn.png` (each armour piece on a figure), `3d/` (each 3D model in hand, from `tools/render-item-model.py`) |
 | Brief | [`combat-art-reference.md`](combat-art-reference.md): what each League item looks like, and Sanchit's answers |
 | Method | [`art-guide.md`](art-guide.md) |
 | Next | [`plans/combat-art-3d.md`](../../plans/combat-art-3d.md): where the track stands, and the 3D model plan |
@@ -79,17 +80,72 @@ Riot's images. The reference screenshots live in `design/reference/league/`, whi
 - **Bows** have four textures: idle and `_pulling_0..2`. The body is one pixel map, and the
   string and arrow are drawn per frame in vanilla's layout (arrowhead toward the top left). The
   models keep vanilla's bow transforms and `pull` thresholds.
-- **Veigo's Blade** keeps its 3D model in hand, renamed `veigos_blade_3d.json`
-  (`tools/generate-viegos-blade.mjs` now writes that name). `veigos_blade.json` is a
-  `neoforge:separate_transforms` wrapper: 3D in hand, the flat `veigos_blade_icon` in the
-  inventory, on the ground and in item frames, where the 3D model read as a thin line. The 3D
-  redo is the next round.
+- **3D in hand:** Veigo's Blade, the Darkin Blade and the Black Cleaver (`HELD_3D` in
+  `generate-combat-art.py`). `<id>.json` is a `neoforge:separate_transforms` wrapper: the 3D
+  `<id>_3d.json` in hand, the flat `<id>_icon.json` sprite in the inventory, on the ground and in
+  item frames, where a 3D model reads as a thin line. See [3D in-hand models](#3d-in-hand-models).
 - **Worn armour.** Each armour item has its own `ArmorMaterial` (`CombatContent.armor`): diamond's
   numbers, **copied rather than restated so no stat changes**, plus a layer texture
   `textures/models/armor/<id>_layer_1.png` (helmets, chestplates, boots) or `_layer_2.png`
   (leggings). One material per item, because each is its own League item, not one piece of a
   set. Each texture paints only the boxes its slot renders, so a Jak'Sho helmet and Mercury's
   boots worn together don't fight over the same pixels. That's the only Java this batch touches.
+
+## 3D in-hand models
+
+**Added 2026-10-07:** Veigo's Blade (a full redo of the 373-cuboid Blockbench model), the Darkin
+Blade and the Black Cleaver. The plan was [`plans/combat-art-3d.md`](../../plans/combat-art-3d.md).
+
+![pixel maps](../../design/combat-items/3d/pixel-maps.png)
+
+**How they are made.** `tools/generate-combat-models.py` draws each weapon as an upright front
+view, typed in as a pixel map like the sprites (one model unit per pixel, up to 32 tall, centred
+on x = 8, z = 8). Every symbol has a colour and a thickness, and the model is that picture
+extruded: thin bevelled edges, a raised ridge, thick guards, a bulging jewel, sunk channels and
+seams. Neighbouring cells of one thickness merge into one cuboid (43–65 per weapon, against the
+old Veigo's 373). The pixel map is also the 32 × 32 texture: south faces show their rectangle,
+north faces its mirror, side faces stretch their edge texel. Side faces are only made where a
+neighbour is thinner. Glowing pixels get their own cuboids with element `neoforge_data` (block
+and sky light 15), so they stay lit at night. Palettes are imported from the sprites in
+`generate-combat-art.py`, so icon and model can't drift.
+
+| Model | What it keeps from League | Glows |
+|---|---|---|
+| `veigos_blade_3d` | Viego's sword hilt to tip: anchor pommel, glowing socket, a crescent great guard round a bulging jewel, short wrapped grip, horned small guard, long narrow blade; bright jade | the whole blade, the jewel and socket |
+| `darken_blade_3d` | Aatrox's sword: broad gunmetal blade bevelled to thin edges, hooked barbs raking back on both edges, a sunk crimson channel with a hot core, a guard swept into spikes, long maroon grip, spear-point pommel | the channel and its core, the guard's centre |
+| `darius_axe_3d` | Black Cleaver: a main bit flaring to a broad, convex polished edge, near-black plates split by sunk seams fanning from the haft, black thorns top and bottom, a dull back bit, a long banded brown haft | nothing (it isn't magic) |
+
+**Departures from the reference.** Viego's great guard arms are offset like an S in his render;
+at 15 pixels wide that read as a tangle of hooks, so they are level here. The Darkin Blade's barbs
+and guard spikes are simplified to a repeating tooth.
+
+**Display transforms.** Third person is vanilla's handheld transform turned 45° for a model drawn
+upright instead of diagonal (an exact fold into the Z rotation, since `ItemTransform` is
+`T · Rx · Ry · Rz · S`), then moved so the weapon's grip lands where vanilla's handle is
+(`upright_handheld()`). First person is not: at 32 pixels tall, vanilla's diagonal pose juts out
+of the right of the view. All three instead stand upright at the right of the view, face on, with
+the guard in sight at the bottom. Vanilla's swing turns that into a forward chop for the Darkin
+Blade and the Cleaver; Veigo's Blade keeps `VeigosBladeClient`'s wind-up, cut and recovery (the
+swing strip in its preview). Both hands take the same values; the game mirrors them for the left.
+
+**Veigo's old first-person values were not what the old screenshot shows.** The committed
+`[0, -25, 35]` with `[1, -3, -3]` puts the great guard below the bottom of the view.
+`design/weapons/viegos-blade/first-person.png` (2026-09-09, also `13` in the references)
+predates those values; fitting it gives almost exactly vanilla's `[0, -90, 25]` rotation. So
+those values were never seen in game, and the new pose replaces them rather than keeping them.
+
+**Previews** come from `tools/render-item-model.py`: first person by day and by night, a stand-in
+player from two sides, a turntable and the swing, through the game's own transform chains and
+item lighting (checked against the 1.21.1 sources). Lighting there is fixed for a player facing
+north; in game, item shading in hand turns with the view. Emissive faces in game still take the
+item shader's directional shade (0.4 ambient up to 1), so a glowing face is never brighter than its
+texture, only immune to darkness.
+
+| | |
+|---|---|
+| Veigo's Blade | ![veigo](../../design/combat-items/3d/veigos_blade_hand.png) |
+| Darkin Blade | ![darkin](../../design/combat-items/3d/darken_blade_hand.png) |
+| Black Cleaver | ![cleaver](../../design/combat-items/3d/darius_axe_hand.png) |
 
 ## Known rough edges
 
@@ -110,7 +166,17 @@ Riot's images. The reference screenshots live in `design/reference/league/`, whi
 - [ ] Swords in hand, first and third person, by day and by night (glow layers lit, no
       z-fighting between layers).
 - [ ] Each bow: idle, then drawing through all three frames, arrow lined up with the string.
-- [ ] Veigo's Blade: the flat icon in the hotbar, dropped and in an item frame; 3D in hand.
+- [ ] Veigo's Blade, the Darkin Blade and the Black Cleaver: the flat icon in the hotbar,
+      dropped and in an item frame; the 3D model in hand.
+- [ ] Their first-person rest pose matches `design/combat-items/3d/*_hand.png` (if it doesn't,
+      `render-item-model.py` is wrong somewhere: note how, before tuning any numbers).
+- [ ] Veigo's swing: wind-up, cut and recovery read well and never swing the blade through
+      the camera. The other two with vanilla's swing.
+- [ ] Third person, held by a player and a mob, from the front and behind: the grip in the fist,
+      the size right for a greatsword, nothing clipping the body badly.
+- [ ] By night: Veigo's blade and jewel, the Darkin channel and guard gem stay lit, no
+      z-fighting between glowing and plain cuboids. Left hand looks mirrored, not broken.
+- [ ] With Sodium (in the test stack): the glowing cuboids still render full-bright.
 - [ ] Every armour piece worn, alone and in mixed sets, from the front, back and side.
 - [ ] Armour stats unchanged: the character sheet and F3 armour readings match the old
       diamond values.
