@@ -344,7 +344,12 @@ losing to a higher band looks exactly like a provider that does not work.
                                                 dormant, or attuned and lit
 /ascension worlds gateway travel <planet>       what the destination screen does; non-ops need
                                                 to have just used a lit portal
+/ascension worlds archive tablet <entry>        (op) a tablet carrying that archive entry
+/ascension worlds archive plinth <entry>        (op) point the plinth you're looking at at an entry
 ```
+
+The lore text itself lives in `tools/archive-lore.py`; run it after editing to regenerate the
+entry files and the lore lang file.
 
 Items that are otherwise behind a boss or a Warden:
 

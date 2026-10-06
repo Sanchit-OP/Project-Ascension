@@ -1,0 +1,13 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.moon.the_last_order.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.moon.the_last_order.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.moon.the_last_order.2"
+    }
+  ]
+}

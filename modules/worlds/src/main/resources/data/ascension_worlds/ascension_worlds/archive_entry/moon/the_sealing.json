@@ -1,0 +1,13 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.moon.the_sealing.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.moon.the_sealing.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.moon.the_sealing.2"
+    }
+  ]
+}

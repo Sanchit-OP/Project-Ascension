@@ -1,0 +1,13 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.moon.the_quiet.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.moon.the_quiet.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.moon.the_quiet.2"
+    }
+  ]
+}

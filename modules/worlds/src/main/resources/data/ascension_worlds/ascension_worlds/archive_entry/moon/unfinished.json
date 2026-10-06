@@ -1,0 +1,13 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.moon.unfinished.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.moon.unfinished.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.moon.unfinished.2"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.moon.the_road.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.moon.the_road.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.moon.the_road.2"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ascension_worlds:archive_tablet",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": { "ascension_worlds:archive_entry": "ascension_worlds:moon/the_road" }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_worlds:archive_tablet",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": { "ascension_worlds:archive_entry": "ascension_worlds:moon/many_worlds" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": { "type": "minecraft:uniform", "min": 3, "max": 5 },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ascension_worlds:inscribed_gatestone",
+          "weight": 3,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 6 } }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_worlds:raw_titanium",
+          "weight": 3,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 5 } }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_worlds:raw_helium",
+          "weight": 3,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 4 } }
+          ]
+        },
+        { "type": "minecraft:item", "name": "minecraft:echo_shard", "weight": 1 },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "weight": 1,
+          "functions": [
+            { "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }
+          ]
+        }
+      ]
+    }
+  ]
+}

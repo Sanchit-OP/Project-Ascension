@@ -1,0 +1,13 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.moon.the_builders.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.moon.the_builders.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.moon.the_builders.2"
+    }
+  ]
+}
