@@ -73,7 +73,26 @@ account, 2026-10-07). Self-contained: you need nothing from the old session's me
   (`git worktree add -b <branch> ../Project-Ascension-<name> main`), rebase onto `main`, then
   `git merge --ff-only` from the main checkout.
 
-## 3D in-hand models: the first three are built (2026-10-07), waiting on Sanchit
+## Sanchit's verdict on the first 3D round (2026-10-07): rejected, models to be redone
+
+> "Looks straight from Lego, not at all immersive. We went too deep in the pixelated thing."
+> He wants actual polished 3D models that look like weapons, not toys. The icons, wiring,
+> animation and preview renderer stay; the models themselves are what's wrong. Specifically:
+>
+> - **Veigo's Blade:** more handle than sword; the blade "looks shy in front of a dagger" (the
+>   blade is 14 of 32 pixels; a longsword's is about three quarters).
+> - **Black Cleaver:** held the wrong way; the face-on pose points the bit sideways while the
+>   swing chops forward, so it would hit with the flat or the back.
+> - **Darkin Blade:** far too wide (9 of 32, about 1:3.5).
+>
+> Next: research how other mods' weapons look and feel in hand, pick the inspiration with
+> Sanchit, then choose a route: fine Blockbench-style JSON models (slim parts, 22.5/45-degree
+> rotated elements, a 64-128 px painted texture, as L_Ender's Cataclysm's weapons read), NeoForge's
+> built-in OBJ loader (`neoforge:obj`: real meshes, smooth normals, glow per material via `Ka`),
+> or entity models drawn by an item renderer (Cataclysm's own route, Java). No GeckoLib: it is a
+> third-party dependency (ADR-0003). The record below describes the rejected round.
+
+## 3D in-hand models: the first three are built (2026-10-07), rejected (above)
 
 Veigo's Blade, the Darkin Blade and the Black Cleaver are drawn, wired and previewed:
 `docs/technical/combat-art.md`, "3D in-hand models", says how and shows the previews. **Not seen
