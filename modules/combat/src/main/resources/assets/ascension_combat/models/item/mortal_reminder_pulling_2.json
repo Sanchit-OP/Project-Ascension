@@ -1,0 +1,6 @@
+{
+  "parent": "ascension_combat:item/mortal_reminder",
+  "textures": {
+    "layer0": "ascension_combat:item/mortal_reminder_pulling_2"
+  }
+}

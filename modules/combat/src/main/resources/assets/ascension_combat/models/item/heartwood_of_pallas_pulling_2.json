@@ -1,0 +1,7 @@
+{
+  "parent": "ascension_combat:item/heartwood_of_pallas",
+  "textures": {
+    "layer0": "ascension_combat:item/heartwood_of_pallas_pulling_2",
+    "layer1": "ascension_combat:item/heartwood_of_pallas_pulling_2_glow"
+  }
+}

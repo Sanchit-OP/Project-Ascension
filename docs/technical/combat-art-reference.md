@@ -1,8 +1,8 @@
 # Combat items — art reference (League of Legends)
 
 **What this is:** research for giving `ascension-combat`'s items real art. Gathered 2026-10-06
-from the League of Legends Wiki, for a fresh session to draw from. No art has been made yet.
-This is the brief.
+from the League of Legends Wiki. This is the brief; the art made from it (first pass,
+2026-10-07) is described in [`combat-art.md`](combat-art.md).
 
 **Sanchit's direction (2026-10-06):**
 
@@ -42,6 +42,8 @@ original-art-only call):
 | `11-viego-render-and-splash.jpg` | Viego's render and splash, side by side |
 | `12-ninja-tabi-old-vs-steelcaps.jpg` | the old Ninja Tabi icon next to today's Plated Steelcaps |
 | `13-ours-current-veigos-blade.png` | **our current Veigo's Blade in first person**, the thing to replace |
+| `14-cleaver-steelcaps-tier3-boots.jpg` | Black Cleaver, Plated Steelcaps, Armored Advance, Sorcerer's Shoes, **Spellslinger's Shoes**, **Gluttonous Greaves**, Immortal Path |
+| `15-spellslingers-and-gluttonous-closeup.jpg` | Spellslinger's Shoes and Gluttonous Greaves, large |
 
 The second icon in `02` is **Bloodthirster, not Darken Blade**. It was a wrong first guess.
 Darken Blade's reference is Aatrox's sword, in `07`/`08`.
@@ -72,7 +74,7 @@ approximate, read off the icons.
 |---|---|---|
 | `veigos_blade` | Blade of the Ruined King, Viego's sword | See its own section below. Spectral jade-mint, ornate crescent guards. |
 | `darken_blade` | Aatrox's sword, the Darkin Blade | A massive, broad greatsword, almost cleaver-wide. Dark gunmetal body (≈ #2e2e3a → #55576a), **jagged barbs** along both edges, a **glowing crimson channel** down the blade's length (≈ #c0203a, hot core #ff5060), angular dark hilt. Shown in fire. |
-| `darius_axe` | Darius's axe (mechanic is Black Cleaver) | **A, Darius's own axe:** huge double-bladed battle axe, two crescent blades flaring from a central spine, pale polished steel edges (≈ #e0e6ea), dark green-grey gunmetal body, a bone-white ribbed spine detail, long dark haft with a grip wrap, Noxian red accents. **B, the Black Cleaver icon:** near-black double axe with spiked edges and a brown haft. *Pick one, see Open questions.* |
+| `darius_axe` | **Black Cleaver** (Sanchit, 2026-10-07) | The Black Cleaver icon: a huge near-black double-bit axe, the big blade on one side, spiked edges, cracked plates, a polished pale lower edge, a brown haft. (Not chosen: Darius's own axe, two crescent blades, pale steel edges, Noxian red.) |
 | `endless_hunger` | Endless Hunger | Two black crescent sickle blades with gold trim, curling into an S, crimson-pink energy. As one held weapon: a long curved black blade, gold edge, crimson glow. |
 | `ragefang` | Guinsoo's Rageblade | A wavy, flame-shaped blade: orange-gold with yellow flame tongues along the edge, red-orange core, dark brown and gold hilt. |
 | `spear_of_shojin` | Spear of Shojin | A big curved **lime-jade blade** like a dragon's claw (≈ #7ee03a, shade #2a7a20, highlight #d8ffa0) on an ornate bronze-gold spiked collar, with a teal wind trail. The icon shows only the head; as an item it is that head on a long haft. |
@@ -99,11 +101,11 @@ approximate, read off the icons.
 | `collectors_pants` | The Collector | League's icon is a **gun** (a dark steel blunderbuss muzzle with gold filigree). For leggings: dark steel with gold filigree. |
 | `unending_despair` | Unending Despair | Dark green-black **spiky carapace** around a **bright cyan glowing core**, magenta-purple backdrop. |
 | `mercury_treads` | Mercury's Treads | A brown leather boot, steel toe cap and sole, a **gold-rimmed blue sapphire medallion** on the side. |
-| `ninja_tabi` | Ninja Tabi / Plated Steelcaps | **Old Ninja Tabi:** an olive-green cloth **split-toe tabi** with a strap and silver buckle. **Plated Steelcaps (current name):** a boot of silver steel plates and spiky studs over olive cloth. *Pick one.* |
+| `ninja_tabi` | **Plated Steelcaps** (Sanchit, 2026-10-07) | A boot of silver steel plates and spiky studs over olive cloth, toe to the left. (Not chosen: the old green split-toe tabi.) |
 | `swifty` | Boots of Swiftness | A white-cream boot with a **fluffy white fur cuff** and white feathers at the side. |
 | `berserkers_greaves` | Berserker's Greaves | A steel armoured greave over a brown leather foot, **yellow lightning** crackling round it. |
-| `wizards_agony` | *original* (armour + magic pen) | No League item. Nearest: Sorcerer's Shoes, a dark green boot with **glowing teal rune lines** and a purple aura. *Confirm.* |
-| `tasted_blood` | *original* (omnivamp) | No League item and no reference. Suggest blood-red veins on dark leather. *Sanchit to decide.* |
+| `wizards_agony` | **Spellslinger's Shoes**, Sorcerer's Shoes' tier 3 (Sanchit, 2026-10-07) | A dark navy-steel boot with gold trim and silver plates, a **spiked black orb** at the toe, a magenta-violet aura. |
+| `tasted_blood` | **Gluttonous Greaves** (Sanchit, 2026-10-07; added to League in 2026, Aatrox's quote) | A **bone-white boot shaped like a maw**: jagged spikes up the shaft, a crimson streak, **fanged teeth at the toe** round a dark red mouth. |
 
 ### Off-hand
 
@@ -161,18 +163,16 @@ Directions for the next session to weigh with Sanchit:
   Swords use parent `minecraft:item/handheld`; armour uses `minecraft:item/generated`.
 - **Glow suits many of these** (Viego's mist, Youmuu's gem, Guardian Angel's crystal, Varus's
   core, Galeforce's wind) via an emissive model layer.
-- **Worn armour still looks like diamond armour.** The armour items use
-  `ArmorMaterials.DIAMOND`. Their own on-body look needs custom armour materials and armour-layer
-  textures in Java: that's combat logic, and the combat session's to add.
+- **Worn armour** has its own look per item since 2026-10-07: one armour material per item,
+  diamond's stats, its own layer texture (`combat-art.md`).
 
-## Open questions for Sanchit
+## Sanchit's answers (2026-10-07)
 
-1. **Darius's Axe:** Darius's own axe (A) or the Black Cleaver icon (B)?
-2. **Ninja Tabi:** the old split-toe tabi or today's Plated Steelcaps?
-3. **Wizard's Agony and Tasted Blood** have no League counterpart. Are the suggested looks right?
-4. **2D or 3D:** a 16 × 16 sprite for every item, or 3D in-hand models for the headline weapons
-   (Veigo's Blade, Darken Blade, Darius's Axe) as well?
-5. **Worn armour:** keep vanilla diamond on the body for now, or ask the combat session for custom
-   armour materials?
-6. **Who draws:** this module belongs to the parallel combat session. Draw here with Sanchit's go
-   (he asked for this research here), or hand this doc to that session.
+1. **Darius's Axe:** the Black Cleaver.
+2. **Ninja Tabi:** today's Plated Steelcaps.
+3. **Wizard's Agony** is Spellslinger's Shoes (Sorcerer's Shoes' tier 3); **Tasted Blood** is
+   Gluttonous Greaves.
+4. **2D or 3D:** 16 × 16 sprites first; 3D in-hand models later.
+5. **Worn armour:** changes too.
+6. **Who draws:** this session. Models, animation and item art are made outside the combat
+   session and merged back.

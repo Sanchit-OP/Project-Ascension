@@ -7,7 +7,10 @@ Minecraft Java 1.21.1 / NeoForge. Uses the existing item ID
 
 - `veigos_blade.bbmodel`: editable Blockbench Java Block/Item project, with embedded texture.
 - `first-person.png`: screenshot from the Minecraft dev client after the final hand adjustment.
-- Runtime model: `modules/combat/src/main/resources/assets/ascension_combat/models/item/veigos_blade.json`.
+- Runtime model: `modules/combat/src/main/resources/assets/ascension_combat/models/item/veigos_blade_3d.json`
+  (in hand). Since 2026-10-06 `veigos_blade.json` is a `neoforge:separate_transforms` wrapper:
+  this 3D model in hand, and a flat 16 x 16 icon (`veigos_blade_icon`, from
+  `tools/generate-combat-art.py`) in the inventory, on the ground and in item frames.
 - Runtime texture: `modules/combat/src/main/resources/assets/ascension_combat/textures/item/veigos_blade_3d.png`.
 
 The model follows the two supplied reference images: long narrow blade, small blade guard,
@@ -21,7 +24,7 @@ The pale edges are textured metal, not an animated aura or a dynamic light sourc
 
 Open the `.bbmodel` in Blockbench. Keep the Java Block/Item format and the 1.21.1 restrictions:
 one rotation axis per cube, rotations in steps of 22.5 degrees between -45 and 45, and
-element coordinates between -16 and 32. Export the Block/Item JSON to the runtime model path.
+element coordinates between -16 and 32. Export the Block/Item JSON to the runtime model path (`veigos_blade_3d.json`).
 Keep the texture resource location `ascension_combat:item/veigos_blade_3d`.
 Do not add `minecraft:item/handheld` as a parent: its generated geometry replaces cuboid elements.
 

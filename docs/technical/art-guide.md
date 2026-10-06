@@ -3,8 +3,9 @@
 **What this is:** how the gateway portal and the Moon's materials were given their textures, and
 what to keep in mind when making the next batch: Planet 3, boss drops, machines, anything. Written
 2026-10-06 by the session that made that art, for any session making art next. The worked
-examples are [`gateway-portal-design.md`](gateway-portal-design.md) and
-[`moon-materials-art.md`](moon-materials-art.md).
+examples are [`gateway-portal-design.md`](gateway-portal-design.md),
+[`moon-materials-art.md`](moon-materials-art.md) and, for item sprites drawn in another game's
+likeness, [`combat-art.md`](combat-art.md).
 
 ## The rules
 

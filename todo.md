@@ -87,8 +87,10 @@ See the register or the linked doc for reasoning:
   nothing to remove yet.
 - **Real textures.** `ascension-worlds` is done: original art, generated in-house by
   `tools/generate-gateway-art.py` and `tools/generate-moon-materials-art.py`, never copied from
-  another mod or pack (Sanchit, 2026-10-06). Still on vanilla placeholders: atmosphere's oxygen
-  tank, emitter and refill station, and combat's items (that session's).
+  another mod or pack (Sanchit, 2026-10-06). Combat's items got theirs on 2026-10-07, in League
+  likeness, worn armour included (`combat-art.md`); still to come there: 3D in-hand models for
+  the headline weapons, and the Veigo's Blade 3D redo. Still on vanilla placeholders:
+  atmosphere's oxygen tank, emitter and refill station.
 
 **Systems gaps identified 2026-09-05:**
 - **Nether removal has a recipe debt (ADR-0014, 2026-10-06).** Vanilla Nether/End portals are

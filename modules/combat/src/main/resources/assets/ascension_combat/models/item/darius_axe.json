@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "minecraft:item/diamond_sword"
+    "layer0": "ascension_combat:item/darius_axe"
   }
 }
