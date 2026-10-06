@@ -506,7 +506,7 @@ def sealed_room(p):
         for y in range(LOW + 1, LOW + 6):
             p.put(x, y, 30, rng.choice([RAW, RAW, CRACKED]))
     p.fill(11, LOW + 1, 30, 13, LOW + 3, 30, AIR)
-    for (x, z, st) in [(11, 29, RAW), (13, 28, CRACKED), (10, 28, slab(BRICK_SLAB)), (14, 29, slab(BRICK_SLAB)),
+    for (x, z, st) in [(11, 29, RAW), (15, 28, CRACKED), (10, 28, slab(BRICK_SLAB)), (14, 29, slab(BRICK_SLAB)),
                        (12, 31, slab(BRICK_SLAB))]:
         p.put(x, LOW + 1, z, st)
     put_plinth(p, 12, LOW + 1, 25, 'south', 'the_sealing')
@@ -704,6 +704,17 @@ def check(pieces):
             if name == f'{NS}:archive_plinth':
                 e = p.nbt.get(pos, {}).get('entry', '').split('/')[-1]
                 seen.setdefault(e, []).append((p.name, pos))
+                x, y, z = pos
+                # free-standing: until logic gives the plinth noOcclusion it is an opaque cube to
+                # the renderer, and a wall touching it would be culled into a see-through hole
+                for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    if p.get(x + dx, y, z + dz) != AIR:
+                        problems.append(f'{p.name}: plinth {e} at {pos} touches {p.get(x + dx, y, z + dz)}')
+                if not is_solid(p.get(x, y - 1, z)):
+                    problems.append(f'{p.name}: plinth {e} at {pos} does not stand on a full block')
+                fx, fz = {'north': (0, -1), 'south': (0, 1), 'east': (1, 0), 'west': (-1, 0)}[parse_state(state)[1]['facing']]
+                if p.get(x + fx, y, z + fz) != AIR or not is_solid(p.get(x + fx, y - 1, z + fz)):
+                    problems.append(f'{p.name}: plinth {e} at {pos} faces nowhere a reader can stand')
             elif state == ORRERY:
                 orreries.append((p, pos))
             elif name == 'minecraft:chest':
