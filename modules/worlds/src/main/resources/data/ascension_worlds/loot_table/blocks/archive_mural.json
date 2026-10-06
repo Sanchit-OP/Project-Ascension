@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ascension_worlds:archive_mural",
+          "functions": [
+            {
+              "function": "minecraft:copy_state",
+              "block": "ascension_worlds:archive_mural",
+              "properties": [
+                "tile"
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}
