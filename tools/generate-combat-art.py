@@ -1,7 +1,18 @@
-"""Combat item art for ascension_combat: hand-placed 16 x 16 item sprites. Draft.
+"""Combat item art for ascension_combat: every item's 16 x 16 sprite, the bows' draw frames,
+Veigo's Blade's inventory icon, every armour piece's worn layer, and their item models.
 
 Run from the repository root:
     python tools/generate-combat-art.py
+
+Writes textures/item/, textures/models/armor/ and models/item/ under the combat module's assets
+(not veigos_blade_3d.json, which tools/generate-viegos-blade.mjs owns), and the previews in
+design/combat-items/. Hand edits to any of those are lost on the next run: edit this file.
+
+These are League of Legends items, drawn to look like their League counterparts (Sanchit,
+2026-10-06): same silhouette, palette and signature details, in our own pixels. Every sprite is a
+pixel map typed in below, one character per pixel; nothing is traced, sampled or scaled from
+Riot's images. The brief is docs/technical/combat-art-reference.md; this batch is
+docs/technical/combat-art.md. Needs Pillow.
 """
 import os
 
