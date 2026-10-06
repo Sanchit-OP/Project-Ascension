@@ -1,9 +1,13 @@
 package com.ascension.combat.internal;
 
 import com.ascension.combat.AscensionCombat;
+import java.util.List;
 import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -25,6 +29,10 @@ public final class CombatContent {
 
     private static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(Registries.ITEM, AscensionCombat.MOD_ID);
+
+    /** One per armor item; see {@link #armor}. Declared before the items, which register into it. */
+    private static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS =
+            DeferredRegister.create(Registries.ARMOR_MATERIAL, AscensionCombat.MOD_ID);
 
     /**
      * The first item out the door (docs/technical/combat-api.md section 6). Its on-hit bonus is
@@ -48,8 +56,8 @@ public final class CombatContent {
      * the "axe" identity is flavor, not a chop/strip moveset, and every other weapon in this
      * catalog is a reskinned sword until there's a reason not to be. The stacking armor shred is
      * applied by {@link com.ascension.combat.internal.weapons.DariusAxeEffects}, not carried as
-     * an attribute here. Base stats and the texture are both placeholders: no art yet, borrowing
-     * the vanilla diamond sword model until Sanchit has time to direct one.
+     * an attribute here. Base stats are placeholders; the art (the Black Cleaver, Sanchit's call
+     * 2026-10-06) is drawn by tools/generate-combat-art.py, like every item here.
      */
     public static final Supplier<Item> DARIUS_AXE = ITEMS.register(
             "darius_axe",
@@ -63,7 +71,7 @@ public final class CombatContent {
      * the catalog that deals the third damage type (section 2), which bypasses armor and magic
      * resist both. Applied by
      * {@link com.ascension.combat.internal.weapons.SpearOfShojinEffects}. Modeled as a
-     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}: no art yet.
+     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}.
      */
     public static final Supplier<Item> SPEAR_OF_SHOJIN = ITEMS.register(
             "spear_of_shojin",
@@ -92,7 +100,7 @@ public final class CombatContent {
      * on-hit proc &mdash; right-click primes the next attack, on a cooldown tracked by vanilla's
      * own {@link net.minecraft.world.item.ItemCooldowns} rather than anything bespoke. Applied by
      * {@link com.ascension.combat.internal.weapons.DivineSundererEffects}. Modeled as a
-     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}: no art yet.
+     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}.
      */
     public static final Supplier<Item> DIVINE_SUNDERER = ITEMS.register(
             "divine_sunderer",
@@ -107,7 +115,7 @@ public final class CombatContent {
      * the wielder, gated by its own cooldown rather than the alternation itself &mdash; so
      * missing the cooldown window still consumes the alternation instead of stalling it. Applied
      * by {@link com.ascension.combat.internal.weapons.DarkenBladeEffects}. Modeled as a
-     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}: no art yet.
+     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}.
      */
     public static final Supplier<Item> DARKEN_BLADE = ITEMS.register(
             "darken_blade",
@@ -122,7 +130,7 @@ public final class CombatContent {
      * than bursting and resetting, and every hit also deals flat on-hit magic damage &mdash;
      * doubled every third hit, so it reads as landing two hits at once. Applied by
      * {@link com.ascension.combat.internal.weapons.RagefangEffects}. Modeled as a
-     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}: no art yet.
+     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}.
      */
     public static final Supplier<Item> RAGEFANG = ITEMS.register(
             "ragefang",
@@ -139,7 +147,7 @@ public final class CombatContent {
      * {@link com.ascension.combat.internal.weapons.EndlessHungerEffects}. Base attack speed left
      * near vanilla's default rather than the usual sword penalty, since the dynamic bonus is
      * meant to replace a flat rating, not stack on top of a handicap. Modeled as a
-     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}: no art yet.
+     * {@link SwordItem} for now, same placeholder reasoning as {@link #DARIUS_AXE}.
      */
     public static final Supplier<Item> ENDLESS_HUNGER = ITEMS.register(
             "endless_hunger",
@@ -155,7 +163,7 @@ public final class CombatContent {
      * Tier 1 by ADR-0003 rule 2 (see
      * {@link com.ascension.combat.internal.weapons.WraithbladeEffects}'s javadoc). Sanchit's call,
      * 2026-09-08. Modeled as a {@link SwordItem} for now, same placeholder reasoning as
-     * {@link #DARIUS_AXE}: no art yet.
+     * {@link #DARIUS_AXE}.
      */
     public static final Supplier<Item> WRAITHBLADE = ITEMS.register(
             "wraithblade",
@@ -205,15 +213,14 @@ public final class CombatContent {
      * 4), the first item in the catalog that does &mdash; see
      * {@link com.ascension.combat.internal.mechanics.CombatStateTracking}, stood up alongside this
      * item since it's the first real consumer. Applied by
-     * {@link com.ascension.combat.internal.armor.ProteanMaskEffects}. Uses {@link
-     * ArmorMaterials#DIAMOND} wholesale as the base defense stat and texture &mdash; same
-     * placeholder reasoning every weapon in this catalog uses {@link Tiers#DIAMOND} for, and it
-     * means the armor renders with real (if borrowed) vanilla textures rather than nothing, with
-     * no new asset work needed.
+     * {@link com.ascension.combat.internal.armor.ProteanMaskEffects}. Its material is {@link
+     * ArmorMaterials#DIAMOND} in every number &mdash; same placeholder reasoning every weapon in
+     * this catalog uses {@link Tiers#DIAMOND} for &mdash; but its own on the body: see {@link
+     * #armor}.
      */
     public static final Supplier<Item> PROTEAN_MASK = ITEMS.register(
             "protean_mask",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties()));
+            armor("protean_mask", ArmorItem.Type.HELMET));
 
     /**
      * Thirteenth out the door, and the second and last Helmet (combat-api.md section 6).
@@ -229,7 +236,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> EDGE_OF_NIGHT = ITEMS.register(
             "edge_of_night",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties()));
+            armor("edge_of_night", ArmorItem.Type.HELMET));
 
     /**
      * Fourteenth out the door, and the first of two Chestplates (combat-api.md section 6). Flat
@@ -244,7 +251,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> GARGOYLE_STONEPLATE = ITEMS.register(
             "gargoyle_stoneplate",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
+            armor("gargoyle_stoneplate", ArmorItem.Type.CHESTPLATE));
 
     /**
      * Fifteenth out the door, and the second and last Chestplate (combat-api.md section 6). On
@@ -256,7 +263,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> GUARDIAN_WING = ITEMS.register(
             "guardian_wing",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.CHESTPLATE, new Item.Properties()));
+            armor("guardian_wing", ArmorItem.Type.CHESTPLATE));
 
     /**
      * Sixteenth out the door, and the first of three Leggings (combat-api.md section 6). Active
@@ -268,7 +275,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> ROCKETBELT = ITEMS.register(
             "rocketbelt",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.LEGGINGS, new Item.Properties()));
+            armor("rocketbelt", ArmorItem.Type.LEGGINGS));
 
     /**
      * Seventeenth out the door, and the second of three Leggings (combat-api.md section 6,
@@ -281,7 +288,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> COLLECTORS_PANTS = ITEMS.register(
             "collectors_pants",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.LEGGINGS, new Item.Properties()));
+            armor("collectors_pants", ArmorItem.Type.LEGGINGS));
 
     /**
      * Eighteenth out the door, and the third and last Legging (combat-api.md section 6),
@@ -295,7 +302,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> UNENDING_DESPAIR = ITEMS.register(
             "unending_despair",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.LEGGINGS, new Item.Properties()));
+            armor("unending_despair", ArmorItem.Type.LEGGINGS));
 
     /**
      * Nineteenth out the door, and the first of six Boots (combat-api.md section 6): flat magic
@@ -305,22 +312,22 @@ public final class CombatContent {
      */
     public static final Supplier<Item> MERCURY_TREADS = ITEMS.register(
             "mercury_treads",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+            armor("mercury_treads", ArmorItem.Type.BOOTS));
 
     /** Twentieth out the door. Flat armor while worn. */
     public static final Supplier<Item> NINJA_TABI = ITEMS.register(
             "ninja_tabi",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+            armor("ninja_tabi", ArmorItem.Type.BOOTS));
 
     /** Twenty-first out the door (Boots of Swiftness). Move speed while worn. */
     public static final Supplier<Item> SWIFTY = ITEMS.register(
             "swifty",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+            armor("swifty", ArmorItem.Type.BOOTS));
 
     /** Twenty-second out the door. Attack speed while worn. */
     public static final Supplier<Item> BERSERKERS_GREAVES = ITEMS.register(
             "berserkers_greaves",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+            armor("berserkers_greaves", ArmorItem.Type.BOOTS));
 
     /**
      * Twenty-third out the door, {@code ORIGINAL}. Armor and magic penetration while worn.
@@ -333,7 +340,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> WIZARDS_AGONY = ITEMS.register(
             "wizards_agony",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+            armor("wizards_agony", ArmorItem.Type.BOOTS));
 
     /**
      * Twenty-fourth out the door, and the sixth and last Boots (combat-api.md section 6),
@@ -344,7 +351,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> TASTED_BLOOD = ITEMS.register(
             "tasted_blood",
-            () -> new ArmorItem(ArmorMaterials.DIAMOND, ArmorItem.Type.BOOTS, new Item.Properties()));
+            armor("tasted_blood", ArmorItem.Type.BOOTS));
 
     /**
      * Twenty-fifth out the door, and the first of two Off-hand items (combat-api.md section 6),
@@ -394,7 +401,28 @@ public final class CombatContent {
     private CombatContent() {
     }
 
+    /**
+     * An armor item with its own material: {@link ArmorMaterials#DIAMOND}'s numbers, copied
+     * rather than restated so no stat can drift from where it was, and its own look on the body,
+     * {@code textures/models/armor/<id>_layer_1.png} (helmets, chestplates, boots) or
+     * {@code _layer_2.png} (leggings), drawn by tools/generate-combat-art.py. One material per
+     * item because each is its own League item, not one piece of a set. The material registers
+     * now, with the class; the item reads it lazily ({@link ArmorItem} memoizes its modifiers),
+     * so registry event order doesn't matter.
+     */
+    private static Supplier<Item> armor(String id, ArmorItem.Type type) {
+        Holder<ArmorMaterial> material = ARMOR_MATERIALS.register(id, () -> {
+            ArmorMaterial diamond = ArmorMaterials.DIAMOND.value();
+            return new ArmorMaterial(diamond.defense(), diamond.enchantmentValue(), diamond.equipSound(),
+                    diamond.repairIngredient(),
+                    List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, id))),
+                    diamond.toughness(), diamond.knockbackResistance());
+        });
+        return () -> new ArmorItem(material, type, new Item.Properties());
+    }
+
     public static void register(IEventBus modBus) {
+        ARMOR_MATERIALS.register(modBus);
         ITEMS.register(modBus);
         modBus.addListener(CombatContent::addToCreativeTabs);
     }
