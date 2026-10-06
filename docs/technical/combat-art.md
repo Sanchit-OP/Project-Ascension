@@ -1,7 +1,8 @@
 # Combat items — art
 
 **Status:** art, 2026-10-07: sprites and worn armour (first pass), then 3D in-hand models for
-three weapons (see [3D in-hand models](#3d-in-hand-models)). **Not yet seen in a running client**
+three weapons (see [3D in-hand models](#3d-in-hand-models); **rejected by Sanchit on review, to be
+redone**, see `plans/combat-art-3d.md`). **Not yet seen in a running client**
 (ADR-0008). The module builds and the generators reproduce every PNG byte for byte, but nobody
 has held these items, drawn the bows or worn the armour in game.
 
