@@ -120,19 +120,76 @@ in a stores room, not on the main path.
 
 - `worldgen/structure/lunar_archive.json`: type `minecraft:jigsaw`, start pool
   `ascension_worlds:lunar_archive/start` → `entrance.nbt`, biomes `#ascension_worlds:moon_biomes`,
-  step `underground_structures`, `terrain_adaptation: "bury"`.
+  step `underground_structures`, ~~`terrain_adaptation: "bury"`~~ **`terrain_adaptation: "none"`**
+  (design's proposal, 2026-10-07; see below).
 - `worldgen/template_pool/lunar_archive/*.json`, one per piece, from the names design hands over.
 - `worldgen/structure_set/lunar_archive.json`: `ascension_worlds:fixed_position`, `locate_at`
   `[-160, -256]`.
 - `loot_table/archive/stores.json`.
 - Verification the same way as the gateway: headless structure starts, then a client walk-through.
 
+## Design's handover (2026-10-07)
+
+Design record: [`lunar-archive-design.md`](lunar-archive-design.md). Everything below was run for
+real on a dedicated server with a throwaway datapack shaped exactly like this, then compared with
+the world block for block (four sites; every template cell matched).
+
+**Pieces and `surface_y`:**
+
+| Piece | Size | What |
+|---|---|---|
+| `lunar_archive/entrance` | 19 × 47 × 48 | the start: court, pylons, cutting, first door, covered stair down |
+| `lunar_archive/vault` | 48 × 21 × 48 | everything underground |
+
+**`surface_y` = 21**, the court's paving row. With `project_start_to_heightmap: "WORLD_SURFACE_WG"`
+use **`start_height: {"absolute": -21}`**. A single pool element has a ground-level delta of 1, so
+the start's lowest row lands on (ground + 1) + start_height − 1, which puts row 21 on the ground's
+top block. That was measured, not assumed.
+
+**The jigsaw.** The entrance's jigsaw (floor of its north edge, facing north, name
+`ascension_worlds:archive_stair`, target `ascension_worlds:archive_hall`) asks for pool
+**`ascension_worlds:lunar_archive/vault`**. The vault's jigsaw (floor of its south threshold,
+facing south) is named `ascension_worlds:archive_hall` and asks for nothing (`minecraft:empty`).
+Both turn into polished basalt floor. So, two pools:
+
+- `template_pool/lunar_archive/start.json`: one `single_pool_element`, location
+  `ascension_worlds:lunar_archive/entrance`, projection `rigid`.
+- `template_pool/lunar_archive/vault.json`: the same, location `ascension_worlds:lunar_archive/vault`.
+
+`size` 1 is enough (the start plus one child); the test used 2. `max_distance_from_center` at its
+default of 80 holds the vault (tested).
+
+**`terrain_adaptation: "none"`, not `"bury"`.** Bury adds terrain density across each piece's
+whole bounding box. The entrance's box rises 25 blocks above the ground for the pylons, so bury
+would heap a mound over the court and half-bury the pylons. The templates do not need it: every
+room is wrapped in its own walls and rubble core, the court has a six-deep footing and clears four
+rows above itself, and `structure_void` leaves the terrain alone everywhere else. Measured with
+`none` on four sites: the court's rim met the ground within −1 to +3 blocks, and the vault's roof
+was never exposed (ground cover 1–20).
+
+**Light.** Nothing is asked of logic: the lamps are `inscribed_gatestone[lit=true]` (logic's light
+9) and the orrery (10). The generator proves every floor a mob could stand on is lit.
+
+**Plinth and orrery shapes (request).** Both models are narrower than their cube. Please add
+`.noOcclusion()` and a shape. Suggested, as `Block.box` in 16ths, facing-independent:
+
+- plinth: `(0,0,0,16,2,16)`, `(2,2,2,14,4,14)`, `(4,4,4,12,11,12)`, `(2,11,2,14,15,14)`
+- orrery: `(0,0,0,16,3,16)`, `(2,3,2,14,11,14)`, `(1,11,1,15,13,15)`
+
+Until then the templates keep every plinth free-standing (the generator checks), and both models
+cover their whole footprint at the base, so nothing is culled into a hole.
+
+**Decorative blocks**, in `internal/archive/ArchiveDecorBlocks.java`, registered by one line in
+`AscensionWorlds`: `moon_basalt_brick_stairs`, `anorthosite_brick_stairs`, `archive_mural` (a `tile`
+property; see the design note).
+
 ## Handover checklist for design
 
-- [ ] Templates and the generator script; `surface_y` stated.
-- [ ] Every plinth names one of the eight ids above, each id used exactly once.
-- [ ] Exactly one `archive_orrery`, with at least a 5 × 5 × 4 clear volume centred above it.
-- [ ] Models, blockstates, textures, lang names for the three logic blocks/items and any decor.
-- [ ] Previews in `design/lunar-archive/`: an isometric cut-away, a plan of each floor, the surface
-  marker from 64 blocks away.
-- [ ] A design note (`lunar-archive-design.md`) ending in a live checklist.
+- [x] Templates and the generator script; `surface_y` stated (21, above).
+- [x] Every plinth names one of the eight ids above, each id used exactly once (generator-checked).
+- [x] Exactly one `archive_orrery`, with at least a 5 × 5 × 4 clear volume centred above it
+  (generator-checked).
+- [x] Models, blockstates, textures, lang names for the three logic blocks/items and any decor.
+- [x] Previews in `design/lunar-archive/`: an isometric cut-away, a plan of each floor, the surface
+  marker from 64 blocks away (synthetic, and rendered from generated terrain).
+- [x] A design note (`lunar-archive-design.md`) ending in a live checklist.
