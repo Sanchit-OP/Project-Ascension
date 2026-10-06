@@ -16,3 +16,20 @@ Defines the setting, cosmology, and overall rules of the game world.
 - Is the tone mysterious, hopeful, hostile, or tragic?
 - Is this science fantasy, grounded sci-fi, or hybrid myth-tech?
 - How visible is lore to players who ignore story text?
+
+## The premise (Sanchit, 2026-10-06)
+
+The civilisation that came before was **not a single-planet civilisation**. It had the
+technology, and it had conquered every planet within reach: the gateways are its roads, which
+is why one stands on every world. **Then something happened**, and nobody knows what yet. The
+player finds the network broken and pieces it back together, and the "what happened" is the
+mystery that pulls them from planet to planet (`story.md`'s assumption that each step reveals
+more of the collapse still holds).
+
+**The Moon is the lore anchor.** It is the first world off Earth and the first gateway ruin, so
+it carries the heaviest load of story: it is where the player first learns there *was* an
+interplanetary civilisation at all. Lore should be dense there and thinner afterwards, where
+each planet adds a piece rather than re-explaining the setup.
+
+Still open: what actually happened (the endgame truth), and how the lore reaches the player
+(environmental storytelling in ruins, readable fragments, a quest book). See `civilization.md`.

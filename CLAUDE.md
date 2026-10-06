@@ -64,7 +64,7 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
   discretionary.
 - Every milestone ends with a recorded measurement in `docs/technical/performance-log.md`.
 
-## Current state (2026-10-05)
+## Current state (2026-10-06)
 
 Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behaviour).
 **`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
@@ -86,9 +86,11 @@ frames** (2026-10-06): the frame is data (`docs/technical/gateway-frame-format.m
 separate session — `gateway-portal-design.md`), pre-generated on the Moon inside a ruin and
 attuned with the boss's key, player-built on Earth and attuned with a Warden tendril; walking in
 opens a destination screen; the rune ring lights when a gate wakes. Vanilla Nether and End portals
-are dormant (ADR-0014). Two refactor passes this milestone; `worlds` tests 18 → 68. **The next live
-session has a long checklist** — every "not yet confirmed live" line in the M3 plan. Planet 3
-(M3.3) is next to build and needs Sanchit's design input first.
+are dormant (ADR-0014). Two refactor passes this milestone; `worlds` tests 18 → 68. **Live
+2026-10-06:** gateways worked in Sanchit's client test, vanilla portals are dead, Moon Endermen
+spawn. Earth's gate is now crafted from the Deep Dark, with nothing from the Nether. **Planet 3
+(M3.3) is the Nether world** (roofless, netherite, a boss); its open questions and the Moon
+"round two" proposals are in the M3 plan, waiting on Sanchit.
 
 The history below is M0–M2, kept for context.
 

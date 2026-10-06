@@ -23,7 +23,7 @@ Defines the role of each planet in the progression route.
 
 - Earth: controlled starting world, primitive survival, basic engineering, first ship readiness
 - Moon: oxygen progression step, small boss, first repaired return connection
-- Planet 3: radiated power world with new minerals for stronger power generation
+- Planet 3: the Nether world (revised 2026-10-06, below); netherite is its resource gate
 - Planet 4: new armor materials without full upgrade potential
 - Planet 5: structure world with forge needed to unlock the armor's full potential
 - Planet 6: industrial war-machine world and gun unlock step
@@ -41,7 +41,11 @@ Defines the role of each planet in the progression route.
 - Team members can piggyback on the team's current unlocked planet immediately.
 - Optional side destinations should stay limited and curated rather than sprawling.
 - Some off-world environments can borrow End-like or Nether-like visual and biome logic without using vanilla dimension progression directly.
-- Planet 3 is currently defined as the radiated power world.
+- **Planet 3 is the Nether world** (Sanchit, 2026-10-06; replaces "radiated power world"). Mostly
+  Nether in feel, not an exact copy. **No roof**: open sky up to the shared space dimension, so it
+  is reached like every other planet. **Netherite** is its unique resource, which also pays back
+  the recipe debt ADR-0014 created. A boss is wanted. Full spec, and the questions still open, in
+  `plans/m3-vertical-slice.md` under M3.3.
 - Planet 4 is currently intended as a predator-pressure world tied to armor-material acquisition.
 - Planet 5 is currently intended as an ancient megastructure world containing a dormant forge that must be powered on before full armor upgrading becomes possible.
 - Planet 6 is currently intended as the industrialization and firearms step, with industrial war machines as the primary threat.
