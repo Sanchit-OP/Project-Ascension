@@ -54,7 +54,7 @@ Riot's images. The reference screenshots live in `design/reference/league/`, whi
 | `edge_of_night` | Edge of Night | an indigo hood, a dark face, two faint glowing eyes |
 | `gargoyle_stoneplate` | Gargoyle Stoneplate | a pale stone cuirass with broad pauldrons, glowing gold cracks |
 | `guardian_wing` | Guardian Angel | a gold breastplate, white wings at the shoulders, a glowing cyan crystal |
-| `rocketbelt` | Hextech Rocketbelt | brass belt and blue crystal, thrusters at the hips with blue exhaust |
+| `rocketbelt` | Hextech Rocketbelt | the belt itself: two gold rocket cones, a blue crystal buckle, glowing blue exhaust jets |
 | `collectors_pants` | The Collector | dark gunmetal with gold filigree (League's icon is a gun) |
 | `unending_despair` | Unending Despair | green-black spiked carapace with glowing cyan veins and core |
 | `mercury_treads` | Mercury's Treads | brown leather, steel cuff, toe cap and sole, a gold-set sapphire |
@@ -64,7 +64,7 @@ Riot's images. The reference screenshots live in `design/reference/league/`, whi
 | `wizards_agony` | Spellslinger's Shoes | a navy boot with gold bands and a silver plate, a spiked orb at the toe, a violet aura |
 | `tasted_blood` | Gluttonous Greaves | a bone-white boot with a jagged crest, a crimson streak, a fanged maw at the toe |
 | `zonias_hourglass` | Zhonya's Hourglass | a gold frame round an hourglass, glowing amber sand mid-fall |
-| `steraks_harness` | Sterak's Gage | a clawed crimson-purple gauntlet |
+| `steraks_harness` | Sterak's Gage | a steel gauntlet with lilac sheen, long pale claws, a crimson band at the wrist |
 
 `test_magic_blade` is a `/give`-only test item and keeps the vanilla look.
 
@@ -92,8 +92,11 @@ Riot's images. The reference screenshots live in `design/reference/league/`, whi
 
 ## Known rough edges
 
-- **First pass.** Readable at hotbar size and recognisably each item, but several deserve another
-  round: Sterak's Gage, the Rocketbelt's thrusters, Mortal Reminder's spikes, Spellslinger's orb.
+- **Second pass on the weakest four** (2026-10-07): the Rocketbelt is now the belt itself (twin
+  rockets, crystal buckle, glowing exhaust) rather than leggings with thrusters; Sterak's Gage is
+  a steel-lilac gauntlet with long claws; Mortal Reminder's limbs carry solid saw teeth;
+  Spellslinger's Shoes has a gold-trimmed cuff, a red lining, the spiked orb at the toe and an
+  aura down its back.
 - **Worn textures are simple.** Flat colour, trim bands and the signature detail (Jak'Sho's eyes,
   Guardian Angel's crystal and back wings, Mercury's sapphire, the Gluttonous maw at the toe).
   Armour layers can't glow: the layer renderer has no emissive pass.
