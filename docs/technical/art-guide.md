@@ -17,14 +17,17 @@ examples are [`gateway-portal-design.md`](gateway-portal-design.md) and
      own block, not us shipping art.
    - Vanilla textures may be opened **locally, in a scratch folder**, as a yardstick for tone (does
      this ore sit right in a deepslate wall?). Such a render is never committed.
+   - **Combat items are ported from League of Legends and should look like them** (Sanchit,
+     2026-10-06). That means our own pixels in their likeness, never Riot's pixels. The brief,
+     with the reference rules, is [`combat-art-reference.md`](combat-art-reference.md).
 2. **Art is code.** A PNG is the output of a seeded script in `tools/`. Change the script, never
    the PNG. Re-running a generator must reproduce every committed PNG byte for byte; `git status`
    after a run is the check.
 3. **Looks, not logic.** Art owns textures, models, blockstates, lang names and purely decorative
    blocks. Logic owns behaviour: block properties (light emission, hardness, collision), worldgen,
    anything in `WorldsContent`. If the art needs logic to do something (a lit state, a light
-   level), write it in the contract or handoff doc; don't implement it. Combat-module art belongs
-   to the combat session.
+   level), write it in the contract or handoff doc; don't implement it. The combat module itself
+   belongs to the combat session; its art is drawn wherever Sanchit directs.
 4. **Not done until seen in a client** (ADR-0008). Previews prove the art is *coherent*, not that
    it works in game. Every art doc ends with a live checklist.
 5. **Write down where it came from.** Each batch gets a short doc: what each texture depicts, why,
