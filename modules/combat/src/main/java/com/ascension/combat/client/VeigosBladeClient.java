@@ -1,10 +1,12 @@
 package com.ascension.combat.client;
 
 import com.ascension.combat.AscensionCombat;
+import com.ascension.combat.client.weapon.WeaponRenderer;
 import com.ascension.combat.internal.CombatContent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +20,8 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
  * Greatsword first-person motion. The rest pose and size remain editable in the item JSON;
  * this extension replaces the short vanilla sword swing with wind-up, cut, and recovery.
  * Uses vanilla swing progress, so no timer, retained player, network traffic, or damage change.
+ * It also points the blade at {@link WeaponRenderer}, which draws its held model (an item gets one
+ * extension, so this one carries both).
  * Discovered on the client mod bus only; common item registration never loads client classes.
  */
 @EventBusSubscriber(modid = AscensionCombat.MOD_ID, value = Dist.CLIENT)
@@ -28,6 +32,11 @@ public final class VeigosBladeClient {
     @SubscribeEvent
     public static void registerExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return WeaponRenderer.get();
+            }
+
             @Override
             public boolean applyForgeHandTransform(
                     PoseStack pose, LocalPlayer player, HumanoidArm arm, ItemStack stack,
