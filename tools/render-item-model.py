@@ -3,6 +3,8 @@
 Run from the repository root:
     python tools/render-item-model.py ascension_combat:item/veigos_blade [--out DIR] [--name NAME]
         [--swing vanilla|greatsword]
+    python tools/render-item-model.py <model> --fit RX,RY,SCALE --point X,Y,Z:U,V --point ...
+        (prints a first-person display entry that puts those model points on those screen spots)
 
 Writes <name>_hand.png to DIR (default: design/combat-items/3d/): first person by day and by
 night, two third-person views of a stand-in player, a three-angle turntable of the bare model and
@@ -10,7 +12,10 @@ a strip of the first-person swing. Our own art only; no vanilla texture is read.
 
 It resolves the model the way the game does: parents, texture variables, NeoForge's
 separate_transforms (the base model is what the hands hold) and item_layers, then builds quads
-from cuboid elements, or extrudes item/generated layers one pixel deep. Each view applies the
+from cuboid elements, or extrudes item/generated layers one pixel deep. A model parenting
+builtin/entity is drawn the way the combat module's WeaponRenderer draws it: from
+weapon_models/<item>.json (parts turned by any angle; WeaponModelTest pins the conventions),
+once with its texture and once with its glow texture, added full-bright like the "eyes" pass. Each view applies the
 game's own transform chain (checked against the 1.21.1 sources, 2026-10-07):
 
 - First person, right hand: camera space, a fixed 70 degree vertical field of view,
@@ -63,6 +68,7 @@ BUILTIN = {
     'neoforge:item/default': {'generated': True, 'display': GENERATED_DISPLAY},
     'neoforge:item/default-tool': {'generated': True, 'display': HANDHELD_DISPLAY},
     'minecraft:builtin/generated': {'generated': True},
+    'minecraft:builtin/entity': {'entity': True},
 }
 
 LIGHT0 = np.array([0.2, 1.0, -0.7]) / np.linalg.norm([0.2, 1.0, -0.7])
@@ -84,7 +90,22 @@ def find_asset(ns, rel):
 
 def load_model(rid):
     """The model JSON with its parent chain flattened: elements, textures, display, and whether
-    it ends at the generated-item parent."""
+    it ends at the generated-item parent. A model ending at builtin/entity is drawn in game by
+    the combat module's WeaponRenderer from weapon_models/<item>.json, which is loaded too."""
+    model = _load_model(rid)
+    if model.get('entity') and 'weapon' not in model:
+        ns, path = split_id(rid if ':' in rid else 'minecraft:' + rid, 'models')
+        item = path.split('/')[-1]
+        item = item[:-3] if item.endswith('_3d') else item
+        p = find_asset(ns, os.path.join('weapon_models', item + '.json'))
+        if not p:
+            raise FileNotFoundError('weapon model for ' + rid)
+        with open(p) as f:
+            model['weapon'] = json.load(f)
+    return model
+
+
+def _load_model(rid):
     rid = rid if ':' in rid else 'minecraft:' + rid
     if rid in BUILTIN:
         return dict(BUILTIN[rid], textures={})
@@ -101,7 +122,7 @@ def resolve(m):
     if m.get('loader') == 'neoforge:separate_transforms':
         # The hands use the base model; the game asks the wrapper for nothing else in hand.
         return resolve(m['base'])
-    parent = load_model(m['parent']) if 'parent' in m else {'textures': {}}
+    parent = _load_model(m['parent']) if 'parent' in m else {'textures': {}}
     out = dict(parent)
     out['textures'] = dict(parent.get('textures', {}), **m.get('textures', {}))
     if 'elements' in m:
@@ -164,10 +185,11 @@ def rot_axis(axis, deg):
 
 
 class Quad:
-    __slots__ = ('pos', 'uv', 'tex', 'color', 'emissive')
+    __slots__ = ('pos', 'uv', 'tex', 'color', 'emissive', 'additive')
 
-    def __init__(self, pos, uv=None, tex=None, color=None, emissive=False):
+    def __init__(self, pos, uv=None, tex=None, color=None, emissive=False, additive=False):
         self.pos, self.uv, self.tex, self.color, self.emissive = pos, uv, tex, color, emissive
+        self.additive = additive
 
 
 def element_quads(model):
@@ -233,7 +255,46 @@ def generated_quads(model):
     return quads
 
 
+def weapon_quads(weapon):
+    """A weapon_models file as WeaponModel reads it: parts turned about their pivots (Z . Y . X,
+    X first), cubes with texel UVs, drawn once with the texture and once more with the glow
+    texture through the additive, full-bright "eyes" pass."""
+    def tex(rid):
+        ns, path = split_id(rid, 'textures')
+        p = find_asset(ns, path)
+        if not p:
+            raise FileNotFoundError('texture ' + rid)
+        return np.asarray(Image.open(p).convert('RGBA'), dtype=np.float32) / 255.0
+    base = tex(weapon['texture'])
+    glow = tex(weapon['glow_texture']) if 'glow_texture' in weapon else None
+    tw, th = weapon['texture_size']
+    out = []
+
+    def part(pj, parent):
+        pv = np.array(pj.get('pivot', [0, 0, 0]), float)
+        rx, ry, rz = pj.get('rotation', [0, 0, 0])
+        m = parent @ T(*pv) @ Rdeg('z', rz) @ Rdeg('y', ry) @ Rdeg('x', rx) @ T(*-pv)
+        for cube in pj.get('cubes', []):
+            fr, to = cube['from'], cube['to']
+            for face, uv in cube['faces'].items():
+                corners = np.array([[(to if c else fr)[i] for i, c in enumerate(cc)] for cc in FACE_CORNERS[face]],
+                                   float)
+                pos = (np.c_[corners, np.ones(4)] @ m.T)[:, :3]
+                u0, v0, u1, v1 = uv[0] / tw, uv[1] / th, uv[2] / tw, uv[3] / th
+                uvs = np.array([(u0, v0), (u0, v1), (u1, v1), (u1, v0)])
+                out.append(Quad(pos, uvs, base))
+                if glow is not None:
+                    out.append(Quad(pos, uvs, glow, emissive=True, additive=True))
+        for child in pj.get('children', []):
+            part(child, m)
+    for pj in weapon['parts']:
+        part(pj, np.eye(4))
+    return out
+
+
 def model_quads(model):
+    if 'weapon' in model:
+        return weapon_quads(model['weapon'])
     return element_quads(model) if not model.get('generated', False) else generated_quads(model)
 
 
@@ -342,7 +403,7 @@ def transformed(quads, m):
     out = []
     for q in quads:
         p = np.c_[q.pos, np.ones(len(q.pos))] @ m.T
-        out.append(Quad(p[:, :3], q.uv, q.tex, q.color, q.emissive))
+        out.append(Quad(p[:, :3], q.uv, q.tex, q.color, q.emissive, q.additive))
     return out
 
 
@@ -387,7 +448,7 @@ def rasterise(quads, proj, view, size, background, night=False, light_view=None)
     color = np.array(background, dtype=np.float32)[:h, :w].copy()
     depth = np.full((h, w), np.inf, dtype=np.float32)
     pv = proj @ view
-    for q in quads:
+    for q in sorted(quads, key=lambda q: q.additive):
         p = q.pos
         n = np.cross(p[1] - p[0], p[2] - p[0])
         if np.linalg.norm(n) < 1e-12:
@@ -397,7 +458,7 @@ def rasterise(quads, proj, view, size, background, night=False, light_view=None)
             continue
         n /= nl
         ln = n if light_view is None else light_view[:3, :3] @ n
-        k = shade(ln, q.emissive, night)
+        k = 1.0 if q.additive else shade(ln, q.emissive, night)
         clip = np.c_[p, np.ones(4)] @ pv.T
         if np.any(clip[:, 3] <= 1e-4):
             continue
@@ -430,7 +491,7 @@ def _tri(color, depth, q, tri, sx, sy, sz, inv_w, k, w, h):
         return
     z = w0 * sz[a] + w1 * sz[b] + w2 * sz[c]
     region = depth[miny:maxy + 1, minx:maxx + 1]
-    test = inside & (z < region)
+    test = inside & ((z <= region + 1e-4) if q.additive else (z < region))
     if not test.any():
         return
     if q.tex is not None:
@@ -445,6 +506,9 @@ def _tri(color, depth, q, tri, sx, sy, sz, inv_w, k, w, h):
         rgb = texel[:, :, :3]
     else:
         rgb = np.broadcast_to(q.color[:3], xs.shape + (3,))
+    if q.additive:
+        color[miny:maxy + 1, minx:maxx + 1][test] += rgb[test] * texel[:, :, 3:4][test] * k
+        return
     region[test] = z[test]
     color[miny:maxy + 1, minx:maxx + 1][test] = rgb[test] * k
 
@@ -534,6 +598,35 @@ def sheet(model, title, swing='vanilla'):
     return out
 
 
+def fit_first_person(points, rx, ry, scale, size=(960, 540)):
+    """A first-person display transform that puts model points on chosen screen spots.
+
+    points: [((x, y, z) in model pixels, (u, v) in 0..1 of the screen, from the top left)].
+    The X and Y rotation and the scale are fixed; the Z rotation and the translation are solved
+    (Gauss-Newton, numeric Jacobian). Two points pin all four. Returns the display entry."""
+    pts = np.array([p for p, _ in points], float)
+    targ = np.array([t for _, t in points], float)
+    proj = perspective(70, size[0] / size[1])
+
+    def screen(params):
+        rz, tx, ty, tz = params
+        disp = T(tx / 16, ty / 16, tz / 16) @ Rdeg('x', rx) @ Rdeg('y', ry) @ Rdeg('z', rz) @ S(scale)
+        ph = np.c_[pts, np.ones(len(pts))] @ (proj @ FIRST_PERSON_HAND @ disp @ T(-0.5, -0.5, -0.5) @ S(1 / 16)).T
+        ndc = ph[:, :2] / ph[:, 3:4]
+        return np.c_[(ndc[:, 0] + 1) / 2, (1 - ndc[:, 1]) / 2].ravel()
+
+    p = np.array([10.0, 0.0, 0.0, 0.0])
+    for _ in range(100):
+        r = screen(p) - targ.ravel()
+        jac = np.stack([(screen(p + d) - screen(p - d)) / 2e-4 for d in np.eye(4) * 1e-4], axis=1)
+        step = np.linalg.lstsq(jac, -r, rcond=None)[0]
+        p += step
+        if np.abs(step).max() < 1e-7:
+            break
+    rz, tx, ty, tz = (round(float(v), 2) for v in p)
+    return {'rotation': [rx, ry, rz], 'translation': [tx, ty, tz], 'scale': [scale] * 3}
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('model', help='e.g. ascension_combat:item/veigos_blade')
@@ -541,7 +634,17 @@ def main():
     ap.add_argument('--name', help='output file stem (default: the model path\'s last part)')
     ap.add_argument('--swing', choices=('vanilla', 'greatsword'), default='vanilla',
                     help='first-person swing to show: vanilla, or VeigosBladeClient\'s greatsword')
+    ap.add_argument('--fit', metavar='RX,RY,SCALE', help='instead of a preview, print a first-person '
+                    'display entry putting each --point on its screen spot (see fit_first_person)')
+    ap.add_argument('--point', action='append', default=[], metavar='X,Y,Z:U,V',
+                    help='for --fit: a model point and where on the screen it should sit (0..1)')
     args = ap.parse_args()
+    if args.fit:
+        rx, ry, sc = (float(v) for v in args.fit.split(','))
+        pts = [(tuple(float(v) for v in a.split(':')[0].split(',')), tuple(float(v) for v in a.split(':')[1].split(',')))
+               for a in args.point]
+        print(json.dumps(fit_first_person(pts, rx, ry, sc)))
+        return
     model = load_model(args.model)
     name = args.name or args.model.split('/')[-1]
     os.makedirs(args.out, exist_ok=True)
