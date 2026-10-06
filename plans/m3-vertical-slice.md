@@ -34,18 +34,21 @@ as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
 
 **Decisions waiting on Sanchit:**
 
-1. **Planet 3's open questions**: boss, survival rule, traversal wrinkle, ambient life (M3.3).
-2. **More Moon content**: Sanchit asked for creative proposals; they are listed under "Moon
-   content, round two" below, waiting for his pick.
-3. **The gateway follow-ups** from his live test, when he raises them.
-4. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
+1. **Planet 3's remaining questions**: survival rule, traversal wrinkle, ambient life (M3.3).
+   Decided: the Netherite Monstrosity, no power generation there, no ash storms.
+2. **The gateway follow-ups** from his live test, when he raises them.
+3. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
 
-**Next:** Planet 3 once its questions are answered, Moon content round two once picked. Deferred
-to the alpha release: the two-client test (also covers share-air) and the M1.9 measurement. The
-dist-check now catches method references (fixed 2026-10-06, `fb6f368`).
+**In progress (2026-10-06):** Moon round two, **Earthrise** (built, not yet seen in a client) and
+**the Lunar Archive** (contract written; design goes to a separate session, logic here: archive
+entries + tablet + plinth, then the orrery hologram, then worldgen plumbing once templates land).
 
-**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); since then, one
-increment (the Deep Dark recipes). The next pass is due after two more (ADR-0008).
+**Next:** the Archive's logic, then Planet 3 once its questions are answered. Deferred to the
+alpha release: the two-client test (also covers share-air) and the M1.9 measurement.
+
+**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); since then, two
+increments (the Deep Dark recipes, Earthrise). **The next pass is due after the Archive's first
+logic increment** (ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
@@ -462,7 +465,11 @@ pick, not commitments. Each says what it costs and what it ties into.
 7. **A native threat.** Something that lives in the dust and ambushes (regolith burrowers).
    Sourced from a mod first (the "Sourcing bosses" rule), custom only if nothing fits.
 
-**Suggested first pair:** 1 + 2. The Archive answers the lore ask directly, and Earthrise changes
+**Picked 2026-10-06: 1 + 2, the Archive and Earthrise.** Earthrise is built (`SkyBodyRenderer`,
+format in `worlds-api.md`, "Sky bodies"). The Archive is split design/logic through
+[`lunar-archive-format.md`](../docs/technical/lunar-archive-format.md).
+
+Original suggestion: 1 + 2. The Archive answers the lore ask directly, and Earthrise changes
 how every minute on the Moon feels for very little code. Then 3 + 4, which give the Moon a
 reason to stay rather than pass through.
 
@@ -543,14 +550,17 @@ fits a netherite planet by name. Same pattern as the Moon: relocate the structur
 `fixed_position`, its boss drops this planet's gateway key, and `GatewayRules` needs no new code
 (the key names its planet).
 
+**Decided 2026-10-06:** the boss is **the Netherite Monstrosity**. **No power generation** here
+("radiated power" may land on a different planet). **No ash storms** for now.
+
 **Open, needs Sanchit before building:**
-1. Which boss: Ignis, the Netherite Monstrosity, or something else.
+1. ~~Which boss~~ (the Netherite Monstrosity).
 2. **The survival rule** (`planets.md`: every mandatory world introduces one). Natural fits: heat
    (a suit or cooling mechanic, ties to `atmosphere`), a toxic/sulphur atmosphere (oxygen
    already works here for free, the planet just declares an unbreathable atmosphere), or both.
-3. **The traversal wrinkle** (also required): lava seas to cross, sky-high basalt pillars, ash
-   storms (the Moon's dust-storm machinery is reusable)?
-4. Does "radiated power" survive as flavour (geothermal / magma power for Create), or is it gone?
+3. **The traversal wrinkle** (also required): lava seas to cross, sky-high basalt pillars? (Not
+   ash storms, for now.)
+4. ~~Radiated power~~ (not here; maybe another planet).
 5. Ambient life: vanilla Nether mobs come with the biomes; anything extra?
 
 **Art** goes to a separate design session through a contract doc, the same way the gateway did.
