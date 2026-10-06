@@ -3,8 +3,9 @@
 **Status:** design, 2026-10-07. Built against [`lunar-archive-format.md`](lunar-archive-format.md);
 the changes it asks of logic are proposed there, under "Design's handover". **Not yet seen in a
 running client** (ADR-0008). The templates have been placed on a dedicated server through a
-throwaway datapack standing in for logic's worldgen (four sites, four terrains, three rotations)
-and compared with the world block for block. Every model resolves. Nobody has walked it.
+throwaway datapack standing in for logic's worldgen (two runs of four sites, the last on the
+final templates) and compared with the world block for block. Every model resolves. Nobody has
+walked it.
 
 | | |
 |---|---|

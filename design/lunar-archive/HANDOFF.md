@@ -1,19 +1,21 @@
-# Lunar Archive design session — handoff (paused 2026-10-07)
+# Lunar Archive design session — handoff (complete 2026-10-07)
 
-The design session was stopped partway through its last step (writing up and handing back). This
-note says exactly where it stopped, so a new session can finish it. Read it, then
+**The design session is finished and the branch is ready to merge.** It was paused once, partway
+through handing back, and a second session finished the list below. Start from
 `docs/technical/lunar-archive-design.md` (the design record) and the "Design's handover" section of
-`docs/technical/lunar-archive-format.md` (the contract).
+`docs/technical/lunar-archive-format.md` (the contract). Nothing has been seen in a running client
+yet; the design note ends in the live checklist for that (ADR-0008).
 
 ## Where the work is
 
 - **Worktree:** `E:\code\Project-Ascension-archive`, branch **`lunar-archive-design`**. The main
-  checkout `E:\code\Project-Ascension` belongs to the logic session, so don't work there.
-- **Rebased onto `main` at `eb468a4`** (2026-10-07). It should still fast-forward unless `main` has
-  moved since.
+  checkout `E:\code\Project-Ascension` belongs to the logic session.
+- **Rebased onto `main` at `77e5eeb`** (2026-10-07) and fast-forwards from it. If `main` moves
+  again before the merge, rebase, re-run both generators and the build, and check again.
 - Commits on the branch: first pass (templates, murals, looks), the headless placement and its
-  fixes, the plinth-placement checks, and this handoff (design note plus contract handover).
-- Nothing is pushed (the prompt says don't push).
+  fixes, the plinth-placement checks, the design note and contract handover, the final headless
+  re-check, the art-guide additions, and this note.
+- Nothing is pushed.
 
 ## Done
 
@@ -28,46 +30,38 @@ note says exactly where it stopped, so a new session can finish it. Read it, the
   perspective views and textured block models (`render_block_model`).
 - Java: `internal/archive/ArchiveDecorBlocks.java` and `ArchiveMuralBlock.java`, plus one line in
   `AscensionWorlds`. Data: loot, tags (`archive_decor`, `#minecraft:stairs`), recipes, lang names.
-- Both generators are byte-for-byte reproducible (350 files checked). All models resolve. The stairs
-  blockstate matches vanilla's 40 variants. `./gradlew :modules:worlds:build` passed before the
-  rebase.
-- Headless placement on a dev server at four sites matched the templates block for block. The
-  scripts are in `design/lunar-archive/headless-check/` (throwaway, hard-coded to this machine's
-  paths).
+- Both generators are byte-for-byte reproducible. All models resolve. The stairs blockstate matches
+  vanilla's 40 variants. `./gradlew :modules:worlds:build` passes on the rebased branch.
+- **Headless placement, twice.** First at four sites, then, on the final templates, at four new
+  sites in a fresh world, including the real one (x −160, z −256). Both times all 22,395 template
+  cells matched the world at every site, block state for block state, with all eight plinths in
+  place. The second run covered three start rotations; the court's rim met the ground within −2 to
+  +3. One site of the second run landed in a crater that had already generated, which exposed the
+  vault's roof. That is a `/place` artefact, but it led to the crater request below. The scripts
+  are in `design/lunar-archive/headless-check/` (throwaway, hard-coded to this machine's paths);
+  the test world has been deleted.
+- **Art guide** (`docs/technical/art-guide.md`): templates carry block states; which way is up on an
+  up face; tool rows for both archive scripts, the `.nbt` previews and `render_block_model`; the six
+  inlay palettes; three failures and their fixes.
 
-## Left to do, in order
+## If you re-run the generators
 
-1. **Re-run the headless check once** on the final templates. The rotunda's diagonal pilasters and
-   the moved rubble landed after the four-site run. Cell counts are unchanged (22,395); confirm 0
-   differences.
-   - Run `python design/lunar-archive/headless-check/setup_test_server.py`.
-   - Start `./gradlew runDevServer` in the worktree, in the background, and wait for "RCON running".
-   - Over RCON (`RCON_PASSWORD=archive-test-local`): `execute in ascension_worlds:moon run forceload
-     add ...`, then `place structure archive_test:archive <x> 64 <z>`, then `save-all flush`.
-   - Run `python design/lunar-archive/headless-check/verify_sites.py <out-dir>`, then `stop`.
-   - Afterwards delete `run/server/archive-test`; `run/` is gitignored. Note that
-     `run/server/server.properties` in the worktree has RCON on, but it is the worktree's own,
-     gitignored copy.
-2. **Art guide additions** (`docs/technical/art-guide.md`; the edit was interrupted, nothing written):
-   - Templates (`.nbt`) carry block states, so real stairs are fine there.
-   - An up face lays its texture's top along the north edge (the plinth tablet's flipped uv).
-   - Tools table rows: `generate-archive-art.py`, `generate-lunar-archive.py`,
-     `render_block_model`, the `.nbt` previews.
-   - Palettes table: `ASH`, `ICE`, `FORGE`, `EARTH`, `GREY`, `SUN` inlay stones in the archive
-     script.
-   - Failures table: the 3-px diamond and the hollow block diamond both read as crosses (fixed by
-     the almond eye and solid lozenges); white-on-white relief figures vanished (fixed by
-     black-figure builders); the tablet read upside down (fixed by the uv flip, caught by
-     `render_block_model`).
-3. Re-run both generators and `./gradlew :modules:worlds:build`. `git status` must be clean apart
-   from intended changes.
-4. Rebase onto `main` if it moved, confirm the branch fast-forwards, and tell Sanchit it is ready to
-   merge.
+`git status` may list about 140 JSON files under `assets/ascension_worlds/` as modified straight
+after a run. They are not: the checkout wrote them CRLF (`core.autocrlf=true`) and the generator
+writes LF, which is exactly what is committed. `git diff` shows nothing for them, and
+`git hash-object --no-filters <file>` equals `git rev-parse HEAD:<file>`. `git add` on them stages
+nothing and clears the listing.
 
 ## Open, not design's call (flagged in the design note)
 
-- `docs/lore/lore-spread-proposal.md` proposes moving *The Last Order*, *The Sealing* and
-  *Unfinished* off the Moon. The sealed room and the dead gate are staged for *Unfinished*.
-  Re-pointing a plinth is one line in the generator. The choice is Sanchit's.
-- Logic should add `.noOcclusion()` and shapes to the plinth and orrery (boxes are in the contract),
-  and use `terrain_adaptation: "none"` and `start_height -21` (reasoning in the contract).
+- **The lore spread.** `docs/lore/lore-spread-proposal.md` proposes moving *The Last Order*,
+  *The Sealing* and *Unfinished* off the Moon. The sealed room and the dead gate are staged for
+  *Unfinished*. Re-pointing a plinth is one line in the generator, but the sealed room would want
+  new text that earns its staging. The choice is Sanchit's.
+- **For logic,** all in the contract's "Design's handover":
+  - `.noOcclusion()` and shapes on the plinth and orrery (boxes given).
+  - `terrain_adaptation: "none"` and `start_height -21`, with the two pools named there.
+  - **New:** an `exclusion_zone` on `structure_set/large_crater.json` against the Archive's
+    structure set (`chunk_count` 10), so a crater never hollows the ground round the Archive and
+    leaves its piece boxes standing in the bowl. Nothing protects the gateway ruin from craters
+    either.
