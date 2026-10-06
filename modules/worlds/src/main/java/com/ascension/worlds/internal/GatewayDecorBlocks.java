@@ -77,7 +77,7 @@ public final class GatewayDecorBlocks {
     /**
      * The stone that borders every gateway's field, on every planet, in the builders' script.
      * The one frame block with no tag alternative: a gateway's body is local stone, its ring is
-     * always this. Crafted on Earth from polished deepslate and an echo shard. The one block here
+     * always this. Crafted on Earth from polished deepslate and sculk. The one block here
      * with a state: its runes light when the gate is attuned ({@link InscribedGatestoneBlock}).
      */
     public static final Supplier<InscribedGatestoneBlock> INSCRIBED_GATESTONE = block(

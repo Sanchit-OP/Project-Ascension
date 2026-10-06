@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "DED",
-    "ELE",
+    "SCS",
     "DED"
   ],
   "key": {
@@ -13,8 +13,11 @@
     "E": {
       "item": "minecraft:echo_shard"
     },
-    "L": {
-      "item": "minecraft:lodestone"
+    "S": {
+      "item": "minecraft:sculk_catalyst"
+    },
+    "C": {
+      "item": "minecraft:compass"
     }
   },
   "result": {
