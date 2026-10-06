@@ -4,8 +4,9 @@
 what to keep in mind when making the next batch: Planet 3, boss drops, machines, anything. Written
 2026-10-06 by the session that made that art, for any session making art next. The worked
 examples are [`gateway-portal-design.md`](gateway-portal-design.md),
-[`moon-materials-art.md`](moon-materials-art.md) and, for item sprites drawn in another game's
-likeness, [`combat-art.md`](combat-art.md).
+[`moon-materials-art.md`](moon-materials-art.md), for item sprites drawn in another game's
+likeness, [`combat-art.md`](combat-art.md), and, for a whole building in structure templates,
+[`lunar-archive-design.md`](lunar-archive-design.md).
 
 ## The rules
 
@@ -191,9 +192,12 @@ so the shape survives in a pitch-black cave.
 
 **Translucency** is `"render_type": "minecraft:translucent"` in the model; no Java needed.
 
-**Structures are placed in default block states.** Pre-generation places each block's default
-state, which means bottom slabs and upright pillars. That's safe. Stairs face north, so avoid
-them in anything pre-generated, or propose a state field in the contract first.
+**Frame-format structures are placed in default block states.** Pre-generation places each
+block's default state, which means bottom slabs and upright pillars. That's safe. Stairs face
+north, so avoid them in anything pre-generated, or propose a state field in the contract first.
+**Structure templates (`.nbt`) are different:** they carry block states and block-entity NBT,
+and the game turns the states with the piece, so real stairs, top slabs, facing plinths and
+`lit` gatestone are all fine there. The Lunar Archive uses every one of them.
 
 **Identity over novelty.** The project has a visual language now: reuse it.
 - **"The ring is universal, the body is local."** Every gateway, on every planet, is ringed in
@@ -214,6 +218,9 @@ them in anything pre-generated, or propose a state field in the contract first.
 | Raw titanium a smooth ball; a notch read as legs | 12× item preview | lobed, faceted mask; filled notch |
 | Anorthosite flecks too bright | contact sheet | flecks mixed 50 %, rarer |
 | Moon site grid shorter than the frame inside it | contract checker | pad the site to contain the frame |
+| The diamond eye as a 3-px diamond (tablet item) and as a hollow block diamond (the pylon's first cap): both read as crosses, the second as a ringed cross from any distance | 12× item preview; perspective from 64 blocks | an almond eye at 16 px; in blocks, solid lozenges (thick pale rim, dark ring, lit pupil) |
+| White-on-white relief figures vanished at viewing distance | the murals set into a hall wall | black-figure: the builders inlaid in their own dark stone |
+| The plinth's tablet read upside down | `render_block_model` | uv flipped both ways (an up face's top lies along north) |
 
 ## The palettes
 
@@ -229,6 +236,15 @@ Values live in the scripts; these are the families and what they're for.
 | `HELIUM` | moon | amber → cream → white | helium crystals |
 | `DEEP` | moon | neutral grey at deepslate's brightness | host rock for deep-band ores |
 | `TITAN` + `TINTS` | moon | silver; blue-violet anodised tints | titanium |
+| `ASH` | archive | dark red-brown | inlay stone in the murals: the ash plains (Planet 3), its dim red sun; a trace of it darkens the dead rings in *The Quiet* |
+| `ICE` | archive | pale blue-grey | inlay: the frozen sea, its icebergs and ringed world |
+| `FORGE` | archive | iron-dark, then orange to cream fire | inlay: the forge world's mountains and the fire in their seams |
+| `EARTH` | archive | muted blue | inlay: the blue world on *The Road* |
+| `GREY` | archive | neutral mid-grey | inlay: the far, unnamed worlds and the Moon on *The Road* |
+| `SUN` | archive | pale gold | inlay: the sun; the orrery's star-map top |
+
+The archive's inlay stones are muted on purpose: coloured stone set into plaster, not paint. None
+of them is teal, which stays the network's.
 
 ## Model and blockstate patterns
 
@@ -260,6 +276,13 @@ loot table drops 2 when `type=double`. Copy `moon_basalt_brick_slab`.
 faces), `render_type` translucent, full-bright, `"ambientocclusion": false`. Copy
 `gateway_field_ns.json` / `_ew.json`.
 
+**Which way is up on an up face.** An `up` face lays its texture's top row along the block's
+north edge, so a picture on it reads upright to someone standing south, looking north. Anything
+with a reading direction meant for a viewer on the north side needs its uv flipped both ways
+(for the plinth's 12 × 10 face, `[14, 13, 2, 3]` instead of `[2, 3, 14, 13]`). The Archive
+plinth's tablet is modelled for a reader standing north and read upside down until it was
+flipped; `render_block_model` caught it.
+
 **Item:** `{"parent": "minecraft:item/generated", "textures": {"layer0": "ascension_worlds:item/<name>"}}`.
 A block item's model parents its block model.
 
@@ -275,6 +298,10 @@ A block item's model parents its block model.
 | `tools/render-structure-preview.py` | `python tools/render-structure-preview.py <frame.json> [--site <site.json>] [--out <dir>]`: isometric front-left and back-right plus a front elevation, coloured from each block's own texture |
 | `tools/generate-combat-models.py` | `Part` (`box`, `centred`, `bar`, `arc`): a held weapon modelled as parts turned to any angle; `Mat`: a painted material (ramp, bevel, grain, bands, glow); writes the `weapon_models` format `WeaponRenderer` draws, its texture and glow layer; `upright_handheld()`: vanilla's hand transforms for a model drawn upright |
 | `tools/render-item-model.py` | `python tools/render-item-model.py <ns:item/id> [--out <dir>]`: an item model in hand, first person day and night, third person, turntable, and a weapon's hold and attacks in both views (or vanilla's swing), through the game's own transforms and item lighting; `--fit` solves a first-person display |
+| `tools/render-structure-preview.py`, `.nbt` previews | `load_nbt` reads a structure template (states and block-entity tags); `render_plan` (a floor plan, plinths numbered with a tick toward their reader), `render_iso_states` (cut-aways coloured per block *state*, with stairs, slabs and the plinth drawn in rough shape) and `render_perspective` (a player's-eye view on a black sky, e.g. a marker from 64 blocks). `archive_previews()` is the Archive's set |
+| `render_block_model(model_ref)` (same file) | one block model drawn from its own elements, uvs, rotations and textures, glow layers full-bright. Use it for any model that isn't a cube: it shows a face upside down or a uv wrong before the game does |
+| `tools/generate-archive-art.py` | the Archive's murals (a carved-plaster `Canvas`: relief heights lit top-left, coloured inlay, teal inlay on a glow layer), the plinth, orrery and tablet looks, stair and mural models and blockstates, the inlay palettes above. Refuses to run if its tile count differs from `ArchiveMuralBlock.TILES` |
+| `tools/generate-lunar-archive.py` | the Archive's structure templates as deterministic NBT (sorted palette, fixed block order, gzip with mtime 0), built from `room()`, `run()` and friends. Before writing it checks the contract (entries, orrery clear volume, loot, jigsaws, free-standing plinths) and floods block light to prove no floor a mob could stand on is dark |
 
 The gateway files are `.../ascension_worlds/gateway_frame/gateway.json` and
 `.../ascension_worlds/gateway_site/gateway_moon_site.json`.
