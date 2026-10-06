@@ -103,38 +103,43 @@ steps. That's the logic session's call; the reveal is clear floor either way.
 | `#gateway_frame_dark` | 189 | deepslate bricks / tiles, polished deepslate, polished blackstone (bricks), smooth basalt, + the lunar basalt family |
 | `#gateway_frame_pale` | 72 | quartz bricks / block, smooth quartz, calcite, polished diorite, + anorthosite (bricks) |
 | `#gateway_frame_step` | 56 | deepslate brick / tile / polished slab, polished blackstone (brick) slab, + both lunar slabs |
-| `#gateway_frame_pillar` | 46 | quartz pillar, polished basalt, + anorthosite pillar |
-| Inscribed Gatestone | 28 | crafted: 8 polished deepslate + 1 echo shard → 8 |
+| `#gateway_frame_pillar` | 46 | bone block, quartz pillar, polished basalt, + anorthosite pillar |
+| Inscribed Gatestone | 28 | crafted: 8 polished deepslate + 1 sculk (or echo shard) → 8 |
 | `#gateway_frame_accent` | 26 | chiseled quartz, deepslate, polished blackstone, stone bricks, tuff bricks, + chiseled anorthosite |
 | Gateway Keystone | 1 | crafted, below |
 
-What that costs in raw materials:
+What that costs in raw materials (recipes revised 2026-10-06, see below):
 
-- **Every build:** about 250 cobbled deepslate (dark body, slabs, gatestone base); **8 echo
-  shards** (4 for 32 gatestones, 4 for the keystone), the same as one recovery compass, and in
-  practice one Ancient City, the same trip as the Warden; **4 diamonds**; **1 netherite ingot**
-  (the keystone's lodestone); and the Warden tendril.
-- **Moon-faithful look** (quartz trim, pillars, accents): about **576 nether quartz** on top.
-  That's a real Nether session, and the intended "serious project".
-- **Budget look:** polished diorite trim, polished basalt pillars and chiseled deepslate accents
-  need no quartz at all. It looks rougher, and that's the player's choice to make. The rare gates
-  (echo shards, keystone, tendril) are the same on either route.
-
-Moon stone is in every tag too, so a player who has been to the Moon can haul anorthosite home
-and build Earth's gate to match the ruin.
+- **Every build:** about 250 cobbled deepslate (dark body, slabs, gatestone base); **4 sculk**
+  (the gatestones), **2 sculk catalysts** and **2 echo shards** (the keystone), all from one
+  Ancient City with a Silk Touch pick; **4 diamonds**; a compass; and **one** Warden tendril to
+  attune it.
+- **Nothing from the Nether or the End.** ADR-0014 locks both out until they exist as planets,
+  and the Nether is the next planet, so Earth's gate must not lean on it.
+- **Earth-only look:** deepslate body, calcite or polished diorite trim, **bone block** pillars,
+  chiseled deepslate / stone brick / tuff brick accents. Pale bone pillars on dark deepslate,
+  sculk-veined gatestones: the Deep Dark's own palette.
+- **Moon-faithful look:** haul anorthosite and lunar basalt home from the Moon. Every tag accepts
+  the Moon's stone, so Earth's gate can match the ruin exactly.
+- Quartz, polished basalt and blackstone stay in the tags for when the Nether planet exists.
 
 ### The keystone recipe
 
 ```
 D E D      D = diamond
-E L E      E = echo shard
-D E D      L = lodestone
+S C S      E = echo shard
+D E D      S = sculk catalyst
+           C = compass
 ```
 
-The lodestone is the point: vanilla's own anchor-a-destination block, and it carries a netherite
-ingot. Echo shards tie the keystone, the ring and the Warden to the same place. It is
-deliberately below a beacon (no nether star). The boss gate is already the Warden tendril, and
-a second boss would make Earth's gate absurd rather than serious.
+Revised 2026-10-06. The first draft's centre was a lodestone, i.e. a netherite ingot, which
+ADR-0014 made unobtainable. The compass keeps the "anchor to a place" idea without the Nether.
+
+**The Warden budget.** Players kill two or three Wardens in a playthrough, not fifty, so the
+Warden's own drop appears exactly once in the whole gate: the tendril that attunes it. Everything
+else comes from the Deep Dark around the Warden (sculk, catalysts, Ancient City chest echo
+shards), which a player can gather while sneaking past it. Echo shards dropped from eight to two.
+It stays deliberately below a beacon (no nether star).
 
 ## Decorative blocks
 
@@ -154,7 +159,7 @@ Building Blocks creative tab.
 | Anorthosite Brick Slab | 3 bricks → 6; stonecutter 1:2 | site (broken pillar tops) |
 | Anorthosite Pillar | 2 bricks stacked → 2; stonecutter 1:1 | frame `I`, site pillars |
 | Chiseled Anorthosite | 2 slabs stacked; stonecutter 1:1 | frame `C` |
-| Inscribed Gatestone | 8 polished deepslate *or* polished lunar basalt + echo shard → 8 | frame `G` |
+| Inscribed Gatestone | 8 polished deepslate *or* polished lunar basalt + sculk *or* echo shard → 8 | frame `G` |
 
 Hardness and blast resistance match each block's raw stone, as vanilla's stone bricks match stone.
 The gatestone is tougher (3.0 / 9.0).
@@ -222,7 +227,7 @@ Things this design assumes or needs from the other side, none of which this bran
 1. **A `BlockItem` for `gateway_keystone`.** The recipe's result and the item model both resolve
    to that id. Without the item, the recipe fails to load (logged, not a crash).
 2. **The keystone's loot table and mining tag.** That's behaviour, so it's left to logic. But it
-   costs a netherite ingot, so it should drop when mined.
+   costs diamonds, catalysts and echo shards, so it should drop when mined.
 3. **Light.** Suggested `lightLevel` 12 for an active keystone and 11 for the field (the Nether
    portal's). The models glow full-bright either way. Real light is what makes it an event at
    night.

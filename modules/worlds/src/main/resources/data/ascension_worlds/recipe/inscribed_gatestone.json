@@ -3,7 +3,7 @@
   "category": "building",
   "pattern": [
     "###",
-    "#E#",
+    "#S#",
     "###"
   ],
   "key": {
@@ -15,9 +15,14 @@
         "item": "ascension_worlds:polished_moon_basalt"
       }
     ],
-    "E": {
-      "item": "minecraft:echo_shard"
-    }
+    "S": [
+      {
+        "item": "minecraft:sculk"
+      },
+      {
+        "item": "minecraft:echo_shard"
+      }
+    ]
   },
   "result": {
     "id": "ascension_worlds:inscribed_gatestone",

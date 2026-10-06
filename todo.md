@@ -4,7 +4,7 @@ Open questions only. **Settled decisions live in [`docs/decisions/`](docs/decisi
 there before reopening anything. Milestone work in flight lives in [`plans/`](plans/) — currently
 [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md).
 
-Last reviewed: 2026-10-05.
+Last reviewed: 2026-10-06.
 
 ---
 
@@ -89,12 +89,12 @@ See the register or the linked doc for reasoning:
   is one line per model.
 
 **Systems gaps identified 2026-09-05:**
-- **Nether removal has an uncosted recipe debt — now live (ADR-0014, 2026-10-06).** Vanilla
-  Nether/End portals are dormant, so blaze, nether quartz, netherite, ancient debris and End-only
-  items are unobtainable in survival until those worlds exist as planets. **Concrete blocker:** the
-  gateway keystone's recipe uses a lodestone (a netherite ingot), so Earth's player-built gateway
-  cannot be crafted yet; the frame's quartz trim has a no-quartz "budget" route already. Needs a
-  decision: re-source these, or change the recipes.
+- **Nether removal has a recipe debt (ADR-0014, 2026-10-06).** Vanilla Nether/End portals are
+  dormant, so blaze, nether quartz, netherite, ancient debris and End-only items are unobtainable
+  in survival until those worlds exist as planets. The Nether is Planet 3, which settles netherite.
+  Our own recipes are clear: the gateway keystone's lodestone was swapped for Deep Dark materials
+  on 2026-10-06 (`gateway-portal-design.md`). Still to watch: any later recipe that reaches for
+  blaze rods, eyes of ender (blaze powder), or End items before their planet exists.
 - **The late-joiner gap.** "Joins at the team's current tier" collides with "unique planetary
   resources gate progression" — they get the dimension unlocked and no gear to survive it.
   Needs a catch-up mechanism, not just a permission flag.
