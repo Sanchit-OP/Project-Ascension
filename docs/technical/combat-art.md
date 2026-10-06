@@ -10,6 +10,7 @@ items, drawn the bows or worn the armour in game.
 | Previews | `design/combat-items/icons.png` (every sprite, plus the bows' draw frames), `worn.png` (each armour piece on a figure) |
 | Brief | [`combat-art-reference.md`](combat-art-reference.md): what each League item looks like, and Sanchit's answers |
 | Method | [`art-guide.md`](art-guide.md) |
+| Next | [`plans/combat-art-3d.md`](../../plans/combat-art-3d.md): where the track stands, and the 3D model plan |
 
 ![icons](../../design/combat-items/icons.png)
 
