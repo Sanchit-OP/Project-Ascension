@@ -34,8 +34,10 @@ each planet adds a piece rather than re-explaining the setup.
 Still open: what actually happened (the endgame truth), and how the lore reaches the player
 (environmental storytelling in ruins, readable fragments, a quest book). See `civilization.md`.
 
-**Direction picked 2026-10-07: "It was us."** The gates take a toll: every crossing costs the
-traveller a little of what they know. The Quiet was the builders themselves, faded, and the
-Endermen are what is left of them. The full story, as a draft for Sanchit to listen to and change,
-is [`the-road-home.md`](the-road-home.md); decisions so far are listed at the top of
-[`lore-spread-proposal.md`](lore-spread-proposal.md).
+**Direction, 2026-10-07 (Sanchit, after rejecting the "It was us" draft):** the lore is anchored
+in vanilla Minecraft and answers what every player wonders about: zombification, skeletons,
+creepers, scattered villages, iron golems, the Warden and the Ancient City's frame. Earth points
+the player to the Moon. The ancients' portal network tore through into the void and woke
+something on the other side. The Warden holds the key as a safeguard against us. The player
+follows a planted, false story, and the truth is horrifying. Endings may branch. The draft for
+discussion is [`what-the-warden-keeps.md`](what-the-warden-keeps.md).

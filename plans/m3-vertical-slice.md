@@ -50,9 +50,11 @@ as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
   - Logic still to do: the orrery hologram (needs gate state synced to clients), then the
     worldgen plumbing once the design's templates land.
 
-**Next:** the **lore spread** across all 7-8 planets. Direction picked 2026-10-07 ("It was us");
-the whole story is drafted as prose in [`docs/lore/the-road-home.md`](../docs/lore/the-road-home.md),
-waiting on Sanchit to listen and send changes. After that: rewrite the Moon's tablets in
+**Next:** the **lore spread** across all 7-8 planets. The first prose draft ("It was us",
+`docs/lore/the-road-home.md`) was rejected 2026-10-07 as disconnected from Minecraft. The second,
+built from Sanchit's direction (vanilla mobs explained, a planted false story, horror twist,
+branching endings), is [`docs/lore/what-the-warden-keeps.md`](../docs/lore/what-the-warden-keeps.md)
+and is waiting on his decisions. After that: rewrite the Moon's tablets in
 `tools/archive-lore.py` (five kept, three new for the sealed room) and re-point three plinths in the
 Archive generator. Then the orrery hologram, then Planet 3 once its questions are answered. Deferred to the alpha release: the two-client test (also covers
 share-air) and the M1.9 measurement.

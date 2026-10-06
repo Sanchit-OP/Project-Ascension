@@ -1,7 +1,15 @@
 # How the lore spreads across the planets: a proposal
 
-**Update 2026-10-07: superseded in part by [`the-road-home.md`](the-road-home.md)**, the whole
-story written out as prose for Sanchit to listen to. What was decided on the way:
+**Update 2026-10-07, later: Sanchit rejected "It was us" and the arch names after hearing
+[`the-road-home.md`](the-road-home.md).** The lore must start from vanilla Minecraft: why there
+are zombies, skeletons, creepers, scattered villages, iron golems and a Warden. It should send
+the player to the Moon for answers, and the player should be led down a false path before the
+truth turns out to be horrifying. It should also allow a choice of endings. The current draft
+is [`what-the-warden-keeps.md`](what-the-warden-keeps.md). Only the Moon decision below still
+stands.
+
+**Earlier the same day: superseded in part by `the-road-home.md`**, the whole story written out
+as prose for Sanchit to listen to. What was decided on the way:
 
 - **The truth is "It was us"** (Sanchit's pick, wanting it written out in full). Every crossing
   costs the traveller a little of what they know. The Quiet was the builders' own people fading,

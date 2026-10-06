@@ -1,5 +1,9 @@
 # The Road Home
 
+Rejected by Sanchit on 2026-10-07. It was too disconnected from Minecraft's own world, and the
+arch names did not land. It is kept for reference only. The current draft is
+what-the-warden-keeps.md.
+
 This is the whole story of Project Ascension, told twice. The first time, from the beginning, the
 way it really happened. The second time, the way a player finds it: one world at a time, in
 pieces, believing the wrong thing for most of the way.
