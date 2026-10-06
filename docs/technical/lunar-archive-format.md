@@ -164,8 +164,11 @@ whole bounding box. The entrance's box rises 25 blocks above the ground for the 
 would heap a mound over the court and half-bury the pylons. The templates do not need it: every
 room is wrapped in its own walls and rubble core, the court has a six-deep footing and clears four
 rows above itself, and `structure_void` leaves the terrain alone everywhere else. Measured with
-`none` on four sites: the court's rim met the ground within −1 to +3 blocks, and the vault's roof
-was never exposed (ground cover 1–20).
+`none` on eight sites (two runs of four): the court's rim met the ground within −2 to +3 blocks,
+and on open ground the vault's roof was never exposed (at least one block of ground over every
+column, 6.6 to 13.2 on average per site). The one exception was a
+vault `/place`d into a crater bowl that had already generated, which natural generation does not
+do; craters are the next request.
 
 **Light.** Nothing is asked of logic: the lamps are `inscribed_gatestone[lit=true]` (logic's light
 9) and the orrery (10). The generator proves every floor a mob could stand on is lit.
@@ -178,6 +181,14 @@ was never exposed (ground cover 1–20).
 
 Until then the templates keep every plinth free-standing (the generator checks), and both models
 cover their whole footprint at the base, so nothing is culled into a hole.
+
+**Keep large craters away (request).** `CraterPiece` carves after the Archive and skips anything
+inside another structure's piece boxes. A crater overlapping the Archive would therefore leave its
+two boxes standing in the bowl as square-cut blocks, the entrance's 25 blocks above the court. In
+`structure_set/large_crater.json`'s placement, add
+`"exclusion_zone": {"other_set": "ascension_worlds:lunar_archive", "chunk_count": 10}`. Ten chunks
+covers the Archive's reach from its start (about 95 blocks) plus a crater's rim (about 52). The
+reasoning is in the design note, "For the logic session", item 5.
 
 **Decorative blocks**, in `internal/archive/ArchiveDecorBlocks.java`, registered by one line in
 `AscensionWorlds`: `moon_basalt_brick_stairs`, `anorthosite_brick_stairs`, `archive_mural` (a `tile`

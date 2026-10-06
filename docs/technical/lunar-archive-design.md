@@ -209,6 +209,15 @@ is the story: cutting, crossing, the road. *The Quiet* comes after the orrery, w
   averaging 6.6–10.3). The court's rim met the ground within −1 to +3 blocks. That fit came after
   one fix: the first footing was two blocks deep and the ground at the first site ran 4 below to 4
   above the paving.
+- **Placed again on the final templates** (after the rotunda's diagonal pilasters and the moved
+  rubble), in a fresh world, at four new sites including the real one (x −160, z −256). **Again
+  all 22,395 cells matched at every site, in three start rotations**, with all eight plinths in
+  place. The court's rim met the ground within −2 to +3. At three sites the vault had at least 4
+  blocks of cover (averaging 9.7–13.2). At the fourth, a crater had already generated there, and
+  `/place` set the vault into its bowl, so the vault's roof was the ground over 836 columns. That
+  comes from writing into finished terrain. In natural generation the crater comes later and stops
+  at the Archive's piece boxes, which would leave them as square-cut blocks in the bowl (from
+  `CraterPiece`'s code; not observed). See "For the logic session", item 5.
 - **Models:** all 178 models in the module resolve their textures and parents, and none points at
   a vanilla texture. `./gradlew :modules:worlds:build` passes.
 
@@ -237,6 +246,20 @@ The worldgen wiring is in the contract's "Design's handover" section, with the r
    call, and this is a flag, not a change.
 4. **Surface features** (rock debris, small craters) generate after `underground_structures` and
    may land on the court. That is harmless, and a crater cut into the court would read as age.
+5. **Large craters near the Archive are not harmless.** `large_crater` is a structure
+   (`surface_structures`, radius 25–45, 20 deep), and `CraterPiece` refuses to carve inside
+   another structure's piece boxes. A crater overlapping the Archive would hollow the ground
+   around its two boxes and leave them standing in the bowl as square-cut blocks: the entrance's
+   box rises 25 blocks above the court, and the vault's sides would show its rubble core. With
+   about one crater per 256 × 256 blocks of highland, that is plausible in a fair share of seeds.
+   The re-check placed one Archive in an existing crater and saw the vault roof exposed. Suggested
+   fix, in logic's `structure_set/large_crater.json` placement:
+   `"exclusion_zone": {"other_set": "ascension_worlds:lunar_archive", "chunk_count": 10}`
+   (vanilla keeps pillager outposts off villages the same way). Ten chunks covers the Archive's
+   reach from its start (up to about 95 blocks, whatever the rotation) plus a crater's rim
+   (about 52). `FixedPositionStructurePlacement` answers `isPlacementChunk` for its one chunk, so
+   the zone check works against it. Nothing keeps craters off the gateway ruin at x −160, z 0
+   either; that is outside this design, but the same line would do it.
 
 ## What the format could not express
 
@@ -252,6 +275,8 @@ When logic's worldgen places it, on a dedicated server and in a client:
 
 - [ ] It generates at x −160, z −256 north of the gateway; the court sits on the ground (no
       floating edge, no buried paving); the pylons are visible from the gateway ruin.
+- [ ] No large crater cuts into the ground around it (`/locate structure
+      ascension_worlds:large_crater` from the court, across a few seeds; item 5 above).
 - [ ] The standing pylon reads as a pale mark at render distance (and in Distant Horizons LODs
       once Chunky has generated it).
 - [ ] The way down is walkable end to end with no head-bumps: open steps, covered stair, the
