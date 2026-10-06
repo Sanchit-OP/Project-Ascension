@@ -1,5 +1,22 @@
 # How the lore spreads across the planets: a proposal
 
+**Update 2026-10-07: superseded in part by [`the-road-home.md`](the-road-home.md)**, the whole
+story written out as prose for Sanchit to listen to. What was decided on the way:
+
+- **The truth is "It was us"** (Sanchit's pick, wanting it written out in full). Every crossing
+  costs the traveller a little of what they know. The Quiet was the builders' own people fading,
+  and the Endermen are what is left of them. None of the three twists below; the descendants idea
+  (twist 3) survives inside it.
+- **The Moon keeps five inscriptions** (The Road, The Builders, Many Worlds, The Keepers, The
+  Quiet). The other three move deeper: *The Sealing* to Planet 4, *The Last Order* to Planet 5,
+  *Unfinished* to Planet 7 (rewritten as Key's last words). The stair landing and sealed room get
+  three new Moon-only entries that raise questions and answer none; the Archive's staging is kept.
+- **Still Sanchit's call, proposed in the story:** names (masonry was the right direction but too
+  hard to work out, so a crew is named as the stones of an arch: Pier, Spring, Wedge, Haunch,
+  Crown, Key), the builders' world names (the Step, the Ember, the Fold, the Anvil, the Bulwark,
+  the Reach), claiming the Ancient City, and the ending. Question 5 (the orrery as ledger) is
+  untouched.
+
 **Status: DRAFT for discussion with Sanchit (2026-10-06).** Nothing here is decided. It turns the
 two research reports ([`research/outer-wilds.md`](research/outer-wilds.md),
 [`research/league-of-legends.md`](research/league-of-legends.md)) into a shape for our story across
