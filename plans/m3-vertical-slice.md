@@ -50,13 +50,12 @@ as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
   - Logic still to do: the orrery hologram (needs gate state synced to clients), then the
     worldgen plumbing once the design's templates land.
 
-**Next:** **the scheduled refactor pass** (three increments since the last: the Deep Dark
-recipes, Earthrise, the Archive's inscriptions), then the orrery hologram, then Planet 3 once its
-questions are answered. Deferred to the alpha release: the two-client test (also covers
+**Next:** the **lore spread** across all 7-8 planets, to discuss with Sanchit (he asked for an
+Outer Wilds study first), then the orrery hologram, then Planet 3 once its questions are answered. Deferred to the alpha release: the two-client test (also covers
 share-air) and the M1.9 measurement.
 
-**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); three increments have
-landed since, so **the next pass is due now** (ADR-0008).
+**Cadence:** the last refactor pass was 2026-10-06 evening (`e8119d6`); the next is due after three
+more increments (ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
@@ -529,6 +528,26 @@ change:
 **Tests: `worlds` 58 → 68** (and 34 → 58 across the increments themselves). Build and
 `tools/check-dist-separation.sh` clean — though that check is known to miss client references
 written as method references; a fix is queued as its own task.
+
+## Refactor pass, 2026-10-06 (evening)
+
+ADR-0008's pass after three increments: the Deep Dark recipes, Earthrise, the Archive's
+inscriptions. No behaviour change (`e8119d6`):
+
+- **One archive lookup.** The reader, the tablet's tooltip and the debug commands each resolved an
+  entry id their own way; now `ArchiveEntry.find`.
+- **`ArchiveDebug`**, shaped like `GatewayDebug`: the archive op commands' logic out of
+  `WorldsCommands`.
+- **`WorldsNetwork.toClient`**: each server-to-client payload had two registrations (client
+  handler, server no-op); now one call. The client handler sits in a `Supplier` a dedicated server
+  never calls. Booted on a dedicated server, dist check clean.
+- **The sky disc as a record.** `SkyBodyRenderer`'s face and halo repeated the disc-to-world maths
+  through 11- and 12-parameter methods; now a small `Disc` record. `SkyBodyGeometry.daylight` split
+  out of `brightness`, so the halo no longer inverts the face's formula (tested).
+- **Earlier the same day,** the dist check learned to see method references (`fb6f368`), which is
+  why the payload helper could be checked at all.
+
+**Tests: `worlds` 79 → 80.**
 
 ## M3.3 — Planet 3: the Nether world
 
