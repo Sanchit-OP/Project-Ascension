@@ -636,6 +636,47 @@ record in an `api` package *is* — it changes the canonical constructor for eve
 implements it. So a data schema can grow safely and a public record cannot, and they get
 opposite treatment.
 
+### Sky bodies: what hangs in a planet's sky (added 2026-10-06)
+
+Earth over the Moon is not a `Planet` field. It is pure appearance, so it is a **client
+resource**: `assets/<namespace>/ascension_sky/<any>.json`, read on resource reload by
+`client/SkyBodies`, drawn by `client/SkyBodyRenderer`. The server never sees it, a resource pack
+can restyle or remove it, and the `api` record keeps its shape.
+
+```json
+{
+  "dimension": "ascension_worlds:moon",
+  "bodies": [
+    {
+      "texture": "ascension_worlds:textures/environment/earth.png",
+      "yaw": 170,
+      "elevation": 48,
+      "angular_size": 12,
+      "lit": true,
+      "glow": 7320831
+    }
+  ]
+}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `texture` | required | The body's face. The disc inscribed in the square is mapped onto a sphere; draw it flat, with no lighting baked in. |
+| `yaw` | 0 | Compass heading, Minecraft's convention: 0 south, 90 west, 180 north, 270 east. |
+| `elevation` | 45 | Degrees above the horizon, -90 to 90. |
+| `angular_size` | required | Degrees across. Real Earth from the Moon is about 2; vanilla's moon is drawn at about 11. |
+| `lit` | true | Shaded by the sun's real direction, which draws the phase. `false` for something that glows. |
+| `glow` | none | `0xRRGGBB` atmosphere halo, brightest on the lit limb. |
+
+- **Fixed in the sky.** Right for a tidally locked moon, all v1 needs. Moving bodies would be a
+  new field.
+- **Files add up.** Several files can name the same dimension, from any namespace, so another
+  mod can put its planet in our Moon's sky without touching our file.
+- **Drawn after the sky and before terrain**, like the vanilla sun: the ground covers it. Hidden
+  under blindness, darkness, or in lava; faded by a planet weather event.
+- Textures come from `tools/generate-sky-art.py`; its preview sheet (`design/sky/`) shows the
+  texture flat and as lit in game.
+
 ## 5. Registry mechanism
 
 A **datapack registry**, via NeoForge's `DataPackRegistryEvent.NewRegistry`, with a codec and
