@@ -3,6 +3,11 @@ package com.ascension.worlds.internal;
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.internal.net.PlanetWeatherSyncPayload;
 import com.ascension.worlds.api.WorldsRegistries;
+import com.ascension.worlds.internal.archive.ArchiveEntry;
+import com.ascension.worlds.internal.archive.ArchivePlinthBlockEntity;
+import com.ascension.worlds.internal.archive.ArchiveTabletItem;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -59,7 +64,52 @@ public final class WorldsCommands {
                                                 ctx.getSource().getPlayerOrException(), false)))
                                         .then(Commands.literal("active")
                                                 .executes(ctx -> report(ctx.getSource(), GatewayDebug.build(
-                                                        ctx.getSource().getPlayerOrException(), true))))))));
+                                                        ctx.getSource().getPlayerOrException(), true))))))
+                        .then(Commands.literal("archive")
+                                .requires(source -> source.hasPermission(2))
+                                .then(Commands.literal("tablet")
+                                        .then(Commands.argument("entry", ResourceLocationArgument.id())
+                                                .suggests(WorldsCommands::suggestArchiveEntries)
+                                                .executes(ctx -> archiveTablet(ctx.getSource(),
+                                                        ResourceLocationArgument.getId(ctx, "entry")))))
+                                .then(Commands.literal("plinth")
+                                        .then(Commands.argument("entry", ResourceLocationArgument.id())
+                                                .suggests(WorldsCommands::suggestArchiveEntries)
+                                                .executes(ctx -> archivePlinth(ctx.getSource(),
+                                                        ResourceLocationArgument.getId(ctx, "entry"))))))));
+    }
+
+    private static CompletableFuture<Suggestions> suggestArchiveEntries(
+            CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggestResource(
+                context.getSource().registryAccess().registryOrThrow(ArchiveEntry.REGISTRY).keySet(), builder);
+    }
+
+    /** Debug: a tablet for any entry, to read lore before the Archive's building exists. */
+    private static int archiveTablet(CommandSourceStack source, ResourceLocation entry) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (!source.registryAccess().registryOrThrow(ArchiveEntry.REGISTRY).containsKey(entry)) {
+            source.sendFailure(Component.literal("No archive entry " + entry));
+            return 0;
+        }
+        player.getInventory().add(ArchiveTabletItem.of(entry));
+        return 1;
+    }
+
+    /**
+     * Debug: point the plinth the player is looking at (within 6 blocks) at an entry. The
+     * structure template sets this in real play; this is for building test rooms by hand.
+     */
+    private static int archivePlinth(CommandSourceStack source, ResourceLocation entry) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (player.pick(6.0, 1.0F, false) instanceof BlockHitResult hit
+                && hit.getType() == HitResult.Type.BLOCK
+                && player.level().getBlockEntity(hit.getBlockPos()) instanceof ArchivePlinthBlockEntity plinth) {
+            plinth.setEntry(entry);
+            return 1;
+        }
+        source.sendFailure(Component.literal("Look at an archive plinth"));
+        return 0;
     }
 
     private static CompletableFuture<Suggestions> suggestPlanetSurfaces(

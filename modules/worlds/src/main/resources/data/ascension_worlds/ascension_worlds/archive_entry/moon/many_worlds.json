@@ -1,0 +1,13 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.moon.many_worlds.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.moon.many_worlds.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.moon.many_worlds.2"
+    }
+  ]
+}

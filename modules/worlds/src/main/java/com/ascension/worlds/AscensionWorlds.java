@@ -4,6 +4,8 @@ import com.ascension.core.api.WorldEnvironmentRegistry;
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
 import com.ascension.worlds.internal.GatewayDecorBlocks;
+import com.ascension.worlds.internal.archive.ArchiveContent;
+import com.ascension.worlds.internal.archive.ArchiveEntry;
 import com.ascension.worlds.internal.GatewayFrames;
 import com.ascension.worlds.internal.PlanetEnvironments;
 import com.ascension.worlds.internal.PlanetWeatherMechanics;
@@ -56,6 +58,7 @@ public final class AscensionWorlds {
     public AscensionWorlds(IEventBus modBus, ModContainer container) {
         WorldsContent.register(modBus);
         GatewayDecorBlocks.register(modBus);
+        ArchiveContent.register(modBus);
         SpaceAttachments.register(modBus);
         modBus.addListener(this::onRegisterDataPackRegistries);
         modBus.addListener(this::onCommonSetup);
@@ -85,6 +88,8 @@ public final class AscensionWorlds {
         // Server-only: no client ever needs a frame's pattern.
         event.dataPackRegistry(GatewayFrames.REGISTRY, GatewayFrame.CODEC);
         event.dataPackRegistry(GatewayFrames.SITE_REGISTRY, GatewaySite.CODEC);
+        // Synced: the client draws the lore text.
+        event.dataPackRegistry(ArchiveEntry.REGISTRY, ArchiveEntry.CODEC, ArchiveEntry.CODEC);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

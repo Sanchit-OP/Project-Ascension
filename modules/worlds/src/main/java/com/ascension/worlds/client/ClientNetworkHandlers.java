@@ -1,6 +1,7 @@
 package com.ascension.worlds.client;
 
 import com.ascension.worlds.internal.net.GatewayDestinationsPayload;
+import com.ascension.worlds.internal.net.OpenArchiveEntryPayload;
 import com.ascension.worlds.internal.net.PlanetWeatherSyncPayload;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -25,5 +26,9 @@ public final class ClientNetworkHandlers {
     public static void gatewayDestinations(GatewayDestinationsPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> Minecraft.getInstance().setScreen(
                 new GatewayDestinationScreen(payload.destinations())));
+    }
+
+    public static void openArchiveEntry(OpenArchiveEntryPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> ArchiveReader.open(payload.entry().orElse(null)));
     }
 }

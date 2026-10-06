@@ -16,8 +16,8 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
  */
 public final class WorldsNetwork {
 
-    /** Bump when any payload's shape changes. 2: the gateway destination screen. */
-    private static final String VERSION = "2";
+    /** Bump when any payload's shape changes. 2: the gateway destination screen. 3: archive reading. */
+    private static final String VERSION = "3";
 
     private WorldsNetwork() {
     }
@@ -34,6 +34,10 @@ public final class WorldsNetwork {
                     GatewayDestinationsPayload.TYPE,
                     GatewayDestinationsPayload.STREAM_CODEC,
                     com.ascension.worlds.client.ClientNetworkHandlers::gatewayDestinations);
+            registrar.playToClient(
+                    OpenArchiveEntryPayload.TYPE,
+                    OpenArchiveEntryPayload.STREAM_CODEC,
+                    com.ascension.worlds.client.ClientNetworkHandlers::openArchiveEntry);
         } else {
             // Registered so the server can encode and send; never received here.
             registrar.playToClient(
@@ -44,6 +48,11 @@ public final class WorldsNetwork {
             registrar.playToClient(
                     GatewayDestinationsPayload.TYPE,
                     GatewayDestinationsPayload.STREAM_CODEC,
+                    (payload, context) -> {
+                    });
+            registrar.playToClient(
+                    OpenArchiveEntryPayload.TYPE,
+                    OpenArchiveEntryPayload.STREAM_CODEC,
                     (payload, context) -> {
                     });
         }
