@@ -88,9 +88,10 @@ See the register or the linked doc for reasoning:
 - **Real textures.** `ascension-worlds` is done: original art, generated in-house by
   `tools/generate-gateway-art.py` and `tools/generate-moon-materials-art.py`, never copied from
   another mod or pack (Sanchit, 2026-10-06). Combat's items got theirs on 2026-10-07, in League
-  likeness, worn armour included (`combat-art.md`), and 3D in-hand models for Veigo's Blade
-  (redone), the Darkin Blade and the Black Cleaver the same day, not yet seen in a client; the
-  other swords' 3D models are next (`plans/combat-art-3d.md`). Still on vanilla placeholders:
+  likeness, worn armour included (`combat-art.md`), and a held 3D model for Veigo's Blade
+  (redone, drawn by combat's own weapon renderer), not yet seen in a client; the Darkin Blade,
+  the Black Cleaver and the other swords are next (`plans/combat-art-3d.md`). Still on vanilla
+  placeholders:
   atmosphere's oxygen tank, emitter and refill station.
 
 **Systems gaps identified 2026-09-05:**

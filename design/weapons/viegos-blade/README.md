@@ -1,7 +1,8 @@
 # Viego-inspired sword
 
-> **Superseded 2026-10-07.** The model in game is now drawn by `tools/generate-combat-models.py`
-> (a jade, glowing, 43-cuboid redo with bolder guards and new hand transforms); see
+> **Superseded 2026-10-07.** The model in game is now made by `tools/generate-combat-models.py`
+> and drawn by the combat module's `WeaponRenderer` (a jade, glowing redo with real proportions
+> and new hand transforms); see
 > `docs/technical/combat-art.md`, "3D in-hand models", and the preview
 > `design/combat-items/3d/veigos_blade_hand.png`. `tools/generate-viegos-blade.mjs` now refuses to
 > run, so it can't overwrite that. Everything below describes the first model and is kept for
