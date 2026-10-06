@@ -1,18 +1,17 @@
 {
-  "loader": "neoforge:separate_transforms",
-  "gui_light": "front",
-  "base": {
-    "parent": "ascension_combat:item/darken_blade_3d"
+  "parent": "neoforge:item/default-tool",
+  "loader": "neoforge:item_layers",
+  "textures": {
+    "layer0": "ascension_combat:item/darken_blade",
+    "layer1": "ascension_combat:item/darken_blade_glow"
   },
-  "perspectives": {
-    "gui": {
-      "parent": "ascension_combat:item/darken_blade_icon"
-    },
-    "ground": {
-      "parent": "ascension_combat:item/darken_blade_icon"
-    },
-    "fixed": {
-      "parent": "ascension_combat:item/darken_blade_icon"
+  "neoforge_data": {
+    "layers": {
+      "1": {
+        "block_light": 15,
+        "sky_light": 15,
+        "ambient_occlusion": false
+      }
     }
   }
 }
