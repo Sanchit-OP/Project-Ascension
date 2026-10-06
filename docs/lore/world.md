@@ -33,3 +33,9 @@ each planet adds a piece rather than re-explaining the setup.
 
 Still open: what actually happened (the endgame truth), and how the lore reaches the player
 (environmental storytelling in ruins, readable fragments, a quest book). See `civilization.md`.
+
+**Direction picked 2026-10-07: "It was us."** The gates take a toll: every crossing costs the
+traveller a little of what they know. The Quiet was the builders themselves, faded, and the
+Endermen are what is left of them. The full story, as a draft for Sanchit to listen to and change,
+is [`the-road-home.md`](the-road-home.md); decisions so far are listed at the top of
+[`lore-spread-proposal.md`](lore-spread-proposal.md).
