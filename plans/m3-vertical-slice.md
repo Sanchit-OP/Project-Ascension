@@ -18,29 +18,34 @@ it is committed and pushed. Details live in the sections below and the linked do
 | What | Verified |
 |---|---|
 | M3.1 Moon boss chain (Cataclysm citadel on the Moon, Golem → Guardian → gateway key; ADR-0013 mixins) | Live 2026-10-05: bosses spawn and fight, 2.5x health applies. The Armor/MR fix (`CataclysmBossStats`) not yet seen. |
-| Moon content: End Islands Endermen, rare wild citadels | Wild citadels confirmed from the world's structure data; Endermen not seen. |
-| Gateways: walk-through multiblock frames, Moon pre-generated in a ruin site, Earth player-built, rune ring lights on attunement, destination screen, debug `goto` / `build` | Moon generation confirmed headlessly on a throwaway server world. **Sanchit was testing it in a client at handoff** — ask for the result first. |
-| Vanilla Nether/End portals dormant (ADR-0014), Warden tendril drop | Not yet seen. |
+| Moon content: rare wild citadels | Confirmed from the world's structure data. |
+| Gateways: walk-through multiblock frames, Moon pre-generated in a ruin site, Earth player-built, rune ring lights on attunement, destination screen, debug `goto` / `build` | **Live 2026-10-06: Sanchit's client test worked.** He has a few follow-ups he'll raise later. |
+| Vanilla Nether/End portals dormant (ADR-0014) | **Live 2026-10-06: confirmed dead.** |
+| Warden tendril drop | Not yet seen. |
+| End Islands Endermen on the Moon | **Live 2026-10-06: spawning.** |
+| Earth gateway recipes from the Deep Dark (keystone: diamonds, echo shards, sculk catalysts, compass; gatestone: sculk) | Loaded on a dedicated server with no errors; not yet crafted in a client. |
 | Share-air rescue | Needs two clients; rides on the two-client test. |
+
+**Settled 2026-10-06:** the keystone recipe (Deep Dark materials, one Warden tendril per gate,
+nothing from the Nether); Planet 3 is the **Nether world** (roofless, netherite, a boss; M3.3
+below); the lore premise (an interplanetary civilisation that fell to something unknown, the Moon
+as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
+(`optimisation-stack.md`).
 
 **Decisions waiting on Sanchit:**
 
-1. **The Earth gateway cannot be built in survival.** The keystone recipe needs a lodestone (a
-   netherite ingot), and ADR-0014 locks the Nether out. Options offered: change the recipe to
-   Earth materials, add a substitute netherite source, or leave it until the Nether planet exists.
-   Same debt covers blaze rods, nether quartz, End items (`todo.md`, "Systems gaps").
-2. **Planet 3 (M3.3)** needs his direction before building: terrain feel, unique resource, which
-   mod supplies its boss, ambient creatures. `planets.md` only says "radiated power world".
-3. **More Moon content** — wanted, not yet specified.
-4. **Gateway lore** — why they exist (`docs/lore/world.md`).
+1. **Planet 3's open questions**: boss, survival rule, traversal wrinkle, ambient life (M3.3).
+2. **More Moon content**: Sanchit asked for creative proposals; they are listed under "Moon
+   content, round two" below, waiting for his pick.
+3. **The gateway follow-ups** from his live test, when he raises them.
+4. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
 
-**Next, in order:** whatever Sanchit's live gateway test turns up → the keystone-recipe decision →
-Planet 3. Carried from M1, still open: the two-client test (also covers share-air) and the M1.9
-measurement. A separate task chip was offered to fix `tools/check-dist-separation.sh` missing
-client references written as method references — check `git log` for whether it landed.
+**Next:** Planet 3 once its questions are answered, Moon content round two once picked. Deferred
+to the alpha release: the two-client test (also covers share-air) and the M1.9 measurement. The
+dist-check now catches method references (fixed 2026-10-06, `fb6f368`).
 
-**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); the next is due after
-three more increments (ADR-0008).
+**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); since then, one
+increment (the Deep Dark recipes). The next pass is due after two more (ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
@@ -428,6 +433,39 @@ empty terrain.
   sure," without a more specific spec yet. Not a checklist item so much as a standing signal that
   the Moon is still thin relative to what a finished world should feel like.
 
+## Moon content, round two (proposals, 2026-10-06)
+
+Sanchit: "for moon we will need something more, idk what". These are proposals waiting for his
+pick, not commitments. Each says what it costs and what it ties into.
+
+1. **The Lunar Archive: the lore anchor.** One buried vault per Moon, placed like the gateway
+   (`fixed_position`), cut into a crater wall. Inside: carved murals of the gateway network
+   spanning many worlds, a star-map room marking every planet's gate (it could light a world's
+   marker as the player attunes that world's gate: a progress board that is also story), and
+   **Archive Tablets**, readable fragments of the builders' record. Stray tablets also turn up as
+   loot in the wild citadels and the gateway ruin. This is the "lore heavy anchor" for the
+   premise in `docs/lore/world.md`. Cost: one structure (art to a design session), one readable
+   item, loot tables. Mostly data.
+2. **Earthrise.** Earth hanging in the Moon's black sky, rendered by `MoonSpecialEffects`.
+   Cheap, client-only, and the single biggest "I am on the Moon" moment we can buy. Natural
+   follow-up: other planets' skies show their neighbours.
+3. **Lava tubes.** Huge collapsed tunnels under the maria, a reason to go underground. Dark,
+   echoing, and the home for whatever comes next. Cost: a worldgen carver or noise cave tuned in
+   `moon-terrain-tuning.md`'s style.
+4. **Polar ice in shadowed craters.** Ice deposits that process into water and oxygen: a
+   self-sufficient Moon base loop. Ties straight into `atmosphere` (the emitter and the
+   refill station). Cost: a block, a feature, one recipe chain.
+5. **Meteor showers.** A hazard event on the Moon's own timer, reusing the dust-storm machinery:
+   falling rocks, fresh craters, meteoric iron to salvage afterwards. Risk and reward in one.
+6. **Derelict outposts.** Small wrecked builders' stations scattered rare-but-findable (the wild
+   citadel pattern), with spare tanks, gatestone and tablets as loot.
+7. **A native threat.** Something that lives in the dust and ambushes (regolith burrowers).
+   Sourced from a mod first (the "Sourcing bosses" rule), custom only if nothing fits.
+
+**Suggested first pair:** 1 + 2. The Archive answers the lore ask directly, and Earthrise changes
+how every minute on the Moon feels for very little code. Then 3 + 4, which give the Moon a
+reason to stay rather than pass through.
+
 ## M3 refactor pass (2026-10-05)
 
 ADR-0008's scheduled pass: M3.1, the Moon content backlog and M3.2 increment 1 had all landed
@@ -477,13 +515,45 @@ change:
 `tools/check-dist-separation.sh` clean — though that check is known to miss client references
 written as method references; a fix is queued as its own task.
 
-## M3.3 — Planet 3
+## M3.3 — Planet 3: the Nether world
 
-Deferred until M3.1 and M3.2 are live-verified. `planets.md` already defines it: the radiated
-power world, new minerals for stronger power generation. Once the Moon's boss/gateway pattern is
-proven, this becomes largely authoring work — new dimension JSON, new terrain pass, new
-resource, and a boss/gateway pair built the same way — rather than new engineering, the same
-"worlds 4-7 become content work" promise ADR-0005 made about the framework generalizing.
+**Direction (Sanchit, 2026-10-06)**, replacing `planets.md`'s "radiated power world":
+
+- **Mostly Nether in feel, not an exact copy.** Its own dimension (ADR-0004), not vanilla's
+  Nether, which stays dormant (ADR-0014).
+- **No roof.** Open sky all the way up, so it connects to the shared space dimension and is
+  reached the same way as the Moon: ascend, orbit, descend. The vanilla Nether's bedrock ceiling
+  is exactly what this drops.
+- **Netherite is the unique resource.** That doubles as the payoff for ADR-0014's recipe debt:
+  ancient debris, quartz, blaze rods, glowstone all come back once this world exists.
+- **A boss, yes.** Which one is open.
+
+**What makes this cheap (to confirm while building, not assumed):** a custom dimension can use
+vanilla's Nether *biomes* with our own noise settings. If it does, vanilla's Nether structures
+(fortresses, bastions) and ores (ancient debris, quartz, gold) follow the biomes through their
+existing tags, so the whole Nether loot economy arrives without our writing it. The new
+engineering is the terrain: the vanilla Nether's noise router builds a cave world under a
+ceiling, so a roofless version needs its own `noise_settings` (open surface, lava seas, basalt
+and soul-sand valleys rising toward the sky).
+
+**Boss candidates.** Cataclysm (already integrated, `ascension-compat-cataclysm`) has two Nether
+bosses, both bigger than the Moon's on purpose (M3.1 "saving the bigger kits for later worlds"):
+**Ignis** (Burning Arena) and **the Netherite Monstrosity** (Soul Black Smith). The Monstrosity
+fits a netherite planet by name. Same pattern as the Moon: relocate the structure with
+`fixed_position`, its boss drops this planet's gateway key, and `GatewayRules` needs no new code
+(the key names its planet).
+
+**Open, needs Sanchit before building:**
+1. Which boss: Ignis, the Netherite Monstrosity, or something else.
+2. **The survival rule** (`planets.md`: every mandatory world introduces one). Natural fits: heat
+   (a suit or cooling mechanic, ties to `atmosphere`), a toxic/sulphur atmosphere (oxygen
+   already works here for free, the planet just declares an unbreathable atmosphere), or both.
+3. **The traversal wrinkle** (also required): lava seas to cross, sky-high basalt pillars, ash
+   storms (the Moon's dust-storm machinery is reusable)?
+4. Does "radiated power" survive as flavour (geothermal / magma power for Create), or is it gone?
+5. Ambient life: vanilla Nether mobs come with the biomes; anything extra?
+
+**Art** goes to a separate design session through a contract doc, the same way the gateway did.
 
 ## Explicitly out of scope for M3
 

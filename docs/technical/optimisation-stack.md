@@ -117,6 +117,35 @@ which is the cost DH was never solving anyway — but the "see a planet's terrai
 before you land" polish DH offered is gone until something more stable appears. Revisit if a
 NeoForge LOD mod with a real track record shows up later; nothing here rules that back in.
 
+## Voxy: evaluated 2026-10-06, not adopted (yet)
+
+Sanchit asked whether Voxy (MCRcortex's LOD renderer) could beat DH. Findings (sources on its
+[Modrinth](https://modrinth.com/mod/voxy) and [GitHub](https://github.com/MCRcortex/voxy)
+pages and the port's):
+
+- **No official build for us.** Voxy is Fabric only: 1.20.4, 1.21.6+, 26.x. The only route onto
+  1.21.1 NeoForge is **Roxy** ([Modrinth](https://modrinth.com/mod/roxy)), an MIT translation
+  layer that loads the official Voxy 0.2.16-beta jar (built for 1.21.11). It needs real Sodium
+  (`0.8.12`/`0.8.13-neoforge`, which we already run) and Forgified Fabric API (also already
+  present). Voxy itself is All Rights Reserved and its page asks packs not to bundle unofficial
+  ports, so **we could not ship it in our pack** even if it worked; it is a per-player choice.
+- **It does not fit our LOD pipeline.** Voxy builds LODs on the client from chunks the player
+  has actually received; it never reads the server. Our setup (Chunky pre-generates every planet,
+  DH in `PRE_EXISTING_ONLY` serves exactly that) does not carry over. Server-fed LODs on 1.21.1
+  need third-party add-ons (Voxy Auto LOD, Voxy Worldgen).
+- **Open upstream bugs on dimension changes**: LODs not loading after a dimension change, and
+  terrain from one dimension leaking into another's cache. Earth → orbit → planet is our core
+  loop, so this is the riskiest possible bug class for us.
+- **Needs OpenGL 4.6.** No macOS; known glitches on Intel iGPUs.
+- **One or the other.** Voxy and DH cannot run together.
+- No trustworthy published numbers against DH, so any "it's faster" would have to be our own
+  measurement.
+
+**Decision:** DH stays. Voxy is worth one side-by-side experiment in a *copy* of the CurseForge
+instance (remove DH, add Roxy + Voxy 0.2.16-beta), measured in the same scene with Spark and
+recorded in `performance-log.md`, including an Earth → Moon trip to check the dimension bugs.
+Re-evaluate properly if Voxy ships an official NeoForge build or we move Minecraft version.
+
 ## Why Noisium was dropped
 
 It was on the recommended list and should not have been. Four reasons, and the last is the one

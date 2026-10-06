@@ -38,12 +38,13 @@ See the register or the linked doc for reasoning:
 - **How are failed landings handled?** Deliberately deferred to v2 at M2.6 — landing damage
   belongs to whichever module ends up owning ships/landing, not `worlds` (see
   `SpaceMechanics.descendTo`'s javadoc).
-- **Why are the ancient gateways present?** Where they are and what they look like are settled
-  (M3.2, `gateway-portal-design.md`); the lore is not (`docs/lore/world.md`).
+- **What ended the gateway civilisation?** The premise is settled (an interplanetary civilisation,
+  something happened, the Moon is the lore anchor; `docs/lore/world.md`). The answer itself, and
+  how lore reaches the player, are not.
 
 ## Outstanding before calling the server multiplayer-ready
 
-- **Two clients has never been tested.** It is in M1's definition of done
+- **Two clients has never been tested.** Deferred by Sanchit (2026-10-06) to the alpha release. It is in M1's definition of done
   ([`plans/m1-atmosphere.md`](plans/m1-atmosphere.md)) and still unticked. Oxygen is
   per-player state with per-player sync, and every session so far has had exactly one player.
   Two bars that drain independently is not a thing we have observed.
