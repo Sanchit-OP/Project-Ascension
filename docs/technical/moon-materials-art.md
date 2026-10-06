@@ -8,6 +8,7 @@ generated and the models resolve, but nobody has stood on the regolith or broken
 | Generator | `tools/generate-moon-materials-art.py` (seeded, reproducible) |
 | Previews | `design/moon-materials/textures.png`, `in-context.png` |
 | Palettes | imported from `tools/generate-gateway-art.py`, never copied |
+| Method | [`art-guide.md`](art-guide.md), the general how-to this batch followed |
 
 ![in context](../../design/moon-materials/in-context.png)
 
