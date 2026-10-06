@@ -35,3 +35,8 @@ __pycache__/
 # Not build output, so `build/` does not catch it.
 modules/*/logs/
 logs/
+
+# Third-party reference images (e.g. League of Legends item icons studied for the combat art).
+# Kept locally for whoever draws next; never committed or shipped. See
+# docs/technical/combat-art-reference.md.
+design/reference/
