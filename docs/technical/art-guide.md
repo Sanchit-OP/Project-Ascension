@@ -273,7 +273,7 @@ A block item's model parents its block model.
 | `tools/generate-gateway-art.py` | palettes above, `bricks`, `crack`, `polished`, `pillar_side`/`pillar_top`, `chiseled`, rune and eye pixel maps, glow strips, `sheet`, `write_mcmeta`, `save` |
 | `tools/generate-moon-materials-art.py` | `ramp`, `tile_noise`, `wrap`, Voronoi breccia, `deep_stone`, `grains`, `outline_and_shade`, the importlib pattern |
 | `tools/render-structure-preview.py` | `python tools/render-structure-preview.py <frame.json> [--site <site.json>] [--out <dir>]`: isometric front-left and back-right plus a front elevation, coloured from each block's own texture |
-| `tools/generate-combat-models.py` | `weapon()`: a 3D item model from a pixel map plus a thickness per symbol (greedy-merged cuboids, glow cuboids, the map as texture); `upright_handheld()`: vanilla's hand transforms for a model drawn upright |
+| `tools/generate-combat-models.py` | `Part` (`box`, `centred`, `bar`, `arc`): a held weapon modelled as parts turned to any angle; `Mat`: a painted material (ramp, bevel, grain, bands, glow); writes the `weapon_models` format `WeaponRenderer` draws, its texture and glow layer; `upright_handheld()`: vanilla's hand transforms for a model drawn upright |
 | `tools/render-item-model.py` | `python tools/render-item-model.py <ns:item/id> [--out <dir>] [--swing vanilla\|greatsword]`: an item model in hand, first person day and night, third person, turntable and swing, through the game's own transforms and item lighting |
 
 The gateway files are `.../ascension_worlds/gateway_frame/gateway.json` and

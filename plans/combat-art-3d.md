@@ -73,62 +73,57 @@ account, 2026-10-07). Self-contained: you need nothing from the old session's me
   (`git worktree add -b <branch> ../Project-Ascension-<name> main`), rebase onto `main`, then
   `git merge --ff-only` from the main checkout.
 
-## Sanchit's verdict on the first 3D round (2026-10-07): rejected, models to be redone
+## Round 2: Java entity models (2026-10-07), Veigo's Blade built, waiting on Sanchit
 
-> "Looks straight from Lego, not at all immersive. We went too deep in the pixelated thing."
-> He wants actual polished 3D models that look like weapons, not toys. The icons, wiring,
-> animation and preview renderer stay; the models themselves are what's wrong. Specifically:
->
-> - **Veigo's Blade:** more handle than sword; the blade "looks shy in front of a dagger" (the
->   blade is 14 of 32 pixels; a longsword's is about three quarters).
-> - **Black Cleaver:** held the wrong way; the face-on pose points the bit sideways while the
->   swing chops forward, so it would hit with the flat or the back.
-> - **Darkin Blade:** far too wide (9 of 32, about 1:3.5).
->
-> Next: research how other mods' weapons look and feel in hand, pick the inspiration with
-> Sanchit, then choose a route: fine Blockbench-style JSON models (slim parts, 22.5/45-degree
-> rotated elements, a 64-128 px painted texture, as L_Ender's Cataclysm's weapons read), NeoForge's
-> built-in OBJ loader (`neoforge:obj`: real meshes, smooth normals, glow per material via `Ka`),
-> or entity models drawn by an item renderer (Cataclysm's own route, Java). No GeckoLib: it is a
-> third-party dependency (ADR-0003). The record below describes the rejected round.
+**The verdict on round 1** (extruded pixel maps): "looks straight from Lego, not at all
+immersive; we went too deep in the pixelated thing." Veigo's blade was shorter than its hilt
+("shy in front of a dagger"), the Darkin Blade about 1:3.5 wide, the Cleaver's bit faced sideways
+to the swing. Icons, wiring, animation and the preview renderer stayed.
 
-## 3D in-hand models: the first three are built (2026-10-07), rejected (above)
+**The route, Sanchit's call** after a pros and cons list (fine JSON models, OBJ meshes, Java
+entity models, GeckoLib): **Java entity models**, Cataclysm's route. Weapon looks and feel are
+this session's department, so the client rendering code in `ascension-combat` is ours. GeckoLib
+was ruled out not by its licence (MIT) but by ADR-0003/0012: combat is Tier 1, no third-party hard
+dependency. Cataclysm was studied for technique only (its code is CC BY-NC-ND, its art all rights
+reserved): one shared item renderer, a model per weapon in parts at any angle, an "eyes" glow
+pass, a tick counter for animation.
 
-Veigo's Blade, the Darkin Blade and the Black Cleaver are drawn, wired and previewed:
-`docs/technical/combat-art.md`, "3D in-hand models", says how and shows the previews. **Not seen
-in a client.** Sanchit asked to see the previews before the other swords are started.
+**Built:** `WeaponRenderer`, `WeaponModels`, `WeaponModel`, `WeaponClient` in
+`com.ascension.combat.client.weapon`; the data format; `tools/generate-combat-models.py`
+rewritten as a part/box modeller with a painted 128 x 128 texture and glow layer; the preview
+renderer reads the format and draws glow additively; `WeaponModelTest` pins the conventions both
+sides share. Veigo's Blade is the first model (blade two thirds of the length). The Darkin Blade
+and the Cleaver use their sprites in hand until they're remodelled. `combat-art.md` has the
+details and the live checklist.
 
-**What the plan got right, and where it changed:**
+**Next:**
 
-- The method held: an upright pixel map, a thickness per symbol, greedy-merged cuboids, the map
-  as the 32 × 32 texture, glow in its own cuboids, palettes imported from the sprites. 43-65
-  cuboids a weapon. Grids may be odd-width (15) for a centre ridge, or even (18, the Cleaver) for a
-  two-pixel haft; `x0 = 8 - width / 2` keeps either centred.
-- **First person does not use vanilla-minus-45.** At 32 pixels tall that pose juts out of the
-  right of the view. All three stand upright at the right, face on, guard in view (fitted with a
-  small least-squares script: model points to screen spots). Third person does use the recipe
-  (`upright_handheld()`, grip at the model point the hand holds).
-- **Veigo's old display values were not "tuned live".** They put the great guard below the view;
-  the 2026-09-09 screenshot shows a different, vanilla-like pose and predates them. The new pose
-  replaces them, and the preview's swing strip (`--swing greatsword`, a copy of
-  `VeigosBladeClient`'s arithmetic) shows the swing still reads. If the Java changes, update
-  `greatsword_hand()` in the renderer to match.
-- **Glow is not neon in hand.** The item shader shades emissive faces by direction like any other
-  (0.4 ambient up to 1); emissive only means "ignores darkness". Bright glow colours survive best.
-- Viego's S-offset guard arms read as a tangle at 15 pixels, so they're level.
+1. Sanchit reviews Veigo's preview, then tests it live. First live check: does the first-person
+   pose match the preview?
+2. The Darkin Blade and the Black Cleaver in the same route. Proportions first: the Darkin Blade
+   broad but about 1:7, very long; the Cleaver's edge facing the swing in first and third person
+   (its bit points away from the camera along the chop), a long haft.
+3. **Animation, to decide with Sanchit:** what moves (pulsing glow, Viego's mist, moving parts) and
+   how. The renderer is ready for it: parts are a tree, and a client tick counter can drive them.
+   Arm animation is separate (our own hand-transform code, like `VeigosBladeClient`).
+4. Then the other swords.
 
-## Next
+## Round 1 (rejected): extruded pixel maps, 2026-10-07; the lessons that still hold
 
-1. **Sanchit's review of the three previews** (`design/combat-items/3d/*_hand.png`), then his live
-   test with the checklist in `combat-art.md`. The first live check is whether the in-game
-   first-person pose matches the preview: if not, the renderer is wrong somewhere; find out how
-   before tuning numbers.
-2. **The other swords in 3D:** Endless Hunger, Rageblade (Guinsoo's), Spear of Shojin, Youmuu's
-   (Wraithblade), Divine Sunderer. Per weapon: a `weapon()` call in `generate-combat-models.py`
-   (pixel map, depths, glow, grip), add it to `HELD_3D` in `generate-combat-art.py`, run both
-   generators, read the preview, iterate. Use `BIG_FIRST_PERSON` for anything 32 tall, or fit a
-   pose for smaller ones with the same approach. The Spear of Shojin is a polearm: its grip sits
-   low on a long haft.
+Round 1 drew each weapon as an upright pixel map extruded one unit per pixel (`c247e8d`, git
+history only). Rejected as toy-like (above). What it taught, still true for round 2:
+
+- **First person needs its own pose.** Vanilla's sword pose turned 45 degrees (which third person
+  still uses, `upright_handheld()`) juts out of the right of the view for anything this long.
+  Fit one instead: choose where two model points (a guard gem, the tip) should sit on the screen,
+  fix the X and Y rotation and the scale, and solve for the Z rotation and the translation
+  (`python tools/render-item-model.py ... --fit` does it; see its docstring).
+- **Veigo's old display values were never seen in game.** The 2026-09-09 screenshot shows a
+  vanilla-like pose and predates them. Don't treat old numbers as tuned without a screenshot.
+- **Check proportions against real weapons** before modelling: blade about two thirds to three
+  quarters of a sword; even a broad blade about 1:7; an axe's edge faces the swing.
+- **The preview's swing strip copies `VeigosBladeClient`'s arithmetic** (`greatsword_hand()`); if
+  the Java changes, change it too.
 
 ## Still open after 3D
 
