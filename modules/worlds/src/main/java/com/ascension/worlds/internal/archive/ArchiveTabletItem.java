@@ -3,7 +3,6 @@ package com.ascension.worlds.internal.archive;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -44,14 +43,9 @@ public final class ArchiveTabletItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        ResourceLocation id = stack.get(ArchiveContent.ARCHIVE_ENTRY.get());
-        var registries = context.registries();
-        Component title = id == null || registries == null
-                ? null
-                : registries.lookup(ArchiveEntry.REGISTRY)
-                        .flatMap(entries -> entries.get(ResourceKey.create(ArchiveEntry.REGISTRY, id)))
-                        .map(holder -> holder.value().title())
-                        .orElse(null);
-        tooltip.add((title != null ? title.copy() : ArchiveEntry.WORN_AWAY.copy()).withStyle(ChatFormatting.GRAY));
+        Component title = ArchiveEntry.find(context.registries(), stack.get(ArchiveContent.ARCHIVE_ENTRY.get()))
+                .map(ArchiveEntry::title)
+                .orElse(ArchiveEntry.WORN_AWAY);
+        tooltip.add(title.copy().withStyle(ChatFormatting.GRAY));
     }
 }

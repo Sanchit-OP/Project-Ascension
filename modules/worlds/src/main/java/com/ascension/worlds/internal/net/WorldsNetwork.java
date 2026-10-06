@@ -1,9 +1,14 @@
 package com.ascension.worlds.internal.net;
 
 import com.ascension.worlds.internal.GatewayDestinations;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import java.util.function.Supplier;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 /**
@@ -25,41 +30,36 @@ public final class WorldsNetwork {
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(VERSION);
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            registrar.playToClient(
-                    PlanetWeatherSyncPayload.TYPE,
-                    PlanetWeatherSyncPayload.STREAM_CODEC,
-                    com.ascension.worlds.client.ClientNetworkHandlers::planetWeatherSync);
-            registrar.playToClient(
-                    GatewayDestinationsPayload.TYPE,
-                    GatewayDestinationsPayload.STREAM_CODEC,
-                    com.ascension.worlds.client.ClientNetworkHandlers::gatewayDestinations);
-            registrar.playToClient(
-                    OpenArchiveEntryPayload.TYPE,
-                    OpenArchiveEntryPayload.STREAM_CODEC,
-                    com.ascension.worlds.client.ClientNetworkHandlers::openArchiveEntry);
-        } else {
-            // Registered so the server can encode and send; never received here.
-            registrar.playToClient(
-                    PlanetWeatherSyncPayload.TYPE,
-                    PlanetWeatherSyncPayload.STREAM_CODEC,
-                    (payload, context) -> {
-                    });
-            registrar.playToClient(
-                    GatewayDestinationsPayload.TYPE,
-                    GatewayDestinationsPayload.STREAM_CODEC,
-                    (payload, context) -> {
-                    });
-            registrar.playToClient(
-                    OpenArchiveEntryPayload.TYPE,
-                    OpenArchiveEntryPayload.STREAM_CODEC,
-                    (payload, context) -> {
-                    });
-        }
+        toClient(registrar, PlanetWeatherSyncPayload.TYPE, PlanetWeatherSyncPayload.STREAM_CODEC,
+                () -> com.ascension.worlds.client.ClientNetworkHandlers::planetWeatherSync);
+        toClient(registrar, GatewayDestinationsPayload.TYPE, GatewayDestinationsPayload.STREAM_CODEC,
+                () -> com.ascension.worlds.client.ClientNetworkHandlers::gatewayDestinations);
+        toClient(registrar, OpenArchiveEntryPayload.TYPE, OpenArchiveEntryPayload.STREAM_CODEC,
+                () -> com.ascension.worlds.client.ClientNetworkHandlers::openArchiveEntry);
 
         registrar.playToServer(
                 GatewayTravelPayload.TYPE,
                 GatewayTravelPayload.STREAM_CODEC,
                 GatewayDestinations::onTravelRequest);
+    }
+
+    /**
+     * A server &rarr; client payload: its client handler on a client, and on a dedicated server a
+     * no-op (registered so the server can encode and send it; it is never received there).
+     *
+     * <p>The handler comes wrapped in a {@link Supplier} so that only a client ever evaluates the
+     * method reference inside it. A dedicated server builds the supplier but never calls it, so it
+     * never links anything in the client package: the same guarantee the old explicit
+     * {@code if (dist == CLIENT)} branch gave, in one call per payload.
+     */
+    private static <T extends CustomPacketPayload> void toClient(
+            PayloadRegistrar registrar, CustomPacketPayload.Type<T> type,
+            StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
+            Supplier<IPayloadHandler<T>> clientHandler) {
+        IPayloadHandler<T> handler = FMLEnvironment.dist == Dist.CLIENT
+                ? clientHandler.get()
+                : (payload, context) -> {
+                };
+        registrar.playToClient(type, codec, handler);
     }
 }

@@ -73,6 +73,18 @@ class SkyBodyGeometryTest {
     }
 
     @Test
+    void daylightIsTheUnflooredBrightness() {
+        double[] direction = SkyBodyGeometry.direction(0, 0);
+        double[][] basis = SkyBodyGeometry.basis(direction);
+        double[] behindBody = {0, 0, 1};
+        assertEquals(0.0, SkyBodyGeometry.daylight(0, 0, direction, basis[0], basis[1], behindBody), EPSILON);
+        double[] sun = SkyBodyGeometry.sunDirection(0.1);
+        double day = SkyBodyGeometry.daylight(0.3, -0.2, direction, basis[0], basis[1], sun);
+        assertEquals(SkyBodyGeometry.NIGHT_SIDE + (1 - SkyBodyGeometry.NIGHT_SIDE) * day,
+                SkyBodyGeometry.brightness(0.3, -0.2, direction, basis[0], basis[1], sun), EPSILON);
+    }
+
+    @Test
     void halfSizeMatchesTheAngle() {
         assertEquals(100.0, SkyBodyGeometry.halfSize(90, 100), 1.0e-6);
         assertEquals(100 * Math.tan(Math.toRadians(6)), SkyBodyGeometry.halfSize(12, 100), 1.0e-9);

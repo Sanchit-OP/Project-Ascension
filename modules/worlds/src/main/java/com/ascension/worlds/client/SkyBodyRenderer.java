@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.List;
 import net.minecraft.client.Camera;
@@ -92,13 +93,7 @@ final class SkyBodyRenderer {
     }
 
     private static void drawBody(Matrix4f pose, SkyBody body, double[] sun, float visibility) {
-        double[] direction = SkyBodyGeometry.direction(body.yaw(), body.elevation());
-        double[][] basis = SkyBodyGeometry.basis(direction);
-        double[] right = basis[0];
-        double[] up = basis[1];
-        float halfSize = (float) SkyBodyGeometry.halfSize(body.angularSize(), DISTANCE);
-        float[] centre = {
-            (float) direction[0] * DISTANCE, (float) direction[1] * DISTANCE, (float) direction[2] * DISTANCE};
+        Disc disc = Disc.of(pose, body, sun);
 
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
@@ -109,41 +104,34 @@ final class SkyBodyRenderer {
             float inner = (float) ring / RINGS;
             float outer = (float) (ring + 1) / RINGS;
             for (int segment = 0; segment < SEGMENTS; segment++) {
-                double a0 = segment * Math.PI * 2.0 / SEGMENTS;
-                double a1 = (segment + 1) * Math.PI * 2.0 / SEGMENTS;
-                facePoint(face, pose, body, centre, right, up, direction, sun, halfSize, inner, a0);
-                facePoint(face, pose, body, centre, right, up, direction, sun, halfSize, outer, a0);
-                facePoint(face, pose, body, centre, right, up, direction, sun, halfSize, outer, a1);
-                facePoint(face, pose, body, centre, right, up, direction, sun, halfSize, inner, a1);
+                double a0 = angle(segment);
+                double a1 = angle(segment + 1);
+                facePoint(face, disc, body.lit(), inner, a0);
+                facePoint(face, disc, body.lit(), outer, a0);
+                facePoint(face, disc, body.lit(), outer, a1);
+                facePoint(face, disc, body.lit(), inner, a1);
             }
         }
         BufferUploader.drawWithShader(face.buildOrThrow());
 
-        body.glow().ifPresent(colour -> drawGlow(pose, body, colour, centre, right, up, direction, sun, halfSize, visibility));
+        body.glow().ifPresent(colour -> drawGlow(disc, body.lit(), colour, visibility));
     }
 
-    private static void facePoint(
-            BufferBuilder buffer, Matrix4f pose, SkyBody body, float[] centre, double[] right, double[] up,
-            double[] direction, double[] sun, float halfSize, float radius, double angle) {
+    private static void facePoint(BufferBuilder buffer, Disc disc, boolean lit, float radius, double angle) {
         float u = (float) Math.cos(angle) * radius;
         float v = (float) Math.sin(angle) * radius;
-        float shade = body.lit() ? (float) SkyBodyGeometry.brightness(u, v, direction, right, up, sun) : 1.0F;
-        buffer.addVertex(pose,
-                        centre[0] + (float) (right[0] * u + up[0] * v) * halfSize,
-                        centre[1] + (float) (right[1] * u + up[1] * v) * halfSize,
-                        centre[2] + (float) (right[2] * u + up[2] * v) * halfSize)
+        float shade = lit ? (float) disc.brightness(u, v) : 1.0F;
+        disc.vertex(buffer, u, v)
                 .setUv(0.5F + 0.5F * u, 0.5F - 0.5F * v)
                 .setColor(shade, shade, shade, 1.0F);
     }
 
     /**
      * A thin additive ring just outside the disc, brightest on the lit limb and gone on the dark
-     * one: the atmosphere catching sunlight. Its strength at each point is the face's own
-     * brightness at the rim, so the halo follows the phase.
+     * one: the atmosphere catching sunlight. Its strength at each point is the daylight just inside
+     * the rim, so the halo follows the phase.
      */
-    private static void drawGlow(
-            Matrix4f pose, SkyBody body, int colour, float[] centre, double[] right, double[] up,
-            double[] direction, double[] sun, float halfSize, float visibility) {
+    private static void drawGlow(Disc disc, boolean lit, int colour, float visibility) {
         float red = ((colour >> 16) & 0xFF) / 255.0F;
         float green = ((colour >> 8) & 0xFF) / 255.0F;
         float blue = (colour & 0xFF) / 255.0F;
@@ -154,41 +142,67 @@ final class SkyBodyRenderer {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, visibility);
         BufferBuilder ring = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        float outer = 1.0F + GLOW_WIDTH;
         for (int segment = 0; segment < SEGMENTS; segment++) {
-            double a0 = segment * Math.PI * 2.0 / SEGMENTS;
-            double a1 = (segment + 1) * Math.PI * 2.0 / SEGMENTS;
-            float alpha0 = rimAlpha(body, a0, direction, right, up, sun);
-            float alpha1 = rimAlpha(body, a1, direction, right, up, sun);
-            glowPoint(ring, pose, centre, right, up, halfSize, 1.0F, a0, red, green, blue, alpha0);
-            glowPoint(ring, pose, centre, right, up, halfSize, 1.0F + GLOW_WIDTH, a0, red, green, blue, 0.0F);
-            glowPoint(ring, pose, centre, right, up, halfSize, 1.0F + GLOW_WIDTH, a1, red, green, blue, 0.0F);
-            glowPoint(ring, pose, centre, right, up, halfSize, 1.0F, a1, red, green, blue, alpha1);
+            double a0 = angle(segment);
+            double a1 = angle(segment + 1);
+            float cos0 = (float) Math.cos(a0);
+            float sin0 = (float) Math.sin(a0);
+            float cos1 = (float) Math.cos(a1);
+            float sin1 = (float) Math.sin(a1);
+            disc.vertex(ring, cos0, sin0).setColor(red, green, blue, rimAlpha(disc, lit, a0));
+            disc.vertex(ring, outer * cos0, outer * sin0).setColor(red, green, blue, 0.0F);
+            disc.vertex(ring, outer * cos1, outer * sin1).setColor(red, green, blue, 0.0F);
+            disc.vertex(ring, cos1, sin1).setColor(red, green, blue, rimAlpha(disc, lit, a1));
         }
         BufferUploader.drawWithShader(ring.buildOrThrow());
     }
 
-    private static float rimAlpha(SkyBody body, double angle, double[] direction, double[] right, double[] up, double[] sun) {
-        if (!body.lit()) {
+    /**
+     * Sampled just inside the rim, not on it: exactly on the rim the sphere's normal lies in the
+     * disc's plane, which would leave a full Earth (sun behind the viewer) with no halo.
+     */
+    private static float rimAlpha(Disc disc, boolean lit, double angle) {
+        if (!lit) {
             return GLOW_ALPHA;
         }
-        // Sampled just inside the rim, not on it: exactly on the rim the sphere's normal lies in
-        // the disc's plane, which would leave a full Earth (sun behind the viewer) with no halo.
-        double lit = SkyBodyGeometry.brightness(
-                RIM_SAMPLE * Math.cos(angle), RIM_SAMPLE * Math.sin(angle), direction, right, up, sun);
-        double day = (lit - SkyBodyGeometry.NIGHT_SIDE) / (1.0 - SkyBodyGeometry.NIGHT_SIDE);
-        return (float) (GLOW_ALPHA * day);
+        return (float) (GLOW_ALPHA * disc.daylight(RIM_SAMPLE * Math.cos(angle), RIM_SAMPLE * Math.sin(angle)));
     }
 
-    private static void glowPoint(
-            BufferBuilder buffer, Matrix4f pose, float[] centre, double[] right, double[] up, float halfSize,
-            float radius, double angle, float red, float green, float blue, float alpha) {
-        float u = (float) Math.cos(angle) * radius;
-        float v = (float) Math.sin(angle) * radius;
-        buffer.addVertex(pose,
-                        centre[0] + (float) (right[0] * u + up[0] * v) * halfSize,
-                        centre[1] + (float) (right[1] * u + up[1] * v) * halfSize,
-                        centre[2] + (float) (right[2] * u + up[2] * v) * halfSize)
-                .setColor(red, green, blue, alpha);
+    private static double angle(int segment) {
+        return segment * Math.PI * 2.0 / SEGMENTS;
+    }
+
+    /**
+     * One body's disc for this frame: where it is, which way it faces, and the sun lighting it.
+     * {@code (u, v)} below is a point on the disc, each -1 to 1 across it.
+     */
+    private record Disc(Matrix4f pose, float[] centre, double[] direction, double[] right, double[] up,
+                        double[] sun, float halfSize) {
+
+        static Disc of(Matrix4f pose, SkyBody body, double[] sun) {
+            double[] direction = SkyBodyGeometry.direction(body.yaw(), body.elevation());
+            double[][] basis = SkyBodyGeometry.basis(direction);
+            float[] centre = {
+                (float) direction[0] * DISTANCE, (float) direction[1] * DISTANCE, (float) direction[2] * DISTANCE};
+            float halfSize = (float) SkyBodyGeometry.halfSize(body.angularSize(), DISTANCE);
+            return new Disc(pose, centre, direction, basis[0], basis[1], sun, halfSize);
+        }
+
+        VertexConsumer vertex(BufferBuilder buffer, float u, float v) {
+            return buffer.addVertex(pose,
+                    centre[0] + (float) (right[0] * u + up[0] * v) * halfSize,
+                    centre[1] + (float) (right[1] * u + up[1] * v) * halfSize,
+                    centre[2] + (float) (right[2] * u + up[2] * v) * halfSize);
+        }
+
+        double brightness(double u, double v) {
+            return SkyBodyGeometry.brightness(u, v, direction, right, up, sun);
+        }
+
+        double daylight(double u, double v) {
+            return SkyBodyGeometry.daylight(u, v, direction, right, up, sun);
+        }
     }
 
     /** The same conditions under which {@code LevelRenderer.renderSky} skips the sky. */
