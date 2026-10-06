@@ -39,16 +39,24 @@ as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
 2. **The gateway follow-ups** from his live test, when he raises them.
 3. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
 
-**In progress (2026-10-06):** Moon round two, **Earthrise** (built, not yet seen in a client) and
-**the Lunar Archive** (contract written; design goes to a separate session, logic here: archive
-entries + tablet + plinth, then the orrery hologram, then worldgen plumbing once templates land).
+**In progress (2026-10-06):** Moon round two.
+- **Earthrise:** built (`SkyBodyRenderer`; format in `worlds-api.md`, "Sky bodies"). Not yet seen
+  in a client.
+- **The Lunar Archive**, split through [`lunar-archive-format.md`](../docs/technical/lunar-archive-format.md):
+  - Design: a separate session, from `design/lunar-archive/design-session-prompt.md`.
+  - Logic increment 1 done (`84914c8`): the `archive_entry` lore registry, plinth, tablet, book
+    reader, eight drafted Moon inscriptions (`tools/archive-lore.py`, text for Sanchit to edit),
+    stores loot, op commands. Verified on a dedicated server; not yet seen in a client.
+  - Logic still to do: the orrery hologram (needs gate state synced to clients), then the
+    worldgen plumbing once the design's templates land.
 
-**Next:** the Archive's logic, then Planet 3 once its questions are answered. Deferred to the
-alpha release: the two-client test (also covers share-air) and the M1.9 measurement.
+**Next:** **the scheduled refactor pass** (three increments since the last: the Deep Dark
+recipes, Earthrise, the Archive's inscriptions), then the orrery hologram, then Planet 3 once its
+questions are answered. Deferred to the alpha release: the two-client test (also covers
+share-air) and the M1.9 measurement.
 
-**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); since then, two
-increments (the Deep Dark recipes, Earthrise). **The next pass is due after the Archive's first
-logic increment** (ADR-0008).
+**Cadence:** the last refactor pass was 2026-10-06 (`b225fce`, `a5aad84`); three increments have
+landed since, so **the next pass is due now** (ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
