@@ -61,23 +61,31 @@ final class SkyBodyGeometry {
     }
 
     /**
-     * How lit a point on the body's visible face is, treating it as a sphere lit by the sun.
+     * How much sunlight falls on a point of the body's visible face, treating it as a sphere.
      * {@code (u, v)} is the point on the disc, each -1 to 1, along {@code right} and {@code up};
-     * the sphere's surface normal there is rebuilt from it. Lambert shading, floored at
-     * {@link #NIGHT_SIDE}, which is what draws the phase: the terminator falls wherever the normal
-     * turns away from the sun.
+     * the sphere's surface normal there is rebuilt from it. Lambert: 1 facing the sun, 0 on the
+     * night side, and the terminator falls wherever the normal turns away from the sun.
      *
-     * @return brightness, {@link #NIGHT_SIDE} to 1
+     * @return 0 to 1
      */
-    static double brightness(double u, double v, double[] direction, double[] right, double[] up, double[] sun) {
+    static double daylight(double u, double v, double[] direction, double[] right, double[] up, double[] sun) {
         double toward = Math.sqrt(Math.max(0.0, 1.0 - u * u - v * v));
         double[] normal = {
             u * right[0] + v * up[0] - toward * direction[0],
             u * right[1] + v * up[1] - toward * direction[1],
             u * right[2] + v * up[2] - toward * direction[2],
         };
-        double lambert = Math.max(0.0, dot(normal, sun));
-        return NIGHT_SIDE + (1.0 - NIGHT_SIDE) * lambert;
+        return Math.max(0.0, dot(normal, sun));
+    }
+
+    /**
+     * How bright to draw that point: {@link #daylight}, floored at {@link #NIGHT_SIDE}. This is
+     * what draws the phase.
+     *
+     * @return {@link #NIGHT_SIDE} to 1
+     */
+    static double brightness(double u, double v, double[] direction, double[] right, double[] up, double[] sun) {
+        return NIGHT_SIDE + (1.0 - NIGHT_SIDE) * daylight(u, v, direction, right, up, sun);
     }
 
     /** Half the disc's width at {@code distance}, for a body {@code angularSizeDegrees} across. */

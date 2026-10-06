@@ -7,7 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,10 +25,7 @@ final class ArchiveReader {
         if (minecraft.level == null) {
             return;
         }
-        ArchiveEntry entry = id == null ? null : minecraft.level.registryAccess()
-                .registry(ArchiveEntry.REGISTRY)
-                .flatMap(registry -> registry.getOptional(ResourceKey.create(ArchiveEntry.REGISTRY, id)))
-                .orElse(null);
+        ArchiveEntry entry = ArchiveEntry.find(minecraft.level.registryAccess(), id).orElse(null);
         minecraft.setScreen(new BookViewScreen(new BookViewScreen.BookAccess(pages(entry))));
     }
 

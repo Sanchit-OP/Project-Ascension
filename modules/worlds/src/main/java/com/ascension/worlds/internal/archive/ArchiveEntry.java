@@ -4,11 +4,15 @@ import com.ascension.worlds.AscensionWorlds;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
+import java.util.Optional;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * One inscription in the builders' record: a title and its pages. Lore is data, in the datapack
@@ -40,4 +44,18 @@ public record ArchiveEntry(Component title, List<Component> pages) {
 
     /** What a plinth or tablet with no entry, or an entry no datapack defines, shows. */
     public static final Component WORN_AWAY = Component.translatable("archive.ascension_worlds.worn_away");
+
+    /**
+     * The entry with this id, if the loaded datapacks define one. The one lookup the reader, the
+     * tablet's tooltip and the debug commands all use, on either side ({@code RegistryAccess} is a
+     * {@link HolderLookup.Provider}, and so is a tooltip's context).
+     */
+    public static Optional<ArchiveEntry> find(@Nullable HolderLookup.Provider registries, @Nullable ResourceLocation id) {
+        if (registries == null || id == null) {
+            return Optional.empty();
+        }
+        return registries.lookup(REGISTRY)
+                .flatMap(entries -> entries.get(ResourceKey.create(REGISTRY, id)))
+                .map(Holder::value);
+    }
 }
