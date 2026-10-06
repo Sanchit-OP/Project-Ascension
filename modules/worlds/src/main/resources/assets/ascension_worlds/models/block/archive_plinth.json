@@ -4,7 +4,7 @@
   "textures": {
     "particle": "ascension_worlds:block/anorthosite_bricks",
     "base": "ascension_worlds:block/polished_moon_basalt",
-    "foot": "ascension_worlds:block/moon_basalt_bricks",
+    "foot": "ascension_worlds:block/polished_moon_basalt",
     "column": "ascension_worlds:block/anorthosite_pillar",
     "column_top": "ascension_worlds:block/anorthosite_pillar_top",
     "desk": "ascension_worlds:block/anorthosite_bricks",
@@ -310,10 +310,10 @@
         "up": {
           "texture": "#face",
           "uv": [
-            2,
-            3,
             14,
-            13
+            13,
+            2,
+            3
           ]
         },
         "north": {
@@ -384,10 +384,10 @@
         "up": {
           "texture": "#glow",
           "uv": [
-            2,
-            3,
             14,
-            13
+            13,
+            2,
+            3
           ]
         }
       }

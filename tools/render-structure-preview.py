@@ -615,6 +615,119 @@ def stack(images, path=None, gap=10, bg=(14, 15, 20), horizontal=False):
     return out
 
 
+# --- one block model, textured -------------------------------------------------------------------
+
+_MODEL_FACES = {  # corners top-left, top-right, bottom-right, bottom-left as seen from outside
+    'north': lambda f, t: [(t[0], t[1], f[2]), (f[0], t[1], f[2]), (f[0], f[1], f[2]), (t[0], f[1], f[2])],
+    'south': lambda f, t: [(f[0], t[1], t[2]), (t[0], t[1], t[2]), (t[0], f[1], t[2]), (f[0], f[1], t[2])],
+    'west': lambda f, t: [(f[0], t[1], f[2]), (f[0], t[1], t[2]), (f[0], f[1], t[2]), (f[0], f[1], f[2])],
+    'east': lambda f, t: [(t[0], t[1], t[2]), (t[0], t[1], f[2]), (t[0], f[1], f[2]), (t[0], f[1], t[2])],
+    'up': lambda f, t: [(f[0], t[1], f[2]), (t[0], t[1], f[2]), (t[0], t[1], t[2]), (f[0], t[1], t[2])],
+    'down': lambda f, t: [(f[0], f[1], t[2]), (t[0], f[1], t[2]), (t[0], f[1], f[2]), (f[0], f[1], f[2])],
+}
+_MODEL_NORMAL = {'north': (0, 0, -1), 'south': (0, 0, 1), 'west': (-1, 0, 0), 'east': (1, 0, 0),
+                 'up': (0, 1, 0), 'down': (0, -1, 0)}
+_MODEL_LIGHT = {'up': 1.0, 'north': 0.8, 'south': 0.8, 'west': 0.6, 'east': 0.6, 'down': 0.5}
+
+
+def _solve(m, b):
+    """Gaussian elimination for the 8 x 8 perspective system (no numpy dependency)."""
+    n = len(b)
+    a = [row[:] + [b[i]] for i, row in enumerate(m)]
+    for c in range(n):
+        piv = max(range(c, n), key=lambda r: abs(a[r][c]))
+        a[c], a[piv] = a[piv], a[c]
+        for r in range(n):
+            if r != c and a[c][c]:
+                k = a[r][c] / a[c][c]
+                a[r] = [x - k * y for x, y in zip(a[r], a[c])]
+    return [a[i][n] / a[i][i] for i in range(n)]
+
+
+def _rotate_element(p, rot):
+    """A model element's rotation, the right-hand rule about its axis (vanilla's wall torch
+    leans the way this predicts)."""
+    if not rot:
+        return p
+    o = rot['origin']
+    a = math.radians(rot['angle'])
+    x, y, z = p[0] - o[0], p[1] - o[1], p[2] - o[2]
+    c, s = math.cos(a), math.sin(a)
+    if rot['axis'] == 'x':
+        y, z = y * c - z * s, y * s + z * c
+    elif rot['axis'] == 'y':
+        x, z = x * c + z * s, -x * s + z * c
+    else:
+        x, y = x * c - y * s, x * s + y * c
+    return (x + o[0], y + o[1], z + o[2])
+
+
+def render_block_model(model_ref, view=(-1, -0.9, -1.25), scale=20, bg=(40, 42, 50)):
+    """A block model drawn from its own elements, uvs, rotations and textures (first animation
+    frame), in isometric. Elements marked shade:false (the full-bright glow layers) are drawn at
+    full brightness. -> RGBA image."""
+    ns, path = model_ref.split(':')
+    m = json.load(open(_find(ns, 'models', path + '.json')))
+    tex = dict(m.get('textures', {}))
+    elements = m.get('elements', [])
+
+    def texture(ref):
+        while ref.startswith('#'):
+            ref = tex[ref[1:]]
+        tns, tpath = ref.split(':')
+        return Image.open(_find(tns, 'textures', tpath + '.png')).convert('RGBA').crop((0, 0, 16, 16))
+    n = math.sqrt(sum(c * c for c in view))
+    d = tuple(c / n for c in view)
+    r = (d[2], 0, -d[0])
+    rn = math.hypot(r[0], r[2])
+    r = (r[0] / rn, 0, r[2] / rn)
+    u = (d[1] * r[2] - d[2] * r[1], d[2] * r[0] - d[0] * r[2], d[0] * r[1] - d[1] * r[0])
+    if u[1] < 0:
+        u = tuple(-c for c in u)
+    W = H = 16 * scale * 2
+
+    def proj(p):
+        return (W / 2 + sum((p[i] - 8) * r[i] for i in range(3)) * scale,
+                H / 2 - sum((p[i] - 8) * u[i] for i in range(3)) * scale)
+    quads = []
+    for el in elements:
+        f, t, rot = el['from'], el['to'], el.get('rotation')
+        for name, face in el['faces'].items():
+            corners = [_rotate_element(c, rot) for c in _MODEL_FACES[name](f, t)]
+            o = _rotate_element((0, 0, 0), rot)
+            nrm = tuple(b - a for a, b in zip(o, _rotate_element(_MODEL_NORMAL[name], rot)))
+            if sum(nrm[i] * d[i] for i in range(3)) >= 0:
+                continue
+            depth = sum(sum(c[i] for c in corners) / 4 * d[i] for i in range(3))
+            light = 1.0 if el.get('shade') is False else _MODEL_LIGHT[name]
+            quads.append((depth, corners, texture(face['texture']), face.get('uv', [0, 0, 16, 16]), light))
+    quads.sort(key=lambda q: -q[0])
+    img = Image.new('RGBA', (W, H), bg + (255,))
+    for _, corners, im, uv, light in quads:
+        big = im.resize((128, 128), Image.NEAREST)
+        dst = [proj(c) for c in corners]
+        u0, v0, u1, v1 = [c * 8 for c in uv]
+        src = [(u0, v0), (u1, v0), (u1, v1), (u0, v1)]
+        rows, rhs = [], []
+        for (x, y), (su, sv) in zip(dst, src):
+            rows.append([x, y, 1, 0, 0, 0, -su * x, -su * y])
+            rhs.append(su)
+            rows.append([0, 0, 0, x, y, 1, -sv * x, -sv * y])
+            rhs.append(sv)
+        try:
+            co = _solve(rows, rhs)
+        except ZeroDivisionError:
+            continue                                         # a face seen exactly edge-on
+        warped = big.transform((W, H), Image.PERSPECTIVE, co, Image.NEAREST)
+        if light < 1:
+            rgb = warped.convert('RGB').point(lambda v: int(v * light))
+            warped = Image.merge('RGBA', (*rgb.split(), warped.split()[3]))
+        mask = Image.new('L', (W, H), 0)
+        ImageDraw.Draw(mask).polygon(dst, fill=255)
+        img.paste(warped, (0, 0), Image.composite(warped.split()[3], Image.new('L', (W, H), 0), mask))
+    return img
+
+
 def archive_previews(ent, vlt, gen):
     """The Lunar Archive's previews, drawn from the .nbt files just written (so they prove the
     files, not the generator's memory of them). Called by tools/generate-lunar-archive.py."""
@@ -641,10 +754,15 @@ def archive_previews(ent, vlt, gen):
         render_plan(evox, etags, (0, 18), (0, 47), S, S + 3, os.path.join(out, 'plan-entrance-surface.png'),
                     title=f'entrance, surface (row {S})', marks=marks, dark=edark),
     ]
-    stack(plans, os.path.join(out, 'plans.png'), horizontal=True)
     render_iso_states(cut(vvox, lambda k: k[1] <= M + 4), (-1, -1.25, -1),
                       os.path.join(out, 'cutaway-vault-main.png'),
                       title='vault, cut away above the main floor, from the south-east')
+    render_iso_states(cut(vvox, lambda k: k[1] <= M + 6 and 10 <= k[0] <= 36 and 1 <= k[2] <= 27),
+                      (-1, -1.3, -0.9), os.path.join(out, 'cutaway-rotunda.png'), scale=16,
+                      title='the orrery rotunda, dome cut away, from the south-east')
+    render_iso_states(cut(vvox, lambda k: k[1] <= M + 7 and 17 <= k[0] <= 29 and 24 <= k[2] <= 47),
+                      (-0.55, -0.8, -1), os.path.join(out, 'cutaway-murals-hall.png'), scale=16,
+                      title='the murals hall, ceiling cut away, looking north from the threshold')
     render_iso_states(cut(vvox, lambda k: k[1] <= L + 15 and k[0] <= 18 and 31 <= k[2] <= 43),
                       (-0.6, -0.75, 1.2), os.path.join(out, 'cutaway-gate-hall.png'), scale=16,
                       title='the gate hall, north wall and ceiling cut away, looking at the dead gate')

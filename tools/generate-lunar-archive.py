@@ -401,8 +401,9 @@ def rotunda(p):
     p.fill(21, MAIN + 1, 25, 25, MAIN + 5, 25, AIR, OPEN)
     p.fill(12, MAIN + 1, 15, 15, MAIN + 4, 17, AIR, OPEN)
     p.fill(31, MAIN + 1, 15, 34, MAIN + 4, 17, AIR, OPEN)
-    # pillars flanking each opening
-    for (x, z) in [(20, 24), (26, 24), (15, 13), (15, 19), (31, 13), (31, 19), (21, 8), (25, 8)]:
+    # pillars flanking each opening, and one on each diagonal so the drum keeps its rhythm
+    for (x, z) in [(20, 24), (26, 24), (15, 13), (15, 19), (31, 13), (31, 19), (21, 8), (25, 8),
+                   (cx - 6, cz - 6), (cx + 6, cz - 6), (cx - 6, cz + 6), (cx + 6, cz + 6)]:
         p.fill(x, MAIN + 1, z, x, top - 1, z, pillar())
         p.put(x, top, z, CHISELED)
     # the keepers' niche
@@ -606,15 +607,19 @@ def forecourt(p):
                 continue
             if p.get(x, SURFACE_Y, z) is not None and z < 32:
                 continue
-            p.put(x, SURFACE_Y - 2, z, RAW, CORE)
-            p.put(x, SURFACE_Y - 1, z, RAW, CORE)
+            # the court is a level cut: a rubble footing six deep, so on falling ground it stands on
+            # its own podium instead of floating, and four rows cleared above it, so rising ground
+            # is cut back into a bank instead of burying the paving (measured in a headless
+            # placement: the ground round the start varied from 4 below the paving to 4 above)
+            for y in range(SURFACE_Y - 6, SURFACE_Y):
+                p.put(x, y, z, RAW, CORE)
             st = POLISHED if (x + z) % 2 == 0 else BRICK
             if rng.random() < 0.16:
                 st = CRACKED
             if abs(x - XC) <= 2:
                 st = PALE                                       # the avenue to the cutting's head
             p.put(x, SURFACE_Y, z, st, WALL)
-            for y in range(SURFACE_Y + 1, SURFACE_Y + 4):
+            for y in range(SURFACE_Y + 1, SURFACE_Y + 5):
                 p.put(x, y, z, AIR, OPEN)
             if rng.random() < 0.05:
                 p.put(x, SURFACE_Y + 1, z, slab(BRICK_SLAB) if rng.random() < 0.5 else REGOLITH)
