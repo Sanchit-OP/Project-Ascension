@@ -1,0 +1,13 @@
+{
+  "dimension": "ascension_worlds:moon",
+  "bodies": [
+    {
+      "texture": "ascension_worlds:textures/environment/earth.png",
+      "yaw": 170,
+      "elevation": 48,
+      "angular_size": 12,
+      "lit": true,
+      "glow": 7320831
+    }
+  ]
+}
