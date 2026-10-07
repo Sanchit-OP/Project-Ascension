@@ -38,6 +38,6 @@ public final class WeaponClient {
     @SubscribeEvent
     static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(RENDERED, CombatContent.VEIGOS_BLADE.get(), CombatContent.DARKEN_BLADE.get(),
-                CombatContent.DARIUS_AXE.get());
+                CombatContent.DARIUS_AXE.get(), CombatContent.SPEAR_OF_SHOJIN.get());
     }
 }
