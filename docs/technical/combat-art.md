@@ -104,7 +104,7 @@ they look and move; item behaviour stays the combat session's):
 
 - `<id>_3d.json` parents `builtin/entity` and carries the hand transforms, so the game hands the
   item to `WeaponRenderer`, a `BlockEntityWithoutLevelRenderer`, through the item's client
-  extension (`WeaponClient`; Veigo's is `VeigosBladeClient`, which also carries its swing).
+  extension (`WeaponClient`, one shared extension for every weapon).
 - `WeaponRenderer` draws `assets/<ns>/weapon_models/<item>.json` twice: with its texture
   (`entityCutoutNoCull`, lit like any entity) and with its glow texture through the `eyes`
   render type (additive, full-bright: real glow, which the old JSON route could not do).
@@ -135,11 +135,38 @@ its edges, a little grain, bands for a wrapped grip, and a matching glow texel w
 | Great guard | a diamond hub round a glowing jewel, arms out to crescents that open outward |
 | Shaft, pommel | a glowing diamond socket; an anchor crescent whose horns point at the blade |
 
-**Hand transforms.** Third person is vanilla's handheld transform turned 45 degrees for a model
-drawn upright (an exact fold into the Z rotation), moved so the grip sits in the fist, at 0.75
-scale. First person stands it upright at the right of the view, face on, the great guard in
-sight at the bottom and the tip near the top, fitted by placing the jewel and the tip on chosen
-spots of the screen. `VeigosBladeClient`'s swing runs from there (the strip in the preview).
+**How it is held** (Sanchit, 2026-10-07: Viego trails the sword in one hand as he walks, like a
+long dress, and fights with it in both hands, using the hilt's two grips). The model file
+carries two animation sections, written by the generator and read by the game and by the preview
+renderer alike:
+
+- **Third person, `hold`** (`HoldAnimation`, played by `WeaponPose`, a new arm pose NeoForge adds
+  to vanilla's `HumanoidModel.ArmPose` through `META-INF/enumextensions.json`). Standing or
+  walking, the blade trails from the right hand, its tip on the ground behind. Attacking, both
+  hands take the hilt for one of three attacks: a slash from the right, a slash from the left, a
+  stab. Keyframes set the arms, the body's twist and the weapon's turn about its grip. Vanilla
+  adds its own swing to the arms right after an arm pose runs; `WeaponPose` plays the swing
+  itself and clears the model's `attackTime` for that frame, so vanilla's adds nothing. No mixin.
+- **First person, `first_person`** (`FirstPersonHold`, drawn by `WeaponFirstPerson`). Vanilla
+  shows no arm while an item is held; this takes over the hand rendering and draws the player's
+  own arms, in their skin, on the hilt: the main hand on the grip under the small guard, and in
+  attacks the off hand on the shaft under the great guard. Idle, one hand, held as vanilla holds
+  a sword (hilt low at the right, blade up and away, out of the middle of the view). Attacks: each
+  slash cocks to one side with the blade laid flat and sweeps it across the view; the stab aims
+  at the crosshair and drives at it. The off-hand item is hidden meanwhile.
+- **One attack per swing in both views**, picked from the tick the swing began
+  (`HoldAnimation.pickAttack`), so every viewer sees the same one and nothing is remembered.
+  All of it is visual: what an attack hits and when is vanilla's and the combat module's.
+
+The hilt was lengthened for this: a Minecraft fist is four pixels wide, and the old four-pixel
+grip could not take two. Third person still uses vanilla's handheld transform turned 45 degrees
+for the model (an exact fold into the Z rotation), moved so the grip sits in the fist, at 0.75
+scale.
+
+**The preview renderer is checked against the game:** given the model Sanchit's client actually
+loaded, it reproduced his in-game screenshot to within 4 pixels (2026-10-07). That screenshot
+turned out to come from a stale combat jar (Oct 6) in the CurseForge instance, so it showed the
+old Blockbench Veigo. Rebuild and copy the jars before a test (`dev-environment.md`).
 
 **The rejected first round** (same day): each weapon was a pixel map extruded one model unit per
 pixel. Sanchit: "looks straight from Lego, not at all immersive." Veigo's blade was shorter than
@@ -167,9 +194,18 @@ swing. Kept in git history only (`c247e8d`); its lessons are in `plans/combat-ar
 - [ ] Each bow: idle, then drawing through all three frames, arrow lined up with the string.
 - [ ] Veigo's Blade: the flat icon in the hotbar, dropped and in an item frame; the 3D model
       in hand (not invisible: if it is, the log says why, `bad weapon model`).
-- [ ] Its first-person rest pose matches `design/combat-items/3d/veigos_blade_hand.png` (if it
-      doesn't, `render-item-model.py` is wrong somewhere: note how, before tuning any numbers).
-- [ ] Its swing: wind-up, cut and recovery read well and never swing the blade through the camera.
+- [ ] It matches `design/combat-items/3d/veigos_blade_hand.png` in both views (the renderer
+      matched the old model to 4 px; if this differs, find out why before tuning numbers).
+- [ ] First person: idle, the blade rises from your fist at the bottom right, out of the middle
+      of the view; attacking, both your hands on the hilt; the three attacks (slash from the
+      right, slash from the left, stab) sweep across the view and never through the camera. Your
+      skin and sleeves show on the arms; the off-hand item is hidden.
+- [ ] Third person (F5, and another player watching): walking and standing, the blade trails
+      behind with its tip on the ground, not through the legs; attacking, both hands on the hilt,
+      the same attack as in first person.
+- [ ] Left-handed (main hand set to left in the skin options): everything mirrored, not broken.
+- [ ] On a dedicated server: loads (the arm pose is a client-only enum extension) and other
+      players see the holds.
 - [ ] Third person, held by a player and a mob, from the front and behind: the grip in the fist,
       the size right, nothing clipping the body badly. Left hand looks mirrored, not broken.
 - [ ] By night: the blade, its ridge, the jewel and the socket glow; the hilt stays dark. By day

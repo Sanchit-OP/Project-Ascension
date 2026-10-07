@@ -96,17 +96,33 @@ sides share. Veigo's Blade is the first model (blade two thirds of the length). 
 and the Cleaver use their sprites in hand until they're remodelled. `combat-art.md` has the
 details and the live checklist.
 
+**Round 3, same day: how it is held.** Sanchit tested and found it felt like "a diamond sword
+with a swapped model, and even the diamond sword feels better in hand". Two findings: the client
+he tested had a **stale combat jar** (Oct 6) in the CurseForge instance, so he saw the old
+Blockbench model, not round 2 (the preview renderer reproduced his screenshot of that old model
+to 4 px, so the renderer is right); and the point stands that nothing conveyed holding it. His
+calls: Viego **trails the sword in one hand while walking and fights two-handed** (slash left,
+slash right, stab), using the hilt's two grips; **draw the player's hands** in first person; keep
+the art **fully code-generated** and push its detail much further. Built: the third-person `hold`
+(WeaponPose, an ArmPose enum extension) and the first-person `first_person` (WeaponFirstPerson,
+the player's own arms on the hilt), both data in the model file, both previewed; a longer hilt.
+`VeigosBladeClient` is gone. Epic Fight and Better Combat were weighed: both could drive the
+animation as optional compat jars (data only), but both change how combat plays, so they are a
+later, opt-in layer, not the base (Sanchit to decide if wanted).
+
 **Next:**
 
-1. Sanchit reviews Veigo's preview, then tests it live. First live check: does the first-person
-   pose match the preview?
-2. The Darkin Blade and the Black Cleaver in the same route. Proportions first: the Darkin Blade
-   broad but about 1:7, very long; the Cleaver's edge facing the swing in first and third person
-   (its bit points away from the camera along the chop), a long haft.
-3. **Animation, to decide with Sanchit:** what moves (pulsing glow, Viego's mist, moving parts) and
-   how. The renderer is ready for it: parts are a tree, and a client tick counter can drive them.
-   Arm animation is separate (our own hand-transform code, like `VeigosBladeClient`).
-4. Then the other swords.
+1. **Sanchit tests round 3 in game,** with fresh jars in the CurseForge instance (build, copy,
+   `runDevServer`, join). First checks: does each view match the preview, and does it feel held?
+2. **The polish pass** (Sanchit: iterate in code, push detail further): richer texture painting
+   (gradients, edge highlights, engraving on the fuller and guard), finer geometry (bevelled
+   edges, a fuller groove), a closer look at the jade colour in daylight.
+3. The Darkin Blade and the Black Cleaver in this route, each with its own hold: the Darkin
+   Blade broad but about 1:7, very long; the Cleaver's edge facing the swing in both views, a
+   long haft, held as an axe.
+4. **Animation beyond the hold, to decide with Sanchit:** idle motion (a pulsing jewel, Viego's
+   mist), sparks where the dragged tip meets the ground.
+5. Then the other swords.
 
 ## Round 1 (rejected): extruded pixel maps, 2026-10-07; the lessons that still hold
 
@@ -122,8 +138,9 @@ history only). Rejected as toy-like (above). What it taught, still true for roun
   vanilla-like pose and predates them. Don't treat old numbers as tuned without a screenshot.
 - **Check proportions against real weapons** before modelling: blade about two thirds to three
   quarters of a sword; even a broad blade about 1:7; an axe's edge faces the swing.
-- **The preview's swing strip copies `VeigosBladeClient`'s arithmetic** (`greatsword_hand()`); if
-  the Java changes, change it too.
+- **The preview copies the game's pose arithmetic** (`hold_pose()` for `WeaponPose` and
+  `HoldAnimation`, `fp_pose()` and `fp_quads()` for `FirstPersonHold` and `WeaponFirstPerson`);
+  if the Java changes, change them too.
 
 ## Still open after 3D
 
