@@ -53,8 +53,10 @@ as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
 **Next:** the **lore spread** across all 7-8 planets. The first prose draft ("It was us",
 `docs/lore/the-road-home.md`) was rejected 2026-10-07 as disconnected from Minecraft. The second,
 built from Sanchit's direction (vanilla mobs explained, a planted false story, horror twist,
-branching endings), is [`docs/lore/what-the-warden-keeps.md`](../docs/lore/what-the-warden-keeps.md)
-and is waiting on his decisions. After that: rewrite the Moon's tablets in
+branching endings), is [`docs/lore/what-the-warden-keeps.md`](../docs/lore/what-the-warden-keeps.md).
+Its companions are `the-mark.md`, `the-moon.md`, `the-nether.md` (Planet 3's lore, which also proposes
+its survival rule: wear gold) and `the-ending-and-names.md`. The ending and the names are still
+open. After that: rewrite the Moon's tablets in
 `tools/archive-lore.py` (five kept, three new for the sealed room) and re-point three plinths in the
 Archive generator. Then the orrery hologram, then Planet 3 once its questions are answered. Deferred to the alpha release: the two-client test (also covers
 share-air) and the M1.9 measurement.
