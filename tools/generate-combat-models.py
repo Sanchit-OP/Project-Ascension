@@ -162,6 +162,7 @@ class Weapon:
         self.display = {}
         self.scale = (0.85, 0.68)  # third person, first person, before any override in display
         self.hold = None  # how a humanoid holds and swings it (HoldAnimation's "hold" section)
+        self.first_person = None  # how the player holds it in their own view (FirstPersonHold)
 
     def build(self):
         """Lay every box face out on the texture (shelf packing, tallest first), paint it, and
@@ -223,6 +224,8 @@ class Weapon:
         model['parts'] = [part_json(self.root)]
         if self.hold:
             model['hold'] = self.hold
+        if self.first_person:
+            model['first_person'] = self.first_person
         return model, base, (glow if any_glow else None)
 
     def _cubes(self, part=None):
@@ -261,35 +264,48 @@ V_JEWEL = Mat(JADE, 2.0, bevel=0.6, grain=0.1, glow=(_V['g'], 0.7))
 veigo = weapon('veigos_blade', seed=11)
 r = veigo.root
 Z = 8.0
-# Blade: y 13.5 to 38, 2.4 wide, 0.7 deep, with a raised ridge; the last 5 px taper to the point.
-for i, (y0, y1, wdt) in enumerate([(13.5, 33.0, 2.4), (33.0, 34.0, 2.1), (34.0, 35.0, 1.8),
-                                   (35.0, 36.0, 1.4), (36.0, 37.0, 1.0), (37.0, 38.0, 0.5)]):
+# Hilt to tip, model pixels up from the pommel's foot. The hilt is long, as his is, with room for
+# two Minecraft fists (four pixels wide): his main hand on the grip under the small guard, the off
+# hand on the shaft under the great guard.
+POMMEL_Y = 2.6          # the pommel crescent's centre
+SHAFT = (3.0, 7.0)      # the off hand's grip
+GUARD_Y = 8.6           # the great guard's hub
+GRIP = (10.1, 16.1)     # the main hand's grip
+SMALL_Y = 16.5          # the small guard
+BLADE = (16.95, 43.0)   # straight, then a five-pixel taper to the point
+# Blade: 2.4 wide, 0.7 deep, with a raised ridge.
+_tip = BLADE[1] - 5
+for y0, y1, wdt in [(BLADE[0], _tip, 2.4)] + [(_tip + i, _tip + i + 1, w) for i, w in
+                                              enumerate((2.1, 1.8, 1.4, 1.0, 0.5))]:
     r.box((Z - wdt / 2, y0, Z - 0.35), (Z + wdt / 2, y1, Z + 0.35), V_BLADE)
     rw = min(0.9, wdt * 0.4)
     if wdt > 0.6:
         r.box((Z - rw / 2, y0 + 0.02, Z - 0.5), (Z + rw / 2, y1 - 0.02, Z + 0.5), V_RIDGE)
 # Small guard: a short bar with horns curving up beside the blade.
-r.centred((Z, 13.0, Z), (4.6, 0.9, 1.3), V_GUARD)
+r.centred((Z, SMALL_Y, Z), (4.6, 0.9, 1.3), V_GUARD)
 for side in (-1, 1):
-    r.bar((Z + side * 2.35, 13.9, Z), 1.6, 0.6, 1.0, side * -28, V_GUARD)
-# Grip: y 8.6 to 12.6, wrapped; turned 45 degrees about y so its square section reads rounder.
-r.add((Z, 10.6, Z), (0, 45, 0)).centred((Z, 10.6, Z), (1.15, 4.0, 1.15), V_GRIP)
+    r.bar((Z + side * 2.35, SMALL_Y + 0.9, Z), 1.6, 0.6, 1.0, side * -28, V_GUARD)
+# Grip: wrapped, turned 45 degrees about y so its square section reads rounder.
+_g = (GRIP[0] + GRIP[1]) / 2
+r.add((Z, _g, Z), (0, 45, 0)).centred((Z, _g, Z), (1.15, GRIP[1] - GRIP[0], 1.15), V_GRIP)
 # Great guard: a hub turned into a diamond round a jewel, arms out to crescents opening outward.
-hub = r.add((Z, 7.2, Z), (0, 0, 45))
-hub.centred((Z, 7.2, Z), (2.3, 2.3, 1.3), V_GUARD)
-r.add((Z, 7.2, Z), (0, 0, 45)).centred((Z, 7.2, Z), (1.0, 1.0, 1.9), V_JEWEL)
+r.add((Z, GUARD_Y, Z), (0, 0, 45)).centred((Z, GUARD_Y, Z), (2.3, 2.3, 1.3), V_GUARD)
+r.add((Z, GUARD_Y, Z), (0, 0, 45)).centred((Z, GUARD_Y, Z), (1.0, 1.0, 1.9), V_JEWEL)
 for side in (-1, 1):
-    r.bar((Z + side * 2.6, 7.2, Z), 2.6, 0.75, 0.9, 90, V_GUARD)
+    r.bar((Z + side * 2.6, GUARD_Y, Z), 2.6, 0.75, 0.9, 90, V_GUARD)
     # The arm meets the crescent's back; the crescent's centre lies beyond it, so it opens outward.
-    r.arc((Z + side * 5.8, 7.2), 1.9, 115 if side > 0 else -65, 245 if side > 0 else 65, 6, 0.8, 0.9,
+    r.arc((Z + side * 5.8, GUARD_Y), 1.9, 115 if side > 0 else -65, 245 if side > 0 else 65, 6, 0.8, 0.9,
           V_GUARD, taper=0.6)
 # Shaft below the guard, with the glowing diamond socket.
-r.add((Z, 4.3, Z), (0, 45, 0)).centred((Z, 4.3, Z), (0.9, 2.6, 0.9), V_GRIP)
-r.add((Z, 4.4, Z), (0, 0, 45)).centred((Z, 4.4, Z), (0.75, 0.75, 1.3), V_JEWEL)
-# Pommel: a deep crescent whose horns point up at the blade, on a stem from the shaft.
-r.arc((Z, 2.6), 1.6, 170, 370, 7, 0.75, 0.9, V_GUARD, taper=0.6)
-r.centred((Z, 2.0, Z), (0.8, 2.0, 0.8), V_GUARD)
-veigo.grip = (Z, 10.6)
+_s = (SHAFT[0] + SHAFT[1]) / 2
+r.add((Z, _s, Z), (0, 45, 0)).centred((Z, _s, Z), (0.9, SHAFT[1] - SHAFT[0], 0.9), V_GRIP)
+r.add((Z, SHAFT[0] + 0.9, Z), (0, 0, 45)).centred((Z, SHAFT[0] + 0.9, Z), (0.75, 0.75, 1.3), V_JEWEL)
+# Pommel: a deep crescent whose horns point up at the blade, on a stem up to the shaft.
+r.arc((Z, POMMEL_Y), 1.6, 170, 370, 7, 0.75, 0.9, V_GUARD, taper=0.6)
+r.centred((Z, (1.0 + SHAFT[0]) / 2, Z), (0.8, SHAFT[0] - 1.0, 0.8), V_GUARD)
+MAIN_HAND = (Z, GRIP[1] - 2.2, Z)   # the fist's middle, just under the small guard
+OFF_HAND = (Z, _s, Z)
+veigo.grip = MAIN_HAND[:2]
 # How he holds it, third person (WeaponPose plays this). Walking or standing he trails it in one
 # hand, the tip on the ground behind; attacking he takes it in both hands: a slash from the right,
 # a slash from the left, a stab. Keyframes over the swing; angles in degrees as HumanoidModel's:
@@ -318,14 +334,39 @@ STAB = [dict(_rest, t=0),
         {'t': 0.45, 'right_arm': [-80, -5, 0], 'left_arm': [-80, 15, 0], 'body_twist': -10, 'item': [0, 0, 80]},
         {'t': 0.6, 'right_arm': [-80, -5, 0], 'left_arm': [-80, 15, 0], 'body_twist': -10, 'item': [0, 0, 80]},
         dict(_rest, t=1)]
-veigo.hold = {'grip': [Z, 10.6, Z], 'idle': DRAG, 'walk_swing': 0.25,
+veigo.hold = {'grip': list(MAIN_HAND), 'idle': DRAG, 'walk_swing': 0.25,
               'attacks': [_slash(1), _slash(-1), STAB]}
 veigo.scale = (0.75, 0.68)  # third person: about the wielder's height, as Viego's is
-# First person: upright at the right of the view, face on, the great guard in sight at the bottom
-# and the tip near the top; VeigosBladeClient swings it from there (the strip in its preview).
-# Fitted: render-item-model.py --fit 0,-25,0.7 --point 8,7.2,8:0.82,0.88 --point 8,38,8:0.63,0.04
-_fp = {'rotation': [0, -25, 19.2], 'translation': [3.35, 0.51, -4.22], 'scale': [0.7] * 3}
-veigo.display = {'firstperson_righthand': _fp, 'firstperson_lefthand': _fp}
+# First person (WeaponFirstPerson): the player's own arms on it. Idle, one hand, held like vanilla
+# holds a sword: hilt low at the right, blade up and away, out of the middle of the view.
+# Attacking, both hands: the blade laid flat (edge leading) and swept across from one side, or
+# drawn back and thrust. pos is where the main hand's grip sits before the camera (blocks: x
+# right, y up, -z ahead); rotation turns the blade about it (Z . Y . X; [-90, yaw, 0] lays it level
+# pointing ahead, then yaws it: negative to the right, positive to the left).
+_fp_idle = {'pos': [0.55, -0.6, -1.0], 'rotation': [-25, -35, -25]}
+
+
+def _fp_slash(side):
+    """Cocked to `side` (1: right), the blade laid flat pointing that way, swept across the view."""
+    return [dict(_fp_idle, t=0),
+            {'t': 0.2, 'pos': [side * 0.45, -0.3, -1.0], 'rotation': [-90, side * -80, side * 15], 'two_hands': True},
+            {'t': 0.45, 'pos': [0.05, -0.4, -1.05], 'rotation': [-90, side * 50, 0], 'two_hands': True},
+            {'t': 0.62, 'pos': [side * -0.35, -0.45, -1.0], 'rotation': [-90, side * 100, side * -10],
+             'two_hands': True},
+            dict(_fp_idle, t=1)]
+
+
+# The stab: drawn back low at the right, the point aimed at the crosshair, then driven at it.
+_FP_STAB = [dict(_fp_idle, t=0),
+            {'t': 0.22, 'pos': [0.35, -0.6, -0.75], 'rotation': [-75, 8, 0], 'two_hands': True},
+            {'t': 0.45, 'pos': [0.15, -0.45, -1.25], 'rotation': [-80, 6, 0], 'two_hands': True},
+            {'t': 0.6, 'pos': [0.15, -0.45, -1.25], 'rotation': [-80, 6, 0], 'two_hands': True},
+            dict(_fp_idle, t=1)]
+# The arms come up from shoulders below the bottom of the view, not beside the camera, so they
+# hold the hilt without filling the screen.
+veigo.first_person = {'scale': 0.55, 'right_hand': list(MAIN_HAND), 'left_hand': list(OFF_HAND),
+                      'right_shoulder': [0.55, -1.4, -0.15], 'left_shoulder': [-0.55, -1.4, -0.15],
+                      'idle': _fp_idle, 'attacks': [_fp_slash(1), _fp_slash(-1), _FP_STAB]}
 
 
 # --- Display transforms ---------------------------------------------------------------------
@@ -384,8 +425,7 @@ def previews():
     render = _load('render_item_model', 'render-item-model.py')
     for n in WEAPONS:
         model = render.load_model('%s:item/%s' % (NS, n))
-        swing = 'greatsword' if n == 'veigos_blade' else 'vanilla'
-        render.sheet(model, n, swing).save(os.path.join(out_dir, n + '_hand.png'))
+        render.sheet(model, n).save(os.path.join(out_dir, n + '_hand.png'))
 
 
 if __name__ == '__main__':

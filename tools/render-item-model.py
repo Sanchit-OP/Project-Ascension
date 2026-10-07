@@ -2,7 +2,6 @@
 
 Run from the repository root:
     python tools/render-item-model.py ascension_combat:item/veigos_blade [--out DIR] [--name NAME]
-        [--swing vanilla|greatsword]
     python tools/render-item-model.py <model> --fit RX,RY,SCALE --point X,Y,Z:U,V --point ...
         (prints a first-person display entry that puts those model points on those screen spots)
 
@@ -335,11 +334,6 @@ def item_matrix(model, ctx):
 FIRST_PERSON_HAND = T(0.56, -0.52, -0.72)
 
 
-def _ease(v):
-    t = min(1.0, max(0.0, v))
-    return t * t * (3 - 2 * t)
-
-
 def vanilla_hand(p):
     """Vanilla's first-person swing at progress p (right hand): ItemInHandRenderer's sway, then
     applyItemArmTransform and applyItemArmAttackTransform."""
@@ -350,15 +344,6 @@ def vanilla_hand(p):
     f1 = math.sin(math.sqrt(p) * math.pi)
     return (T(f5, f6, f10) @ FIRST_PERSON_HAND @ Rdeg('y', 45 - 20 * f) @ Rdeg('z', -20 * f1)
             @ Rdeg('x', -80 * f1) @ Rdeg('y', -45))
-
-
-def greatsword_hand(p):
-    """VeigosBladeClient's first-person hand pose at swing progress p (right hand): wind-up, cut
-    and recovery in place of vanilla's swing. A copy of its arithmetic; keep the two in step."""
-    wind = _ease(p / 0.18) * (1 - _ease((p - 0.18) / 0.18))
-    cut = _ease((p - 0.18) / 0.28) * (1 - _ease((p - 0.55) / 0.45))
-    return (T(0.56 + 0.08 * wind - 0.32 * cut, -0.52 + 0.06 * wind - 0.10 * cut, -0.72 + 0.08 * wind - 0.16 * cut)
-            @ Rdeg('y', 10 * wind - 28 * cut) @ Rdeg('z', -14 * wind + 90 * cut) @ Rdeg('x', -25 * cut))
 
 
 def entity_pose(yaw=0.0):
@@ -392,7 +377,7 @@ VANILLA_HOLD = Body()
 def hold_pose(hold, state='idle', t=0.0, attack=0, walk=0.0):
     """WeaponPose's arithmetic for a right-handed holder: the hold's idle pose (walk: the vanilla
     arm swing it keeps, 0 standing) or attack `attack` at swing progress t, eased between keyframes
-    as HoldAnimation does. A copy, like greatsword_hand(); keep the two in step."""
+    as HoldAnimation does. A copy, like fp_pose(); keep the two in step."""
     def key_pose(k):
         return (tuple(k.get('right_arm', (0, 0, 0))), tuple(k['left_arm']) if 'left_arm' in k else None,
                 k.get('body_twist', 0.0), tuple(k.get('item', (0, 0, 0))))
@@ -601,7 +586,89 @@ def to_image(arr):
 
 
 # --- Views ----------------------------------------------------------------------------------
-def first_person(model, size=(960, 540), night=False, hand=FIRST_PERSON_HAND):
+def fp_pose(fp, t=None, attack=0):
+    """FirstPersonHold's pose: idle (t None) or attack `attack` at swing progress t, eased between
+    keyframes. A copy of its arithmetic, like hold_pose(); keep the two in step."""
+    if t is None:
+        k = fp['idle']
+        return k['pos'], k['rotation'], k.get('two_hands', False)
+    keys = fp['attacks'][attack]
+    if t <= keys[0]['t']:
+        k = keys[0]
+        return k['pos'], k['rotation'], k.get('two_hands', False)
+    for a, b in zip(keys, keys[1:]):
+        if t <= b['t']:
+            f = (t - a['t']) / max(1e-6, b['t'] - a['t'])
+            f = f * f * (3 - 2 * f)
+            lerp = lambda u, v: [x + (y - x) * f for x, y in zip(u, v)]
+            return (lerp(a['pos'], b['pos']), lerp(a['rotation'], b['rotation']),
+                    (a if f < 0.5 else b).get('two_hands', False))
+    k = keys[-1]
+    return k['pos'], k['rotation'], k.get('two_hands', False)
+
+
+def _rotate_to(d):
+    """The smallest rotation taking +y to the unit vector d (JOML's rotationTo), as a 4x4."""
+    y = np.array([0.0, 1.0, 0.0])
+    d = np.asarray(d, float) / np.linalg.norm(d)
+    v = np.cross(y, d)
+    c = float(y @ d)
+    m = np.eye(4)
+    if np.linalg.norm(v) < 1e-9:
+        if c < 0:
+            m[:3, :3] = np.diag([1, -1, -1])
+        return m
+    vx = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
+    m[:3, :3] = np.eye(3) + vx + vx @ vx * (1 / (1 + c))
+    return m
+
+
+SKIN, SLEEVE = (0.78, 0.6, 0.47, 1), (0.23, 0.43, 0.66, 1)
+
+
+def fp_arm_quads(grip, shoulder, right):
+    """WeaponFirstPerson.drawArm: the arm's hand end on the grip, its length toward the shoulder.
+    A stand-in arm: skin, with a shirt sleeve on its upper part."""
+    grip, shoulder = np.asarray(grip, float), np.asarray(shoulder, float)
+    end = np.array([-6, 12, 0] if right else [6, 12, 0], float)
+    pivot = np.array([-5, 2, 0] if right else [5, 2, 0], float)
+    lo = pivot + np.array([-3, -2, -2] if right else [-1, -2, -2], float)
+    hi = pivot + np.array([1, 10, 2] if right else [3, 10, 2], float)
+    m = T(*grip) @ _rotate_to(grip - shoulder) @ T(*(-end / 16)) @ S(1 / 16)
+    out = []
+    for face, cc in FACE_CORNERS.items():
+        corners = np.array([[(hi if c else lo)[i] for i, c in enumerate(k)] for k in cc])
+        ph = np.c_[corners, np.ones(4)] @ m.T
+        out.append(Quad(ph[:, :3], color=np.array(SKIN)))
+    # The sleeve: the upper half of the arm, a little larger.
+    lo2, hi2 = lo - 0.25, hi + 0.25
+    lo2[1], hi2[1] = lo[1] - 0.25, lo[1] + 5.5
+    for face, cc in FACE_CORNERS.items():
+        corners = np.array([[(hi2 if c else lo2)[i] for i, c in enumerate(k)] for k in cc])
+        ph = np.c_[corners, np.ones(4)] @ m.T
+        out.append(Quad(ph[:, :3], color=np.array(SLEEVE)))
+    return out
+
+
+def fp_quads(model, t=None, attack=0):
+    """The weapon placed by its first-person hold, and the arms on its grips (WeaponFirstPerson)."""
+    fp = model['weapon']['first_person']
+    pos, rot, two = fp_pose(fp, t, attack)
+    rh = np.array(fp['right_hand'], float) / 16
+    weapon = T(*pos) @ Rdeg('z', rot[2]) @ Rdeg('y', rot[1]) @ Rdeg('x', rot[0]) @ S(fp['scale']) @ T(*-rh)
+    quads = transformed(model_quads(model), weapon @ S(1 / 16))
+    at = lambda p: (weapon @ np.r_[np.asarray(p, float) / 16, 1])[:3]
+    quads += fp_arm_quads(at(fp['right_hand']), fp['right_shoulder'], True)
+    if two:
+        quads += fp_arm_quads(at(fp['left_hand']), fp['left_shoulder'], False)
+    return quads
+
+
+def first_person(model, size=(960, 540), night=False, hand=FIRST_PERSON_HAND, fp_t='idle', fp_attack=0):
+    if model.get('weapon', {}).get('first_person'):
+        quads = fp_quads(model, None if fp_t == 'idle' else fp_t, fp_attack)
+        proj = perspective(70, size[0] / size[1])
+        return to_image(rasterise(quads, proj, np.eye(4), size, background(size, 'night' if night else 'day'), night))
     quads = transformed(model_quads(model), hand @ item_matrix(model, 'firstperson_righthand'))
     proj = perspective(70, size[0] / size[1])
     return to_image(rasterise(quads, proj, np.eye(4), size, background(size, 'night' if night else 'day'), night))
@@ -657,23 +724,30 @@ def pose_strip(model, width):
     return out
 
 
-def sheet(model, title, swing='vanilla'):
-    """The full preview, ending in a strip of the first-person swing: 'vanilla', or 'greatsword'
-    for VeigosBladeClient's."""
+def sheet(model, title):
+    """The full preview, ending in a strip of the first-person swing: the weapon's own first-person
+    attacks if it has a first-person hold, vanilla's swing if not."""
     fp_day, fp_night = first_person(model), first_person(model, night=True)
     tp_front = third_person(model, eye=(-1.9, 1.55, 2.6), target=(-0.1, 1.05, 0.2))
     tp_back = third_person(model, eye=(-1.6, 2.1, -2.8), target=(-0.1, 1.15, 0.2))
     turns = [turntable(model, a) for a in (0, 50, 90)]
     W = fp_day.width * 2 + 16
     H = fp_day.height + 540 + 70
-    hand, label = {'vanilla': (vanilla_hand, 'vanilla'),
-                   'greatsword': (greatsword_hand, 'VeigosBladeClient')}[swing]
-    frames = [first_person(model, (320, 180), hand=hand(p)) for p in SWING_FRAMES]
-    strip = Image.new('RGB', (W, 180 + 24), (30, 31, 36))
+    fp = model.get('weapon', {}).get('first_person')
+    if fp:
+        # First person with arms: every attack at the end of its wind-up, its strike, its follow-through.
+        shots = [(a, k['t']) for a, keys in enumerate(fp['attacks']) for k in keys[1:-1]]
+        frames = [first_person(model, (320, 180), fp_t=t, fp_attack=a) for a, t in shots]
+        label = 'first-person attacks (WeaponFirstPerson): ' + ', '.join('%d@%.2f' % (a + 1, t) for a, t in shots)
+    else:
+        hand = vanilla_hand
+        frames = [first_person(model, (320, 180), hand=hand(p)) for p in SWING_FRAMES]
+        label = 'swing (vanilla): progress ' + ' / '.join('%.2f' % p for p in SWING_FRAMES)
+    rows_n = (len(frames) + 5) // 6
+    strip = Image.new('RGB', (W, rows_n * 184 + 20), (30, 31, 36))
     for i, im in enumerate(frames):
-        strip.paste(im, (i * (320 + 4), 20))
-    ImageDraw.Draw(strip).text((6, 4), 'swing (%s): progress ' % label +
-                               ' / '.join('%.2f' % p for p in SWING_FRAMES), fill=(230, 230, 230))
+        strip.paste(im, ((i % 6) * (320 + 4), 20 + (i // 6) * 184))
+    ImageDraw.Draw(strip).text((6, 4), label, fill=(230, 230, 230))
     H += strip.height
     poses = pose_strip(model, W) if model.get('weapon', {}).get('hold') else None
     if poses:
@@ -730,8 +804,6 @@ def main():
     ap.add_argument('model', help='e.g. ascension_combat:item/veigos_blade')
     ap.add_argument('--out', default=os.path.join(ROOT, 'design', 'combat-items', '3d'))
     ap.add_argument('--name', help='output file stem (default: the model path\'s last part)')
-    ap.add_argument('--swing', choices=('vanilla', 'greatsword'), default='vanilla',
-                    help='first-person swing to show: vanilla, or VeigosBladeClient\'s greatsword')
     ap.add_argument('--fit', metavar='RX,RY,SCALE', help='instead of a preview, print a first-person '
                     'display entry putting each --point on its screen spot (see fit_first_person)')
     ap.add_argument('--point', action='append', default=[], metavar='X,Y,Z:U,V',
@@ -747,7 +819,7 @@ def main():
     name = args.name or args.model.split('/')[-1]
     os.makedirs(args.out, exist_ok=True)
     path = os.path.join(args.out, name + '_hand.png')
-    sheet(model, name, args.swing).save(path)
+    sheet(model, name).save(path)
     print('wrote', path)
 
 
