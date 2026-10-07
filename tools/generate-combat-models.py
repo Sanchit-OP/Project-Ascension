@@ -161,6 +161,7 @@ class Weapon:
         self.root = Part()
         self.display = {}
         self.scale = (0.85, 0.68)  # third person, first person, before any override in display
+        self.hold = None  # how a humanoid holds and swings it (HoldAnimation's "hold" section)
 
     def build(self):
         """Lay every box face out on the texture (shelf packing, tallest first), paint it, and
@@ -220,6 +221,8 @@ class Weapon:
             model['glow_texture'] = tex_id + '_glow.png'
         model['texture_size'] = [self.tex, self.tex]
         model['parts'] = [part_json(self.root)]
+        if self.hold:
+            model['hold'] = self.hold
         return model, base, (glow if any_glow else None)
 
     def _cubes(self, part=None):
@@ -287,6 +290,36 @@ r.add((Z, 4.4, Z), (0, 0, 45)).centred((Z, 4.4, Z), (0.75, 0.75, 1.3), V_JEWEL)
 r.arc((Z, 2.6), 1.6, 170, 370, 7, 0.75, 0.9, V_GUARD, taper=0.6)
 r.centred((Z, 2.0, Z), (0.8, 2.0, 0.8), V_GUARD)
 veigo.grip = (Z, 10.6)
+# How he holds it, third person (WeaponPose plays this). Walking or standing he trails it in one
+# hand, the tip on the ground behind; attacking he takes it in both hands: a slash from the right,
+# a slash from the left, a stab. Keyframes over the swing; angles in degrees as HumanoidModel's:
+# an arm's x raises it forward when negative, its y swings it to the holder's right; body_twist
+# turns the torso right; the item's z tips the blade forward then down (blade elevation = forearm
+# elevation + 90 - z, so 90 lays it along arms held straight out).
+DRAG = {'right_arm': [15, 0, 8], 'item': [0, 6, 118]}
+_rest = dict(DRAG, left_arm=[0, 0, 0])
+
+
+def _slash(side):
+    """A two-handed horizontal cut from `side` (1: from the right, -1: from the left) across, the
+    hands at chest height and the blade laid level along the arms (z = forearm elevation + 90)."""
+    return [dict(_rest, t=0),
+            {'t': 0.2, 'right_arm': [-85, side * 70, 0], 'left_arm': [-85, side * 85, 0], 'body_twist': side * 30,
+             'item': [0, 0, 62]},
+            {'t': 0.45, 'right_arm': [-72, side * -5, 0], 'left_arm': [-72, side * 12, 0], 'body_twist': 0,
+             'item': [0, 0, 72]},
+            {'t': 0.62, 'right_arm': [-66, side * -75, 0], 'left_arm': [-66, side * -58, 0], 'body_twist': side * -30,
+             'item': [0, 0, 80]},
+            dict(_rest, t=1)]
+
+
+STAB = [dict(_rest, t=0),
+        {'t': 0.22, 'right_arm': [-40, -10, 0], 'left_arm': [-40, 20, 0], 'body_twist': 15, 'item': [0, 0, 40]},
+        {'t': 0.45, 'right_arm': [-80, -5, 0], 'left_arm': [-80, 15, 0], 'body_twist': -10, 'item': [0, 0, 80]},
+        {'t': 0.6, 'right_arm': [-80, -5, 0], 'left_arm': [-80, 15, 0], 'body_twist': -10, 'item': [0, 0, 80]},
+        dict(_rest, t=1)]
+veigo.hold = {'grip': [Z, 10.6, Z], 'idle': DRAG, 'walk_swing': 0.25,
+              'attacks': [_slash(1), _slash(-1), STAB]}
 veigo.scale = (0.75, 0.68)  # third person: about the wielder's height, as Viego's is
 # First person: upright at the right of the view, face on, the great guard in sight at the bottom
 # and the tip near the top; VeigosBladeClient swings it from there (the strip in its preview).
