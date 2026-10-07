@@ -66,6 +66,13 @@ class HoldAnimationTest {
             assertNotNull(hold, "Veigo's Blade has a hold section");
             assertEquals(3, hold.attackCount(), "two slashes and a stab");
             assertTrue(hold.attack(0, 0.45f).twoHanded(), "attacks are two-handed");
+            FirstPersonHold fp = WeaponModel.parse(json).firstPerson();
+            assertNotNull(fp, "Veigo's Blade has a first-person hold");
+            assertEquals(hold.attackCount(), fp.attackCount(), "the same attacks in both views");
+            assertFalse(fp.idle.twoHands(), "idle in one hand");
+            assertTrue(fp.attack(2, 0.45f).twoHands(), "the stab in both");
+            // The off hand's grip sits below the main hand's, far enough apart for two fists.
+            assertTrue(fp.rightHand[1] - fp.leftHand[1] >= 4, "four pixels or more between the grips");
         }
     }
 }

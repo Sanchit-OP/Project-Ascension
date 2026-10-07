@@ -15,15 +15,16 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 /**
- * Wires the held-weapon models: loads {@link WeaponModels} on resource reload and points the
- * weapons at {@link WeaponRenderer}. Veigo's Blade is pointed there by
- * {@code VeigosBladeClient}, whose extension also carries its swing (an item gets one extension).
- * The renderer only runs for an item whose model JSON parents {@code builtin/entity}; until a
- * weapon's model is redrawn that way, its old model still shows. Client mod bus only.
+ * Wires the held-weapon models: loads {@link WeaponModels} on resource reload and gives the
+ * weapons one client extension each: {@link WeaponRenderer} draws them, {@link WeaponPose} poses
+ * the holder in third person ({@link WeaponFirstPerson} draws first person). The renderer only runs
+ * for an item whose model JSON parents {@code builtin/entity}, and the poses only for a model with
+ * a hold; until a weapon is remodelled that way, its old model and vanilla's hold still show.
+ * Client mod bus only.
  */
 @EventBusSubscriber(modid = AscensionCombat.MOD_ID, value = Dist.CLIENT)
 public final class WeaponClient {
-    /** The extension a held weapon without a custom first-person swing uses. */
+    /** The extension every held weapon uses. */
     public static final IClientItemExtensions RENDERED = new IClientItemExtensions() {
         @Override
         public BlockEntityWithoutLevelRenderer getCustomRenderer() {
@@ -36,11 +37,6 @@ public final class WeaponClient {
         }
     };
 
-    /** How a held weapon with a hold animation is posed in third person; null for vanilla's. */
-    public static HumanoidModel.ArmPose armPose(ItemStack stack) {
-        return WeaponPose.armPose(stack);
-    }
-
     private WeaponClient() {
     }
 
@@ -51,6 +47,7 @@ public final class WeaponClient {
 
     @SubscribeEvent
     static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(RENDERED, CombatContent.DARKEN_BLADE.get(), CombatContent.DARIUS_AXE.get());
+        event.registerItem(RENDERED, CombatContent.VEIGOS_BLADE.get(), CombatContent.DARKEN_BLADE.get(),
+                CombatContent.DARIUS_AXE.get());
     }
 }
