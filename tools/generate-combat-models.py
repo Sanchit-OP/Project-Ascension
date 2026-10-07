@@ -316,6 +316,68 @@ veigo.display = {ctx: {'rotation': [0, -50, 15.35], 'translation': [-0.53, -1.75
                  for ctx in ('firstperson_righthand', 'firstperson_lefthand')}
 
 
+# --- Spear of Shojin ------------------------------------------------------------------------
+# Butt to point, as the item's icon reads: a long dark haft banded in gold, a gold collar whose
+# claws grip the blade's foot, and a broad lime-jade blade that swells and sweeps to one side
+# before its point, with a glowing spine. Long, as a spear is: as tall as its wielder and more
+# (Sanchit, 2026-10-08: "even in third person this doesn't look like a spear").
+_S = art.SPRITES['spear_of_shojin'][1]
+S_JADE = [_S['K'], _S['d'], _S['m'], _S['l'], _S['w']]
+S_GOLD = ['#2a1a08', _S['o'], _S['y'], _S['Y'], '#fff6d0']
+S_WOOD = ['#100806', _S['h'], _S['H'], '#76543a', '#98764e']
+S_BLADE = Mat(S_JADE, 2.3, bevel=0, grain=0.15, glow=(_S['m'], 0.2), side_level=3.0)
+S_SPINE = Mat(S_JADE, 3.0, bevel=0, grain=0.1, glow=(_S['l'], 0.6), side_level=2.5)
+S_GOLDM = Mat(S_GOLD, 2.2, bevel=1.0, grain=0.3)
+S_HAFT = Mat(S_WOOD, 1.7, bevel=0, grain=0.45)
+S_WRAP = Mat(S_WOOD, 1.3, bevel=0, grain=0.2, bands=1)
+
+spear = weapon('spear_of_shojin', seed=23)
+r = spear.root
+HAFT = (1.2, 35.0)      # butt cap to collar
+SPEAR_GRIP = (13.0, 19.0)  # the main hand's wrap, a third of the way up
+COLLAR = (35.0, 37.6)
+SPEAR_BLADE = (37.6, 51.0)
+# Haft: square, turned 45 degrees about y so it reads round; a gold cap at the butt, gold bands.
+_h = (HAFT[0] + HAFT[1]) / 2
+r.add((Z, _h, Z), (0, 45, 0)).centred((Z, _h, Z), (1.0, HAFT[1] - HAFT[0], 1.0), S_HAFT)
+r.centred((Z, HAFT[0] / 2, Z), (1.4, HAFT[0], 1.4), S_GOLDM)
+_w = (SPEAR_GRIP[0] + SPEAR_GRIP[1]) / 2
+r.add((Z, _w, Z), (0, 45, 0)).centred((Z, _w, Z), (1.2, SPEAR_GRIP[1] - SPEAR_GRIP[0], 1.2), S_WRAP)
+for y in (SPEAR_GRIP[0] - 0.6, SPEAR_GRIP[1] + 0.2, 26.0, 32.0):
+    r.centred((Z, y + 0.2, Z), (1.35, 0.4, 1.35), S_GOLDM)
+# Collar: a gold socket, a ring, and claws curling up round the blade's foot, in its plane and
+# across it.
+r.centred((Z, (COLLAR[0] + COLLAR[1]) / 2, Z), (1.7, COLLAR[1] - COLLAR[0], 1.7), S_GOLDM)
+r.centred((Z, COLLAR[0] + 0.5, Z), (2.3, 0.7, 2.3), S_GOLDM)
+for side in (-1, 1):
+    r.bar((Z + side * 1.5, COLLAR[1] - 0.2, Z), 2.2, 0.55, 0.7, side * -30, S_GOLDM)
+    r.add((Z, COLLAR[1] - 0.2, Z + side * 1.3), (side * 30, 0, 0)).centred(
+        (Z, COLLAR[1] - 0.2, Z + side * 1.3), (0.7, 2.0, 0.55), S_GOLDM)
+# Blade: slices up from the collar, each its width and its centre's offset to one side (the
+# sweep), 0.7 deep, a raised spine along the middle.
+_n = 14
+_len = SPEAR_BLADE[1] - SPEAR_BLADE[0]
+for i in range(_n):
+    t = (i + 0.5) / _n
+    y0 = SPEAR_BLADE[0] + _len * i / _n
+    y1 = SPEAR_BLADE[0] + _len * (i + 1) / _n
+    # Swells from the collar to its widest at 60%, then narrows to the point.
+    wdt = max(0.5, (1.8 + 3.4 * math.sin(math.pi * min(t / 0.6, 1.0) * 0.5)) * min(1.0, (1 - t) / 0.35))
+    off = 1.4 * math.sin(math.pi * t * 0.8)  # bellies out toward +x; the point comes partly back
+    r.box((Z + off - wdt / 2, y0, Z - 0.35), (Z + off + wdt / 2, y1, Z + 0.35), S_BLADE)
+    if wdt > 0.9:
+        sw = min(0.8, wdt * 0.3)
+        r.box((Z + off - sw / 2, y0 + 0.01, Z - 0.5), (Z + off + sw / 2, y1 - 0.01, Z + 0.5), S_SPINE)
+SPEAR_HAND = (Z, (SPEAR_GRIP[0] + SPEAR_GRIP[1]) / 2, Z)
+spear.grip = SPEAR_HAND[:2]
+spear.scale = (0.75, 0.68)
+# First person: tall from the bottom right, the haft running off the bottom and the point just
+# reaching the top, leaning in toward the crosshair (not over it). Fitted with: render-item-model.py
+# ascension_combat:item/spear_of_shojin --fit 0,-50,0.6 --point 8,16,8:0.85,1.1 --point 8,51,8:0.56,0.0
+spear.display = {ctx: {'rotation': [0, -50, 24.92], 'translation': [0.43, -3.83, 3.79], 'scale': [0.6] * 3}
+                 for ctx in ('firstperson_righthand', 'firstperson_lefthand')}
+
+
 # --- Display transforms ---------------------------------------------------------------------
 def upright_handheld(grip, scale_tp=0.85, scale_fp=0.68):
     """Vanilla's handheld transforms, turned for a model drawn upright instead of diagonal.

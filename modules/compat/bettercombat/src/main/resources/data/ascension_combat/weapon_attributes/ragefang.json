@@ -1,6 +1,6 @@
 {
   "attributes": {
-    "category": "sword",
+    "category": "dagger",
     "two_handed": false,
     "range_bonus": 0,
     "attacks": [
@@ -11,7 +11,7 @@
         "upswing": 0.5,
         "animation": "bettercombat:one_handed_slash_horizontal_right",
         "swing_sound": {
-          "id": "bettercombat:sword_slash"
+          "id": "bettercombat:dagger_slash"
         }
       },
       {
@@ -21,7 +21,7 @@
         "upswing": 0.5,
         "animation": "bettercombat:one_handed_slash_horizontal_left",
         "swing_sound": {
-          "id": "bettercombat:sword_slash"
+          "id": "bettercombat:dagger_slash"
         }
       },
       {
@@ -31,7 +31,7 @@
         "upswing": 0.5,
         "animation": "bettercombat:one_handed_stab",
         "swing_sound": {
-          "id": "bettercombat:sword_slash"
+          "id": "bettercombat:dagger_slash"
         }
       }
     ]

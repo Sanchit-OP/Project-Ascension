@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "ascension_combat:item/spear_of_shojin"
+  }
+}

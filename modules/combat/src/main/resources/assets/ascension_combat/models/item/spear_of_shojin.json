@@ -1,6 +1,18 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "ascension_combat:item/spear_of_shojin"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "ascension_combat:item/spear_of_shojin_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "ascension_combat:item/spear_of_shojin_icon"
+    },
+    "ground": {
+      "parent": "ascension_combat:item/spear_of_shojin_icon"
+    },
+    "fixed": {
+      "parent": "ascension_combat:item/spear_of_shojin_icon"
+    }
   }
 }

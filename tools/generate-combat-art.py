@@ -124,27 +124,30 @@ sprite('darius_axe', {
 ])
 
 # --- Wraithblade: Youmuu's Ghostblade -------------------------------------------------------
+# A broad silver blade (bright edge, bright ridge, shaded edge), a wide gold guard whose arms curl
+# toward the blade round a glowing violet eye, a dark studded grip, and two ghost petals drifting
+# past, unoutlined. The first, spindly version read as a joke (Sanchit, 2026-10-08).
 sprite('wraithblade', {
     'K': '#141018', 's': '#5c6070', 'm': '#9aa0b0', 'l': '#d4d8e2', 'w': '#f4f6fa',
     'o': '#8a5a1e', 'y': '#d8a040', 'Y': '#f6d880', 'p': '#3a1c4a', 'P': '#5e3274',
     'g': '#f090ff', 'G': '#b040e0', 'f': '#2a1a36',
 }, [
-    ".............KK.",
-    "............KwlK",
-    "...........KwfsK",
-    "...K......KwfsK.",
-    "..KYK....KwgsK..",
-    "..KyyK.KKwfsK...",
-    "...KyYKowlsK....",
-    "....KyogoKK.....",
-    ".....KoGoK......",
-    ".....KoooyKK....",
-    "....KpPKKKyYK...",
-    "...KpPK..KyyYK..",
-    "..KpPK....KKK...",
-    ".KYyK...........",
-    ".KyK............",
-    "..K.............",
+    ".............KwK",
+    "............KwmK",
+    "...........KwlmK",
+    ".....gG...KwlmK.",
+    ".........KwlmK..",
+    "........KwlmK...",
+    "...K...KwlmK....",
+    "..KYK.KwlmK.....",
+    ".KoyKKwlmK......",
+    "..KYywlmK.......",
+    "...KGgKK........",
+    "...KPGyK....G...",
+    "..KmpKYyK...g...",
+    ".KpPK.KoYK......",
+    "KyYK...KK.......",
+    "KoK.............",
 ], glow='gG')
 
 # --- Endless Hunger -------------------------------------------------------------------------
@@ -171,26 +174,29 @@ sprite('endless_hunger', {
 ], glow='R')
 
 # --- Ragefang: Guinsoo's Rageblade ----------------------------------------------------------
+# A dagger, not a sword (Sanchit, 2026-10-08: the broad flame blade was far too wide): a short,
+# slim gold-and-orange blade with flames licking off its upper edge and a red core at its foot,
+# a small gold guard, a short grip.
 sprite('ragefang', {
     'K': '#2a0c06', 'y': '#ffc838', 'Y': '#fff0a0', 'o': '#f07818', 'r': '#b8300c',
     'g': '#c89030', 'G': '#f0c860', 'h': '#3a1e0e', 'H': '#5e3418',
 }, [
-    ".............KK.",
-    ".........KKKKorK",
-    "........KYyyoroK",
-    ".......KKKyoroyY",
-    "......KYyyoroyyK",
-    ".....KKKyoroyYK.",
-    "....KYyyoroyyK..",
-    "...KgKyoroyYK...",
-    "...KGgKKKKKK....",
-    "....KKgKK.......",
-    "...KhHKgGK......",
-    "..KhHK.KgK......",
-    ".KhHK...K.......",
-    "KhHK............",
-    "ggK.............",
-    "gK..............",
+    "................",
+    "................",
+    "................",
+    "............K...",
+    "..........KKYK..",
+    ".........KYoK...",
+    "........KKyoK...",
+    ".....K.KYyoK....",
+    "....KGKKyoK.....",
+    "....KgGyrK......",
+    ".....KgGK.......",
+    "....KHhgGK......",
+    "...KHhKKK.......",
+    "..KGgK..........",
+    "..KgK...........",
+    "...K............",
 ], glow='Y')
 
 # --- Spear of Shojin ------------------------------------------------------------------------
@@ -1014,7 +1020,7 @@ def item_model(parent, tex, has_glow, **extra):
 # sprite becomes <id>_icon.json, and <id>.json picks between the two: the 3D model in hand, the
 # icon in the inventory, on the ground and in item frames, where a 3D model reads as a thin line.
 # Model id -> the icon's texture.
-HELD_3D = {'veigos_blade': 'veigos_blade_icon'}
+HELD_3D = {'veigos_blade': 'veigos_blade_icon', 'spear_of_shojin': 'spear_of_shojin'}
 
 
 def held_3d_model(name):
