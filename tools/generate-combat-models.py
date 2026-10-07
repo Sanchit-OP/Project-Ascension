@@ -105,6 +105,13 @@ def mat_rotation(rot):
     return lambda v: rz_(ry_(rx_(v)))
 
 
+def item_rotation(rot):
+    """ItemTransform's rotation, Rx . Ry . Rz: Z is applied first, the other way round from a
+    model part's mat_rotation."""
+    fx, fy, fz = (mat_rotation(r) for r in ((rot[0], 0, 0), (0, rot[1], 0), (0, 0, rot[2])))
+    return lambda v: fx(fy(fz(v)))
+
+
 # --- Materials and painting -----------------------------------------------------------------
 FACE_AXES = {  # face -> (axis along u, axis along v): which box dimensions its texture spans
     'north': (0, 1), 'south': (0, 1), 'east': (2, 1), 'west': (2, 1), 'up': (0, 2), 'down': (0, 2),
@@ -384,7 +391,7 @@ def upright_handheld(grip, scale_tp=0.85, scale_fp=0.68):
     out = {}
     for ctx, (r_, t, sc) in {'thirdperson': ([0, -90, 55], [0, 4.0, 0.5], scale_tp),
                              'firstperson': ([0, -90, 25], [1.13, 3.2, 1.13], scale_fp)}.items():
-        moved = mat_rotation(r_)(shift)
+        moved = item_rotation(r_)(shift)
         tr = [round(max(-80, min(80, t[i] + sc * moved[i])), 2) for i in range(3)]
         # The left hand takes the same values: ItemTransform mirrors them for that hand.
         out[ctx + '_righthand'] = out[ctx + '_lefthand'] = {
