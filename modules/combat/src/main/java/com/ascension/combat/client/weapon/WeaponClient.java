@@ -2,11 +2,7 @@ package com.ascension.combat.client.weapon;
 
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatContent;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -16,11 +12,10 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 
 /**
  * Wires the held-weapon models: loads {@link WeaponModels} on resource reload and gives the
- * weapons one client extension each: {@link WeaponRenderer} draws them, {@link WeaponPose} poses
- * the holder in third person ({@link WeaponFirstPerson} draws first person). The renderer only runs
- * for an item whose model JSON parents {@code builtin/entity}, and the poses only for a model with
- * a hold; until a weapon is remodelled that way, its old model and vanilla's hold still show.
- * Client mod bus only.
+ * weapons one client extension each, through which {@link WeaponRenderer} draws them. The renderer
+ * only runs for an item whose model JSON parents {@code builtin/entity}; until a weapon is
+ * remodelled that way, its old model still shows. Held like any sword: animating the holder is an
+ * animation mod's job (ascension-compat-bettercombat). Client mod bus only.
  */
 @EventBusSubscriber(modid = AscensionCombat.MOD_ID, value = Dist.CLIENT)
 public final class WeaponClient {
@@ -29,11 +24,6 @@ public final class WeaponClient {
         @Override
         public BlockEntityWithoutLevelRenderer getCustomRenderer() {
             return WeaponRenderer.get();
-        }
-
-        @Override
-        public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
-            return WeaponPose.armPose(stack);
         }
     };
 

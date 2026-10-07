@@ -2,7 +2,6 @@ package com.ascension.combat.client.weapon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -17,9 +16,6 @@ import net.minecraft.world.item.ItemStack;
  * adds full-bright light and so stays lit in the dark. The item's model JSON parents
  * {@code builtin/entity} for its display transforms; by the time this runs the pose is already in
  * the item's own frame (0..1 is one block), so model pixels are divided by 16.
- *
- * <p>In third person a weapon held in a {@link WeaponPose} is also turned about its grip by the
- * amount that pose asked for (a sword trailing behind, raised for a cut).
  *
  * <p>One instance serves every weapon, made on first use (by then the game's renderers exist).
  * It holds no state of its own.
@@ -45,21 +41,11 @@ public final class WeaponRenderer extends BlockEntityWithoutLevelRenderer {
         if (model == null) {
             return;
         }
-        float[] turn = context.firstPerson() || context == ItemDisplayContext.GUI ? null : WeaponPose.takeTurn();
-        pose.pushPose();
-        if (turn != null) {
-            pose.translate(turn[3] / 16f, turn[4] / 16f, turn[5] / 16f);
-            pose.mulPose(Axis.ZP.rotationDegrees(turn[2]));
-            pose.mulPose(Axis.YP.rotationDegrees(turn[1]));
-            pose.mulPose(Axis.XP.rotationDegrees(turn[0]));
-            pose.translate(-turn[3] / 16f, -turn[4] / 16f, -turn[5] / 16f);
-        }
         drawModel(model, pose, buffers, light, overlay);
-        pose.popPose();
     }
 
     /** The model in the pose's frame (model pixels / 16): texture pass, then the glow pass. */
-    static void drawModel(WeaponModel model, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
+    private static void drawModel(WeaponModel model, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
         draw(model, pose.last(), buffers.getBuffer(RenderType.entityCutoutNoCull(model.texture())), light, overlay);
         if (model.glowTexture() != null) {
             draw(model, pose.last(), buffers.getBuffer(RenderType.eyes(model.glowTexture())),
