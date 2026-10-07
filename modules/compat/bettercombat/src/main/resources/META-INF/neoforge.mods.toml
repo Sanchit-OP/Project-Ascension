@@ -1,0 +1,51 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Better Combat"
+authors = "${mod_authors}"
+description = '''
+Gives ascension-combat's melee weapons Better Combat's holds and swings: Veigo's Blade, the Darkin
+Blade and the Black Cleaver held and swung in two hands, the Spear of Shojin thrust like a spear,
+the one-handed blades slashed and stabbed. Pure data: one weapon_attributes file per weapon.
+Damage and reach stay the combat module's (every attack multiplier is 1, no reach bonus).
+
+Optional. Without both Better Combat and ascension-combat installed, this jar simply is not
+present, and the weapons are held and swung like any vanilla sword.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# The weapons the data below names, by registry id.
+[[dependencies.${mod_id}]]
+modId = "ascension_combat"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "BOTH"
+
+# The actual integration target. Required, not optional -- same reasoning as
+# ascension-compat-endermanoverhaul: this jar has no other reason to exist. BOTH: Better Combat
+# runs on both sides (the server owns the weapon attributes and checks the hits).
+[[dependencies.${mod_id}]]
+modId = "bettercombat"
+type = "required"
+versionRange = "${bettercombat_version_range}"
+ordering = "AFTER"
+side = "BOTH"

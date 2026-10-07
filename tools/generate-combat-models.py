@@ -168,8 +168,6 @@ class Weapon:
         self.root = Part()
         self.display = {}
         self.scale = (0.85, 0.68)  # third person, first person, before any override in display
-        self.hold = None  # how a humanoid holds and swings it (HoldAnimation's "hold" section)
-        self.first_person = None  # how the player holds it in their own view (FirstPersonHold)
 
     def build(self):
         """Lay every box face out on the texture (shelf packing, tallest first), paint it, and
@@ -229,10 +227,6 @@ class Weapon:
             model['glow_texture'] = tex_id + '_glow.png'
         model['texture_size'] = [self.tex, self.tex]
         model['parts'] = [part_json(self.root)]
-        if self.hold:
-            model['hold'] = self.hold
-        if self.first_person:
-            model['first_person'] = self.first_person
         return model, base, (glow if any_glow else None)
 
     def _cubes(self, part=None):
@@ -272,8 +266,8 @@ veigo = weapon('veigos_blade', seed=11)
 r = veigo.root
 Z = 8.0
 # Hilt to tip, model pixels up from the pommel's foot. The hilt is long, as his is, with room for
-# two Minecraft fists (four pixels wide): his main hand on the grip under the small guard, the off
-# hand on the shaft under the great guard.
+# two Minecraft fists (four pixels wide) for a two-handed hold: the main hand on the grip under
+# the small guard, the off hand on the shaft under the great guard.
 POMMEL_Y = 2.6          # the pommel crescent's centre
 SHAFT = (3.0, 7.0)      # the off hand's grip
 GUARD_Y = 8.6           # the great guard's hub
@@ -311,69 +305,15 @@ r.add((Z, SHAFT[0] + 0.9, Z), (0, 0, 45)).centred((Z, SHAFT[0] + 0.9, Z), (0.75,
 r.arc((Z, POMMEL_Y), 1.6, 170, 370, 7, 0.75, 0.9, V_GUARD, taper=0.6)
 r.centred((Z, (1.0 + SHAFT[0]) / 2, Z), (0.8, SHAFT[0] - 1.0, 0.8), V_GUARD)
 MAIN_HAND = (Z, GRIP[1] - 2.2, Z)   # the fist's middle, just under the small guard
-OFF_HAND = (Z, _s, Z)
 veigo.grip = MAIN_HAND[:2]
-# How he holds it, third person (WeaponPose plays this). Walking or standing he trails it in one
-# hand, the tip on the ground behind; attacking he takes it in both hands: a slash from the right,
-# a slash from the left, a stab. Keyframes over the swing; angles in degrees as HumanoidModel's:
-# an arm's x raises it forward when negative, its y swings it to the holder's right; body_twist
-# turns the torso right; the item's z tips the blade forward then down (blade elevation = forearm
-# elevation + 90 - z, so 90 lays it along arms held straight out).
-DRAG = {'right_arm': [15, 0, 8], 'item': [0, 6, 118]}
-_rest = dict(DRAG, left_arm=[0, 0, 0])
-
-
-def _slash(side):
-    """A two-handed horizontal cut from `side` (1: from the right, -1: from the left) across, the
-    hands at chest height and the blade laid level along the arms (z = forearm elevation + 90)."""
-    return [dict(_rest, t=0),
-            {'t': 0.2, 'right_arm': [-85, side * 70, 0], 'left_arm': [-85, side * 85, 0], 'body_twist': side * 30,
-             'item': [0, 0, 62]},
-            {'t': 0.45, 'right_arm': [-72, side * -5, 0], 'left_arm': [-72, side * 12, 0], 'body_twist': 0,
-             'item': [0, 0, 72]},
-            {'t': 0.62, 'right_arm': [-66, side * -75, 0], 'left_arm': [-66, side * -58, 0], 'body_twist': side * -30,
-             'item': [0, 0, 80]},
-            dict(_rest, t=1)]
-
-
-STAB = [dict(_rest, t=0),
-        {'t': 0.22, 'right_arm': [-40, -10, 0], 'left_arm': [-40, 20, 0], 'body_twist': 15, 'item': [0, 0, 40]},
-        {'t': 0.45, 'right_arm': [-80, -5, 0], 'left_arm': [-80, 15, 0], 'body_twist': -10, 'item': [0, 0, 80]},
-        {'t': 0.6, 'right_arm': [-80, -5, 0], 'left_arm': [-80, 15, 0], 'body_twist': -10, 'item': [0, 0, 80]},
-        dict(_rest, t=1)]
-veigo.hold = {'grip': list(MAIN_HAND), 'idle': DRAG, 'walk_swing': 0.25,
-              'attacks': [_slash(1), _slash(-1), STAB]}
 veigo.scale = (0.75, 0.68)  # third person: about the wielder's height, as Viego's is
-# First person (WeaponFirstPerson): the player's own arms on it. Idle, one hand, held like vanilla
-# holds a sword: hilt low at the right, blade up and away, out of the middle of the view.
-# Attacking, both hands: the blade laid flat (edge leading) and swept across from one side, or
-# drawn back and thrust. pos is where the main hand's grip sits before the camera (blocks: x
-# right, y up, -z ahead); rotation turns the blade about it (Z . Y . X; [-90, yaw, 0] lays it level
-# pointing ahead, then yaws it: negative to the right, positive to the left).
-_fp_idle = {'pos': [0.55, -0.6, -1.0], 'rotation': [-25, -35, -25]}
-
-
-def _fp_slash(side):
-    """Cocked to `side` (1: right), the blade laid flat pointing that way, swept across the view."""
-    return [dict(_fp_idle, t=0),
-            {'t': 0.2, 'pos': [side * 0.45, -0.3, -1.0], 'rotation': [-90, side * -80, side * 15], 'two_hands': True},
-            {'t': 0.45, 'pos': [0.05, -0.4, -1.05], 'rotation': [-90, side * 50, 0], 'two_hands': True},
-            {'t': 0.62, 'pos': [side * -0.35, -0.45, -1.0], 'rotation': [-90, side * 100, side * -10],
-             'two_hands': True},
-            dict(_fp_idle, t=1)]
-
-
-# The stab: drawn back low at the right, the point aimed at the crosshair, then driven at it.
-_FP_STAB = [dict(_fp_idle, t=0),
-            {'t': 0.22, 'pos': [0.35, -0.6, -0.75], 'rotation': [-75, 8, 0], 'two_hands': True},
-            {'t': 0.45, 'pos': [0.15, -0.45, -1.25], 'rotation': [-80, 6, 0], 'two_hands': True},
-            {'t': 0.6, 'pos': [0.15, -0.45, -1.25], 'rotation': [-80, 6, 0], 'two_hands': True},
-            dict(_fp_idle, t=1)]
-# The arms come up from shoulders below the bottom of the view, not beside the camera, so they
-# hold the hilt without filling the screen.
-veigo.first_person = {'scale': 0.55, 'right_hand': list(MAIN_HAND), 'left_hand': list(OFF_HAND),
-                      'right_shoulder': [0.55, -1.4, -0.15], 'left_shoulder': [-0.55, -1.4, -0.15],
-                      'idle': _fp_idle, 'attacks': [_fp_slash(1), _fp_slash(-1), _FP_STAB]}
+# First person: vanilla's sword pose would push a sword this long off the right of the screen, and
+# leaning it away read as shy (Sanchit, 2026-10-07). Instead it stands tall from the bottom right,
+# its point leaning in toward the crosshair (not over it) and its flat half-turned to you. Fitted
+# with: render-item-model.py ascension_combat:item/veigos_blade --fit 0,-50,0.55
+#           --point 8,13.9,8:0.80,0.97 --point 8,43,8:0.65,0.06   (grip and point on the screen)
+veigo.display = {ctx: {'rotation': [0, -50, 15.35], 'translation': [-0.53, -1.75, 1.64], 'scale': [0.55] * 3}
+                 for ctx in ('firstperson_righthand', 'firstperson_lefthand')}
 
 
 # --- Display transforms ---------------------------------------------------------------------
