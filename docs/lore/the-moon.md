@@ -1,0 +1,329 @@
+# The Moon
+
+The Moon in depth, 2026-10-07. This is where the trap is set, and where the first cracks show.
+Every piece of content on the Moon is listed here with the reason it exists: what the voice tells
+you it is, what it really is, and what it teaches you. Read with what-the-warden-keeps.md and
+the-mark.md.
+
+
+## What the Moon really was
+
+The Moon was the ancients' first world off Earth. They reached it by fire, long before the gates,
+and they kept coming back because of two things in its rock. Helium, which glows, because it is
+sunlight caught in stone. And titanium, the light, strong metal they built their rockets and their
+ring frames from.
+
+Once the gates existed, the Moon became the hub of the whole road. Every route from Earth to
+every planet ran through the Moon's gate. Whoever held the Moon's gate held the road.
+
+The colony on the Moon never made its own air. It breathed Earth's air, drawn through the gate.
+The Moon was also where the ancients made their porters, tall creatures built to carry cargo
+through the gates, so that no person had to walk the road with a load on their back.
+
+When the rot came up out of the hole on Earth and began to spread along the road, the Moon was the
+chokepoint. The Sealers on the Moon understood what that meant. If they put out the Moon's gate,
+Earth and its hole would be cut off from every colony at once. They also knew that their air came
+through that gate.
+
+They put it out anyway. They walled up the dead ring in their Archive with their own hands, gave
+the Moon's key to the keepers, and then the air ran out. That is the oldest and bravest thing on
+the Moon, and the voice will tell you the opposite.
+
+
+## What the voice tells you
+
+The voice speaks through the Archive's tablets, signed as the Archivist, and its version is
+simple and flattering.
+
+The ancients were a great people who walked between worlds. A destroyer came from the far
+planets, from the outside in, and drove them home. Its beasts took the ancients' fortress on the
+Moon and hold the key to the Moon's ring. The destroyer walled up the Archive's gate so no one
+could follow. The Archivist died defending the record. You are the Heir. The mark on your hand
+proves it. Take the key back, wake the gate, and go on to the burning world, where the ancients'
+greatest metal waits for you.
+
+Almost all of it is upside down.
+
+
+## Every piece of the Moon, and what it means
+
+
+### Earthrise
+
+The blue world hangs in the Moon's black sky, always in the same place.
+
+The ancients built their Moon to look at home. The Archive's murals face it. The Sealers who put
+out the Moon's gate died looking at the world they were protecting.
+
+What it teaches: it is your compass on the Moon, and the first emotional beat. Earth looks small,
+and you came from there by fire.
+
+
+### No air
+
+The Moon is a vacuum, and you need tanks to survive.
+
+The voice says the destroyer stripped the Moon's air. The truth, found in a mural deeper in, shows
+people breathing beside a lit gate, and the same people lying still beside a dark one. The air came
+through the gate, and the Sealers knew it when they put it out.
+
+What it teaches: why the oxygen system exists in the story, and the first sacrifice you can
+understand without any words.
+
+
+### The light, and the pylons
+
+When you light your first ring on Earth, a light appears on the Moon. Through a spyglass, it is a
+point of teal.
+
+It is the tall pylon over the Archive. Near its top is a band of glyphs, the same glyphs as the
+mark on your hand, and the first one has just started to glow. Every gate you light after this
+lights another glyph on the pylon, in step with your hand.
+
+The voice says the pylon is a monument to the Heir. The truth is that the Sealers carved it as a
+warning sign, counting the seal's broken locks. See the-mark.md.
+
+What it teaches: Earth's anchor to the Moon. You light a ring, and something up there answers. It
+is the reason a player wants to go to the Moon at all.
+
+
+### The Archive, and its two layers
+
+The Archive is the Moon's record office, cut into the ground under the pylons. It holds two kinds
+of record that disagree with each other, and that disagreement is the whole Moon in one building.
+
+The tablets are words, written in the script. The Observers can rewrite anything written in the
+script, so every tablet is the voice.
+
+The murals are pictures. The Observers cannot change a carving, so every mural is the Sealers'
+truth. The voice simply tells you what the murals mean, and gets it wrong on purpose.
+
+
+### The eight tablets
+
+These are the voice's eight tablets, in the order you meet them. The lines are a first draft.
+
+The first, at the entrance. To you who woke the ring: we felt it. Look at your hand. That is the
+first of the marks. You came the long way, by fire, as we once did. Come in. Everything here was
+left for you.
+
+The second, in the murals hall. Who the ancients were: the first people, cutters of rings, walkers
+between worlds. It is warm and proud, and it never mentions cats, although cats are carved in the
+murals all around it.
+
+The third, in the murals hall. The worlds of the road, each with its riches. The burning world,
+where the forges made the black metal, which is ours, and now yours. This is the voice pointing you
+at the next planet with greed.
+
+The fourth, beside the orrery. The keepers. The destroyer's beasts squat in our fortress beyond the
+hills, and hold the key to this world's ring. They cannot be reasoned with. Do not pity them.
+
+The fifth, in the deep passage. The Quiet. It came from the far worlds, inward, ring by ring, and
+we fled home before it.
+
+The sixth, on the stair landing. The Heir's Marks. It explains the pylon's band and the glyph on
+your hand: one mark for every world reclaimed, and when all seven shine, the Vault of the ancients
+opens to you.
+
+The seventh, in the sealed room. The Last Stand. Here I hid with our record when the destroyer's
+creatures came. They broke through the wall. I did not survive.
+
+The eighth, in the sealed room, facing the dead ring across the hall. The Dead Ring. The destroyer
+killed our gate and walled it up, so no one could ever follow us home. Wake the gate on the plain,
+and you undo what it did.
+
+The seventh tablet is the first crack in the words themselves. If the Archivist died in this room,
+who wrote the tablet telling you so? The voice is careless, once. A player who catches it starts
+reading everything else differently.
+
+And the tablets change. Come back to the Moon after lighting more gates, and the first tablet no
+longer says come in. It says hurry.
+
+
+### The murals
+
+The murals that are already carved in the Archive tell the truth, once you know how to look.
+
+The Stonecutters and The Step show the ancients cutting rings and stepping through them. They are
+honest, and in the corner of each one sits a cat.
+
+The Road shows every world joined by a line of light from the Moon. The line to the blue world was
+carved and then had its inlay prised out. The voice says the ancients protected Earth by never
+joining it. The truth is that the Sealers cut Earth off on purpose.
+
+Ring on Ash, Ring on Ice and Ring on the Forge show the gates on three later worlds. They are the
+rumours that pull you onward.
+
+The Keeper shows a keeper standing inside a ring with its staff across the opening, the way a
+guard stands in a doorway. It is not attacking the ring. It is keeping it shut.
+
+The Quiet shows four rings with the dark spreading across them. The voice says the dark came from
+the far worlds. But the dark starts on the side where the blue world sits in every other mural.
+It came from Earth.
+
+A sharp player can work out the whole truth of the Moon from these eight pictures, before ever
+reaching the keepers.
+
+
+### The orrery
+
+The orrery shows every gate on the road, lit or dark.
+
+The voice calls it your progress board, and it does light up as you go. The Sealers built it as an
+alarm. It shows how many of the seal's locks are still holding. It is the same display with the
+opposite meaning, like the pylon and like the mark.
+
+
+### The dead ring and the sealed room
+
+At the bottom of the Archive is a ring bricked up in a hurry, with the keystone socket empty.
+Across the hall is a small room whose doorway was walled up from the inside, then broken open from
+the outside, with the rubble lying inward.
+
+The voice says the destroyer walled up the ring and broke in to kill the Archivist.
+
+The truth: the Sealers walled up their own ring. The Archivist was never in the sealed room. She
+had already gone home to Earth on the last ship, to help build the seal. The room held something
+else: the Sealers' own record of the Moon, carved in pictures and sealed away for whoever came
+next.
+
+What broke in were porters, and they did not destroy the record. They carried it away, block by
+block.
+
+
+### The Endermen
+
+The Moon's Endermen are a different kind from Earth's: the End Islands Enderman, taller and older.
+They wander the ruins, picking up blocks.
+
+They are the ancients' porters, and the Moon is where they were made. These are the originals. The
+ones on Earth are strays that came through before the gates went out.
+
+The porters lived in the gates more than anyone, so they were the first to be touched by the
+Observers. That is why an Enderman cannot bear your gaze. When you look one in the eye, you are
+looking at the Observer inside it, and the Observers hate and fear anything that can see them,
+because they had never been seen before. A carved pumpkin hides your eyes, and that calms it.
+Water hurts them, because still water is a mirror, and the thing inside an Enderman cannot bear to
+see itself.
+
+Some of the Moon's Endermen are carrying tiles of the Sealers' record from the sealed room. Kill
+one, and it drops the tile it was carrying. Gather them, and you rebuild the record the porters
+scattered across the Moon. It is the truth of the Moon, told in pictures, and the Endermen have
+been carrying it around in front of you the whole time.
+
+The Ancient Pearl, which End Islands Endermen drop, is a porter's call pearl, the token the
+ancients used to call a porter to work. When you use it and a porter comes and follows you, that
+is the oldest order on the Moon still being obeyed. Something in the porters remembers the ancients
+from before the rot, and that matters at the end.
+
+
+### Dust storms
+
+The Moon has no air, so it should have no weather. It has dust storms anyway.
+
+The voice never explains them. The truth is that the Sealers made them, as a veil: while a storm
+blows, the Observers cannot see the Moon. And the Sealers cut some of their carvings so finely that
+you can only read them when dust settles into the grooves. Those carvings only show during a storm,
+exactly when nothing on the other side can watch you read them.
+
+During a storm, the mark on your hand goes dark. That is a clue too.
+
+
+### Helium
+
+Glowing amber crystals deep in the Moon's rock.
+
+The voice calls helium the ancients' fuel, and it was. But the Sealers found something else: by
+helium light, things touched by the Observers show what they really are, the way a cat sees them.
+The Sealers carried helium lamps the way soldiers carry swords.
+
+What it could teach, as a later mechanic: a helium lamp that shows hidden carvings and the true
+shape of Observer-touched things.
+
+
+### Titanium
+
+Silver-violet metal, found on the Moon and deep under Earth.
+
+It is the ancients' rocket metal and the frame of every ring. You will build your next ship from
+it. The voice says build as we built, and it means that literally: you are retracing their path
+step by step, which is exactly what it wants.
+
+
+### Craters
+
+Most of the Moon's craters are just the Moon. The great craters are not.
+
+Each great crater is where a colony dome stood, and where the Sealers burned it out with helium
+fire when the rot took it. At the bottom of some, there is fused glass, and old gold, the ancients'
+ward against the rot, melted into the stone.
+
+What it could teach, as a later addition: that the Sealers fought the rot by burning, and that gold
+was always the ward.
+
+
+### The Ruined Citadel, the Ender Golem and the Ender Guardian
+
+Beyond the hills stands a ruined fortress, guarded by the Ender Golem. When the Golem falls, the
+Ender Guardian wakes where it died, fights you, and drops the key to the Moon's ring.
+
+The voice says this is the destroyer's fortress and these are its beasts.
+
+The truth: it is the Sealers' last fortress on the Moon, and the keepers are theirs. They were made
+in pairs, the Golem to stand guard and the Guardian to sleep until it was needed, so that one would
+always be awake. The Guardian holds the Moon's key because the Sealers gave it to them to keep. The
+Moon's gate is the chokepoint of the whole road, so the Moon's keepers are its most important
+lock.
+
+They fight you because they were made to stop a marked hand.
+
+Behind the Guardian, once it falls, is a mural of the Sealers carving the keepers and handing them
+the key. You find it only after you have killed them. That is deliberate, the Outer Wilds way: the
+answer is at the bottom, and it arrives too late to change what you did.
+
+The iron golems that villagers build on Earth are small copies of this shape. A player who has met
+the Ender Golem recognises it.
+
+
+### The wild citadels
+
+Rare copies of the citadel stand elsewhere on the Moon, each with its own keepers, and none of them
+hold a key.
+
+They were the Sealers' other outposts, and each one hides a piece of the Sealers' cipher, the
+order in which the glyphs were meant to be read. They are optional, and dangerous, and they are the
+only way to learn how to close the seal. Players who skip them can only ever reach the ending the
+voice wants.
+
+
+### The Moon's gate
+
+On the plain, south of the Archive, stands the Moon's ring.
+
+When you set the Guardian's key into it, the ring lights. The second glyph appears on your hand, the
+second glyph on the pylon glows, and the orrery lights its first world. The voice says you have
+reclaimed the Moon. The Sealers would say you have broken the most important lock on the road.
+
+
+## What the player leaves the Moon with
+
+Questions, not answers. Who wrote the tablet in the sealed room, if the Archivist died there? Why
+does the dark in the murals start on Earth's side? Why do the keepers fight like guards, not
+beasts? What were the Endermen carrying? Why is there a cat in every mural?
+
+And one direction. The voice, the mural Ring on Ash, and the porters' cargo marks all point at the
+burning world, where the ancients' greatest metal came from.
+
+
+## What this asks of the build
+
+None of this is decided until Sanchit agrees. If it holds, the Moon needs:
+
+- The eight tablets rewritten as the voice, in tools/archive-lore.py, with three plinths in the
+  Archive generator re-pointed.
+- The pylon's glyph band able to light glyph by glyph, matching how many gates are lit.
+- A ninth set of mural tiles, the Sealers' scattered record, carried by some Moon Endermen.
+- Cats added to the existing murals, and Earth's side made clear in The Road and The Quiet. That is
+  an art change, for a design session.
+- A mural behind the Ender Guardian in the citadel, and pieces of the cipher in the wild citadels.
+- Later: dust-carvings that only show in storms, a helium lamp, and gold in the great craters.
