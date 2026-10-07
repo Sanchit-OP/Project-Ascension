@@ -21,7 +21,8 @@ import java.util.Map;
  * the same frame a JSON item model's {@code display} transforms place.
  *
  * <p>The tree is flattened once, here, at load: rendering walks a plain float array. No part moves
- * yet, so there is nothing to keep but the quads.
+ * yet, so there is nothing to keep but the quads. An optional {@code "hold"} section says how a
+ * humanoid holds and swings it in third person ({@link HoldAnimation}).
  */
 public final class WeaponModel {
     /** Per quad: four vertices of (x, y, z, u, v), then the face normal (x, y, z). */
@@ -38,11 +39,13 @@ public final class WeaponModel {
     private final ResourceLocation texture;
     private final ResourceLocation glowTexture;
     private final float[] quads;
+    private final HoldAnimation hold;
 
-    private WeaponModel(ResourceLocation texture, ResourceLocation glowTexture, float[] quads) {
+    private WeaponModel(ResourceLocation texture, ResourceLocation glowTexture, float[] quads, HoldAnimation hold) {
         this.texture = texture;
         this.glowTexture = glowTexture;
         this.quads = quads;
+        this.hold = hold;
     }
 
     public ResourceLocation texture() {
@@ -56,6 +59,11 @@ public final class WeaponModel {
 
     float[] quads() {
         return quads;
+    }
+
+    /** How it is held and swung in third person, or null to be held like any item. */
+    HoldAnimation hold() {
+        return hold;
     }
 
     static WeaponModel parse(JsonObject json) {
@@ -73,7 +81,8 @@ public final class WeaponModel {
         for (int i = 0; i < out.size(); i++) {
             System.arraycopy(out.get(i), 0, flat, i * QUAD_FLOATS, QUAD_FLOATS);
         }
-        return new WeaponModel(texture, glow, flat);
+        HoldAnimation hold = json.has("hold") ? HoldAnimation.parse(GsonHelper.getAsJsonObject(json, "hold")) : null;
+        return new WeaponModel(texture, glow, flat, hold);
     }
 
     private static void addPart(JsonObject part, Matrix4f parent, float texW, float texH, List<float[]> out) {

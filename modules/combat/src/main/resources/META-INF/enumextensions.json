@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "ASCENSION_COMBAT_HELD_WEAPON",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/ascension/combat/client/weapon/WeaponPose",
+        "field": "ARM_POSE"
+      }
+    }
+  ]
+}
