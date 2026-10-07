@@ -22,7 +22,8 @@ import java.util.Map;
  *
  * <p>The tree is flattened once, here, at load: rendering walks a plain float array. No part moves
  * yet, so there is nothing to keep but the quads. An optional {@code "hold"} section says how a
- * humanoid holds and swings it in third person ({@link HoldAnimation}).
+ * humanoid holds and swings it in third person ({@link HoldAnimation}), and {@code "first_person"}
+ * how the player holds it in their own view ({@link FirstPersonHold}).
  */
 public final class WeaponModel {
     /** Per quad: four vertices of (x, y, z, u, v), then the face normal (x, y, z). */
@@ -40,12 +41,15 @@ public final class WeaponModel {
     private final ResourceLocation glowTexture;
     private final float[] quads;
     private final HoldAnimation hold;
+    private final FirstPersonHold firstPerson;
 
-    private WeaponModel(ResourceLocation texture, ResourceLocation glowTexture, float[] quads, HoldAnimation hold) {
+    private WeaponModel(ResourceLocation texture, ResourceLocation glowTexture, float[] quads, HoldAnimation hold,
+                        FirstPersonHold firstPerson) {
         this.texture = texture;
         this.glowTexture = glowTexture;
         this.quads = quads;
         this.hold = hold;
+        this.firstPerson = firstPerson;
     }
 
     public ResourceLocation texture() {
@@ -66,6 +70,11 @@ public final class WeaponModel {
         return hold;
     }
 
+    /** How it is held in first person, with the player's arms, or null for vanilla's way. */
+    FirstPersonHold firstPerson() {
+        return firstPerson;
+    }
+
     static WeaponModel parse(JsonObject json) {
         ResourceLocation texture = ResourceLocation.parse(GsonHelper.getAsString(json, "texture"));
         ResourceLocation glow = json.has("glow_texture")
@@ -82,7 +91,9 @@ public final class WeaponModel {
             System.arraycopy(out.get(i), 0, flat, i * QUAD_FLOATS, QUAD_FLOATS);
         }
         HoldAnimation hold = json.has("hold") ? HoldAnimation.parse(GsonHelper.getAsJsonObject(json, "hold")) : null;
-        return new WeaponModel(texture, glow, flat, hold);
+        FirstPersonHold firstPerson = json.has("first_person")
+                ? FirstPersonHold.parse(GsonHelper.getAsJsonObject(json, "first_person")) : null;
+        return new WeaponModel(texture, glow, flat, hold, firstPerson);
     }
 
     private static void addPart(JsonObject part, Matrix4f parent, float texW, float texH, List<float[]> out) {

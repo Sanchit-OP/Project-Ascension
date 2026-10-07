@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,18 @@ final class HoldAnimation {
 
     int attackCount() {
         return attacks.size();
+    }
+
+    /**
+     * Which of {@code count} attacks this swing plays: hashed from the tick the swing began and
+     * the entity, so every viewer, and both first and third person, pick the same one, with
+     * nothing remembered between frames.
+     */
+    static int pickAttack(LivingEntity entity, int count) {
+        long start = entity.level().getGameTime() - entity.swingTime;
+        int h = (int) (start ^ (start >>> 32)) * 0x45d9f3b;
+        h ^= h >>> 16;
+        return Math.floorMod(h + entity.getId(), count);
     }
 
     /** Attack {@code index} at swing progress {@code t}, eased between its keyframes. */

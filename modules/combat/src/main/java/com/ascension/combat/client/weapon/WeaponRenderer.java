@@ -54,12 +54,17 @@ public final class WeaponRenderer extends BlockEntityWithoutLevelRenderer {
             pose.mulPose(Axis.XP.rotationDegrees(turn[0]));
             pose.translate(-turn[3] / 16f, -turn[4] / 16f, -turn[5] / 16f);
         }
+        drawModel(model, pose, buffers, light, overlay);
+        pose.popPose();
+    }
+
+    /** The model in the pose's frame (model pixels / 16): texture pass, then the glow pass. */
+    static void drawModel(WeaponModel model, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
         draw(model, pose.last(), buffers.getBuffer(RenderType.entityCutoutNoCull(model.texture())), light, overlay);
         if (model.glowTexture() != null) {
             draw(model, pose.last(), buffers.getBuffer(RenderType.eyes(model.glowTexture())),
                     LightTexture.FULL_BRIGHT, overlay);
         }
-        pose.popPose();
     }
 
     private static void draw(WeaponModel model, PoseStack.Pose pose, VertexConsumer out, int light, int overlay) {

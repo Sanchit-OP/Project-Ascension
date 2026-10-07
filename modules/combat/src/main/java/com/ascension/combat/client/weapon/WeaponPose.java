@@ -68,10 +68,7 @@ public final class WeaponPose {
         HoldAnimation.Pose pose;
         boolean idle;
         if (model.attackTime > 0 && swingArm == arm) {
-            long start = entity.level().getGameTime() - entity.swingTime;
-            int h = (int) (start ^ (start >>> 32)) * 0x45d9f3b;
-            h ^= h >>> 16;
-            pose = hold.attack(Math.floorMod(h + entity.getId(), hold.attackCount()), model.attackTime);
+            pose = hold.attack(HoldAnimation.pickAttack(entity, hold.attackCount()), model.attackTime);
             model.attackTime = 0;
             idle = false;
         } else {
