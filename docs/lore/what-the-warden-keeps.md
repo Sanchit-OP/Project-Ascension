@@ -160,6 +160,32 @@ disturbs it, it shrieks for the Warden. Every time you kill something near a cat
 the experience vanish into the floor, you are feeding the lock.
 
 
+### Why does enchanting cost experience, and what are the symbols floating into the table?
+
+The glyphs that drift from the bookshelves into the enchanting table are the script, the same
+script that is cut into every gate. The ancients did not invent it. It is the shape of the void.
+
+Every enchantment reaches down into the void and borrows a little of it, and the price is
+experience: what you have seen and learned. Before the ancients, nothing down there noticed. The
+ancients enchanted everything, and every enchantment nudged something asleep in the dark. Then
+they built portals, the biggest enchantments ever made, and then the gates, bigger still. That is
+what woke the Observers. In the wake of their power, they awakened it.
+
+Now the Observers are awake, and the script runs both ways. They can read and rewrite anything
+written in it. Every enchantment you make, they notice, and they are generous with you, because
+they want you strong enough to reach the end.
+
+Bookshelves make the table stronger because the script feeds on words. Lapis is its ink. The
+curses are their kind of gift: one you cannot take off, or one that vanishes when you die. Like
+the mark.
+
+Sculk is the Sealers' answer. They turned the void's own price against it: sculk takes experience
+to keep the seal shut.
+
+And villagers sell you enchanted books because they cannot read them and want them out of the
+village. Do not enchant was one of the rules.
+
+
 ### Why is the Deep Dark so dark?
 
 It is the one place on Earth the Observers cannot see into. The darkness that falls when the Warden is
@@ -200,7 +226,8 @@ portals, to the burning world. Then they built greater gates, and reached the Mo
 world after world. They made colonies everywhere, and brought home materials Earth had never seen.
 They called the gates the road, and it made them rich beyond anything.
 
-They never asked where the power in the script came from.
+They never asked where the power in the script came from. It came from the void, and every
+enchantment, every portal and every gate reached a little deeper into it.
 
 Every fold wore the world a little thinner, and the deepest folding was done here, on Earth. One
 day they wore through the bottom of the world into the void. Beyond it were the Observers, who had
@@ -305,7 +332,9 @@ Whatever is speaking to you in my name, it is not me.
 
 ## The endings
 
-The player chooses at the seal, in the Ancient City, with every gate lit.
+The player chooses at the seal, in the Ancient City, with every gate lit. These are the first two
+endings. A third, and the names that lead to them, are in the-ending-and-names.md, which is newer
+than this section.
 
 Open the seal. This is what the voice wants, and it is the only ending a player gets if they never
 found the hidden truth. You take the Warden's last sliver of the key, put your marked hand to the
@@ -338,8 +367,9 @@ between tablets and murals. Endermen and the keepers are introduced. The Moon wa
 whole road, and its keepers are the seal's most important lock. In full in the-moon.md.
 
 The Nether world is the ancients' first colony and the site of the last war. Piglins are the
-colonists' descendants. They hoard gold because their ancestors wore it against the rot, even
-though they no longer remember why. Wither skeletons are the soldiers who held the line.
+colonists' descendants. They attack anyone not wearing gold because their ancestors' rule was that
+anyone without the ward might be rotted. Wither skeletons are the Openers' champions, who had the
+same gift you have and used it until nothing was left. In full in the-nether.md.
 
 The later worlds each add one piece. One shows how the keepers were made. One shows what the
 Openers were promised. One is where the rot first arrived through the gates. The farthest world
@@ -374,14 +404,14 @@ Settled on 2026-10-07:
   Warden.
 - The mark on the player's hand grows with every gate lit. See the-mark.md.
 
+- Enchanting is tied to the Observers. The script is the shape of the void, and experience is its
+  price.
+- Minecraft's Observer block stays as it is. The story does not claim it.
+- The burning world (Planet 3) holds the next piece of the story: the-nether.md.
+
 Still open:
 
-1. The good ending as a knowledge puzzle: trace the glyphs in the Sealers' order, learned only from
-   their hidden pictures. Agreed?
-2. Is enchantment too big a thing to tie to the Observers? It would make every enchanting table
-   part of the story.
-3. Minecraft already has an Observer block, the one with a face that watches for changes. We could
-   claim it: the ancients built it to watch for movement on the other side, and named it after
-   what it watches for. Or we pick another name.
-4. Names for the ancients, the two factions and the Archivist. They are plain placeholders now.
-5. Next: the burning world, Planet 3, in the same depth as the Moon.
+1. The ending. Three options are in the-ending-and-names.md: the Eye Opens, the Seal, and the
+   Mirror.
+2. The names, which should be clues a player can only connect at the end. Ideas are in the same
+   document. The main one is that the Archivist's name is the way to close the seal.
