@@ -1020,7 +1020,8 @@ def item_model(parent, tex, has_glow, **extra):
 # sprite becomes <id>_icon.json, and <id>.json picks between the two: the 3D model in hand, the
 # icon in the inventory, on the ground and in item frames, where a 3D model reads as a thin line.
 # Model id -> the icon's texture.
-HELD_3D = {'veigos_blade': 'veigos_blade_icon', 'spear_of_shojin': 'spear_of_shojin'}
+HELD_3D = {'veigos_blade': 'veigos_blade_icon', 'spear_of_shojin': 'spear_of_shojin',
+           'darius_axe': 'darius_axe'}
 
 
 def held_3d_model(name):

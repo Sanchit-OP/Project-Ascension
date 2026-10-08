@@ -1,6 +1,18 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "ascension_combat:item/darius_axe"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "ascension_combat:item/darius_axe_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "ascension_combat:item/darius_axe_icon"
+    },
+    "ground": {
+      "parent": "ascension_combat:item/darius_axe_icon"
+    },
+    "fixed": {
+      "parent": "ascension_combat:item/darius_axe_icon"
+    }
   }
 }
