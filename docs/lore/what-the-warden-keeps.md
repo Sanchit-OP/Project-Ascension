@@ -408,6 +408,7 @@ Settled on 2026-10-07:
   price.
 - Minecraft's Observer block stays as it is. The story does not claim it.
 - The burning world (Planet 3) holds the next piece of the story: the-nether.md.
+- The Archivist's name is Tacita, Latin for "the silent one" (2026-10-08).
 
 Still open:
 

@@ -32,8 +32,8 @@ the Moon, and the voice will tell you the opposite.
 
 ## What the voice tells you
 
-The voice speaks through the Archive's tablets, signed as the Archivist, and its version is
-simple and flattering.
+The voice speaks through the Archive's tablets, signed as the Archivist, Tacita, and its version
+is simple and flattering.
 
 The ancients were a great people who walked between worlds. A destroyer came from the far
 planets, from the outside in, and drove them home. Its beasts took the ancients' fortress on the
