@@ -378,6 +378,62 @@ spear.display = {ctx: {'rotation': [0, -50, 24.92], 'translation': [0.43, -3.83,
                  for ctx in ('firstperson_righthand', 'firstperson_lefthand')}
 
 
+# --- Darius's Axe: the Black Cleaver --------------------------------------------------------
+# Butt to head: a long haft wrapped low for two hands, steel langets up to a massive single-bit
+# head of blackened steel, a straight cleaver's edge honed bright, jagged spikes on its back and a
+# spike on top. The edge is on the model's -x side: held, that is the side vanilla's own axes cut
+# with, so it leads every swing (Sanchit, 2026-10-07: "are we gonna hit with the back of the axe?").
+_C = art.SPRITES['darius_axe'][1]
+C_STEEL = [_C['c'], _C['d'], _C['m'], _C['l'], _C['w']]
+C_WOOD = ['#120a06', _C['b'], _C['B'], '#8a5a3c', '#a87650']
+C_HEAD = Mat(C_STEEL, 1.3, bevel=1.0, grain=0.18, side_level=1.6)
+C_GRIND = Mat(C_STEEL, 2.1, bevel=0, grain=0.15, side_level=2.2)   # ground toward the edge
+C_EDGE = Mat(C_STEEL, 3.5, bevel=0, grain=0.2, side_level=3.0)
+C_SPIKE = Mat(C_STEEL, 2.0, bevel=1.0, grain=0.25)
+C_HAFT = Mat(C_WOOD, 1.6, bevel=0, grain=0.45)
+C_WRAP = Mat(C_STEEL, 1.2, bevel=0, grain=0.2, bands=1)
+
+cleaver = weapon('darius_axe', seed=31)
+r = cleaver.root
+AXE_HAFT = (1.5, 44.0)
+AXE_GRIP = (6.0, 16.0)       # wrapped low, room for both hands
+HEAD = (30.0, 44.0)          # where the head meets the haft
+EDGE_REACH = 11.0            # how far the blade stands out from the haft
+_h = (AXE_HAFT[0] + AXE_HAFT[1]) / 2
+r.add((Z, _h, Z), (0, 45, 0)).centred((Z, _h, Z), (1.25, AXE_HAFT[1] - AXE_HAFT[0], 1.25), C_HAFT)
+_w = (AXE_GRIP[0] + AXE_GRIP[1]) / 2
+r.add((Z, _w, Z), (0, 45, 0)).centred((Z, _w, Z), (1.45, AXE_GRIP[1] - AXE_GRIP[0], 1.45), C_WRAP)
+r.centred((Z, AXE_HAFT[0] / 2 + 0.2, Z), (1.7, AXE_HAFT[0] + 0.4, 1.7), C_SPIKE)    # butt cap
+r.centred((Z, 0.0 - 0.6, Z), (0.7, 1.2, 0.7), C_SPIKE)                                # and its spike
+r.centred((Z, HEAD[0] - 2.5, Z), (1.6, 5.0, 1.6), C_SPIKE)                          # langets
+# The head's socket round the haft, then the blade: slices out toward -x, each taller than the
+# last (a bearded cleaver, its lower horn dropping further), thinner toward the edge.
+r.centred((Z, (HEAD[0] + HEAD[1]) / 2, Z), (2.6, HEAD[1] - HEAD[0], 2.2), C_HEAD)
+_n = 11
+for i in range(_n):
+    u = (i + 1) / _n
+    x1 = Z - 1.3 - EDGE_REACH * i / _n
+    x0 = Z - 1.3 - EDGE_REACH * (i + 1) / _n
+    yc = 37.5 - 1.8 * u * u
+    hh = 3.5 + 5.5 * u ** 1.4
+    th = 1.8 - 0.9 * u
+    mat = C_EDGE if i >= _n - 2 else C_GRIND if i >= _n - 5 else C_HEAD
+    r.box((x0, yc - hh, Z - th / 2), (x1, yc + hh, Z + th / 2), mat)
+# Spikes on the back (+x), raked up, and one on top.
+for y, length in ((33.0, 3.2), (37.0, 4.0), (41.0, 3.2)):
+    a = math.radians(55)
+    r.bar((Z + 1.3 + length / 2 * math.sin(a), y + length / 2 * math.cos(a), Z), length, 0.9, 0.9, -55, C_SPIKE)
+r.centred((Z, HEAD[1] + 1.5, Z), (0.9, 3.0, 0.9), C_SPIKE)
+CLEAVER_HAND = (Z, AXE_GRIP[1] - 2.5, Z)   # the main hand, high on the wrap; the other below it
+cleaver.grip = CLEAVER_HAND[:2]
+cleaver.scale = (0.75, 0.68)
+# First person: tall from the bottom right, the head at the top of the view with its edge toward
+# the crosshair. Fitted with: render-item-model.py ascension_combat:item/darius_axe
+# --fit 0,-50,0.55 --point 8,13.5,8:0.84,1.08 --point 8,46,8:0.6,0.06
+cleaver.display = {ctx: {'rotation': [0, -50, 22.08], 'translation': [-0.29, -2.1, 3.02], 'scale': [0.55] * 3}
+                   for ctx in ('firstperson_righthand', 'firstperson_lefthand')}
+
+
 # --- Display transforms ---------------------------------------------------------------------
 def upright_handheld(grip, scale_tp=0.85, scale_fp=0.68):
     """Vanilla's handheld transforms, turned for a model drawn upright instead of diagonal.
