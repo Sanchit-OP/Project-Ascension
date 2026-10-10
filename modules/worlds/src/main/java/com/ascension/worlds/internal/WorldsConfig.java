@@ -23,7 +23,27 @@ public final class WorldsConfig {
     /** Whether vanilla's Nether and End portals are dormant. */
     public final ModConfigSpec.BooleanValue disableVanillaPortals;
 
+    /** Whether only a vehicle can carry a player into space, once one exists (ADR-0015). */
+    public final ModConfigSpec.BooleanValue vehicleOnly;
+
     private WorldsConfig(ModConfigSpec.Builder builder) {
+        builder.comment("Reaching space").push("ascent");
+
+        vehicleOnly = builder
+                .comment(
+                        "Only a vehicle can carry a player into space.",
+                        "",
+                        "With this on, and a vehicle bridge installed (ascension-compat-sable, for Create",
+                        "Aeronautics ships), rising past a planet's build height on foot does nothing: no",
+                        "towers, no elytra, no fireworks. The player is told that only a ship can carry",
+                        "them further, and has to build one.",
+                        "",
+                        "Without a vehicle bridge installed this does nothing, so space is never left",
+                        "unreachable. Creative and spectator players are never stopped.")
+                .define("vehicleOnly", true);
+
+        builder.pop();
+
         builder.comment("Integration with vanilla travel").push("vanilla");
 
         disableVanillaPortals = builder
