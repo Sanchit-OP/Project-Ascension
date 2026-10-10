@@ -686,6 +686,38 @@ vanilla sky the bodies also fade with rain, as vanilla's moon does.
 - Textures come from `tools/generate-sky-art.py` (Earth, the Moon, and the blank vanilla moon); its preview sheets (`design/sky/`) show each
   texture flat and as lit in game.
 
+### Space bodies: how a planet looks from space (added 2026-10-11)
+
+In space each planet is drawn at its real place and size (`client/SpaceSkyRenderer`). A planet
+with a **space body** is drawn the way it hangs in another world's sky: its texture as a sphere,
+lit by the sun into a phase, with its atmosphere's halo, sharing `client/LitSphere` with the sky
+bodies. A planet without one is a flat disc in its `Planet.color`. Client resource, like sky
+bodies: `assets/<namespace>/ascension_space/<any>.json`, read by `client/SpaceBodies`.
+
+```json
+{
+  "planet": "ascension_worlds:earth",
+  "texture": "ascension_worlds:textures/environment/earth.png",
+  "lit": true,
+  "glow": 7320831
+}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `planet` | required | The planet's id in the `ascension_worlds:planet` registry. One look per planet; a second file for the same planet replaces the first, with a warning. |
+| `texture` | required | Same convention as a sky body's: the inscribed disc is mapped onto the sphere, no lighting baked in. Usually the same picture the planet shows in other skies. |
+| `lit` | true | Shaded into a phase by the sun's direction (space keeps the day clock). |
+| `glow` | none | `0xRRGGBB` atmosphere halo. |
+
+- **Size is the planet's `body_radius`**, not set here. The disc is widened to the sphere's true
+  outline when the viewer is close (`SkyBodyGeometry.silhouetteHalfSize`).
+- **Covers what is behind it**, never additive: space has no air for anything to show through.
+- **Farthest first**, so a nearer planet covers a farther one.
+- Earth and the Moon reuse their sky textures (Sanchit 2026-10-11: "can we use those models when
+  we are in the space as well", replacing the flat discs). The same day, the Moon in Earth's sky
+  went from 10 to 8 degrees, so it reads smaller than Earth does from the Moon (12).
+
 ## 5. Registry mechanism
 
 A **datapack registry**, via NeoForge's `DataPackRegistryEvent.NewRegistry`, with a codec and

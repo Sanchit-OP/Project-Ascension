@@ -198,6 +198,24 @@ class SkyBodyGeometryTest {
         }
     }
 
+    @Test
+    void aFarPlanetsOutlineIsItsRadius() {
+        assertEquals(384.0, SkyBodyGeometry.silhouetteHalfSize(384.0, 100_000.0), 0.01);
+    }
+
+    @Test
+    void upCloseTheOutlineIsWiderThanTheRadius() {
+        // From twice the radius away, sight lines graze the sphere at 30 degrees off centre:
+        // a disc at the centre must be 2/sqrt(3) radii wide to cover it.
+        assertEquals(2.0 / Math.sqrt(3.0), SkyBodyGeometry.silhouetteHalfSize(1.0, 2.0), EPSILON);
+    }
+
+    @Test
+    void atTheSurfaceTheOutlineIsCapped() {
+        assertEquals(SkyBodyGeometry.MAX_SILHOUETTE, SkyBodyGeometry.silhouetteHalfSize(1.0, 1.0), EPSILON);
+        assertEquals(SkyBodyGeometry.MAX_SILHOUETTE, SkyBodyGeometry.silhouetteHalfSize(1.0, 0.5), EPSILON);
+    }
+
     private static double centre(double[] direction, double[][] basis, double[] sun) {
         return SkyBodyGeometry.brightness(0, 0, direction, basis[0], basis[1], sun);
     }

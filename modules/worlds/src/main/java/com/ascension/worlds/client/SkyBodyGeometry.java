@@ -137,6 +137,23 @@ final class SkyBodyGeometry {
         return distance * Math.tan(Math.toRadians(angularSizeDegrees) / 2.0);
     }
 
+    /**
+     * Half the width of a disc placed at a sphere's centre that covers exactly the sphere's outline
+     * as seen from {@code distance}: the outline is where sight lines graze the surface, wider than
+     * the radius itself, and far wider up close. Capped at {@link #MAX_SILHOUETTE} radii, for a
+     * viewer at or inside the surface, where the outline fills the whole view.
+     */
+    static double silhouetteHalfSize(double radius, double distance) {
+        double clearance = distance * distance - radius * radius;
+        if (clearance <= 0.0) {
+            return radius * MAX_SILHOUETTE;
+        }
+        return radius * Math.min(MAX_SILHOUETTE, distance / Math.sqrt(clearance));
+    }
+
+    /** The most {@link #silhouetteHalfSize} enlarges a disc, in radii. */
+    static final double MAX_SILHOUETTE = 4.0;
+
     static double dot(double[] a, double[] b) {
         return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
     }
