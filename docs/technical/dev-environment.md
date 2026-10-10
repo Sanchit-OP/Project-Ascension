@@ -351,6 +351,10 @@ losing to a higher band looks exactly like a provider that does not work.
 /ascension worlds archive tablet <entry>        (op) a tablet carrying that archive entry
 /ascension worlds archive plinth <entry>        (op) point the plinth you're looking at at an entry
 /ascension worlds debug chunks                  (permission 3) vanilla's debug report per dimension; see "What is holding chunks in memory"
+/ascension sable carry <dimension> <x y z>      (op, compat-sable) carry the ship you stand on, crew
+                                                and all, with its centre at that point
+/ascension sable carry ship <ship> <dim> <xyz>  (op) the same for a ship named by a Sable selector
+                                                (@l latest made, @n nearest, @e all); works on RCON
 ```
 
 The lore text itself lives in `tools/archive-lore.py`; run it after editing to regenerate the
@@ -364,6 +368,29 @@ Items that are otherwise behind a boss or a Warden:
 ```
 
 The gateway key needs that component: a key without it opens nothing (`GatewayRules.keyOpens`).
+
+### Checking ship travel without a client
+
+How the airship road (ADR-0015) was checked on 2026-10-11, over RCON on a throwaway world:
+
+```
+forceload add 0 0
+execute in ascension_worlds:space run forceload add -16 596 16 628     # where Earth's ships come out
+execute in ascension_worlds:moon run forceload add 0 0                 # where the Moon receives them
+fill 0 200 0 4 200 4 minecraft:oak_planks
+setblock 2 201 2 minecraft:chest{Items:[{Slot:0b,id:"minecraft:diamond",count:5}]}
+sable assemble area 0 200 0 4 201 4
+sable teleport @l 2 330 2                                              # past the line: goes to space
+execute in ascension_worlds:space run sable info @e
+execute in ascension_worlds:space run data get block 20481034 129 20481034 Items   # the chest, in the ship's slot
+```
+
+- **Load the destination first.** A ship teleported into an unloaded part of space is parked by
+  Sable, invisible to `sable info` and to `ShipVoyages`, until its chunk loads. In play the crew
+  keeps those chunks loaded.
+- The chest's address is in the ship's storage slot, not the world; the first ship made on a fresh
+  world has slot 0, so the address above holds.
+- `sable teleport @e 1500 0 0` in space puts a ship inside the Moon's body, which sends it down.
 
 ### Checking generated structures without a client
 

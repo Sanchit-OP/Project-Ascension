@@ -31,6 +31,8 @@ it is committed; ask Sanchit before pushing. Details live in the sections below 
 | No clouds on the Moon or in space (`ascension-compat-distanthorizons`) | **Live 2026-10-10.** |
 | Our Moon in Earth's sky in place of vanilla's | **Live 2026-10-10.** |
 | Background pre-generation (`ascension-compat-chunky`) | **Off by default since 2026-10-10**: a fresh server crashed under it. The Chunky bug, below. |
+| Cataclysm's five Earth bosses held for later planets | `/locate` on a fresh dedicated server 2026-10-11: bosses gone, small structures kept. |
+| The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact. Not yet seen with a crew aboard or a real Aeronautics ship (none designed yet). |
 
 **Settled:** the keystone recipe (Deep Dark materials, one Warden tendril per gate, nothing from
 the Nether); Planet 3 is the **Nether world** (roofless, netherite, a boss; M3.3 below); Voxy
@@ -50,9 +52,15 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    names, and whether the lone human on the beach is the player (`the-ending-and-names.md`).
 3. **The gateway follow-ups** from his live test, when he raises them.
 4. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
+5. **A starter airship.** Nobody has an Aeronautics ship design yet (Sanchit, 2026-10-11). One that
+   climbs past y 320 in thin air is needed to see the road with a crew aboard and for the
+   teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
+   lore art was made.
 
-**Next:** Sanchit's look at the first light in a client (step 4 below), then the orrery hologram
-with Tacita's signature, then cats. Then Planet 3 once its questions are answered.
+**Next:** a refactor pass is due (ADR-0008: the first light, the Cataclysm bosses, and the airship
+road have landed since the last). Then Sanchit's look at the first light and the airship road in
+a client, the orrery hologram with Tacita's signature, then cats. Then Planet 3 once its questions
+are answered.
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
@@ -156,8 +164,8 @@ Chunky pre-generated Earth, once with the heap full at 35,331 loaded Overworld c
 
 **Cadence:** the last refactor pass ran 2026-10-10 to 10-11 (its section below), after the
 Archive's lore system, the tablet rewrite, the Archive's worldgen, and gate progress with the mark;
-the one before was 2026-10-06 evening (`e8119d6`). The next is due after three more increments
-(ADR-0008).
+the one before was 2026-10-06 evening (`e8119d6`). Three increments have landed since (the first
+light, the Cataclysm bosses, the airship road), so **the next pass is due now** (ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
@@ -675,6 +683,71 @@ desert structures.
 Checked on a fresh dedicated server with `/locate`: none of the five bosses can be found; the
 abandoned village and spire, the desert site and temple, and the amethyst nest still are; the
 Moon's wild citadels still are. Existing worlds keep whatever already generated.
+
+## The airship road to space (2026-10-11)
+
+Sanchit's call: the only way to space is a Create Aeronautics airship, and the campaign should teach
+players to build one. Keep propulsion simple: no vacuum, no rockets. Recorded in ADR-0015.
+
+**Built** (`c0db334`, `a90b4e9`, on top of the transfer in `fc5b4fb`/`feb4032`):
+
+- **`ascension-worlds`:** a public `api.SpaceTravel` (where a planet's sky leads in space, which
+  planet a point in space is over, where a vehicle coming down arrives) and the `AscentCarrier`
+  registry, so a vehicle mod claims its riders and worlds leaves them aboard. Server setting
+  `ascent.vehicleOnly` (default on) stops a survival player rising past the build height on foot,
+  with the message "The sky ends here. Only a ship can carry you further." It only applies once a
+  carrier is registered, so worlds alone never makes space unreachable. Creative and spectator
+  players are never stopped. This closes the tower-to-y-319 loophole.
+- **`ascension-compat-sable`:** `ShipVoyages` checks the loaded ships once a second.
+  - A ship whose centre climbs past its planet's build height goes to space with its crew. It
+    comes out where a player on foot would, along the line it was flying (its velocity, else the
+    first crew member's facing).
+  - A ship that reaches a planet's body in space comes down 40 blocks below that planet's build
+    height, over the spot its pilot last left from.
+  - Sable keeps 90 % of a ship's speed through the crossing.
+- **Physics data** (`dimension_physics`):
+  - Space has no gravity and sea-level air. Balloons lift against gravity, so they do nothing
+    there, and propellers work as at sea level.
+  - Earth's and the Moon's air thins toward y 320 but no longer fades to zero there. Sable's
+    default did fade to zero, which would have kept every balloon and propeller ship below the
+    line. Air at the line is about a third of sea level's.
+  - The Moon uses Earth's curve, so a ship that can leave Earth can leave the Moon.
+- **Two transfer bugs found by the headless test:**
+  - Sable files a ship's blocks by section number from the bottom of the level. Space starts at
+    y −512 and Earth at −64, so a ship carried between them lost its chest's contents.
+    `ShipTransfer.restacked` renumbers the sections.
+  - The slot check only saw loaded ships. It now reads Sable's occupancy record.
+- **ADR-0016, one mixin:** new ships get a storage slot free in every dimension. Without it, a ship
+  built on Earth after an older one flew to the Moon would get that ship's slot number and could
+  never reach the Moon.
+
+**Checked headless**, on a dedicated server over RCON, with a ship made by `sable assemble`:
+
+- A 50-block ship with a chest of 5 diamonds went Earth → space, arriving at (0, 612) as computed
+  (Earth's approach radius plus 100, heading south).
+- It went on to the Moon, arriving at (0.5, 280, 0.5); then back to space at (1500, 420), still
+  tilted from its landing; then to Earth. The chest kept its 5 diamonds at every stop.
+- In space it coasted to a stop and hung still: no gravity.
+- A second ship, built on Earth while the first sat on the Moon, got a different slot and reached
+  the Moon too.
+- Sable reads all three physics files without errors. Nothing else in the log.
+- Test-harness note: a ship teleported into an unloaded part of space is parked by Sable until
+  its chunk loads, then carries on. In play, the crew keeps its chunks loaded.
+
+**Not yet checked:**
+
+- A crew aboard: players going with the ship, and the on-foot message. These need a client.
+- A real Aeronautics ship climbing to y 320 in thin air. No design exists yet; decision 5 above.
+
+**Open:**
+
+- A player who steps off a ship in space falls under ordinary gravity with no way to steer.
+- Ships built before ADR-0016's mixin can still share a slot number; those crossings are refused,
+  with a message to the crew.
+- Two ships arriving over the same spot can arrive on top of each other.
+- The teaching path: the destination screen saying the Moon's gate must be lit from the other
+  side, advancements as signposts, and an ancients' sky-dock ruin with a starter-ship schematic.
+  All of it waits on a starter ship.
 
 ## Refactor pass, 2026-10-10 to 10-11
 
