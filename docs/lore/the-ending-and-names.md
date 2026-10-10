@@ -186,11 +186,12 @@ Like Outer Wilds, the final scenes can change with what you found and did:
 ## What needs deciding
 
 Settled 2026-10-08: **the Archivist is Tacita.**
+Settled 2026-10-10: **Tacita's name is the way to close the seal.** The voice signs every tablet
+with it, in the wrong order. The Moon's eight tablets now carry her signature, in words for now;
+the glyph row comes with the mark's art.
 
 1. Which endings: A and B, or A, B and C with C secret? My recommendation is all three, with C
    secret.
-2. Is Tacita's name the closing sequence? This one has to be settled before the Moon's tablets are
-   written.
 4. The factions as the Wardens and the Evokers: yes or no?
 5. Is the lone human on the beach in Ending A the player? It would answer why you start with no
    memory.

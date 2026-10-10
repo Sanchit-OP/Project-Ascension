@@ -74,6 +74,13 @@ entry ids (text is logic's, in `en_us.json`):
 | `ascension_worlds:moon/the_sealing` | the innermost room |
 | `ascension_worlds:moon/unfinished` | the innermost room, last: breaks off mid-sentence |
 
+**2026-10-10:** the lore was rewritten (`docs/lore/the-moon.md`), and every tablet is now the voice
+of the Observers speaking as Tacita. The ids stay fixed as plinth slots, so placement is
+unchanged, but the last three slots now hold different text. `the_last_order` is *The Heir's
+Marks*. `the_sealing` is *The Last Stand*, where the voice claims Tacita died in that room.
+`unfinished` is *The Dead Ring*, which faces the dead gate across the hall. Text lives in
+`tools/archive-lore.py`.
+
 ### Chests
 
 Chests (or barrels) in the template name their loot table in block-entity NBT:

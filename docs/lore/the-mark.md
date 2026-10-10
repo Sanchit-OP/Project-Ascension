@@ -106,9 +106,9 @@ A sharp player notices that the mark sleeps exactly where the Sealers hid their 
 If you follow the voice, you walk into the Ancient City with all seven glyphs lit, put your hand to
 the seal, and the eye opens all the way.
 
-If you found enough of the Sealers' pictures, you know the order they meant the glyphs to be read
-in. It is not the order you earned them. Trace them on the seal in the Sealers' order, and the
-eye closes. The seal shuts from every side at once, because every gate is lit and tied to it. The
+If you found Tacita's true signature, you know the order the Sealers meant the glyphs to be read
+in. It is not the order you earned them, and it is not the order the voice signs her name in on
+every tablet. Trace her name on the seal her way, and the eye closes. The seal shuts from every side at once, because every gate is lit and tied to it. The
 gates go dark again, and the glyphs fade from your hand one by one, until it is just your hand.
 
 This is a knowledge puzzle in the Outer Wilds sense. Nothing in your inventory unlocks the good
