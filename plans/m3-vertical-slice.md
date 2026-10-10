@@ -55,8 +55,11 @@ as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
 built from Sanchit's direction (vanilla mobs explained, a planted false story, horror twist,
 branching endings), is [`docs/lore/what-the-warden-keeps.md`](../docs/lore/what-the-warden-keeps.md).
 Its companions are `the-mark.md`, `the-moon.md`, `the-nether.md` (Planet 3's lore, which also proposes
-its survival rule: wear gold) and `the-ending-and-names.md`. The ending and the names are still
-open. After that: rewrite the Moon's tablets in
+its survival rule: wear gold) and `the-ending-and-names.md`. Settled: the Archivist is Tacita, and her
+name, signed by the voice on every tablet in the wrong order, is the way to close the seal. **The
+Moon's eight tablets are rewritten as the voice (2026-10-10)**, with entry ids unchanged. They were
+checked by `ArchiveLoreTest` but have not yet been read in a client. Still open: which endings, the
+faction names, and wear gold for Planet 3. After that: rewrite the Moon's tablets in
 `tools/archive-lore.py` (five kept, three new for the sealed room) and re-point three plinths in the
 Archive generator. Then the orrery hologram, then Planet 3 once its questions are answered. Deferred to the alpha release: the two-client test (also covers
 share-air) and the M1.9 measurement.
