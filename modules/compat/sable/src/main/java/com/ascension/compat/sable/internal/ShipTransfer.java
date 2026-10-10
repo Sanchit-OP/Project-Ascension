@@ -55,11 +55,20 @@ public final class ShipTransfer {
      */
     @Nullable
     public static Component carry(ServerPlayer player, ServerLevel target, Vec3 destination) {
-        ServerLevel source = player.serverLevel();
-        ServerSubLevel ship = shipAround(source, player.position());
+        ServerSubLevel ship = shipAround(player.serverLevel(), player.position());
         if (ship == null) {
             return Component.literal("You are not aboard a ship.");
         }
+        return carry(ship, target, destination);
+    }
+
+    /**
+     * Carries {@code ship}, everything attached to it and everyone aboard, to {@code target} with
+     * the ship's origin at {@code destination}. Returns null on success, or why not.
+     */
+    @Nullable
+    public static Component carry(ServerSubLevel ship, ServerLevel target, Vec3 destination) {
+        ServerLevel source = ship.getLevel();
         List<ServerSubLevel> parts = new ArrayList<>(SubLevelHelper.getLoadingDependencyChain(ship));
         if (!parts.contains(ship)) {
             parts.add(0, ship);

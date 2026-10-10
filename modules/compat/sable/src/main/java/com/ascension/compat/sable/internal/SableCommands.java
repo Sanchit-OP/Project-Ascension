@@ -1,6 +1,7 @@
 package com.ascension.compat.sable.internal;
 
 import com.mojang.brigadier.context.CommandContext;
+import dev.ryanhcode.sable.api.command.SubLevelArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -14,7 +15,8 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 /**
  * {@code /ascension sable carry <dimension> <x y z>} (permission 2): carries the ship you stand on,
- * crew and all, to that dimension with its origin at that point. A debug command first, the way
+ * crew and all, to that dimension with its origin at that point. {@code carry ship <ship> ...}
+ * names the ship with a Sable selector instead, so it also runs from a console. A debug command first, the way
  * {@code gateway goto} was, so the transfer can be watched on its own before ascent depends on it.
  */
 public final class SableCommands {
@@ -33,19 +35,32 @@ public final class SableCommands {
                         .then(Commands.literal("carry")
                                 .then(Commands.argument("dimension", DimensionArgument.dimension())
                                         .then(Commands.argument("destination", Vec3Argument.vec3())
-                                                .executes(SableCommands::carry))))));
+                                                .executes(context -> carry(context, false))))
+                                .then(Commands.literal("ship")
+                                        .then(Commands.argument("ship", SubLevelArgumentType.singleSubLevel())
+                                                .then(Commands.argument("dimension", DimensionArgument.dimension())
+                                                        .then(Commands.argument("destination", Vec3Argument.vec3())
+                                                                .executes(context -> carry(context, true)))))))));
     }
 
-    private static int carry(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    /**
+     * {@code byName}: the ship named by a Sable selector ({@code @l}, the latest made, {@code @n},
+     * the nearest...), which works from a console with no player aboard; otherwise the ship the
+     * player running it stands on.
+     */
+    private static int carry(CommandContext<CommandSourceStack> context, boolean byName) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         ServerLevel target = DimensionArgument.getDimension(context, "dimension");
         Vec3 destination = Vec3Argument.getVec3(context, "destination");
-        Component failure = ShipTransfer.carry(source.getPlayerOrException(), target, destination);
+        Component failure = byName
+                ? ShipTransfer.carry(SubLevelArgumentType.getSingleSubLevel(context, "ship"), target, destination)
+                : ShipTransfer.carry(source.getPlayerOrException(), target, destination);
         if (failure != null) {
             source.sendFailure(failure);
             return 0;
         }
-        source.sendSuccess(() -> Component.literal("Carried the ship to " + target.dimension().location()), true);
+        source.sendSuccess(() -> Component.literal("Carried the ship to " + target.dimension().location()
+                + " at " + Math.round(destination.x) + " " + Math.round(destination.y) + " " + Math.round(destination.z)), true);
         return 1;
     }
 }
