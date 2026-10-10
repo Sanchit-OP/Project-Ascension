@@ -43,8 +43,9 @@ versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-# Needed before this jar's own data is meaningful: the structure_set override below references
-# ascension_worlds:fixed_position, a placement type ascension-worlds registers.
+# Needed before this jar's own data is meaningful: its structure sets reference
+# ascension_worlds:fixed_position and ascension_worlds:random_spread_keep_clear, placement types
+# ascension-worlds registers, and keep the wild citadels clear of ascension-worlds' own sets.
 [[dependencies.${mod_id}]]
 modId = "ascension_worlds"
 type = "required"

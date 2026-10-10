@@ -10,6 +10,7 @@ import com.ascension.worlds.internal.terrain.RockDebrisFeature;
 import com.ascension.worlds.internal.worldgen.FixedPositionStructurePlacement;
 import com.ascension.worlds.internal.worldgen.GatewayFramePiece;
 import com.ascension.worlds.internal.worldgen.GatewayFrameStructure;
+import com.ascension.worlds.internal.worldgen.KeepClearRandomSpreadPlacement;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
@@ -142,6 +143,14 @@ public final class WorldsContent {
      */
     public static final Supplier<StructurePlacementType<FixedPositionStructurePlacement>> FIXED_POSITION_PLACEMENT_TYPE =
             STRUCTURE_PLACEMENT_TYPES.register("fixed_position", () -> () -> FixedPositionStructurePlacement.CODEC);
+
+    /**
+     * {@code random_spread} that keeps clear of several other structure sets, where vanilla's
+     * {@code exclusion_zone} allows one. The Moon's large craters use it to stay off the Archive and
+     * the gateway ruin. See {@link KeepClearRandomSpreadPlacement}.
+     */
+    public static final Supplier<StructurePlacementType<KeepClearRandomSpreadPlacement>> KEEP_CLEAR_RANDOM_SPREAD_PLACEMENT_TYPE =
+            STRUCTURE_PLACEMENT_TYPES.register("random_spread_keep_clear", () -> () -> KeepClearRandomSpreadPlacement.CODEC);
 
     /**
      * Loose rock scattered through the space dimension's vacuum. See

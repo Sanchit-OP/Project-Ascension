@@ -69,9 +69,12 @@ session** through [`docs/technical/lore-art-format.md`](../docs/technical/lore-a
 the Sealers' Record, the keeper shrine and the moon signal.
 
 **Next logic build, picked by Sanchit 2026-10-10: the Archive in the world, then gate progress.**
-1. Archive worldgen from the design handover: structure, two pools, the fixed structure set at
-   x −160, z −256, the crater exclusion zone (on the gateway ruin too), and plinth and orrery shapes
-   with `noOcclusion`. Verify headless, then in a client.
+1. **Done 2026-10-10, headless; not yet seen in a client.** Archive worldgen from the design
+   handover: structure, two pools, the fixed structure set at x −160, z −256, plinth and orrery
+   shapes with `noOcclusion`. Craters and wild citadels are now kept clear of both the Archive and
+   the gateway ruin by a new placement type, `random_spread_keep_clear`. Results are in
+   `lunar-archive-format.md`. **Sanchit's client walk-through is next**, using the live checklist at
+   the end of `lunar-archive-design.md`.
 2. Gate progress synced to clients, once per attunement and never per tick. It is the one source
    for the orrery hologram, the mark's stage, the pylon's lit glyphs, the signature line and the
    moon signal.

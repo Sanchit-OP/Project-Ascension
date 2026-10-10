@@ -1,0 +1,13 @@
+{
+  "structures": [
+    {
+      "structure": "ascension_worlds:lunar_archive",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "ascension_worlds:fixed_position",
+    "salt": 3,
+    "locate_at": [-160, 0, -256]
+  }
+}

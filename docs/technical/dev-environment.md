@@ -368,7 +368,13 @@ the tools in `tools/worldgen-diagnostics/`, and never touches the real dev world
 1. Make sure no dev server is running (`session.lock` allows one per world).
 2. In `run/server/server.properties`: `level-name=<throwaway>`, `enable-rcon=true`, a
    `rcon.password`.
-3. `./gradlew runDevServer` in the background; wait for `RCON running` in its log.
+3. `./gradlew runDevServer` in the background; wait for `RCON running` in its log. **Then run
+   `chunky pause` at once.** Chunky's tasks live in `run/server/config/chunky/tasks/`, which is
+   shared by every world, not saved per world, and they resume on boot. Left running, they spend
+   the dev world's pre-generation progress (`chunks=` in each task file) on the throwaway world, and
+   the dev world later skips that strip. Before the run, note the `chunks=` values, and put them
+   back afterwards. Too low only re-checks chunks that already exist; too high leaves a gap.
+   (Learned 2026-10-10, when the values had to be reset to safe lower bounds after the fact.)
 4. Force-generate the area: `RCON_PASSWORD=... python tools/worldgen-diagnostics/rcon_client.py
    execute in ascension_worlds:moon run forceload add <x1> <z1> <x2> <z2>`, wait a few seconds,
    then `save-all flush`.
@@ -378,8 +384,8 @@ the tools in `tools/worldgen-diagnostics/`, and never touches the real dev world
 6. Spot-check blocks while the area is still force-loaded: `rcon_client.py execute in
    ascension_worlds:moon if block <x> <y> <z> <block>[state]` answers `Test passed` / `failed`.
    (Once `forceload remove` runs the chunks unload and every check reads "not loaded".)
-7. `rcon_client.py stop`, put `level-name`, `enable-rcon` and `rcon.password` back, delete the
-   throwaway world.
+7. `rcon_client.py stop`, put `level-name`, `enable-rcon` and `rcon.password` back, restore
+   Chunky's `chunks=` values (step 3), delete the throwaway world.
 
 Terrain shape (holes, heights) has its own scanner, `scan_region.py`; see
 [`moon-terrain-tuning.md`](moon-terrain-tuning.md).
