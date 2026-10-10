@@ -287,21 +287,28 @@ The worldgen wiring is in the contract's "Design's handover" section, with the r
 
 When logic's worldgen places it, on a dedicated server and in a client:
 
-- [ ] It generates at x −160, z −256 north of the gateway; the court sits on the ground (no
+**Seen live 2026-10-10** by Sanchit on a dedicated server, one fresh world (one seed, one start
+rotation): every item ticked below passed (`plans/live-test-2026-10-10.md`). Unticked items were
+not part of that walk-through, or have nothing to check yet.
+
+- [x] It generates at x −160, z −256 north of the gateway; the court sits on the ground (no
       floating edge, no buried paving); the pylons are visible from the gateway ruin.
-- [ ] No large crater cuts into the ground around it (`/locate structure
-      ascension_worlds:large_crater` from the court, across a few seeds; item 5 above).
+- [x] No large crater cuts into the ground around it (`/locate structure
+      ascension_worlds:large_crater` from the court, across a few seeds; item 5 above). Two
+      seeds so far: this one live, and the headless check's (`lunar-archive-format.md`).
 - [ ] The standing pylon reads as a pale mark at render distance (and in Distant Horizons LODs
       once Chunky has generated it).
-- [ ] The way down is walkable end to end with no head-bumps: open steps, covered stair, the
+- [x] The way down is walkable end to end with no head-bumps: open steps, covered stair, the
       deep passage's two flights.
 - [ ] Murals read left to right from inside the hall in **every** start rotation; the teal
       overlays glow without z-fighting; black-figure builders read at 3–5 blocks in that light.
-- [ ] Every plinth's tablet faces its reader and reads upright; each opens its own inscription;
+      Passed in the one rotation seen live; the others are still unseen.
+- [x] Every plinth's tablet faces its reader and reads upright; each opens its own inscription;
       no see-through gaps beside them (before and after logic's `noOcclusion`).
 - [ ] The orrery's base looks right under its hologram; the hologram clears the dome and the dais.
+      The hologram is not built yet.
 - [ ] No hostile spawns anywhere in the vault overnight, Endermen on.
-- [ ] From the *Unfinished* reader's spot, the dead gate is visible through the breach.
-- [ ] The stores' chests roll `archive/stores`; the room is findable but off the road.
+- [x] From the *Unfinished* reader's spot, the dead gate is visible through the breach.
+- [x] The stores' chests roll `archive/stores`; the room is findable but off the road.
 - [ ] Stairs craft and stonecut; a mined mural tile puts its picture back up.
 - [ ] Persistent across a world unload and reload: plinth entries, chest loot already rolled.

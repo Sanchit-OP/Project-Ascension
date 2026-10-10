@@ -147,8 +147,9 @@ in a stores room, not on the main path.
   - The court sits within −2 to +1 of the ground.
   - Of 31 large craters in a 640-block radius, the nearest is 12 chunks from the Archive and 12
     from the gateway.
-- **Not yet seen in a client.** That is the design note's live checklist
-  (`lunar-archive-design.md`).
+- **Seen live 2026-10-10** on a fresh world, on the lore-art templates: Sanchit's walk-through
+  passed everything it covered. What it did not cover is listed in the design note's live
+  checklist (`lunar-archive-design.md`).
 
 For design, if it matters: 50 raw-basalt cells in the vault border open air, in rubble piles and
 rough walls. On some seeds one of them can turn to glowing helium ore. It reads as natural rock;
