@@ -1,0 +1,41 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Distant Horizons"
+authors = "${mod_authors}"
+description = '''
+Makes Distant Horizons' LOD clouds obey a dimension's own setting: where the dimension says it has
+no clouds (the Moon, space, or any other mod's airless world), Distant Horizons draws none either.
+Everywhere else your own Distant Horizons cloud setting applies, untouched.
+
+Optional. Without Distant Horizons installed, this jar simply is not present.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+# The actual integration target. Required, not optional -- this whole jar has no other reason to
+# exist, so if Distant Horizons is absent NeoForge should refuse to load this rather than load it
+# into a no-op, same posture as ascension-compat-chunky takes with Chunky.
+[[dependencies.${mod_id}]]
+modId = "distanthorizons"
+type = "required"
+versionRange = "${distanthorizons_version_range}"
+ordering = "AFTER"
+side = "CLIENT"
