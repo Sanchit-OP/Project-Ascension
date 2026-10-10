@@ -80,6 +80,12 @@ world: the Archive, the eight tablets as the voice with Tacita's signature, Eart
 mark through its stages, dark in Darkness and a dust storm, on illagers, and kept across a relog.
 "It looks and feels amazing." Checklist and result: [`live-test-2026-10-10.md`](live-test-2026-10-10.md).
 What the walk-through did not cover is unticked in `lunar-archive-design.md`'s live checklist.
+The restart check is deferred; its baseline is in that file.
+
+**Also live 2026-10-10, asked for by Sanchit after the first round:** no clouds on the Moon or in
+space (`ascension-compat-distanthorizons`: DH 2.4.5 drew its own clouds everywhere without a
+ceiling), and our Moon over Earth in place of vanilla's (a sky body riding vanilla's moon and its
+phases; vanilla's moon texture shipped blank). Both seen in his client.
 
 1. **Done 2026-10-10, seen live.** Archive worldgen from the design
    handover: structure, two pools, the fixed structure set at x −160, z −256, plinth and orrery

@@ -670,7 +670,7 @@ can restyle or remove it, and the `api` record keeps its shape.
 | `motion` | `fixed` | `fixed`: stays at `yaw`/`elevation`, right for a tidally locked moon's view of its planet. `vanilla_moon`: exactly where vanilla draws its moon, opposite the sun, turning with the sky, in the phase `Level.getMoonPhase` reports, so everything that reads the phase still matches the sky. `yaw`/`elevation` are ignored. |
 | `additive` | false | Drawn by adding light, as vanilla draws its sun and moon: right under an atmosphere, whose sky shows through the body's dark side. Off, the body covers the stars behind it, right from an airless world. |
 
-**The Moon over Earth (2026-10-10)** is `ascension_sky/overworld.json`: our Moon texture, riding
+**The Moon over Earth (2026-10-10, seen live)** is `ascension_sky/overworld.json`: our Moon texture, riding
 vanilla's moon, additive. Vanilla's own moon is hidden by shipping
 `minecraft:textures/environment/moon_phases.png` fully transparent; vanilla draws its moon
 additively, so a transparent one adds nothing. No mixin, and the sun, stars and sky colours stay
