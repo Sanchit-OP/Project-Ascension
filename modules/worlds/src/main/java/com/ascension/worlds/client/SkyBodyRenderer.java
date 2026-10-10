@@ -13,6 +13,7 @@ import java.util.List;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,9 +25,16 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 
 /**
- * Draws the current dimension's {@link SkyBodies} (Earth over the Moon) as lit spheres, right
- * after the sky and before terrain, so the ground and anything built on it cover them like the
- * vanilla sun.
+ * Draws the current dimension's {@link SkyBodies} (Earth over the Moon, the Moon over Earth) as lit
+ * spheres, right after the sky and before terrain, so the ground and anything built on it cover
+ * them like the vanilla sun.
+ *
+ * <p><strong>The Moon over Earth replaces vanilla's.</strong> Vanilla still draws its moon, but
+ * from {@code minecraft:textures/environment/moon_phases.png}, which this module ships fully
+ * transparent ({@code tools/generate-sky-art.py}); vanilla's moon blends additively, so a
+ * transparent one adds nothing. That is the whole override: no mixin, and the sun, the stars and
+ * the sky colours stay vanilla's. A resource pack that puts its own moon texture back gets two
+ * moons, which is the pack's call.
  *
  * <p><strong>A sphere, not a sticker.</strong> The disc is a polar mesh (rings by segments), and
  * every vertex gets its brightness from {@link SkyBodyGeometry#brightness}: the sphere's normal at
@@ -42,7 +50,8 @@ import org.joml.Matrix4f;
  * frame: a few hundred quads per body, the same per-frame cost vanilla pays for its sun.
  *
  * <p>Hidden whenever vanilla hides its own sky: blindness, darkness, the camera in lava or
- * powder snow. Faded by a planet weather event's intensity, so a dust storm swallows Earth.
+ * powder snow. Faded by a planet weather event's intensity, so a dust storm swallows Earth, and by
+ * rain under a vanilla sky, as vanilla fades its own moon.
  */
 @EventBusSubscriber(modid = AscensionWorlds.MOD_ID, value = Dist.CLIENT)
 final class SkyBodyRenderer {
@@ -70,20 +79,27 @@ final class SkyBodyRenderer {
             return;
         }
 
+        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
         float visibility = ClientPlanetWeather.isActive() ? 1.0F - ClientPlanetWeather.intensity() : 1.0F;
+        if (level.effects().skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
+            // Under a vanilla sky, rain hides what vanilla's own sun and moon hide. Only there:
+            // the weather clock is shared with the Overworld, so an airless world's level can
+            // report rain that is not falling on it.
+            visibility *= 1.0F - level.getRainLevel(partialTick);
+        }
         if (visibility <= 0.0F) {
             return;
         }
 
-        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
-        double[] sun = SkyBodyGeometry.sunDirection(level.getTimeOfDay(partialTick));
+        float timeOfDay = level.getTimeOfDay(partialTick);
+        int moonPhase = level.getMoonPhase();
         Matrix4f pose = event.getModelViewMatrix();
 
         RenderSystem.depthMask(false);
         RenderSystem.disableCull();
         RenderSystem.enableBlend();
         for (SkyBody body : bodies) {
-            drawBody(pose, body, sun, visibility);
+            drawBody(pose, body, Disc.of(pose, body, timeOfDay, moonPhase), visibility);
         }
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.defaultBlendFunc();
@@ -92,10 +108,12 @@ final class SkyBodyRenderer {
         RenderSystem.depthMask(true);
     }
 
-    private static void drawBody(Matrix4f pose, SkyBody body, double[] sun, float visibility) {
-        Disc disc = Disc.of(pose, body, sun);
-
-        RenderSystem.defaultBlendFunc();
+    private static void drawBody(Matrix4f pose, SkyBody body, Disc disc, float visibility) {
+        if (body.additive()) {
+            additiveBlend();
+        } else {
+            RenderSystem.defaultBlendFunc();
+        }
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, body.texture());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, visibility);
@@ -136,9 +154,7 @@ final class SkyBodyRenderer {
         float green = ((colour >> 8) & 0xFF) / 255.0F;
         float blue = (colour & 0xFF) / 255.0F;
 
-        RenderSystem.blendFuncSeparate(
-                GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
-                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        additiveBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, visibility);
         BufferBuilder ring = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -169,24 +185,41 @@ final class SkyBodyRenderer {
         return (float) (GLOW_ALPHA * disc.daylight(RIM_SAMPLE * Math.cos(angle), RIM_SAMPLE * Math.sin(angle)));
     }
 
+    /** The blend vanilla uses for its sun and moon: light added to the sky, alpha untouched. */
+    private static void additiveBlend() {
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
+                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+    }
+
     private static double angle(int segment) {
         return segment * Math.PI * 2.0 / SEGMENTS;
     }
 
     /**
-     * One body's disc for this frame: where it is, which way it faces, and the sun lighting it.
-     * {@code (u, v)} below is a point on the disc, each -1 to 1 across it.
+     * One body's disc for this frame: where it is, which way it faces, and the light on it (the
+     * sun, or a moon phase). {@code (u, v)} below is a point on the disc, each -1 to 1 across it.
      */
     private record Disc(Matrix4f pose, float[] centre, double[] direction, double[] right, double[] up,
                         double[] sun, float halfSize) {
 
-        static Disc of(Matrix4f pose, SkyBody body, double[] sun) {
-            double[] direction = SkyBodyGeometry.direction(body.yaw(), body.elevation());
-            double[][] basis = SkyBodyGeometry.basis(direction);
+        static Disc of(Matrix4f pose, SkyBody body, float timeOfDay, int moonPhase) {
+            double[] direction;
+            double[][] basis;
+            double[] light;
+            if (body.motion() == SkyBody.Motion.VANILLA_MOON) {
+                direction = SkyBodyGeometry.moonDirection(timeOfDay);
+                basis = SkyBodyGeometry.arcBasis(direction);
+                light = SkyBodyGeometry.phaseLight(moonPhase, direction, basis[0]);
+            } else {
+                direction = SkyBodyGeometry.direction(body.yaw(), body.elevation());
+                basis = SkyBodyGeometry.basis(direction);
+                light = SkyBodyGeometry.sunDirection(timeOfDay);
+            }
             float[] centre = {
                 (float) direction[0] * DISTANCE, (float) direction[1] * DISTANCE, (float) direction[2] * DISTANCE};
             float halfSize = (float) SkyBodyGeometry.halfSize(body.angularSize(), DISTANCE);
-            return new Disc(pose, centre, direction, basis[0], basis[1], sun, halfSize);
+            return new Disc(pose, centre, direction, basis[0], basis[1], light, halfSize);
         }
 
         VertexConsumer vertex(BufferBuilder buffer, float u, float v) {

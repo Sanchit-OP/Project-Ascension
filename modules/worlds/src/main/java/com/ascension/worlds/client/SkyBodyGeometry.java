@@ -2,7 +2,7 @@ package com.ascension.worlds.client;
 
 /**
  * The arithmetic behind a {@link SkyBody}: where it sits on the sky, how its disc is oriented, and
- * how brightly each point of it is lit. Plain {@code double[3]} vectors, no Minecraft or render
+ * how brightly each point of it is lit, by the sun or by a moon phase. Plain {@code double[3]} vectors, no Minecraft or render
  * state, so it is unit-tested ({@code SkyBodyGeometryTest}) rather than checked by squinting at
  * the sky.
  *
@@ -41,6 +41,50 @@ final class SkyBodyGeometry {
     static double[] sunDirection(double timeOfDay) {
         double angle = timeOfDay * Math.PI * 2.0;
         return new double[] {-Math.sin(angle), Math.cos(angle), 0.0};
+    }
+
+    /**
+     * The unit vector toward vanilla's moon: straight opposite the sun, where
+     * {@code LevelRenderer.renderSky} draws it.
+     *
+     * @param timeOfDay {@code Level.getTimeOfDay}, 0 to 1
+     */
+    static double[] moonDirection(double timeOfDay) {
+        double[] sun = sunDirection(timeOfDay);
+        return new double[] {-sun[0], -sun[1], -sun[2]};
+    }
+
+    /**
+     * The disc's axes for a body travelling the sun's arc, which lies in the X/Y plane: "right" is
+     * always south, square to the arc, and "up" follows the body round. It rises upright in the
+     * east and sets upside down in the west, turning with the sky the way vanilla's moon does.
+     * {@link #basis}'s keep-upright rule would instead flip the disc over as it crossed the zenith.
+     *
+     * @return {@code {right, up}}
+     */
+    static double[][] arcBasis(double[] direction) {
+        double[] right = {0.0, 0.0, 1.0};
+        double[] up = normalize(cross(right, direction));
+        return new double[][] {right, up};
+    }
+
+    /**
+     * Where the light must come from to show vanilla's moon phase on a body, whatever the real
+     * sun says: phase 0 is full (lit from behind the viewer), 4 is new (lit from behind the body),
+     * and between them the light swings round to the side. Waning (1 to 3) is lit on the left,
+     * waxing (5 to 7) on the right, as seen from the northern hemisphere.
+     *
+     * @param phase {@code Level.getMoonPhase}, 0 to 7
+     */
+    static double[] phaseLight(int phase, double[] direction, double[] right) {
+        double angle = Math.floorMod(phase, 8) * Math.PI / 4.0;
+        double towardViewer = Math.cos(angle);
+        double side = -Math.sin(angle);
+        return new double[] {
+            -direction[0] * towardViewer + right[0] * side,
+            -direction[1] * towardViewer + right[1] * side,
+            -direction[2] * towardViewer + right[2] * side,
+        };
     }
 
     /**
