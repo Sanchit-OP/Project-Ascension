@@ -2,6 +2,10 @@ package com.ascension.compat.sable.internal;
 
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.function.IntBinaryOperator;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +22,7 @@ import org.joml.Vector2i;
  *
  * <p>Reads Sable's own occupancy record for each level, which counts parked, unloaded ships too.
  * Same search order as Sable's (x, then z), so with only one level holding ships the choice is
- * exactly Sable's.
+ * exactly Sable's. Runs only when a ship is made.
  */
 public final class PlotSlots {
 
@@ -28,28 +32,31 @@ public final class PlotSlots {
     /** The first slot free in every level, or null when none is (Sable then refuses, as it would). */
     @Nullable
     public static Vector2i firstFreeEverywhere(SubLevelContainer container, MinecraftServer server) {
-        int side = 1 << container.getLogSideLength();
+        List<BitSet> taken = new ArrayList<>();
+        taken.add(container.getOccupancy());
+        for (ServerLevel level : server.getAllLevels()) {
+            ServerSubLevelContainer other = SubLevelContainer.getContainer(level);
+            if (other != null && other != container && other.getLogSideLength() == container.getLogSideLength()) {
+                taken.add(other.getOccupancy());
+            }
+        }
+        return firstFree(1 << container.getLogSideLength(), container::getIndex, taken);
+    }
+
+    /**
+     * The first slot (x, then z, each below {@code side}) whose index, by Sable's own numbering
+     * {@code index}, is clear in every one of {@code taken}. Null when there is none.
+     */
+    @Nullable
+    static Vector2i firstFree(int side, IntBinaryOperator index, List<BitSet> taken) {
         for (int x = 0; x < side; x++) {
             for (int z = 0; z < side; z++) {
-                if (freeEverywhere(container, server, x, z)) {
+                int slot = index.applyAsInt(x, z);
+                if (taken.stream().noneMatch(occupancy -> occupancy.get(slot))) {
                     return new Vector2i(x, z);
                 }
             }
         }
         return null;
-    }
-
-    private static boolean freeEverywhere(SubLevelContainer container, MinecraftServer server, int x, int z) {
-        if (container.getOccupancy().get(container.getIndex(x, z))) {
-            return false;
-        }
-        for (ServerLevel level : server.getAllLevels()) {
-            ServerSubLevelContainer other = SubLevelContainer.getContainer(level);
-            if (other != null && other != container && other.getLogSideLength() == container.getLogSideLength()
-                    && other.getOccupancy().get(other.getIndex(x, z))) {
-                return false;
-            }
-        }
-        return true;
     }
 }

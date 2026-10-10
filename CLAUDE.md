@@ -93,8 +93,8 @@ climbing past a planet's build height is carried to space with its crew, and one
 in space comes down to it (`ascension-compat-sable`, through `ascension-worlds`' public
 `SpaceTravel` and `AscentCarrier`). Survival players can no longer rise to space on foot. Proven
 headless with a command-built ship; not yet seen with a crew or a real Aeronautics ship, because
-no starter ship has been designed. Cataclysm's Earth bosses are held for later planets. **A
-refactor pass is due next** (ADR-0008).
+no starter ship has been designed. Cataclysm's Earth bosses are held for later planets. The
+refactor pass after them ran 2026-10-11; **next is Sanchit's client test** of all of it.
 
 The history below is M0–M2, kept for context.
 

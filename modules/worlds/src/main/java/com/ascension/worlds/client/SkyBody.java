@@ -1,10 +1,10 @@
 package com.ascension.worlds.client;
 
+import com.ascension.worlds.internal.GateProgress;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
-import com.ascension.worlds.internal.GateProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
