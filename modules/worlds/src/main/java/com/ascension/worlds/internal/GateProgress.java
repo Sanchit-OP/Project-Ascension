@@ -1,8 +1,8 @@
 package com.ascension.worlds.internal;
 
+import com.ascension.worlds.internal.archive.GateGlyphs;
 import com.ascension.worlds.internal.net.GateProgressPayload;
 import java.util.List;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
@@ -10,8 +10,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
- * Keeps every client told which gates are lit ({@link GateProgressPayload}): once when a player
- * logs in, and to everyone whenever the network changes. Event-driven; nothing here ticks.
+ * What follows from the gates being lit. Every client is told which gates are lit
+ * ({@link GateProgressPayload}): once when a player logs in, and to everyone whenever the network
+ * changes. The carved glyphs are lit to match ({@link GateGlyphs}). Both happen through
+ * {@link #networkChanged}, so the hands, the pylon and the network can never disagree.
+ * Event-driven; nothing here ticks.
  *
  * <p>The story's reading of the same number is the <em>mark</em> ({@code docs/lore/the-mark.md}):
  * every gate lit adds a glyph to the player's hand, which is the Observers counting the seal's
@@ -43,9 +46,26 @@ public final class GateProgress {
         return Math.max(0, Math.min(MAX_STAGE, litGates));
     }
 
-    /** Tells every connected client the network's current state. Call after any change to it. */
-    public static void broadcast(MinecraftServer server) {
+    /** The mark's stage for the network as it stands now. */
+    public static int markStage(MinecraftServer server) {
+        return markStage(network(server).activePlanets().size());
+    }
+
+    /**
+     * Whether carved glyph {@code glyph} (0 Earth, 1 the Moon, 2 the burning world...) glows at
+     * {@code stage}: the n-th glyph is the n-th gate lit, as on the hand.
+     */
+    public static boolean glyphLit(int glyph, int stage) {
+        return glyph < stage;
+    }
+
+    /**
+     * Call after any change to the gateway network: every client is told, and every loaded glyph is
+     * relit to match.
+     */
+    public static void networkChanged(MinecraftServer server) {
         PacketDistributor.sendToAllPlayers(payload(server));
+        GateGlyphs.refresh(server);
     }
 
     private static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
@@ -55,8 +75,10 @@ public final class GateProgress {
     }
 
     private static GateProgressPayload payload(MinecraftServer server) {
-        List<ResourceLocation> lit = List.copyOf(
-                server.overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE).activePlanets());
-        return new GateProgressPayload(lit);
+        return new GateProgressPayload(List.copyOf(network(server).activePlanets()));
+    }
+
+    private static GatewayNetworkState network(MinecraftServer server) {
+        return server.overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
     }
 }

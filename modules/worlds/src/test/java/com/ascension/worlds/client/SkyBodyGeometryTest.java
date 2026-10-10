@@ -170,6 +170,10 @@ class SkyBodyGeometryTest {
             assertEquals(SkyBody.Motion.VANILLA_MOON, moon.motion());
             assertTrue(moon.additive(), "under an atmosphere the sky shows through the dark side");
             assertTrue(getClass().getResource("/assets/ascension_worlds/textures/environment/moon.png") != null);
+            SkyBody.GateLight light = moon.gateLight().orElseThrow();
+            assertEquals("ascension_worlds:textures/environment/moon_signal.png", light.texture().toString());
+            assertTrue(light.x() < 0 && light.y() > 0, "a little up and left of centre (lore-art-design.md, section 9)");
+            assertTrue(getClass().getResource("/assets/ascension_worlds/textures/environment/moon_signal.png") != null);
         }
         try (var blank = getClass().getResourceAsStream("/assets/minecraft/textures/environment/moon_phases.png")) {
             java.awt.image.BufferedImage image = javax.imageio.ImageIO.read(blank);
@@ -180,6 +184,17 @@ class SkyBodyGeometryTest {
                     assertEquals(0, image.getRGB(x, y) >>> 24, "every texel transparent");
                 }
             }
+        }
+    }
+
+    @Test
+    void theGateLightIsDarkUntilAGateIsLitThenBrightensToFull() {
+        assertEquals(0.0F, SkyBody.GateLight.alpha(0));
+        assertEquals(SkyBody.GateLight.FIRST_GATE, SkyBody.GateLight.alpha(1), 1.0e-6);
+        assertEquals(1.0F, SkyBody.GateLight.alpha(7), 1.0e-6);
+        assertEquals(1.0F, SkyBody.GateLight.alpha(12), 1.0e-6, "no brighter past the seventh glyph");
+        for (int stage = 1; stage < 7; stage++) {
+            assertTrue(SkyBody.GateLight.alpha(stage + 1) > SkyBody.GateLight.alpha(stage), "brighter with gate " + (stage + 1));
         }
     }
 

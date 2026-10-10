@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
+import com.ascension.worlds.internal.GateProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
@@ -28,10 +29,12 @@ import net.minecraft.util.StringRepresentable;
  * @param additive    drawn by adding light, the way vanilla draws its sun and moon: right when the
  *                    viewer stands under an atmosphere, whose sky shows through a body's dark side.
  *                    Off, the body covers what is behind it, which is right from an airless world
+ * @param gateLight   a light on the body's face that appears with the first lit gate and brightens
+ *                    with each one after, if any: the Archive's pylon seen from Earth
  */
 record SkyBody(
         ResourceLocation texture, float yaw, float elevation, float angularSize, boolean lit, Optional<Integer> glow,
-        Motion motion, boolean additive) {
+        Motion motion, boolean additive, Optional<GateLight> gateLight) {
 
     static final Codec<SkyBody> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -43,8 +46,43 @@ record SkyBody(
                     Codec.BOOL.optionalFieldOf("lit", true).forGetter(SkyBody::lit),
                     Codec.INT.optionalFieldOf("glow").forGetter(SkyBody::glow),
                     Motion.CODEC.optionalFieldOf("motion", Motion.FIXED).forGetter(SkyBody::motion),
-                    Codec.BOOL.optionalFieldOf("additive", false).forGetter(SkyBody::additive))
+                    Codec.BOOL.optionalFieldOf("additive", false).forGetter(SkyBody::additive),
+                    GateLight.CODEC.optionalFieldOf("gate_light").forGetter(SkyBody::gateLight))
             .apply(instance, SkyBody::new));
+
+    /**
+     * A point of light on a body's face, there once a gate is lit ({@code docs/lore/the-mark.md}: the
+     * first glyph on the Archive's pylon begins to glow, and that is the light seen from Earth).
+     * Drawn additively and unshaded, so it shines on the night side too, and brighter with every
+     * gate, as more of the pylon's glyphs glow.
+     *
+     * @param texture the light's picture, drawn additively: alpha carries its falloff
+     * @param x       where on the face, -1 (left edge) to 1 (right), as seen with the body upright
+     * @param y       where on the face, -1 (bottom) to 1 (top)
+     * @param size    its width as a fraction of the body's width
+     */
+    record GateLight(ResourceLocation texture, float x, float y, float size) {
+
+        static final Codec<GateLight> CODEC = RecordCodecBuilder.create(instance -> instance
+                .group(
+                        ResourceLocation.CODEC.fieldOf("texture").forGetter(GateLight::texture),
+                        Codec.floatRange(-1.0F, 1.0F).fieldOf("x").forGetter(GateLight::x),
+                        Codec.floatRange(-1.0F, 1.0F).fieldOf("y").forGetter(GateLight::y),
+                        Codec.floatRange(0.01F, 1.0F).fieldOf("size").forGetter(GateLight::size))
+                .apply(instance, GateLight::new));
+
+        /** How bright the first gate's light is; every gate after adds an even share of the rest. */
+        static final float FIRST_GATE = 0.45F;
+
+        /** 0 with no gate lit, {@link #FIRST_GATE} with one, full once every glyph of the mark is. */
+        static float alpha(int stage) {
+            if (stage <= 0) {
+                return 0.0F;
+            }
+            int steps = GateProgress.MAX_STAGE - 1;
+            return FIRST_GATE + (1.0F - FIRST_GATE) * (Math.min(stage, GateProgress.MAX_STAGE) - 1) / steps;
+        }
+    }
 
     /** How a body moves across its sky. */
     enum Motion implements StringRepresentable {

@@ -130,9 +130,10 @@ final class GatewayDebug {
     }
 
     /**
-     * Lights or puts out one gate in the network by id, with no frame anywhere, and tells every
-     * client ({@link GateProgress}). Any id will do, real planet or not, which is how the mark is
-     * stepped through all seven stages while only two worlds exist. Returns null on success.
+     * Lights or puts out one gate in the network by id, with no frame anywhere, then tells every
+     * client and relights the glyphs ({@link GateProgress#networkChanged}). Any id will do, real
+     * planet or not, which is how the mark and the pylon are stepped through all seven stages while
+     * only two worlds exist. Returns null on success.
      */
     @Nullable
     static Component setLit(MinecraftServer server, ResourceLocation planet, boolean lit) {
@@ -141,7 +142,7 @@ final class GatewayDebug {
         if (!changed) {
             return Component.literal(planet + " is already " + (lit ? "lit." : "dark."));
         }
-        GateProgress.broadcast(server);
+        GateProgress.networkChanged(server);
         return null;
     }
 }

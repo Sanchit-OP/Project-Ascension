@@ -6,7 +6,13 @@
       "motion": "vanilla_moon",
       "angular_size": 10,
       "lit": true,
-      "additive": true
+      "additive": true,
+      "gate_light": {
+        "texture": "ascension_worlds:textures/environment/moon_signal.png",
+        "x": -0.28,
+        "y": 0.22,
+        "size": 0.25
+      }
     }
   ]
 }

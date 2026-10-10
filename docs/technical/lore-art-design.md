@@ -238,9 +238,12 @@ teal at the default field of view and as a soft diamond through a spyglass.
 ## For the logic session
 
 Status, 2026-10-11: items 1 and 2 are built and seen live (`PlayerMarkLayer`, `IllagerMarkLayer`,
-`MarkDecal`; the illagers' mark stays on the crossed arms only). Item 6 now lands on our own Moon,
-which replaced vanilla's in Earth's sky (`ascension_sky/overworld.json`), so the signal is drawn
-over that sky body rather than vanilla's moon quad. The rest are still to build.
+`MarkDecal`; the illagers' mark stays on the crossed arms only). Items 3 and 6 are built
+(`GateGlyphs`; the sky body's `gate_light`) and checked on a dedicated server, not yet seen in a
+client. Item 6 lands on our own Moon, which replaced vanilla's in Earth's sky, so the signal is a
+`gate_light` on that sky body rather than a quad over vanilla's moon, and it brightens with each
+gate. Glyphs are found by block, in any chunk, not by the Archive's pieces, so a planet's ruins can
+carry their own. Items 4, 5 and 7 are still to build.
 
 1. **The mark is Format B** (contract sections 3 and 4): one 24 × 24 texture per stage, and
    `illager.png`, drawn as quads; wide and slim arms share the textures. The first-person arm in its

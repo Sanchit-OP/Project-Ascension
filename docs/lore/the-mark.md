@@ -117,8 +117,8 @@ ending. Only what you have seen does.
 
 ## Can we build it
 
-**Built 2026-10-10, and seen live the same day:** the mark on players and illagers, fed by the gate-progress sync. The pylon,
-the cats and the orrery come next. The original note:
+**Built 2026-10-10, and seen live the same day:** the mark on players and illagers, fed by the gate-progress sync. **Built 2026-10-11:** the pylon's glyphs lighting one per gate, and the light on the Moon seen from Earth, growing brighter with each gate (checked on a dedicated server; not yet seen in a client). The
+cats and the orrery come next. The original note:
 
 - The mark is a layer drawn over the player's arm. NeoForge has hooks for both the first-person
   hand and the third-person model, so no mixins are needed.
