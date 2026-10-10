@@ -3,8 +3,8 @@ plugins {
 }
 
 description =
-    "Places L_Ender's Cataclysm's Ruined Citadel on the Moon at a chosen spot, and adds our own " +
-    "gateway key to its Ender Guardian's drops."
+    "Places L_Ender's Cataclysm's Ruined Citadel on the Moon at a chosen spot, adds our own " +
+    "gateway key to its Ender Guardian's drops, and keeps its other bosses off Earth for later planets."
 
 // Nothing here compiles against Cataclysm. Most of the integration is datapack (structure biome +
 // structure_set overrides, a loot table override). The two ADR-0013 mixins name their targets by
