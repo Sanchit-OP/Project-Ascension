@@ -26,6 +26,12 @@ Also scatters additional, optional copies of the same Ruined Citadel across the 
 random_spread placement -- rare but findable side content, distinct from the one fixed, mandatory
 copy the gateway story hinges on.
 
+Takes Cataclysm's five Earth bosses off Earth, to be placed on later planets instead: the Sunken
+City (the Leviathan), the Acropolis (Scylla), the Frosted Prison (Maledictus), the Cursed Pyramid
+(the Ancient Remnant) and the Ancient Factory (the Harbinger). Each now generates in its own
+ascension_worlds biome tag, empty until a planet fills it. Cataclysm's smaller structures and mobs
+on Earth are left as they are.
+
 Optional. Without both Cataclysm and ascension-worlds installed, this jar simply is not present.
 '''
 

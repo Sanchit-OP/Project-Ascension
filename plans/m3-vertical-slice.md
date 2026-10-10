@@ -651,6 +651,31 @@ inscriptions. No behaviour change (`e8119d6`):
 
 **Tests: `worlds` 79 → 80.**
 
+## Cataclysm's bosses held for later planets (2026-10-11)
+
+Sanchit's call: Cataclysm's bosses come off Earth and wait for the planets that suit them; its
+small structures and mobs stay as Earth flavour. `ascension-compat-cataclysm` overrides each boss
+structure with one change, its `biomes`, from Cataclysm's tag to an `ascension_worlds` tag shipped
+empty (the Ruined Citadel's pattern). A planet places the boss by adding its biomes to that tag;
+no Java. The small structures keep Cataclysm's own tags, which is why the bosses were not removed
+by emptying those: the Frosted Prison and the Cursed Pyramid share theirs with the abandoned and
+desert structures.
+
+| Structure, boss | Tag a planet fills | Planet (alignment agreed 2026-10-11) |
+|---|---|---|
+| Sunken City, the Leviathan | `ascension_worlds:sunken_city_biomes` | an ocean world |
+| Acropolis, Scylla | `ascension_worlds:acropolis_biomes` | the same ocean world |
+| Frosted Prison, Maledictus | `ascension_worlds:frosted_prison_biomes` | an ice world |
+| Cursed Pyramid, the Ancient Remnant | `ascension_worlds:cursed_pyramid_biomes` | a desert world |
+| Ancient Factory, the Harbinger | `ascension_worlds:ancient_factory_biomes` | a machine world |
+| Ruined Citadel, Ender Golem and Ender Guardian | `ascension_worlds:ruined_citadel_biomes` | the Moon (done, M3.1) |
+| Soul Black Smith, the Netherite Monstrosity | not yet overridden | Planet 3, the Nether world |
+| Burning Arena, Ignis | not yet overridden | unassigned (the vanilla Nether is dormant, ADR-0014) |
+
+Checked on a fresh dedicated server with `/locate`: none of the five bosses can be found; the
+abandoned village and spire, the desert site and temple, and the amethyst nest still are; the
+Moon's wild citadels still are. Existing worlds keep whatever already generated.
+
 ## Refactor pass, 2026-10-10 to 10-11
 
 ADR-0008's pass after the Archive's worldgen, the tablet rewrite, gate progress with the mark, and
