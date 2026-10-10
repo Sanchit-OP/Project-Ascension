@@ -66,7 +66,12 @@ byte-identical, `:modules:worlds:build` green with 80 tests). **The lore art wen
 session** through [`docs/technical/lore-art-format.md`](../docs/technical/lore-art-format.md) and
 `design/lore-art/design-session-prompt.md` (worktree `../Project-Ascension-lore-art`, branch
 `lore-art-design`). It covers the mark, the script glyphs and font, the pylon band, revised murals,
-the Sealers' Record, the keeper shrine and the moon signal.
+the Sealers' Record, the keeper shrine and the moon signal. **Merged into main and pushed 2026-10-10**
+(`888af41`; generators byte-identical, build green). The design record is
+`docs/technical/lore-art-design.md`, and its "For the logic session" list is what step 2 builds
+against. The mark became Format B, a 24 × 24 decal per stage. The Sealers' Record is tiles 121–174,
+and `TILES` = 193. The Archive templates changed in this merge, so the headless block comparison of
+step 1 should be re-run on them.
 
 **Next logic build, picked by Sanchit 2026-10-10: the Archive in the world, then gate progress.**
 1. **Done 2026-10-10, headless; not yet seen in a client.** Archive worldgen from the design
