@@ -64,7 +64,7 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
   discretionary.
 - Every milestone ends with a recorded measurement in `docs/technical/performance-log.md`.
 
-## Current state (2026-10-06)
+## Current state (2026-10-11)
 
 Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behaviour).
 **`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
@@ -77,20 +77,16 @@ jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicato
 "Where M3 stands — start here"**: what is built, what is verified, the decisions waiting on
 Sanchit, and what is next.
 
-**M3 is in progress** — [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md). Built but
-**not yet seen in a client** (Sanchit deferred live testing on 2026-10-05 and asked for building
-to continue): the Moon's boss chain (Cataclysm's Ruined Citadel relocated via the project's first
-mixins, ADR-0013; Ender Golem → Ender Guardian → gateway key), End Islands Endermen and rare
-wild citadels on the Moon, and share-air rescue. **Gateways are walk-through multiblock
-frames** (2026-10-06): the frame is data (`docs/technical/gateway-frame-format.md`, designed in a
-separate session — `gateway-portal-design.md`), pre-generated on the Moon inside a ruin and
-attuned with the boss's key, player-built on Earth and attuned with a Warden tendril; walking in
-opens a destination screen; the rune ring lights when a gate wakes. Vanilla Nether and End portals
-are dormant (ADR-0014). Two refactor passes this milestone; `worlds` tests 18 → 68. **Live
-2026-10-06:** gateways worked in Sanchit's client test, vanilla portals are dead, Moon Endermen
-spawn. Earth's gate is now crafted from the Deep Dark, with nothing from the Nether. **Planet 3
-(M3.3) is the Nether world** (roofless, netherite, a boss); its open questions and the Moon
-"round two" proposals are in the M3 plan, waiting on Sanchit.
+**M3 is in progress.** Seen working in Sanchit's client: the gateways (walk-through multiblock
+frames, data-driven, `gateway-frame-format.md`) and dead vanilla portals (ADR-0014) on
+2026-10-06; on 2026-10-10 the **Lunar Archive** generating on the Moon with its eight tablets in
+the voice, Earthrise, **the mark** on the hand stepping with lit gates, no clouds on the Moon or in
+space, and our own Moon in Earth's sky in place of vanilla's. Built but not yet seen: the Warden
+tendril drop and crafting Earth's keystone, the Cataclysm bosses' armour fix, and share-air
+(needs two clients). **The lore** is in `docs/lore/` (start at `what-the-warden-keeps.md`): the
+Observers, the trap, the mark, Tacita. **Planet 3 (M3.3) is the Nether world**; its open
+questions wait on Sanchit. **Background pre-generation is off by default** since a fresh server
+crashed under it (the Chunky bug in the M3 plan, root cause open).
 
 The history below is M0–M2, kept for context.
 

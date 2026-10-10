@@ -8,10 +8,10 @@ build the boss, the gateway, or the third world ADR-0005 lists as part of "finis
 repeat-travel shortcut, and a third world proving the framework is not Moon-shaped, on top of
 everything M2 already delivered.
 
-## Where M3 stands — start here (2026-10-06)
+## Where M3 stands — start here (2026-10-11)
 
 Written as a handoff: a fresh session should be able to pick up from this section alone. All of
-it is committed and pushed. Details live in the sections below and the linked docs.
+it is committed; ask Sanchit before pushing. Details live in the sections below and the linked docs.
 
 **Built, and how far each is verified:**
 
@@ -19,59 +19,45 @@ it is committed and pushed. Details live in the sections below and the linked do
 |---|---|
 | M3.1 Moon boss chain (Cataclysm citadel on the Moon, Golem → Guardian → gateway key; ADR-0013 mixins) | Live 2026-10-05: bosses spawn and fight, 2.5x health applies. The Armor/MR fix (`CataclysmBossStats`) not yet seen. |
 | Moon content: rare wild citadels | Confirmed from the world's structure data. |
-| Gateways: walk-through multiblock frames, Moon pre-generated in a ruin site, Earth player-built, rune ring lights on attunement, destination screen, debug `goto` / `build` | **Live 2026-10-06: Sanchit's client test worked.** He has a few follow-ups he'll raise later. |
+| Gateways: walk-through multiblock frames, Moon pre-generated in a ruin site, Earth player-built, rune ring lights on attunement, destination screen, debug `goto` / `build` | **Live 2026-10-06.** Sanchit has follow-ups he'll raise later. |
 | Vanilla Nether/End portals dormant (ADR-0014) | **Live 2026-10-06: confirmed dead.** |
-| Warden tendril drop | Not yet seen. |
 | End Islands Endermen on the Moon | **Live 2026-10-06: spawning.** |
+| Warden tendril drop | Not yet seen. |
 | Earth gateway recipes from the Deep Dark (keystone: diamonds, echo shards, sculk catalysts, compass; gatestone: sculk) | Loaded on a dedicated server with no errors; not yet crafted in a client. |
 | Share-air rescue | Needs two clients; rides on the two-client test. |
+| Earthrise (`SkyBodyRenderer`, `worlds-api.md` "Sky bodies") | **Live 2026-10-10.** |
+| The Lunar Archive: lore registry, plinths, tablets, reader; the building generating at (−160, −256); the eight tablets as the voice, signed by Tacita | **Live 2026-10-10.** A restart check is deferred; its baseline is in `live-test-2026-10-10.md`. |
+| Gate progress synced to clients, and the mark on players' hands and illagers' arms | **Live 2026-10-10.** |
+| No clouds on the Moon or in space (`ascension-compat-distanthorizons`) | **Live 2026-10-10.** |
+| Our Moon in Earth's sky in place of vanilla's | **Live 2026-10-10.** |
+| Background pre-generation (`ascension-compat-chunky`) | **Off by default since 2026-10-10**: a fresh server crashed under it. The Chunky bug, below. |
 
-**Settled 2026-10-06:** the keystone recipe (Deep Dark materials, one Warden tendril per gate,
-nothing from the Nether); Planet 3 is the **Nether world** (roofless, netherite, a boss; M3.3
-below); the lore premise (an interplanetary civilisation that fell to something unknown, the Moon
-as the lore anchor; `docs/lore/world.md`); Voxy evaluated and not adopted
-(`optimisation-stack.md`).
+**Settled:** the keystone recipe (Deep Dark materials, one Warden tendril per gate, nothing from
+the Nether); Planet 3 is the **Nether world** (roofless, netherite, a boss; M3.3 below); Voxy
+evaluated and not adopted (`optimisation-stack.md`). **The lore** (2026-10-07 to 10-10), anchored
+in vanilla Minecraft: the Observers beyond the void, respawn as their gift, the trap of a false
+story, the mark, enchanting as their script. The Archivist is Tacita, and her name, signed by the
+voice in the wrong order on every tablet, is the way to close the seal. Start at
+[`docs/lore/what-the-warden-keeps.md`](../docs/lore/what-the-warden-keeps.md); companions are
+`the-mark.md`, `the-moon.md`, `the-nether.md`, `the-ending-and-names.md`.
 
 **Decisions waiting on Sanchit:**
 
-1. **Planet 3's remaining questions**: survival rule, traversal wrinkle, ambient life (M3.3).
-   Decided: the Netherite Monstrosity, no power generation there, no ash storms.
-2. **The gateway follow-ups** from his live test, when he raises them.
-3. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
+1. **Planet 3's remaining questions**: survival rule (proposed: wear gold, `the-nether.md`),
+   traversal wrinkle, ambient life (M3.3). Decided: the Netherite Monstrosity, no power
+   generation there, no ash storms.
+2. **The ending**: which of A (the Eye opens), B (the seal) and C (the mirror), the two factions'
+   names, and whether the lone human on the beach is the player (`the-ending-and-names.md`).
+3. **The gateway follow-ups** from his live test, when he raises them.
+4. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
 
-**In progress (2026-10-06):** Moon round two.
-- **Earthrise:** built (`SkyBodyRenderer`; format in `worlds-api.md`, "Sky bodies"). Not yet seen
-  in a client.
-- **The Lunar Archive**, split through [`lunar-archive-format.md`](../docs/technical/lunar-archive-format.md):
-  - Design: a separate session, from `design/lunar-archive/design-session-prompt.md`.
-  - Logic increment 1 done (`84914c8`): the `archive_entry` lore registry, plinth, tablet, book
-    reader, eight drafted Moon inscriptions (`tools/archive-lore.py`, text for Sanchit to edit),
-    stores loot, op commands. Verified on a dedicated server; not yet seen in a client.
-  - Logic still to do: the orrery hologram (needs gate state synced to clients), then the
-    worldgen plumbing once the design's templates land.
+**Next:** the rest of gate progress's readers (step 4 below): the pylon glyphs with the moon
+signal, the orrery hologram, cats. Then Planet 3 once its questions are answered.
 
-**Next:** the **lore spread** across all 7-8 planets. The first prose draft ("It was us",
-`docs/lore/the-road-home.md`) was rejected 2026-10-07 as disconnected from Minecraft. The second,
-built from Sanchit's direction (vanilla mobs explained, a planted false story, horror twist,
-branching endings), is [`docs/lore/what-the-warden-keeps.md`](../docs/lore/what-the-warden-keeps.md).
-Its companions are `the-mark.md`, `the-moon.md`, `the-nether.md` (Planet 3's lore, which also proposes
-its survival rule: wear gold) and `the-ending-and-names.md`. Settled: the Archivist is Tacita, and her
-name, signed by the voice on every tablet in the wrong order, is the way to close the seal. **The
-Moon's eight tablets are rewritten as the voice (2026-10-10)**, with entry ids unchanged. They were
-checked by `ArchiveLoreTest` but have not yet been read in a client. Still open: which endings, the
-faction names, and wear gold for Planet 3.
-
-**2026-10-10: the Archive is merged into main** (rebased onto main, both generators re-run
-byte-identical, `:modules:worlds:build` green with 80 tests). **The lore art went to a design
-session** through [`docs/technical/lore-art-format.md`](../docs/technical/lore-art-format.md) and
-`design/lore-art/design-session-prompt.md` (worktree `../Project-Ascension-lore-art`, branch
-`lore-art-design`). It covers the mark, the script glyphs and font, the pylon band, revised murals,
-the Sealers' Record, the keeper shrine and the moon signal. **Merged into main and pushed 2026-10-10**
-(`888af41`; generators byte-identical, build green). The design record is
-`docs/technical/lore-art-design.md`, and its "For the logic session" list is what step 2 builds
-against. The mark became Format B, a 24 × 24 decal per stage. The Sealers' Record is tiles 121–174,
-and `TILES` = 193. The Archive templates changed in this merge, so the headless block comparison of
-step 1 should be re-run on them.
+**How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
+a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
+is `docs/technical/lore-art-design.md`, and its "For the logic session" list is what gate progress
+builds against.
 
 **Next logic build, picked by Sanchit 2026-10-10: the Archive in the world, then gate progress.**
 
@@ -102,7 +88,7 @@ phases; vanilla's moon texture shipped blank). Both seen in his client.
    - In first person it shows only with an empty hand: vanilla draws no arm while an item is held.
    - Debug commands `gateway light|unlight <id>` step through all seven stages.
    - Checked on a dedicated server (clean boot, commands answer) and by 86 tests.
-3. **Now: the refactor pass, which is due** (below). Its first job, the Chunky bug, is fixed in
+3. **Done 2026-10-11: the refactor pass** (its section below). Its first job, the Chunky bug, is fixed in
    part and parked safely (below); the pass continues with the rest of its list.
 4. Then the rest of gate progress's readers, from `lore-art-design.md`'s "For the logic session"
    list: the pylon's glyphs lighting with the moon signal in Earth's sky (one story beat), the
@@ -156,9 +142,10 @@ Chunky pre-generated Earth, once with the heap full at 35,331 loaded Overworld c
   block ticks. Crash reports: `run/server/crash-reports/crash-2026-10-10_21.36.23-server.txt` and
   `crash-2026-10-10_23.33.26-server.txt`.
 
-**Cadence:** the last refactor pass was 2026-10-06 evening (`e8119d6`). Since then: the Archive's
-lore system, the tablet rewrite, the Archive's worldgen, gate progress with the mark. The next
-increment is the refactor pass (ADR-0008).
+**Cadence:** the last refactor pass ran 2026-10-10 to 10-11 (its section below), after the
+Archive's lore system, the tablet rewrite, the Archive's worldgen, and gate progress with the mark;
+the one before was 2026-10-06 evening (`e8119d6`). The next is due after three more increments
+(ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
@@ -651,6 +638,34 @@ inscriptions. No behaviour change (`e8119d6`):
   why the payload helper could be checked at all.
 
 **Tests: `worlds` 79 → 80.**
+
+## Refactor pass, 2026-10-10 to 10-11
+
+ADR-0008's pass after the Archive's worldgen, the tablet rewrite, gate progress with the mark, and
+the sky fixes. No new features.
+
+- **The Chunky bug, first** (its own section above): a pause no longer counts as a finished task,
+  the hook's level work moved to the server thread, and background pre-generation is off by
+  default until the root cause is found. `PregenGovernor` added with 5 tests. `compat-chunky`
+  had no tests before.
+- **`/ascension worlds debug chunks`**: vanilla's chunk and ticket dump, which a dedicated server
+  had no command for. It is what showed the held chunks had no ticket.
+- **The dist check knows client-only compat jars.** It flagged `DimensionClouds` (client classes
+  outside a `client` package) in a jar whose `@Mod` and every dependency are client-only, so a
+  server never loads it. The one hard-coded jar became a short reviewed list.
+- **One drawing path for the player's mark.** Third person (`PlayerMarkLayer`) and first person
+  (`MarkClientEvents.onRenderArm`) each pushed, posed and drew the same decal; now both call
+  `PlayerMarkLayer.draw`.
+- **Handoff docs brought up to date:** `CLAUDE.md`'s current state and this plan's "start here"
+  were still dated 2026-10-06; the lore-art record's logic list now says what is built.
+- **Tried and dropped:** a test that our crater placement reads vanilla `random_spread` JSON exactly
+  as vanilla does. Vanilla's placement classes need the game bootstrapped, which a plain unit test
+  under NeoForge cannot do; the headless worldgen check stays the evidence.
+
+**Checked:** the full build, every module's tests (`worlds` 92, `atmosphere` 53, `core` 21,
+`compat-chunky` 5, `combat` 4), the dist check on all twelve modules, and a dedicated-server
+boot on a throwaway world with the gateway and debug commands run over RCON. The mark's drawing
+change is client-side; seeing it once more in a client closes it.
 
 ## M3.3 — Planet 3: the Nether world
 

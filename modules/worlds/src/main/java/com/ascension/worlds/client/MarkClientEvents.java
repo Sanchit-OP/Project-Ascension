@@ -86,13 +86,8 @@ final class MarkClientEvents {
         model.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
         model.rightArm.xRot = 0.0F;
 
-        boolean slim = player.getSkin().model() == PlayerSkin.Model.SLIM;
-        var poseStack = event.getPoseStack();
-        poseStack.pushPose();
-        model.rightArm.translateAndRotate(poseStack);
-        MarkDecal.onRightArm(poseStack, event.getMultiBufferSource(), MarkDecal.stage(stage),
-                PlayerMarkLayer.faceX(slim), MarkDecal.light(player, event.getPackedLight()));
-        poseStack.popPose();
+        PlayerMarkLayer.draw(event.getPoseStack(), event.getMultiBufferSource(), model.rightArm,
+                player.getSkin().model() == PlayerSkin.Model.SLIM, stage, player, event.getPackedLight());
     }
 
     @SubscribeEvent

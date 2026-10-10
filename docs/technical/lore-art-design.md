@@ -237,6 +237,11 @@ teal at the default field of view and as a soft diamond through a spyglass.
 
 ## For the logic session
 
+Status, 2026-10-11: items 1 and 2 are built and seen live (`PlayerMarkLayer`, `IllagerMarkLayer`,
+`MarkDecal`; the illagers' mark stays on the crossed arms only). Item 6 now lands on our own Moon,
+which replaced vanilla's in Earth's sky (`ascension_sky/overworld.json`), so the signal is drawn
+over that sky body rather than vanilla's moon quad. The rest are still to build.
+
 1. **The mark is Format B** (contract sections 3 and 4): one 24 × 24 texture per stage, and
    `illager.png`, drawn as quads; wide and slim arms share the textures. The first-person arm in its
    empty-hand pose is in the preview code (`first_person_arm()` in `generate-lore-art.py`), if a

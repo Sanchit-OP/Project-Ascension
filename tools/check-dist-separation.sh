@@ -66,8 +66,13 @@ for f in "${candidates[@]}"; do
     fi
 
     # Allowed: the whole mod is client-only (`@Mod(dist = Dist.CLIENT)`, every dependency
-    # `side = "CLIENT"`), so a dedicated server never loads any of its classes.
-    if [[ "$rel" == com/ascension/compat/immersivedamageindicators/* ]]; then
+    # `side = "CLIENT"`), so a dedicated server never loads any of its classes. Add a jar here
+    # only after checking both of those in it.
+    client_only=0
+    for mod in immersivedamageindicators distanthorizons; do
+        [[ "$rel" == com/ascension/compat/$mod/* ]] && client_only=1
+    done
+    if [ "$client_only" -eq 1 ]; then
         echo "  ALLOWED  $rel (client-only mod)"
         continue
     fi
