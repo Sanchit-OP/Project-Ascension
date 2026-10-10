@@ -69,30 +69,52 @@ The mark lives on the **right arm, the back of the hand and forearm**, and has *
 the number of gates lit. There is no mark at stage 0. Stage n shows glyphs 0 to n − 1 around the
 eye at stage n.
 
-**Format A (the default):** 64 × 64 PNGs in the standard player-skin layout, painting only the right
-arm's base-layer region (u 40–56, v 16–32) and leaving everything else transparent. Logic draws the
-texture over the arm, slightly inflated so it sits above sleeves, at full brightness, in both third
-person and first person.
+**Format B, the decal (chosen by design, agreed with Sanchit, 2026-10-10).** Format A could not
+carry it. Vanilla's first-person empty hand shows only the arm's **outer** face (the skin's
+u 40–44) and its front face (u 44–48), and only about the eight rows nearest the hand. That is
+roughly 8 × 8 skin pixels, seen at an angle, and seven glyphs and an eye cannot be told apart in
+it. So the mark is one square texture per stage, drawn as its own quad:
 
-- `assets/ascension_worlds/textures/entity/mark/wide_<n>.png` for the 4-pixel arm, n = 1..7.
-- `assets/ascension_worlds/textures/entity/mark/slim_<n>.png` for the 3-pixel arm, n = 1..7.
+- `assets/ascension_worlds/textures/entity/mark/stage_<n>.png`, n = 1..7: **24 × 24** RGBA. The
+  ground is transparent, and every drawn pixel is fully opaque, so a cutout render type is enough.
+  Glyphs 0 to n − 1 sit in a ring, glyph 0 at the top and the rest clockwise, round the eye at
+  stage n in the middle.
+- **Where:** on the right arm's **outer face** (the `−x` face of `rightArm`'s cube in model
+  space), over the back of the hand and the wrist, covering **4 × 4 model pixels**: `z` from −2 to
+  2 and `y` from 5 to 9. The cube runs `y` −2 (shoulder) to 10 (hand end). The quad stands
+  **0.3 px** out from the cube face, above the sleeve layer, which is inflated 0.25. So it sits at
+  `x = −3.3` on the wide arm (cube `x` −3..1) and `x = −2.3` on the slim arm (cube `x` −2..1).
+  The outer face is 4 deep on both arms, so **one texture serves wide and slim**, and only the
+  quad's `x` differs.
+- **Which way up:** for the wearer, like a tattoo on the back of a hand. The texture's **top edge
+  lies toward the hand end** (`y = 9`) and its **left edge toward the front** (`z = −2`). The uv
+  corners are (0, 0) at (y 9, z −2), (1, 0) at (y 9, z 2), (1, 1) at (y 5, z 2), and (0, 1) at
+  (y 5, z −2). In first person it then reads upright, sheared by the perspective. Others see it
+  upside down while the arm hangs, which is how a hand tattoo looks to anyone but its owner.
+- **Light:** full-bright, in both first and third person, in the arm's own pass (it follows every
+  arm pose and swing). Where the mark goes dark (in a Moon dust storm and in the Deep Dark), draw
+  the same texture with ordinary lighting. No second texture is needed for that.
 
-**Format B, if A cannot carry it:** a 12 × 12 arm face may simply be too small for seven glyphs and
-an eye. In that case design proposes a decal instead: one square texture per stage that logic draws
-as a quad on the back of the hand. Change this section with the size and placement before building
-it.
-
-Either way it must read in **first person**, at the default field of view, with an empty hand and
-while holding a tool. Check which face of the arm the first-person view actually shows.
+It must read in **first person**, at the default field of view, with an empty hand and while
+holding a tool. Vanilla draws no arm at all while an item is held. Showing the mark then is a
+rendering choice for logic, for example drawing the arm in its empty-hand pose behind the item.
+The design note previews that case.
 
 
 ## 4. The illagers' mark
 
 The complete mark, stage 7, drawn on the outer faces of the illagers' crossed arms.
 
-- `assets/ascension_worlds/textures/entity/mark/illager.png`: 64 × 64 in the illager texture layout,
-  painting only the crossed arms. Vindicators, evokers and pillagers share the layout, so one
-  texture serves all three.
+- `assets/ascension_worlds/textures/entity/mark/illager.png`: **24 × 24**, the same format as the
+  player's (section 3, Format B), and the same picture as `stage_7`. It is drawn as a quad on the
+  **front of the crossed arms' middle box** (in `IllagerModel`'s `arms` part, the box at
+  `(−4, 2, −2)` sized 8 × 4 × 4), centred: `x` −2 to 2 and `y` 2 to 6. It sits 0.1 px in front of
+  the box's `−z` face, so it turns with the arms. Vindicators, evokers and pillagers share the
+  model, so one texture serves all three.
+- **Which way up:** for whoever faces the illager. The texture's top edge lies toward `y = 2` (the
+  top of the crossed arms), and its left edge toward the illager's right (`x = −2`). The player
+  wears the mark for themself, and the illagers wear it for the world. Full-bright, like the
+  player's.
 - It must read as the same mark as the player's. Halfway through the game the player has to notice
   that their own mark is becoming this one.
 
@@ -205,8 +227,8 @@ For reference, so design knows what will be looking at its files:
 
 - [ ] Script sheet: seven glyphs and eight eye stages, previewed at 1×, 5 px and 8 px.
 - [ ] `font/script.json` and its texture; a preview of a signature line set in normal text.
-- [ ] Mark textures, stages 1–7, wide and slim (Format A), or a Format B proposal written into
-      section 3. First-person and third-person previews of stages 1, 4 and 7.
+- [ ] Mark textures, stages 1–7 (Format B, section 3). First-person and third-person previews of
+      stages 1, 4 and 7.
 - [ ] The illager texture, with a preview beside a player at stage 7.
 - [ ] `mark_glyph`: registration, models, blockstate (all fourteen states), textures, lang name. The pylon band in the generator; a preview of the lit and unlit pylon from the
       court and from 64 blocks.
