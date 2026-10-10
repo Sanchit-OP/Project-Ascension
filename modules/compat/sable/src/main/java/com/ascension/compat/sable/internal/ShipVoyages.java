@@ -91,12 +91,13 @@ public final class ShipVoyages {
             if (gone(ship) || ship.logicalPose().position().y() < ceiling) {
                 continue;
             }
-            List<ServerPlayer> crew = ShipTransfer.crewOf(ship);
+            ShipTransfer.Boarding boarding = ShipTransfer.board(ship);
             Vector3dc velocity = ship.latestLinearVelocity;
-            float heading = ShipHeading.yaw(velocity.x(), velocity.z(), crew.isEmpty() ? 0.0F : crew.get(0).getYRot());
+            ServerPlayer pilot = pilotOf(boarding);
+            float heading = ShipHeading.yaw(velocity.x(), velocity.z(), pilot == null ? 0.0F : pilot.getYRot());
             // Remembered as they leave, so the ship that brings them back comes down over this spot.
-            crew.forEach(SpaceTravel::noteDeparture);
-            report(ship, crew, ShipTransfer.carry(ship, space, SpaceTravel.arrivalInSpace(planet, heading)));
+            boarding.crew().forEach(SpaceTravel::noteDeparture);
+            report(boarding, ShipTransfer.carry(boarding, space, SpaceTravel.arrivalInSpace(planet, heading)));
         }
     }
 
@@ -111,10 +112,16 @@ public final class ShipVoyages {
             if (surface == null) {
                 continue;
             }
-            List<ServerPlayer> crew = ShipTransfer.crewOf(ship);
-            Vec3 destination = SpaceTravel.arrivalAbove(surface, crew.isEmpty() ? null : crew.get(0));
-            report(ship, crew, ShipTransfer.carry(ship, surface, destination));
+            ShipTransfer.Boarding boarding = ShipTransfer.board(ship);
+            Vec3 destination = SpaceTravel.arrivalAbove(surface, pilotOf(boarding));
+            report(boarding, ShipTransfer.carry(boarding, surface, destination));
         }
+    }
+
+    /** Whoever was found aboard first, if anyone: their facing and their way home stand for the ship's. */
+    @Nullable
+    private static ServerPlayer pilotOf(ShipTransfer.Boarding boarding) {
+        return boarding.crew().isEmpty() ? null : boarding.crew().get(0);
     }
 
     /** A copy: carrying a ship takes it, and everything attached to it, out of the live list. */
@@ -129,15 +136,16 @@ public final class ShipVoyages {
         return ships == null || ships.getSubLevel(ship.getUniqueId()) != ship;
     }
 
-    private static void report(ServerSubLevel ship, List<ServerPlayer> crew, @Nullable Component refusal) {
+    private static void report(ShipTransfer.Boarding boarding, @Nullable Component refusal) {
+        UUID ship = boarding.ship().getUniqueId();
         if (refusal == null) {
-            LOGGED_REFUSALS.remove(ship.getUniqueId());
+            LOGGED_REFUSALS.remove(ship);
             return;
         }
-        crew.forEach(member -> member.displayClientMessage(refusal, true));
-        if (LOGGED_REFUSALS.add(ship.getUniqueId())) {
+        boarding.crew().forEach(member -> member.displayClientMessage(refusal, true));
+        if (LOGGED_REFUSALS.add(ship)) {
             LOGGER.warn("Ship {} cannot cross out of {}: {}",
-                    ship.getUniqueId(), ship.getLevel().dimension().location(), refusal.getString());
+                    ship, boarding.ship().getLevel().dimension().location(), refusal.getString());
         }
     }
 }

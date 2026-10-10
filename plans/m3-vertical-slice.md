@@ -32,7 +32,7 @@ it is committed; ask Sanchit before pushing. Details live in the sections below 
 | Our Moon in Earth's sky in place of vanilla's | **Live 2026-10-10.** |
 | Background pre-generation (`ascension-compat-chunky`) | **Off by default since 2026-10-10**: a fresh server crashed under it. The Chunky bug, below. |
 | Cataclysm's five Earth bosses held for later planets | `/locate` on a fresh dedicated server 2026-10-11: bosses gone, small structures kept. |
-| The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact. Not yet seen with a crew aboard or a real Aeronautics ship (none designed yet). |
+| The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact; since the refactor pass, an item frame inside the ship travels with it too. Not yet seen with a crew aboard or a real Aeronautics ship (none designed yet). |
 
 **Settled:** the keystone recipe (Deep Dark materials, one Warden tendril per gate, nothing from
 the Nether); Planet 3 is the **Nether world** (roofless, netherite, a boss; M3.3 below); Voxy
@@ -57,10 +57,10 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
    lore art was made.
 
-**Next:** a refactor pass is due (ADR-0008: the first light, the Cataclysm bosses, and the airship
-road have landed since the last). Then Sanchit's look at the first light and the airship road in
-a client, the orrery hologram with Tacita's signature, then cats. Then Planet 3 once its questions
-are answered.
+**Next:** Sanchit's look at everything built since 2026-10-10 in a client: the first light, the
+airship road (with a crew, and with a real Aeronautics ship once one exists), the Cataclysm
+bosses gone from Earth. Then the orrery hologram with Tacita's signature, then cats. Then Planet 3
+once its questions are answered.
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
@@ -164,8 +164,9 @@ Chunky pre-generated Earth, once with the heap full at 35,331 loaded Overworld c
 
 **Cadence:** the last refactor pass ran 2026-10-10 to 10-11 (its section below), after the
 Archive's lore system, the tablet rewrite, the Archive's worldgen, and gate progress with the mark;
-the one before was 2026-10-06 evening (`e8119d6`). Three increments have landed since (the first
-light, the Cataclysm bosses, the airship road), so **the next pass is due now** (ADR-0008).
+the one before was 2026-10-06 evening (`e8119d6`). The pass after the first light, the
+Cataclysm bosses and the airship road ran 2026-10-11 (its section below). The next is due after
+three more increments (ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);
@@ -731,6 +732,8 @@ players to build one. Keep propulsion simple: no vacuum, no rockets. Recorded in
 - A second ship, built on Earth while the first sat on the Moon, got a different slot and reached
   the Moon too.
 - Sable reads all three physics files without errors. Nothing else in the log.
+- Since the refactor pass (below): an item frame holding a diamond, inside the ship, went Earth →
+  space → Moon with it, one copy at each stop and none left behind.
 - Test-harness note: a ship teleported into an unloaded part of space is parked by Sable until
   its chunk loads, then carries on. In play, the crew keeps its chunks loaded.
 
@@ -776,6 +779,35 @@ the sky fixes. No new features.
 `compat-chunky` 5, `combat` 4), the dist check on all twelve modules, and a dedicated-server
 boot on a throwaway world with the gateway and debug commands run over RCON. The mark's drawing
 change is client-side; seeing it once more in a client closes it.
+
+## Refactor pass, 2026-10-11
+
+ADR-0008's pass after the first light, the Cataclysm bosses and the airship road. Reviewed
+everything since `611b142`. No new features; one real bug found and fixed.
+
+- **A ship's entities were left behind, or destroyed.** Sable's ship save holds blocks only; the
+  entities living inside a ship are kept by the level. Taking a ship out of a level kills the ones
+  Sable tags "destroy with sub-level" (Create contraptions, glue, seats) and drops the rest into
+  the old world, and Aeronautics' spinning propellers are among them. Every real ship would have
+  lost its propellers on its first trip to space; the plank-and-chest test could not show it.
+  `ShipTransfer` now saves the entities inside the ship, takes them out as having changed
+  dimension, and adds them back at the same place inside the ship on the far side. Checked
+  headless with an item frame (above). Propellers themselves wait for a real ship in a client.
+- **A failed load no longer loses the ship.** If Sable cannot load a part on the far side, the
+  parts already there are taken out again and the ship and its entities go back where they were.
+  Not exercised: Sable's load only fails on a damaged save, and the slot check rules out the
+  likely cause.
+- **One gathering per crossing.** `ShipVoyages` and `ShipTransfer` each worked out the ship's
+  attached parts and its crew; now `ShipTransfer.board` does it once and both use the result.
+- **Tests for the two transfer fixes.** The height refiling moved into `PlotSections` and the slot
+  search into `PlotSlots.firstFree`, both free of Sable classes so a plain unit test can reach
+  them (tests run without Sable on the classpath). `compat-sable` tests 5 → 15.
+- **Small things:** the carry command's doc still called itself a step towards ascent; an import out
+  of order in `SkyBody`.
+
+**Checked:** the full build, every module's tests (`worlds` 98, `atmosphere` 53, `core` 21,
+`compat-sable` 15, `compat-chunky` 5, `combat` 4), the dist check on all thirteen modules, and the
+headless entity check on a dedicated server.
 
 ## M3.3 — Planet 3: the Nether world
 

@@ -1,14 +1,16 @@
 package com.ascension.compat.sable.internal;
 
 import com.mojang.brigadier.context.CommandContext;
-import dev.ryanhcode.sable.api.command.SubLevelArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.ryanhcode.sable.api.command.SubLevelArgumentType;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -16,8 +18,8 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 /**
  * {@code /ascension sable carry <dimension> <x y z>} (permission 2): carries the ship you stand on,
  * crew and all, to that dimension with its origin at that point. {@code carry ship <ship> ...}
- * names the ship with a Sable selector instead, so it also runs from a console. A debug command first, the way
- * {@code gateway goto} was, so the transfer can be watched on its own before ascent depends on it.
+ * names the ship with a Sable selector instead, so it also runs from a console. The same move
+ * {@link ShipVoyages} makes when a ship crosses into or out of space, on demand, for testing.
  */
 public final class SableCommands {
 
@@ -52,9 +54,18 @@ public final class SableCommands {
         CommandSourceStack source = context.getSource();
         ServerLevel target = DimensionArgument.getDimension(context, "dimension");
         Vec3 destination = Vec3Argument.getVec3(context, "destination");
-        Component failure = byName
-                ? ShipTransfer.carry(SubLevelArgumentType.getSingleSubLevel(context, "ship"), target, destination)
-                : ShipTransfer.carry(source.getPlayerOrException(), target, destination);
+        ServerSubLevel ship;
+        if (byName) {
+            ship = SubLevelArgumentType.getSingleSubLevel(context, "ship");
+        } else {
+            ServerPlayer player = source.getPlayerOrException();
+            ship = ShipTransfer.shipAround(player.serverLevel(), player.position());
+            if (ship == null) {
+                source.sendFailure(Component.literal("You are not aboard a ship."));
+                return 0;
+            }
+        }
+        Component failure = ShipTransfer.carry(ShipTransfer.board(ship), target, destination);
         if (failure != null) {
             source.sendFailure(failure);
             return 0;
