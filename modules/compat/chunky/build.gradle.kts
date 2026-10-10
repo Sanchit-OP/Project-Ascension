@@ -47,6 +47,10 @@ evaluationDependsOn(":modules:compat:cataclysm")
 // actually exercise the Moon's new biome spawn modifier.
 evaluationDependsOn(":modules:compat:endermanoverhaul")
 
+// Same reasoning again -- server-side (it moves ships and their crews), so `runDevServer` needs it
+// here to exercise ship travel at all.
+evaluationDependsOn(":modules:compat:sable")
+
 neoForge {
     mods {
         register("ascension_core") {
@@ -69,6 +73,9 @@ neoForge {
         }
         register("ascension_compat_endermanoverhaul") {
             sourceSet(project(":modules:compat:endermanoverhaul").sourceSets["main"])
+        }
+        register("ascension_compat_sable") {
+            sourceSet(project(":modules:compat:sable").sourceSets["main"])
         }
     }
 }
