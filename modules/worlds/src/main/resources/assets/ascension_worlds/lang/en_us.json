@@ -40,6 +40,7 @@
   "block.ascension_worlds.archive_orrery": "Archive Orrery",
   "item.ascension_worlds.archive_tablet": "Archive Tablet",
   "block.ascension_worlds.archive_mural": "Archive Mural",
+  "block.ascension_worlds.mark_glyph": "Carved Glyph",
 
   "ascension_worlds.vanilla_portal.dormant": "This portal is dormant. Its world must be reached another way.",
   "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."

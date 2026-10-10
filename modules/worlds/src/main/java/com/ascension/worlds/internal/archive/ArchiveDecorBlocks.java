@@ -12,23 +12,24 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
  * The Lunar Archive's decorative blocks: the stairs its builders cut from the same lunar stone as
- * the gateway's masonry, and the tiles of its carved murals. Decoration only &mdash; no block here
- * has behaviour, and none of them is the plinth, the orrery or the tablet, which
- * {@link ArchiveContent} owns.
+ * the gateway's masonry, the tiles of its carved murals, and the glyphs cut into its pylon.
+ * Decoration only &mdash; no block here has behaviour, and none of them is the plinth, the orrery or
+ * the tablet, which {@link ArchiveContent} owns.
  *
  * <p>The design side's class, kept apart from {@code ArchiveContent} the way
  * {@link GatewayDecorBlocks} is kept apart from {@code WorldsContent}: the Archive's look and its
  * logic are owned separately ({@code docs/technical/lunar-archive-format.md}). The structure
  * templates name these blocks by id. Design record: {@code docs/technical/lunar-archive-design.md}.
  *
- * <p>Hardness matches the stone each is cut from. Mining tool:
- * {@code data/ascension_worlds/tags/block/archive_decor.json}, pulled into
+ * <p>Hardness matches the stone each is cut from, except the pylon's glyph, which cannot be broken
+ * in survival. Mining tool: {@code data/ascension_worlds/tags/block/archive_decor.json}, pulled into
  * {@code #minecraft:mineable/pickaxe}.
  */
 public final class ArchiveDecorBlocks {
@@ -62,6 +63,19 @@ public final class ArchiveDecorBlocks {
                     .strength(1.5f, 6.0f)
                     .sound(SoundType.STONE)));
 
+    /**
+     * One glyph of the script, cut into the pylon (lore art, section 5). Unbreakable in survival and
+     * dropping nothing, like the plinths, because the story reads it; light 7 once its gate is lit.
+     */
+    public static final Supplier<MarkGlyphBlock> MARK_GLYPH = block("mark_glyph",
+            () -> new MarkGlyphBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.QUARTZ)
+                    .sound(SoundType.STONE)
+                    .strength(-1.0f, 3_600_000.0f)
+                    .noLootTable()
+                    .pushReaction(PushReaction.BLOCK)
+                    .lightLevel(state -> state.getValue(MarkGlyphBlock.LIT) ? 7 : 0)));
+
     private ArchiveDecorBlocks() {
     }
 
@@ -82,6 +96,7 @@ public final class ArchiveDecorBlocks {
             event.accept(MOON_BASALT_BRICK_STAIRS.get());
             event.accept(ANORTHOSITE_BRICK_STAIRS.get());
             event.accept(ARCHIVE_MURAL.get());
+            event.accept(MARK_GLYPH.get());
         }
     }
 }
