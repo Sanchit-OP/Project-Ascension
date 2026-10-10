@@ -32,10 +32,10 @@ import net.minecraft.world.level.Level;
  * @param space       where the planet sits in interplanetary space
  * @param environment what the air is like there; defaults to {@link WorldEnvironment#EARTHLIKE}
  * @param order       sort order for listings; ties broken by id
- * @param color       packed {@code 0xRRGGBB} tint for the placeholder body rendered in space;
- *                    defaults to {@code 0xFFFFFF} (no tint). Cosmetic only, read by
- *                    {@code SpaceSkyRenderer} &mdash; the point is telling two placeholder discs
- *                    apart at a glance before real per-planet art exists.
+ * @param color       packed {@code 0xRRGGBB} colour of the disc drawn for this planet in space
+ *                    when it has no art of its own there (an {@code ascension_space} client
+ *                    resource); defaults to {@code 0xFFFFFF}. Cosmetic only, read by
+ *                    {@code SpaceSkyRenderer}: it tells placeholder discs apart at a glance.
  * @param weather     a hazardous weather event this surface can have, if any. Absent by default
  *                    &mdash; most planets (Earth included) have none of this kind, and nothing
  *                    about vanilla rain/snow is affected either way; see {@link Weather}.

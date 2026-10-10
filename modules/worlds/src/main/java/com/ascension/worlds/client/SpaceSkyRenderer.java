@@ -12,11 +12,16 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexSorting;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -26,7 +31,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 
 /**
- * Draws every registered planet as a camera-facing disc, sized and positioned by its real
+ * Draws every registered planet as a camera-facing sphere, sized and positioned by its real
  * distance in {@link SpaceDimension} &mdash; the primary navigation instrument ADR-0010 requires
  * (see {@code worlds-api.md} §3, "Apparent size is the navigation"). A planet you cannot see from
  * space turns the shared dimension into an empty void with an invisible waypoint. Also draws the
@@ -49,16 +54,15 @@ import org.joml.Matrix4f;
  * anywhere in the math, so the disc stays upright and cannot show that spin regardless of where
  * the camera looks.
  *
- * <p><strong>Real circular geometry, not a textured square.</strong> An earlier version drew a
- * textured quad and relied on {@code moon_phases.png}'s alpha channel to fake a round silhouette
- * &mdash; correct in principle, but whenever the corner pixels weren't cleanly transparent against
- * whatever the background happened to be, the square's corners showed through as a mismatched
- * colour block. A triangle fan is an actually-round shape: there is no corner for anything to show
- * through, and no texture or alpha channel is involved at all. This also means every planet is
- * flat-shaded in its own {@link Planet#color()} rather than textured &mdash; a plain colour was
- * already doing all the identification work (a blue disc reads as Earth, a grey one as the Moon);
- * the texture was never load-bearing for that, just a shape hack that is no longer needed now that
- * the shape itself is right.
+ * <p><strong>The face it shows in other skies.</strong> A planet with a {@link SpaceBody} (its
+ * look from space, a client resource) is drawn the way it hangs in another world's sky: textured,
+ * lit by the sun into a phase, with its atmosphere's halo ({@link LitSphere}, Sanchit 2026-10-11).
+ * The disc covers the sphere's true outline ({@link SkyBodyGeometry#silhouetteHalfSize}), which up
+ * close is wider than its radius. A planet with no look is a disc flat-shaded in its own
+ * {@link Planet#color()}, a triangle fan: a real round shape, no corners to show through, which is
+ * what an earlier textured square got wrong.
+ *
+ * <p>Farthest first: nothing here writes depth, so a nearer planet must be drawn over a farther one.
  */
 @EventBusSubscriber(modid = AscensionWorlds.MOD_ID, value = Dist.CLIENT)
 public final class SpaceSkyRenderer {
@@ -119,7 +123,8 @@ public final class SpaceSkyRenderer {
         // all. Nothing else exists out here for fog to usefully apply to anyway.
         FogRenderer.setupNoFog();
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        double[] sun = SkyBodyGeometry.sunDirection(
+                level.getTimeOfDay(event.getPartialTick().getGameTimeDeltaPartialTick(false)));
         RenderSystem.depthMask(false);
         // Whatever drew last before this stage may have left backface culling enabled (most of
         // Minecraft's own terrain/entity rendering wants it, for performance). A billboard's
@@ -127,17 +132,58 @@ public final class SpaceSkyRenderer {
         // so leaving culling on meant the disc only rendered from certain angles and vanished from
         // others -- exactly the "sometimes visible" symptom this was.
         RenderSystem.disableCull();
+        RenderSystem.enableBlend();
 
-        for (Planet planet : planets) {
-            renderPlanet(cameraPos, planet);
+        List<Map.Entry<ResourceKey<Planet>, Planet>> farthestFirst = new ArrayList<>(planets.entrySet());
+        farthestFirst.sort(Comparator.comparingDouble(
+                (Map.Entry<ResourceKey<Planet>, Planet> entry) -> distanceSquared(cameraPos, entry.getValue())).reversed());
+        for (Map.Entry<ResourceKey<Planet>, Planet> entry : farthestFirst) {
+            SpaceBody look = SpaceBodies.forPlanet(entry.getKey().location());
+            if (look == null) {
+                renderFlatDisc(cameraPos, entry.getValue());
+            } else {
+                renderSphere(cameraPos, entry.getValue(), look, sun);
+            }
         }
 
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableBlend();
         RenderSystem.enableCull();
         RenderSystem.depthMask(true);
         RenderSystem.restoreProjectionMatrix();
     }
 
-    private static void renderPlanet(Vec3 cameraPos, Planet planet) {
+    /** Model-view for {@link LitSphere.Disc}: none, as RenderSystem's already holds the camera's. */
+    private static final Matrix4f IDENTITY = new Matrix4f();
+
+    private static double distanceSquared(Vec3 cameraPos, Planet planet) {
+        double x = planet.space().x() - cameraPos.x;
+        double z = planet.space().z() - cameraPos.z;
+        return x * x + cameraPos.y * cameraPos.y + z * z;
+    }
+
+    /** A planet with a look from space: its face as a sphere, lit by the sun, haloed if it has air. */
+    private static void renderSphere(Vec3 cameraPos, Planet planet, SpaceBody look, double[] sun) {
+        Planet.SpacePosition space = planet.space();
+        double relX = space.x() - cameraPos.x;
+        double relY = -cameraPos.y;
+        double relZ = space.z() - cameraPos.z;
+        double distance = Math.sqrt(relX * relX + relY * relY + relZ * relZ);
+        if (distance < 1.0e-3) {
+            return;
+        }
+        double[] direction = {relX / distance, relY / distance, relZ / distance};
+        double[][] basis = SkyBodyGeometry.basis(direction);
+        float halfSize = (float) SkyBodyGeometry.silhouetteHalfSize(space.bodyRadius(), distance);
+        LitSphere.Disc disc = new LitSphere.Disc(IDENTITY, new float[] {(float) relX, (float) relY, (float) relZ},
+                direction, basis[0], basis[1], sun, halfSize);
+        LitSphere.drawFace(disc, look.texture(), look.lit(), false, 1.0F);
+        look.glow().ifPresent(colour -> LitSphere.drawGlow(disc, look.lit(), colour, 1.0F));
+    }
+
+    /** A planet with no look from space: a disc in its own colour. */
+    private static void renderFlatDisc(Vec3 cameraPos, Planet planet) {
         Planet.SpacePosition space = planet.space();
         float relX = (float) (space.x() - cameraPos.x);
         float relY = (float) (0.0 - cameraPos.y);
@@ -167,6 +213,9 @@ public final class SpaceSkyRenderer {
         float green = ((color >> 8) & 0xFF) / 255.0F;
         float blue = (color & 0xFF) / 255.0F;
 
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
         addPoint(buffer, relX, relY, relZ, red, green, blue);

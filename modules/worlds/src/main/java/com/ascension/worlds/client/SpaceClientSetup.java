@@ -52,6 +52,7 @@ final class SpaceClientSetup {
     @SubscribeEvent
     static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(SkyBodies.INSTANCE);
+        event.registerReloadListener(SpaceBodies.INSTANCE);
     }
 
     @SubscribeEvent

@@ -4,7 +4,7 @@
     {
       "texture": "ascension_worlds:textures/environment/moon.png",
       "motion": "vanilla_moon",
-      "angular_size": 10,
+      "angular_size": 8,
       "lit": true,
       "additive": true,
       "gate_light": {
