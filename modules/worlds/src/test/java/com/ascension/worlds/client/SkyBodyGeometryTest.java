@@ -85,6 +85,57 @@ class SkyBodyGeometryTest {
     }
 
     @Test
+    void moonSitsOppositeTheSun() {
+        assertVector(0, -1, 0, SkyBodyGeometry.moonDirection(0.0));  // noon, underfoot
+        assertVector(1, 0, 0, SkyBodyGeometry.moonDirection(0.25));  // rising in the east at sunset
+        assertVector(0, 1, 0, SkyBodyGeometry.moonDirection(0.5));   // midnight, overhead
+    }
+
+    @Test
+    void arcBasisNeverFlipsAcrossTheZenith() {
+        double[][] beforeMidnight = SkyBodyGeometry.arcBasis(SkyBodyGeometry.moonDirection(0.49));
+        double[][] afterMidnight = SkyBodyGeometry.arcBasis(SkyBodyGeometry.moonDirection(0.51));
+        assertTrue(SkyBodyGeometry.dot(beforeMidnight[0], afterMidnight[0]) > 0.99, "right holds");
+        assertTrue(SkyBodyGeometry.dot(beforeMidnight[1], afterMidnight[1]) > 0.99, "up holds");
+    }
+
+    @Test
+    void arcBasisIsUprightAtMoonriseAndMatchesTheFixedOnesHandedness() {
+        double[] east = SkyBodyGeometry.moonDirection(0.25);
+        double[][] arc = SkyBodyGeometry.arcBasis(east);
+        double[][] fixed = SkyBodyGeometry.basis(east);
+        assertVector(fixed[0][0], fixed[0][1], fixed[0][2], arc[0]);
+        assertVector(0, 1, 0, arc[1]);
+    }
+
+    @Test
+    void moonPhasesLightTheDiscLikeVanillasBrightness() {
+        double[] direction = SkyBodyGeometry.moonDirection(0.5);
+        double[][] basis = SkyBodyGeometry.arcBasis(direction);
+        double full = phaseCentre(0, direction, basis);
+        double gibbous = phaseCentre(1, direction, basis);
+        double quarter = phaseCentre(2, direction, basis);
+        double fresh = phaseCentre(4, direction, basis);
+        assertEquals(1.0, full, EPSILON);
+        assertTrue(gibbous > quarter && gibbous < full);
+        assertEquals(SkyBodyGeometry.NIGHT_SIDE, quarter, EPSILON, "a quarter's terminator crosses the centre");
+        assertEquals(SkyBodyGeometry.NIGHT_SIDE, fresh, EPSILON);
+        assertEquals(phaseCentre(1, direction, basis), phaseCentre(7, direction, basis), EPSILON,
+                "waning and waxing gibbous are equally bright");
+        assertEquals(phaseCentre(0, direction, basis), phaseCentre(8, direction, basis), EPSILON, "phase wraps");
+    }
+
+    @Test
+    void waningIsLitOnTheLeftWaxingOnTheRight() {
+        double[] direction = SkyBodyGeometry.moonDirection(0.5);
+        double[][] basis = SkyBodyGeometry.arcBasis(direction);
+        double[] lastQuarter = SkyBodyGeometry.phaseLight(2, direction, basis[0]);
+        double[] firstQuarter = SkyBodyGeometry.phaseLight(6, direction, basis[0]);
+        assertTrue(edge(-0.9, direction, basis, lastQuarter) > edge(0.9, direction, basis, lastQuarter));
+        assertTrue(edge(0.9, direction, basis, firstQuarter) > edge(-0.9, direction, basis, firstQuarter));
+    }
+
+    @Test
     void halfSizeMatchesTheAngle() {
         assertEquals(100.0, SkyBodyGeometry.halfSize(90, 100), 1.0e-6);
         assertEquals(100 * Math.tan(Math.toRadians(6)), SkyBodyGeometry.halfSize(12, 100), 1.0e-9);
@@ -103,11 +154,45 @@ class SkyBodyGeometryTest {
             assertTrue(earth.lit());
             assertTrue(earth.glow().isPresent());
             assertTrue(getClass().getResource("/assets/ascension_worlds/textures/environment/earth.png") != null);
+            assertEquals(SkyBody.Motion.FIXED, earth.motion());
+            assertTrue(!earth.additive(), "seen from an airless world, Earth covers the stars");
+        }
+    }
+
+    /** The Overworld's sky file parses, rides vanilla's moon, and the blank vanilla moon ships. */
+    @Test
+    void shippedOverworldSkyReplacesVanillasMoon() throws Exception {
+        try (var stream = getClass().getResourceAsStream("/assets/ascension_worlds/ascension_sky/overworld.json")) {
+            var json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+            SkyBody.SkyFile sky = SkyBody.SkyFile.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
+            assertEquals("minecraft:overworld", sky.dimension().toString());
+            SkyBody moon = sky.bodies().get(0);
+            assertEquals(SkyBody.Motion.VANILLA_MOON, moon.motion());
+            assertTrue(moon.additive(), "under an atmosphere the sky shows through the dark side");
+            assertTrue(getClass().getResource("/assets/ascension_worlds/textures/environment/moon.png") != null);
+        }
+        try (var blank = getClass().getResourceAsStream("/assets/minecraft/textures/environment/moon_phases.png")) {
+            java.awt.image.BufferedImage image = javax.imageio.ImageIO.read(blank);
+            assertEquals(128, image.getWidth());
+            assertEquals(64, image.getHeight());
+            for (int x = 0; x < image.getWidth(); x++) {
+                for (int y = 0; y < image.getHeight(); y++) {
+                    assertEquals(0, image.getRGB(x, y) >>> 24, "every texel transparent");
+                }
+            }
         }
     }
 
     private static double centre(double[] direction, double[][] basis, double[] sun) {
         return SkyBodyGeometry.brightness(0, 0, direction, basis[0], basis[1], sun);
+    }
+
+    private static double phaseCentre(int phase, double[] direction, double[][] basis) {
+        return centre(direction, basis, SkyBodyGeometry.phaseLight(phase, direction, basis[0]));
+    }
+
+    private static double edge(double u, double[] direction, double[][] basis, double[] light) {
+        return SkyBodyGeometry.brightness(u, 0, direction, basis[0], basis[1], light);
     }
 
     private static void assertVector(double x, double y, double z, double[] actual) {

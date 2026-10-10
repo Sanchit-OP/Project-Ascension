@@ -1,13 +1,21 @@
-"""Authoring helper for sky-body textures (Earth seen from the Moon). No build or runtime dependency.
+"""Authoring helper for sky-body textures (Earth seen from the Moon, the Moon seen from Earth). No
+build or runtime dependency.
 
 Run from the repository root:  python tools/generate-sky-art.py
 Needs Pillow. Rewrites every PNG it owns under
-modules/worlds/src/main/resources/assets/ascension_worlds/textures/environment/ and a preview under
-design/sky/, so hand edits to those PNGs are lost on the next run -- edit this file instead.
+modules/worlds/src/main/resources/assets/ascension_worlds/textures/environment/, the blank vanilla
+moon override, and previews under design/sky/, so hand edits to those PNGs are lost on the next
+run -- edit this file instead.
 
 The texture is the body's *face*: the disc inscribed in the square is what the renderer maps onto
 the sphere (SkyBodyRenderer). It is drawn flat, with no lighting baked in, because the renderer
-shades it by the sun to draw the phase. Original procedural pixel art, seeded and reproducible.
+shades it by the sun (or the moon phase) to draw the phase. Original procedural pixel art, seeded
+and reproducible.
+
+The blank override: minecraft:textures/environment/moon_phases.png, fully transparent at vanilla's
+size, so vanilla's additively blended moon adds nothing and ours (ascension_sky/overworld.json) is
+the only Moon over Earth. Nothing of vanilla's image is read or copied; this file only makes an
+empty one.
 """
 import math
 import os
@@ -17,7 +25,11 @@ from PIL import Image
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 OUT = os.path.join(ROOT, 'modules/worlds/src/main/resources/assets/ascension_worlds/textures/environment')
+VANILLA_OUT = os.path.join(ROOT, 'modules/worlds/src/main/resources/assets/minecraft/textures/environment')
 DESIGN = os.path.join(ROOT, 'design/sky')
+# Vanilla's moon_phases.png is a 4 x 2 grid of 32 px phases; the blank keeps that size so the UVs
+# vanilla computes still land inside it.
+VANILLA_MOON_SIZE = (128, 64)
 
 SIZE = 64
 
@@ -30,6 +42,15 @@ DESERT = [(186, 160, 108), (204, 180, 124)]
 MOUNTAIN = (120, 108, 92)
 ICE = (226, 236, 242)
 CLOUD = (244, 248, 252)
+
+# The Moon from Earth: the same two grounds you walk on there, regolith highlands and basalt maria
+# (moon_regolith, moon_basalt), lifted toward full moonlight because the sky body is drawn by
+# adding light, and dark texels would only read as a dim moon.
+HIGHLAND = [(206, 204, 196), (218, 216, 208), (194, 192, 186)]
+MARE = [(112, 116, 130), (124, 128, 140)]
+CRATER_FLOOR = (150, 150, 148)
+CRATER_RIM = (238, 236, 228)
+RAY = (232, 230, 222)
 
 
 class Noise3:
@@ -119,6 +140,67 @@ def earth():
     return img
 
 
+def sphere_point(px, py):
+    """The point of the visible hemisphere under a texel, (x right, y up, z toward the viewer)."""
+    u = (px + 0.5) / SIZE * 2 - 1
+    v = 1 - (py + 0.5) / SIZE * 2
+    r = math.hypot(u, v)
+    if r > 0.999:  # outside the disc: clamp to the rim so edge texels never sample a seam
+        u, v = u / r * 0.999, v / r * 0.999
+    return u, v, math.sqrt(max(0.0, 1 - u * u - v * v))
+
+
+def unit(a):
+    n = math.sqrt(sum(c * c for c in a))
+    return tuple(c / n for c in a)
+
+
+def moon():
+    """The near side: pale regolith highlands, dark basalt maria massed toward the upper half, a
+    scatter of craters (dark floor, bright rim), and one young crater low on the disc throwing
+    bright rays across everything."""
+    maria = Noise3(1610)
+    detail = Noise3(27)
+    rng = random.Random(1609)
+    craters = []
+    while len(craters) < 16:
+        u, v = rng.uniform(-0.9, 0.9), rng.uniform(-0.9, 0.9)
+        if u * u + v * v > 0.8:
+            continue
+        craters.append((unit((u, v, math.sqrt(1 - u * u - v * v))), rng.uniform(0.05, 0.15)))
+    young = unit((0.16, -0.58, math.sqrt(1 - 0.16 ** 2 - 0.58 ** 2)))
+    up = (0.0, 1.0, 0.0)
+    t1 = unit((up[1] * young[2] - up[2] * young[1], up[2] * young[0] - up[0] * young[2],
+               up[0] * young[1] - up[1] * young[0]))
+    t2 = (young[1] * t1[2] - young[2] * t1[1], young[2] * t1[0] - young[0] * t1[2],
+          young[0] * t1[1] - young[1] * t1[0])
+
+    img = Image.new('RGBA', (SIZE, SIZE))
+    for py in range(SIZE):
+        for px in range(SIZE):
+            x, y, z = sphere_point(px, py)
+            grain = detail.fbm(x * 5 + 3, y * 5 + 8, z * 5 + 1, 3)
+            colour = HIGHLAND[0] if grain < 0.45 else HIGHLAND[1] if grain < 0.58 else HIGHLAND[2]
+            sea = maria.fbm(x * 2.3 + 2.2, y * 2.3 + 4.1, z * 2.3 + 0.7, 4) + 0.05 * y - 0.04 * x
+            if sea > 0.57:
+                colour = MARE[0] if grain < 0.52 else MARE[1]
+            for centre, radius in craters:
+                d = math.acos(max(-1.0, min(1.0, x * centre[0] + y * centre[1] + z * centre[2])))
+                if d < radius * 0.7:
+                    colour = mix(colour, CRATER_FLOOR, 0.6)
+                elif d < radius:
+                    colour = CRATER_RIM
+            d = math.acos(max(-1.0, min(1.0, x * young[0] + y * young[1] + z * young[2])))
+            if d < 0.9:
+                bearing = math.atan2(x * t2[0] + y * t2[1] + z * t2[2], x * t1[0] + y * t1[1] + z * t1[2])
+                ray = max(0.0, math.cos(9 * bearing + 2 * detail.at(x * 3, y * 3, z * 3))) ** 24
+                colour = mix(colour, RAY, 0.6 * ray * (1 - d / 0.9))
+            if d < 0.06:
+                colour = CRATER_RIM
+            img.putpixel((px, py), colour + (255,))
+    return img
+
+
 def preview(tex):
     """The texture as the renderer shows it: clipped to the disc, lit from the upper left, with a
     terminator, so a design change can be judged without starting the game."""
@@ -139,16 +221,23 @@ def preview(tex):
     return out
 
 
-def main():
-    os.makedirs(OUT, exist_ok=True)
-    os.makedirs(DESIGN, exist_ok=True)
-    tex = earth()
-    tex.save(os.path.join(OUT, 'earth.png'))
+def write_body(name, tex):
+    tex.save(os.path.join(OUT, name + '.png'))
     sheet = Image.new('RGBA', (SIZE * 12, SIZE * 6))
     sheet.paste(tex.resize((SIZE * 6, SIZE * 6), Image.NEAREST), (0, 0))
     sheet.paste(preview(tex).resize((SIZE * 6, SIZE * 6), Image.NEAREST), (SIZE * 6, 0))
-    sheet.save(os.path.join(DESIGN, 'earth-preview.png'))
-    print('wrote earth.png')
+    sheet.save(os.path.join(DESIGN, name + '-preview.png'))
+    print('wrote ' + name + '.png')
+
+
+def main():
+    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(VANILLA_OUT, exist_ok=True)
+    os.makedirs(DESIGN, exist_ok=True)
+    write_body('earth', earth())
+    write_body('moon', moon())
+    Image.new('RGBA', VANILLA_MOON_SIZE, (0, 0, 0, 0)).save(os.path.join(VANILLA_OUT, 'moon_phases.png'))
+    print('wrote the blank minecraft:textures/environment/moon_phases.png')
 
 
 if __name__ == '__main__':

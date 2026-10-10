@@ -665,16 +665,24 @@ can restyle or remove it, and the `api` record keeps its shape.
 | `yaw` | 0 | Compass heading, Minecraft's convention: 0 south, 90 west, 180 north, 270 east. |
 | `elevation` | 45 | Degrees above the horizon, -90 to 90. |
 | `angular_size` | required | Degrees across. Real Earth from the Moon is about 2; vanilla's moon is drawn at about 11. |
-| `lit` | true | Shaded by the sun's real direction, which draws the phase. `false` for something that glows. |
+| `lit` | true | Shaded into a phase: by the sun's real direction for a fixed body, by the world's moon phase for `vanilla_moon`. `false` for something that glows. |
 | `glow` | none | `0xRRGGBB` atmosphere halo, brightest on the lit limb. |
+| `motion` | `fixed` | `fixed`: stays at `yaw`/`elevation`, right for a tidally locked moon's view of its planet. `vanilla_moon`: exactly where vanilla draws its moon, opposite the sun, turning with the sky, in the phase `Level.getMoonPhase` reports, so everything that reads the phase still matches the sky. `yaw`/`elevation` are ignored. |
+| `additive` | false | Drawn by adding light, as vanilla draws its sun and moon: right under an atmosphere, whose sky shows through the body's dark side. Off, the body covers the stars behind it, right from an airless world. |
 
-- **Fixed in the sky.** Right for a tidally locked moon, all v1 needs. Moving bodies would be a
-  new field.
+**The Moon over Earth (2026-10-10)** is `ascension_sky/overworld.json`: our Moon texture, riding
+vanilla's moon, additive. Vanilla's own moon is hidden by shipping
+`minecraft:textures/environment/moon_phases.png` fully transparent; vanilla draws its moon
+additively, so a transparent one adds nothing. No mixin, and the sun, stars and sky colours stay
+vanilla's. A resource pack that ships its own moon texture over ours gets two moons. Under a
+vanilla sky the bodies also fade with rain, as vanilla's moon does.
+
+- **Fixed or riding vanilla's moon.** Any other path across the sky would be a new `motion`.
 - **Files add up.** Several files can name the same dimension, from any namespace, so another
   mod can put its planet in our Moon's sky without touching our file.
 - **Drawn after the sky and before terrain**, like the vanilla sun: the ground covers it. Hidden
   under blindness, darkness, or in lava; faded by a planet weather event.
-- Textures come from `tools/generate-sky-art.py`; its preview sheet (`design/sky/`) shows the
+- Textures come from `tools/generate-sky-art.py` (Earth, the Moon, and the blank vanilla moon); its preview sheets (`design/sky/`) show each
   texture flat and as lit in game.
 
 ## 5. Registry mechanism
