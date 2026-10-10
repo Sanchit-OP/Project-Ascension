@@ -31,6 +31,7 @@ it is committed; ask Sanchit before pushing. Details live in the sections below 
 | No clouds on the Moon or in space (`ascension-compat-distanthorizons`) | **Live 2026-10-10.** |
 | Our Moon in Earth's sky in place of vanilla's | **Live 2026-10-10.** |
 | Background pre-generation (`ascension-compat-chunky`) | **Off by default since 2026-10-10**: a fresh server crashed under it. The Chunky bug, below. |
+| Planets in space drawn as the lit spheres they are in other skies (`ascension_space` looks, `LitSphere`); the Moon in Earth's sky 10° → 8° | **Live 2026-10-11:** "it checks out its cool". |
 | Cataclysm's five Earth bosses held for later planets | `/locate` on a fresh dedicated server 2026-10-11: bosses gone, small structures kept. |
 | The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact; since the refactor pass, an item frame inside the ship travels with it too. **Seen live 2026-10-11** (`live-test-2026-10-11.md`): Sanchit rode a command-built ship from Earth to space and down onto the Moon, its item frame along. Not yet seen with a real Aeronautics ship (none designed yet). |
 
@@ -57,10 +58,9 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
    lore art was made.
 
-**Next:** the space view of planets (Sanchit, 2026-10-11: bodies in space drawn like the sky
-bodies, the Moon smaller than Earth). Then the orrery hologram with Tacita's signature, then cats.
-Then Planet 3 once its questions are answered. A real Aeronautics starter ship (decision 5) is
-still needed to see the road with propellers.
+**Next:** pick the next chapter. Waiting in line: the orrery hologram with Tacita's signature,
+then cats; Planet 3 once its questions are answered; and a real Aeronautics starter ship
+(decision 5), needed to see the airship road with propellers and for the teaching path.
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
