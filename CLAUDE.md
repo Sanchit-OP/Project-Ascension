@@ -70,8 +70,8 @@ Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behav
 **`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
 the Moon. **`ascension-combat`** (ADR-0012) is the League-style item/stat/rune system, built in a
 separate parallel session — do not fold its work into this one's without asking. Tier 2 compat
-jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons
-(`docs/technical/architecture.md` has the table).
+jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,
+sable (`docs/technical/architecture.md` has the table).
 
 **Start a new session at [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md), section
 "Where M3 stands — start here"**: what is built, what is verified, the decisions waiting on
@@ -87,6 +87,14 @@ tendril drop and crafting Earth's keystone, the Cataclysm bosses' armour fix, an
 Observers, the trap, the mark, Tacita. **Planet 3 (M3.3) is the Nether world**; its open
 questions wait on Sanchit. **Background pre-generation is off by default** since a fresh server
 crashed under it (the Chunky bug in the M3 plan, root cause open).
+
+**The road to space is by airship** (ADR-0015, Sanchit 2026-10-11): a Create Aeronautics ship
+climbing past a planet's build height is carried to space with its crew, and one reaching a planet
+in space comes down to it (`ascension-compat-sable`, through `ascension-worlds`' public
+`SpaceTravel` and `AscentCarrier`). Survival players can no longer rise to space on foot. Proven
+headless with a command-built ship; not yet seen with a crew or a real Aeronautics ship, because
+no starter ship has been designed. Cataclysm's Earth bosses are held for later planets. **A
+refactor pass is due next** (ADR-0008).
 
 The history below is M0–M2, kept for context.
 

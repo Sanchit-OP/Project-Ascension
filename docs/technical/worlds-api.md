@@ -728,11 +728,36 @@ Held as a registry, resolved on demand, never cached in a static map keyed by di
    `y: 256`, the plane), velocity and heading preserved, per the "ascent triggers on altitude"
    behaviour already described above.
 
-   **Create Aeronautics + Sable ship-based ascent is planned, later, as the Tier 2 upgrade** —
-   this does not block it and does not need to be designed around now. When it lands, it is
-   another way to cross the same threshold, not a replacement for it: `ascension-compat-sable`
-   bridges ships into the same dimension-change hook, per ADR-0006's own posture of ships as an
-   optional integration.
+   **Superseded 2026-10-11 by ADR-0015: the road to space is by airship.** Elytra became
+   unobtainable when the End went dormant (ADR-0014), and Sanchit chose Create Aeronautics ships
+   as the only way up. Ships cross the same threshold through `ascension-compat-sable`, and the
+   on-foot route closes once a vehicle exists. See "Vehicles crossing the line" below.
+
+### Vehicles crossing the line (added 2026-10-11, ADR-0015)
+
+The line between a planet's sky and space is this module's; moving a vehicle across it is the
+vehicle mod's. `api.SpaceTravel` is the meeting point:
+
+| Call | Answers |
+|---|---|
+| `planetWithSurface(server, dimension)` | the planet whose surface a world is |
+| `arrivalInSpace(planet, yaw)` | where something rising out of that planet's sky comes out: past its approach shell, along `yaw`, at height 0. The same point a player on foot reaches. |
+| `planetUnder(server, x, z)` | the planet whose body holds a point in space, i.e. where a vehicle there should go down to |
+| `arrivalAbove(surface, pilot)` | where a vehicle coming down arrives: 40 blocks below the build height, over the spot the pilot last rose from, or over the world's centre |
+| `noteDeparture(player)` | remembers a rider's departure point, as a player rising on foot is remembered |
+| `registerCarrier(id, carrier)` | an `AscentCarrier` claims the players riding its vehicles. Worlds leaves a claimed player for the vehicle to carry, instead of moving them alone a moment before their ship. |
+
+**`ascent.vehicleOnly`** (server config, default on): once any carrier is registered, a survival
+player rising past the build height without a vehicle goes nowhere and is told "The sky ends
+here. Only a ship can carry you further." With no carrier registered it does nothing, so this
+module alone never makes space unreachable. Creative and spectator players are never stopped.
+
+`ascension-compat-sable` is the one vehicle mod so far: Sable ships, checked once a second, carried
+by their centre's position. **A planet a ship should leave needs air up to its build height**:
+Sable's default sky fades air pressure to zero at a world's top, which no balloon or propeller can
+climb through. The compat jar ships `dimension_physics` for Earth and the Moon that keeps the air
+thin but present there; a new planet needs the same file (`data/<ns>/dimension_physics/`, Sable's
+format). Details: ADR-0015, and the airship road section of `plans/m3-vertical-slice.md`.
 
 ### Distant Horizons: tested when orbit exists, and it does not get a vote
 
