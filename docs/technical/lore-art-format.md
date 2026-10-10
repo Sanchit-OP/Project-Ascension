@@ -225,17 +225,20 @@ For reference, so design knows what will be looking at its files:
 
 ## Handover checklist for design
 
-- [ ] Script sheet: seven glyphs and eight eye stages, previewed at 1×, 5 px and 8 px.
-- [ ] `font/script.json` and its texture; a preview of a signature line set in normal text.
-- [ ] Mark textures, stages 1–7 (Format B, section 3). First-person and third-person previews of
+Done 2026-10-10. The design record, with the record's tile range and layout, the shrine's size and
+the live checklist, is [`lore-art-design.md`](lore-art-design.md).
+
+- [x] Script sheet: seven glyphs and eight eye stages, previewed at 1×, 5 px and 8 px.
+- [x] `font/script.json` and its texture; a preview of a signature line set in normal text.
+- [x] Mark textures, stages 1–7 (Format B, section 3). First-person and third-person previews of
       stages 1, 4 and 7.
-- [ ] The illager texture, with a preview beside a player at stage 7.
-- [ ] `mark_glyph`: registration, models, blockstate (all fourteen states), textures, lang name. The pylon band in the generator; a preview of the lit and unlit pylon from the
+- [x] The illager texture, with a preview beside a player at stage 7.
+- [x] `mark_glyph`: registration, models, blockstate (all fourteen states), textures, lang name. The pylon band in the generator; a preview of the lit and unlit pylon from the
       court and from 64 blocks.
-- [ ] Revised murals (cats, Earth's side, the Road's gouge), and `TILES` updated.
-- [ ] The Sealers' Record: the tiles, the empty frame in the sealed room, the tile range and layout.
-- [ ] `keeper_shrine.nbt`, with its size and the position of the mural's wall stated.
-- [ ] `moon_signal.png`.
-- [ ] Both generators reproduce the committed files byte for byte; `./gradlew :modules:worlds:build`
+- [x] Revised murals (cats, Earth's side, the Road's gouge), and `TILES` updated.
+- [x] The Sealers' Record: the tiles, the empty frame in the sealed room, the tile range and layout.
+- [x] `keeper_shrine.nbt`, with its size and the position of the mural's wall stated.
+- [x] `moon_signal.png`.
+- [x] Both generators reproduce the committed files byte for byte; `./gradlew :modules:worlds:build`
       passes.
-- [ ] A design note, `docs/technical/lore-art-design.md`, ending in a live checklist.
+- [x] A design note, `docs/technical/lore-art-design.md`, ending in a live checklist.

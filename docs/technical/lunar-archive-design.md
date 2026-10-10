@@ -7,6 +7,12 @@ throwaway datapack standing in for logic's worldgen (two runs of four sites, the
 final templates) and compared with the world block for block. Every model resolves. Nobody has
 walked it.
 
+**Revised 2026-10-10 by the lore art round** ([`lore-art-design.md`](lore-art-design.md)): the
+pylon's band is now the seven carved glyphs, the murals were revised (cats, the blue world kept on
+the left, the Road's channel prised out, the Keeper's staff across its ring), and the sealed room
+grew to carry the frame of the Sealers' Record. The passages below are updated to match; the
+`in-world-*` renders still show the old pylon until the Archive is placed again.
+
 | | |
 |---|---|
 | Templates | `data/ascension_worlds/structure/lunar_archive/entrance.nbt`, `vault.nbt` |
@@ -62,8 +68,10 @@ Plinths are numbered in reading order on the plans. The yellow tick points at th
 
 1. **The surface** (`entrance.nbt`). An eroded court of dark paving with a pale avenue down its
    middle. Two pylons flank the head of the cutting. The west one stands 23 blocks: a 3 × 3 shaft
-   of anorthosite with pillar corners, a chiseled band at its foot, a band of gatestone script near
-   the top, then a taper, a needle and an eye-carved cap. The east one snapped at 9, and its top lies
+   of anorthosite with pillar corners, a chiseled band at its foot, a band of the eye near the top
+   with the seven glyphs of the script cut in a column under it, down the face toward the court
+   (they light one by one as gates are lit; lore art, section 5), then a taper, a needle and an
+   eye-carved cap. The east one snapped at 9, and its top lies
    across the court in drums, with its spire at the end. From 64 blocks the standing pylon is the
    mark, a pale stroke against the black sky (above, rendered from generated terrain).
    Earlier drafts topped it with a hollow diamond, which read as a ringed cross from any distance.
@@ -96,7 +104,9 @@ Plinths are numbered in reading order on the plans. The yellow tick points at th
    hall from the breach to the gate, every third stone dark.
 9. **The sealed room.** Its wall toward the hall is rough, unbricked stone laid in a hurry, broken
    through, with the rubble fallen inward. Inside are a bench, plinth 7 against the back wall,
-   and plinth 8 between it and the breach. The only light is script in the floor where the reader
+   and plinth 8 between it and the breach. The back wall is the empty frame of the Sealers'
+   Record, 9 × 6 tiles of torn-out plaster over a pale sill: the porters carried the record off
+   tile by tile (lore art, section 7). The only light is script in the floor where the reader
    stands. The *Unfinished* reader faces the breach, and through it, 13 blocks away, the dead gate.
 
 ![the gate hall](../../design/lunar-archive/cutaway-gate-hall.png)
@@ -115,10 +125,11 @@ wall (contract). Empty space outside the build is `structure_void`.
 | Lunar Basalt Bricks / Polished / Cracked / Brick Slab | | walls, floors, the hurried seal, rubble |
 | Anorthosite Bricks / Pillar / Chiseled / Cracked / Brick Slab | | pillars, ribs, bands, borders, pylons, the dais |
 | Inscribed Gatestone `lit=true` | | the road, the labels, the springing-line ring: all the light |
-| Inscribed Gatestone `lit=false` | | the dead gate's ring, the dark orbit, the pylon band |
+| Inscribed Gatestone `lit=false` | | the dead gate's ring, the dark orbit, the fallen pylon's drum |
+| **Carved Glyph** (`mark_glyph`, glyph 0–6, `lit`) | yes | the standing pylon's band of seven (lore art) |
 | **Lunar Basalt Brick Stairs** | yes | the covered stair, the deep passage |
 | **Anorthosite Brick Stairs** | yes | the open cutting |
-| **Archive Mural** (`tile` 0–120) | yes | the murals; tile 0 is bare plaster |
+| **Archive Mural** (`tile` 0–192) | yes | the murals, the record and its torn-out frame, the keeper shrine's mural; tile 0 is bare plaster |
 | Archive Plinth, Archive Orrery | logic's | (looks below) |
 | Lunar Regolith | | dust drifts on the court |
 | `minecraft:chest` | | the stores |
@@ -129,7 +140,7 @@ stonecutter recipes from the bricks and from the raw stone, loot, `#minecraft:st
 `stone_brick_stairs`: all 40 variants match. Templates, unlike the gateway's frame format, carry
 block states, so stairs face the right way and rotate with the piece.
 
-**Archive Mural** is one block with a `tile` property (0–120) and a model per tile. Its loot table
+**Archive Mural** is one block with a `tile` property (0–192) and a model per tile. Its loot table
 copies the tile (`minecraft:copy_state`), so a mural taken down and put back up keeps its picture.
 The stonecutter makes bare plaster from anorthosite. `ArchiveMuralBlock.TILES` must equal the art
 script's tile count, and the art script refuses to run if they differ.
@@ -157,14 +168,16 @@ faceless, in profile.
 
 | Mural | Where | Shows |
 |---|---|---|
-| The Stonecutters | west wall, 1st bay | a quarry; builders cutting, carrying a stone; a ring half raised, its stones already cut with script |
-| The Step | west wall, 2nd | the same ring between two worlds: figures walking up on pale ground, one standing in the lit field, one stepping out onto ash under a stranger sky |
-| The Road | west wall, 3rd | the sun at the edge, the orbits, every world they walked joined by a lit road out from the Moon. The road to the blue world is cut but never inlaid: its gate was never opened (*The Sealing*) |
+| The Stonecutters | west wall, 1st bay | a quarry; builders cutting, carrying a stone; a ring half raised, its stones already cut with script; a cat on the cut stones, watching |
+| The Step | west wall, 2nd | the same ring between two worlds: a cat where the walkers set out, figures walking up on the blue world's stone, one standing in the lit field, one stepping out onto ash under a stranger sky |
+| The Road | west wall, 3rd | the sun at the edge, the orbits, every world they walked joined by a lit road out from the Moon. The road to the blue world was laid and then hacked out: a gouged channel, the dark bed showing, one sliver of teal left in it. The Sealers cut Earth off |
 | Ring on Ash | east wall, 1st | the ring on the ash plains: blades of dark ash-stone among black spires, a dim red sun (Planet 3) |
 | Ring on Ice | east wall, 2nd | the ring on a frozen sea: pale ice-stone blades, icebergs, a ringed world in the sky |
 | Ring on the Forge | east wall, 3rd | the ring among iron-dark mountains seamed with glowing fire |
-| The Keeper | the rotunda's north niche, 3 × 5 | a keeper standing in the ring it guards: massive, built in courses, one diamond eye, a staff topped with the network's eye |
-| The Quiet | the deep passage | four rings on the road, told in order: the first two dark, the dark staining the plaster in from the left, the next two still lit. The fifth, the Moon's own, is only scratched-in guide lines, and then the carving stops |
+| The Keeper | the rotunda's north niche, 3 × 5 | a keeper standing in the ring it guards: massive, built in courses, one diamond eye, its staff held level across the opening like a bar across a door |
+| The Quiet | the deep passage | four rings on the road, told in order: the dark pours out of the blue world at the top left, stains the plaster and puts out the first two rings; the next two are still lit. The fifth, the Moon's own, is only scratched-in guide lines, and then the carving stops |
+| The Sealers' Record | the sealed room's back wall, 9 × 6; the template holds only its torn-out frame | six panels: breathing beside the lit ring; the dark pouring out of the blue world; the Sealers walling up their ring; a keeper carved and given the key; the people lying still; one figure rising on fire toward the blue world. Carried off by the porters ([`lore-art-design.md`](lore-art-design.md)) |
+| The keepers' making | `keeper_shrine.nbt`, beside the citadel | the Sealers making the keepers in a pair: the sleeper, its eye shut, given the key; the guard still being cut from the rock |
 
 The east wall reads as one argument: three worlds, three different bodies, one ring. The west wall
 is the story: cutting, crossing, the road. *The Quiet* comes after the orrery, where the tone turns.

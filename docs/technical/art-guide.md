@@ -5,8 +5,9 @@ what to keep in mind when making the next batch: Planet 3, boss drops, machines,
 2026-10-06 by the session that made that art, for any session making art next. The worked
 examples are [`gateway-portal-design.md`](gateway-portal-design.md),
 [`moon-materials-art.md`](moon-materials-art.md), for item sprites drawn in another game's
-likeness, [`combat-art.md`](combat-art.md), and, for a whole building in structure templates,
-[`lunar-archive-design.md`](lunar-archive-design.md).
+likeness, [`combat-art.md`](combat-art.md), for a whole building in structure templates,
+[`lunar-archive-design.md`](lunar-archive-design.md), and, for an invented script and a mark worn on
+the player, [`lore-art-design.md`](lore-art-design.md).
 
 ## The rules
 
@@ -221,6 +222,12 @@ and the game turns the states with the piece, so real stairs, top slabs, facing 
 | The diamond eye as a 3-px diamond (tablet item) and as a hollow block diamond (the pylon's first cap): both read as crosses, the second as a ringed cross from any distance | 12× item preview; perspective from 64 blocks | an almond eye at 16 px; in blocks, solid lozenges (thick pale rim, dark ring, lit pupil) |
 | White-on-white relief figures vanished at viewing distance | the murals set into a hall wall | black-figure: the builders inlaid in their own dark stone |
 | The plinth's tablet read upside down | `render_block_model` | uv flipped both ways (an up face's top lies along north) |
+| Invented glyphs: airy strokes read as arrows, a check, Y, L; a counter in every glyph turned them into balloons and a fish; glyphs from the eye's lattice clumped into arrowheads | 12x sheets and a 1x line, read as a line of script | the gatestone runes' own moves (stems with steps, stacked steps, hooks off bars) into seven different silhouettes; cut anything that reads as a letter, digit, cross or face |
+| Concentric diamond outlines at 7-9 px read as a checkerboard (the eye's last stage) | the script sheet at 1x | a solid lit iris round a slit |
+| A mark painted on the skin: first person shows only ~8 x 8 skin pixels of the arm, at an angle | rebuilding vanilla's `renderPlayerArm` and rendering a coloured test skin | a decal quad over the back of the hand at 6 texels per model pixel (Format B) |
+| A pale incision on pale plaster vanished (the Road's prised-out channel) | the mural at 6x | show the dark bed the inlay sat in |
+| A keeper laid on its side read as a machine | the mural at 6x | stand it up, eye shut |
+| `render_iso`, `render_iso_states` and `render_block_model` draw mirror images (their right vector is reversed) | a glyph face rendered head-on beside its texture | flagged as its own task; render through `render-item-model.py`'s rasteriser meanwhile (`scene_quads` in the lore script) |
 
 ## The palettes
 
@@ -301,7 +308,8 @@ A block item's model parents its block model.
 | `tools/render-structure-preview.py`, `.nbt` previews | `load_nbt` reads a structure template (states and block-entity tags); `render_plan` (a floor plan, plinths numbered with a tick toward their reader), `render_iso_states` (cut-aways coloured per block *state*, with stairs, slabs and the plinth drawn in rough shape) and `render_perspective` (a player's-eye view on a black sky, e.g. a marker from 64 blocks). `archive_previews()` is the Archive's set |
 | `render_block_model(model_ref)` (same file) | one block model drawn from its own elements, uvs, rotations and textures, glow layers full-bright. Use it for any model that isn't a cube: it shows a face upside down or a uv wrong before the game does |
 | `tools/generate-archive-art.py` | the Archive's murals (a carved-plaster `Canvas`: relief heights lit top-left, coloured inlay, teal inlay on a glow layer), the plinth, orrery and tablet looks, stair and mural models and blockstates, the inlay palettes above. Refuses to run if its tile count differs from `ArchiveMuralBlock.TILES` |
-| `tools/generate-lunar-archive.py` | the Archive's structure templates as deterministic NBT (sorted palette, fixed block order, gzip with mtime 0), built from `room()`, `run()` and friends. Before writing it checks the contract (entries, orrery clear volume, loot, jigsaws, free-standing plinths) and floods block light to prove no floor a mob could stand on is dark |
+| `tools/generate-lore-art.py` | the script (`GLYPHS`, `GLYPHS_8`, `EYE_8`, `EYE_MARK`), its font, the mark decals, `mark_glyph`, the moon signal. Its previews: vanilla's first-person arm (`first_person_arm`), ModelPart cubes with skin uvs (`cube_quads`), a decal quad, and any template drawn from its real block models through the item rasteriser (`scene_quads`, `room_shot`) |
+| `tools/generate-lunar-archive.py` | the Archive's structure templates, and the keeper shrine's, as deterministic NBT (sorted palette, fixed block order, gzip with mtime 0), built from `room()`, `run()` and friends. Before writing it checks the contract (entries, orrery clear volume, loot, jigsaws, free-standing plinths) and floods block light to prove no floor a mob could stand on is dark |
 
 The gateway files are `.../ascension_worlds/gateway_frame/gateway.json` and
 `.../ascension_worlds/gateway_site/gateway_moon_site.json`.
