@@ -80,9 +80,16 @@ step 1 should be re-run on them.
    the gateway ruin by a new placement type, `random_spread_keep_clear`. Results are in
    `lunar-archive-format.md`. **Sanchit's client walk-through is next**, using the live checklist at
    the end of `lunar-archive-design.md`.
-2. Gate progress synced to clients, once per attunement and never per tick. It is the one source
-   for the orrery hologram, the mark's stage, the pylon's lit glyphs, the signature line and the
-   moon signal.
+2. **Done 2026-10-10, with its first reader, the mark. Not yet seen in a client.**
+   - `GateProgressPayload` carries the lit planets. It is sent at login and whenever a gate lights
+     or goes out, never per tick, and the client copy is cleared on logout.
+   - The mark is drawn on the right hand in first and third person (`PlayerMarkLayer`, `MarkDecal`,
+     `MarkClientEvents`), and the illagers' full mark on their crossed arms, exactly where the art
+     contract places it. It is full-bright, dimmed in a dust storm or the Deep Dark.
+   - Every player on the server shows the same stage, because the gates are shared.
+   - In first person it shows only with an empty hand: vanilla draws no arm while an item is held.
+   - Debug commands `gateway light|unlight <id>` step through all seven stages.
+   - Checked on a dedicated server (clean boot, commands answer) and by 86 tests.
 3. Use that sync for the orrery hologram, the mark's render layer (missing-texture placeholder until
    design delivers), pylon lighting, and the moon signal. After that: rewrite the Moon's tablets in
 `tools/archive-lore.py` (five kept, three new for the sealed room) and re-point three plinths in the

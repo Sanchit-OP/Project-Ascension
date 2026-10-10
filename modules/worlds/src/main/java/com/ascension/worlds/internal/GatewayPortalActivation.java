@@ -105,11 +105,17 @@ final class GatewayPortalActivation {
         register(level, placement);
     }
 
-    /** Record this planet's portal, and where arrivals should stand, network-wide. */
+    /**
+     * Record this planet's portal, and where arrivals should stand, network-wide. A gate lit for the
+     * first time also tells every client ({@link GateProgress}): it is a glyph on everyone's hand.
+     */
     static void register(ServerLevel level, GatewayFrame.Placement placement) {
         int[] arrival = placement.arrivalSpot();
-        level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE)
+        boolean newlyLit = level.getServer().overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE)
                 .activate(level.dimension().location(), new BlockPos(arrival[0], arrival[1], arrival[2]));
+        if (newlyLit) {
+            GateProgress.broadcast(level.getServer());
+        }
     }
 
     private static void say(ServerPlayer player, String key, ChatFormatting colour) {
