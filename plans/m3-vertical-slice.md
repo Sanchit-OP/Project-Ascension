@@ -74,13 +74,19 @@ and `TILES` = 193. The Archive templates changed in this merge, so the headless 
 step 1 should be re-run on them.
 
 **Next logic build, picked by Sanchit 2026-10-10: the Archive in the world, then gate progress.**
-1. **Done 2026-10-10, headless; not yet seen in a client.** Archive worldgen from the design
+
+**Live 2026-10-10: steps 1 and 2 seen working in Sanchit's client** on a dedicated server, fresh
+world: the Archive, the eight tablets as the voice with Tacita's signature, Earthrise, and the
+mark through its stages, dark in Darkness and a dust storm, on illagers, and kept across a relog.
+"It looks and feels amazing." Checklist and result: [`live-test-2026-10-10.md`](live-test-2026-10-10.md).
+What the walk-through did not cover is unticked in `lunar-archive-design.md`'s live checklist.
+
+1. **Done 2026-10-10, seen live.** Archive worldgen from the design
    handover: structure, two pools, the fixed structure set at x −160, z −256, plinth and orrery
    shapes with `noOcclusion`. Craters and wild citadels are now kept clear of both the Archive and
    the gateway ruin by a new placement type, `random_spread_keep_clear`. Results are in
-   `lunar-archive-format.md`. **Sanchit's client walk-through is next**, using the live checklist at
-   the end of `lunar-archive-design.md`.
-2. **Done 2026-10-10, with its first reader, the mark. Not yet seen in a client.**
+   `lunar-archive-format.md`.
+2. **Done 2026-10-10, with its first reader, the mark. Seen live.**
    - `GateProgressPayload` carries the lit planets. It is sent at login and whenever a gate lights
      or goes out, never per tick, and the client copy is cleared on logout.
    - The mark is drawn on the right hand in first and third person (`PlayerMarkLayer`, `MarkDecal`,
@@ -90,14 +96,30 @@ step 1 should be re-run on them.
    - In first person it shows only with an empty hand: vanilla draws no arm while an item is held.
    - Debug commands `gateway light|unlight <id>` step through all seven stages.
    - Checked on a dedicated server (clean boot, commands answer) and by 86 tests.
-3. Use that sync for the orrery hologram, the mark's render layer (missing-texture placeholder until
-   design delivers), pylon lighting, and the moon signal. After that: rewrite the Moon's tablets in
-`tools/archive-lore.py` (five kept, three new for the sealed room) and re-point three plinths in the
-Archive generator. Then the orrery hologram, then Planet 3 once its questions are answered. Deferred to the alpha release: the two-client test (also covers
-share-air) and the M1.9 measurement.
+3. **Next: the refactor pass, which is due** (below). Its first job is the Chunky bug below.
+4. Then the rest of gate progress's readers, from `lore-art-design.md`'s "For the logic session"
+   list: the pylon's glyphs lighting with the moon signal in Earth's sky (one story beat), the
+   orrery hologram, cats shying from a marked player, Tacita's signature as a glyph row in the
+   reader, Endermen carrying Sealers' Record tiles, the keeper shrine. Then Planet 3 once its
+   questions are answered. Deferred to the alpha release: the two-client test (also covers
+   share-air) and the M1.9 measurement.
 
-**Cadence:** the last refactor pass was 2026-10-06 evening (`e8119d6`); the next is due after three
-more increments (ADR-0008).
+(The tablet rewrite once listed here is done: the voice's eight tablets kept their slots and ids,
+`lunar-archive-format.md`, 2026-10-10 note.)
+
+**Bug, found 2026-10-10: `ChunkySequentialPregen` (compat-chunky) treats a pause as a finished
+task.** Pausing Chunky fires its completion callback, so the hook starts the next planet's
+pre-generation at once: pause Earth and the Moon starts. Worse, on a fresh world the Earth task
+it starts at boot, at full speed (about 50 chunks/s), dropped the Overworld to 2.5 TPS and filled the
+dev server's 6 GB heap in about ten minutes with nobody online: the watchdog killed it with 35,331
+Overworld chunks loaded (crash report `crash-2026-10-10_21.36.23-server.txt`, run/server). Not
+caused by the Archive or the mark. To do: start the next planet only on a real completion, find
+out why that many chunks stay loaded (unload falling behind a 400 ms tick, or held tickets), and
+throttle or bound the pre-generation so a fresh server survives it.
+
+**Cadence:** the last refactor pass was 2026-10-06 evening (`e8119d6`). Since then: the Archive's
+lore system, the tablet rewrite, the Archive's worldgen, gate progress with the mark. The next
+increment is the refactor pass (ADR-0008).
 
 **Where things are:**
 - Gateway format contract: [`docs/technical/gateway-frame-format.md`](../docs/technical/gateway-frame-format.md);

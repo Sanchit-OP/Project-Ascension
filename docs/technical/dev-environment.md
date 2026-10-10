@@ -379,6 +379,13 @@ the tools in `tools/worldgen-diagnostics/`, and never touches the real dev world
    the dev world later skips that strip. Before the run, note the `chunks=` values, and put them
    back afterwards. Too low only re-checks chunks that already exist; too high leaves a gap.
    (Learned 2026-10-10, when the values had to be reset to safe lower bounds after the fact.)
+   - Setting `continueOnRestart` to `false` in `config/chunky/config.json` does not help:
+     `syncServerPackConfig` copies `serverpack/config` over `run/server/config` on every launch,
+     and the shipped file says `true`.
+   - Late is not good enough either. On 2026-10-10 a pause that arrived a minute late left both
+     tasks resumed at once on a fresh world, and ten minutes later, with no player online, the
+     Overworld held 35,331 loaded chunks, the 6 GB heap was full, and the watchdog killed the
+     server mid-save. Script the pause to fire the moment `RCON running` appears.
 4. Force-generate the area: `RCON_PASSWORD=... python tools/worldgen-diagnostics/rcon_client.py
    execute in ascension_worlds:moon run forceload add <x1> <z1> <x2> <z2>`, wait a few seconds,
    then `save-all flush`.
