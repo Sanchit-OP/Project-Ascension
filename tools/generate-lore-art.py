@@ -717,15 +717,21 @@ def glyph_models():
 
 
 def glyph_block_sheet(path):
-    """Every state of mark_glyph drawn from its own model (render_block_model), unlit above and lit
-    below, and the seven faces flat at 8x."""
-    rsp = _load('render_structure_preview', 'render-structure-preview.py')
+    """Every state of mark_glyph drawn from its own model through the hand-camera rasteriser (the
+    structure tool's render_block_model draws a mirror image), unlit above and lit below, and the
+    seven faces flat at 8x."""
+    import numpy as np
+    rim, rsp = _rim(), _load('render_structure_preview', 'render-structure-preview.py')
+    size = (330, 330)
+    proj = rim.perspective(40, 1.0)
+    view = rim.look_at((2.45, 1.95, 2.75), (0.5, 0.48, 0.5))
     tiles = []
-    for lit in ('', '_lit'):
+    for lit in ('false', 'true'):
         row = []
         for k in range(7):
-            im = rsp.render_block_model(f'{NS}:block/mark_glyph/glyph_{k}{lit}', scale=10)
-            row.append(im.crop((im.width // 8, im.height // 8, im.width * 7 // 8, im.height * 7 // 8)))
+            q = scene_quads(rim, rsp, {(0, 0, 0): f'{NS}:mark_glyph[glyph={k},lit={lit}]'})
+            bg = np.zeros((size[1], size[0], 3), np.float32) + np.array([0.16, 0.17, 0.2], np.float32)
+            row.append(rim.to_image(rim.rasterise(q, proj, view, size, bg)).resize((220, 220), Image.LANCZOS))
         tiles.append(row)
     w, h = tiles[0][0].size
     flat = [glyph_face(k).resize((128, 128), Image.NEAREST) for k in range(7)]
@@ -735,7 +741,7 @@ def glyph_block_sheet(path):
            fill=INK)
     for r, row in enumerate(tiles):
         for k, im in enumerate(row):
-            out.paste(im.convert('RGB'), (8 + k * (w + 6), 24 + r * (h + 6)))
+            out.paste(im, (8 + k * (w + 6), 24 + r * (h + 6)))
     for k, im in enumerate(flat):
         out.paste(im, (8 + k * (w + 6) + (w - 128) // 2, 24 + 2 * (h + 6) + 10))
     out.save(path)
