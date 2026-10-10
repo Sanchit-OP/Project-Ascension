@@ -42,3 +42,4 @@ forgets it.
 | [0013](0013-mixins-in-ascension-compat-cataclysm.md) | `ascension-compat-cataclysm` uses mixins, the project's first | Accepted |
 | [0014](0014-vanilla-nether-and-end-portals-are-dormant.md) | Vanilla Nether and End portals are dormant | Accepted |
 | [0015](0015-the-road-to-space-is-by-airship.md) | The road to space is by airship | Accepted |
+| [0016](0016-mixin-in-ascension-compat-sable.md) | One mixin in `ascension-compat-sable`: ship slots unique across dimensions | Accepted |
