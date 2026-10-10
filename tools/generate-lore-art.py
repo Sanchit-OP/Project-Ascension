@@ -26,6 +26,7 @@ import json
 import math
 import os
 import random
+import sys
 
 from PIL import Image, ImageDraw
 
@@ -198,6 +199,86 @@ def cells(rows):
     return [(x, y, ch) for y, row in enumerate(rows) for x, ch in enumerate(row) if ch != '.']
 
 
+def write_json(rel, obj):
+    path = os.path.join(ASSETS, rel)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8', newline='\n') as f:
+        json.dump(obj, f, indent=2)
+        f.write('\n')
+
+
+# --- 2. the script as a font ---------------------------------------------------------------------------
+#
+# One bitmap provider, 8 x 8 cells, height 8 and ascent 7: the same metrics as vanilla's own text, so a
+# glyph's top row is a capital's top row and its seventh row sits on the baseline. Row 0 of the sheet
+# is U+E000..E006 (the glyphs) and a padding cell; row 1 is U+E010..E017 (the eye, stage 0 to 7). The
+# pixels are white, so the text colour logic gives a line is the colour it shows in.
+
+FONT_GLYPHS = [chr(0xE000 + i) for i in range(7)] + ['\u0000']
+FONT_EYES = [chr(0xE010 + s) for s in range(8)]
+
+
+def font_texture():
+    img = Image.new('RGBA', (64, 16), (0, 0, 0, 0))
+    for i, rows in enumerate(GLYPHS_8):
+        stamp(img, rows, i * 8, 0, (255, 255, 255, 255))
+    for s, rows in enumerate(EYE_8):
+        stamp(img, rows, s * 8, 8, (255, 255, 255, 255))
+    return img
+
+
+def font_json():
+    return {'providers': [{
+        'type': 'bitmap',
+        'file': f'{NS}:font/script.png',
+        'height': 8,
+        'ascent': 7,
+        'chars': [''.join(FONT_GLYPHS), ''.join(FONT_EYES)],
+    }]}
+
+
+def set_line(img, x, y, text_rows, colour, gap=1):
+    """Lay pixel maps along a line the way the font does: each advances its own width plus one."""
+    for rows in text_rows:
+        stamp(img, rows, x, y, colour)
+        x += max(cx for cx, _, _ in cells(rows)) + 1 + gap
+    return x
+
+
+def font_preview(path):
+    """A tablet's last line and Tacita's signature under it, at 1x and at GUI scale 3, on the dark
+    and the pale reader. Pillow's own bitmap font stands in for the game's text: the point is the
+    glyphs' size and baseline beside ordinary letters, not the letters."""
+    from PIL import ImageFont
+    font = ImageFont.load_default_imagefont()
+    cap = font.getbbox('H')                  # the stand-in's capital: top row and baseline
+    panels = []
+    for bg, words, sig in ((BASALT[1], (220, 220, 214), TEAL[4]), (ANORTH[4], (40, 40, 44), TEAL[2])):
+        img = Image.new('RGB', (196, 34), bg)
+        d = ImageDraw.Draw(img)
+        d.text((4, 4 - cap[1]), 'the Vault will open to you.', font=font, fill=words)
+        top = 4 + 12
+        x = 4
+        d.text((x, top - cap[1]), '- ', font=font, fill=words)
+        x += font.getbbox('- ')[2]
+        set_line(img, x, top + (cap[3] - cap[1]) - 7, GLYPHS_8, sig)
+        panels.append(img)
+    eyes = Image.new('RGB', (196, 14), BASALT[1])
+    set_line(eyes, 4, 3, EYE_8, (220, 220, 214), gap=2)
+    panels.append(eyes)
+    big = [p.resize((p.width * 3, p.height * 3), Image.NEAREST) for p in panels]
+    out = Image.new('RGB', (max(b.width for b in big) + max(p.width for p in panels) + 40, sum(b.height + 10 for b in big) + 26), SHEET_BG)
+    d = ImageDraw.Draw(out)
+    d.text((8, 6), "the signature in the voice's order (U+E000..E006), and the eye's stages (U+E010..E017); "
+                   'GUI scale 3, and 1x at right', fill=INK)
+    y = 26
+    for p, b in zip(panels, big):
+        out.paste(b, (8, y))
+        out.paste(p, (b.width + 24, y))
+        y += b.height + 10
+    out.save(path)
+
+
 # --- previews ------------------------------------------------------------------------------------------
 
 INK = (232, 230, 222)            # the sheet's 'paper' text colour
@@ -225,7 +306,6 @@ def script_sheet(path):
     """The canonical drawings: each glyph at 5 px and 8 px, zoomed and at 1x; the eye's stages in
     both forms; the set as a line of lit script and as a line carved in pale stone."""
     Z = 12
-    W = 16 * 8 * Z // 2 + 80
     out = Image.new('RGB', (1180, 900), SHEET_BG)
     d = ImageDraw.Draw(out)
     y = 12
@@ -277,9 +357,300 @@ def script_sheet(path):
     return out
 
 
+# --- 3 and 4. the mark ---------------------------------------------------------------------------------
+#
+# Format B (contract section 3): one 24 x 24 decal per stage, drawn by logic as a quad over the back
+# of the right hand and wrist (4 x 4 model pixels), and the stage-7 picture again on the illagers'
+# crossed arms. Glyphs 0..n-1 ring the eye at stage n, glyph 0 at the top and the rest clockwise, the
+# way a count fills. Slots not yet earned are bare skin: the mark grows, it does not fill in. Every
+# drawn pixel is opaque, so the quad can be cutout.
+
+MARK_SIZE = 24
+MARK_CENTRE = 12                 # the eye's middle pixel; the ring is laid round the same point
+MARK_RADIUS = 7.8
+
+
+def glyph_slot(i):
+    """Top-left corner of glyph i's 5 x 5 box in the decal."""
+    a = 2 * math.pi * i / 7
+    gx = MARK_CENTRE + MARK_RADIUS * math.sin(a)
+    gy = MARK_CENTRE - MARK_RADIUS * math.cos(a)
+    return int(round(gx - 2)), int(round(gy - 2))
+
+
+def mark(stage):
+    img = Image.new('RGBA', (MARK_SIZE, MARK_SIZE), (0, 0, 0, 0))
+    p = img.load()
+    for i in range(stage):
+        x0, y0 = glyph_slot(i)
+        for x, y, _ in cells(GLYPHS[i]):
+            p[x0 + x, y0 + y] = TEAL[4] + (255,)
+    for x, y, ch in cells(EYE_MARK[stage]):
+        p[MARK_CENTRE - 4 + x, MARK_CENTRE - 4 + y] = EYE_COLOURS[ch] + (255,)
+    return img
+
+
+def check_mark():
+    """No two glyph boxes touch, none touches the eye, all fit the decal."""
+    eye = {(MARK_CENTRE - 4 + x, MARK_CENTRE - 4 + y) for x, y, _ in cells(EYE_MARK[7])}
+    boxes = []
+    for i in range(7):
+        x0, y0 = glyph_slot(i)
+        px = {(x0 + x, y0 + y) for x, y, _ in cells(GLYPHS[i])}
+        if not all(0 <= x < MARK_SIZE and 0 <= y < MARK_SIZE for x, y in px):
+            raise SystemExit(f'mark: glyph {i} leaves the decal')
+        halo = {(x + dx, y + dy) for x, y in px for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
+        if halo & eye:
+            raise SystemExit(f'mark: glyph {i} touches the eye')
+        for j, other in boxes:
+            if halo & other:
+                raise SystemExit(f'mark: glyphs {j} and {i} touch')
+        boxes.append((i, px))
+
+
+# --- previews of the mark, through the game's own transforms ------------------------------------------
+#
+# tools/render-item-model.py supplies the rasteriser, the 70-degree hand camera, the entity pose and
+# the entity shader's light; this adds vanilla's first-person empty hand (ItemInHandRenderer
+# .renderPlayerArm, 1.21.1) and a ModelPart cube with the skin's uv layout, so the decal is seen on
+# the face the game really shows.
+
+def _rim():
+    return _load('render_item_model', 'render-item-model.py')
+
+
+def first_person_arm(rim, swing=0.0, equip=0.0):
+    """Camera space of the right arm's ModelPart in vanilla's first-person empty hand (equip 0 is
+    fully raised; vanilla lowers the arm 0.6 per unit of equip progress). The model part keeps its
+    own offset (-5, 2, 0) and the idle bob's zRot."""
+    T, R = rim.T, rim.Rdeg
+    f1 = math.sqrt(swing)
+    m = T(-0.3 * math.sin(f1 * math.pi) + 0.64000005, 0.4 * math.sin(f1 * math.pi * 2) - 0.6 - 0.6 * equip,
+          -0.4 * math.sin(swing * math.pi) - 0.71999997)
+    m = m @ R('y', 45) @ R('y', math.sin(f1 * math.pi) * 70) @ R('z', math.sin(swing * swing * math.pi) * -20)
+    m = m @ T(-1, 3.6, 3.5) @ R('z', 120) @ R('x', 200) @ R('y', -135) @ T(5.6, 0, 0)
+    return m @ T(-5 / 16, 2 / 16, 0) @ R('z', math.degrees(0.1))
+
+
+def cube_quads(rim, m, tex, u, v, origin, dims, colour=None):
+    """A ModelPart cube as vanilla builds it (ModelPart.Cube): six faces with the skin layout's uvs
+    from texture offset (u, v), or one flat colour per face."""
+    import numpy as np
+    (x0, y0, z0), (w, h, d) = origin, dims
+    lo, hi = (x0, y0, z0), (x0 + w, y0 + h, z0 + d)
+
+    def V(a, b, c):
+        return (hi[0] if a else lo[0], hi[1] if b else lo[1], hi[2] if c else lo[2])
+    v0, v1, v2, v3 = V(0, 0, 0), V(1, 0, 0), V(1, 1, 0), V(0, 1, 0)
+    v4, v5, v6, v7 = V(0, 0, 1), V(1, 0, 1), V(1, 1, 1), V(0, 1, 1)
+    f4, f5, f6, f7, f8 = u + d, u + d + w, u + d + w + w, u + d + w + d, u + 2 * d + 2 * w
+    f10, f11 = v + d, v + d + h
+    faces = [([v5, v4, v0, v1], f4, v, f5, f10), ([v2, v3, v7, v6], f5, f10, f6, v),
+             ([v0, v4, v7, v3], u, f10, f4, f11), ([v1, v0, v3, v2], f4, f10, f5, f11),
+             ([v5, v1, v2, v6], f5, f10, f7, f11), ([v4, v5, v6, v7], f7, f10, f8, f11)]
+    out = []
+    for verts, ua, va, ub, vb in faces:
+        pos = np.c_[np.array(verts, float) / 16.0, np.ones(4)] @ m.T
+        if tex is None:
+            out.append(rim.Quad(pos[:, :3], color=np.array(colour)))
+        else:
+            th, tw = tex.shape[:2]
+            uvs = np.array([(ub, va), (ua, va), (ua, vb), (ub, vb)]) / np.array([tw, th])
+            out.append(rim.Quad(pos[:, :3], uvs, tex))
+    return out
+
+
+def decal_quad(rim, m, img, corners):
+    """The mark as its own full-bright quad. corners: model-space points for uv (0,0), (0,1), (1,1),
+    (1,0) -- the texture's top-left, bottom-left, bottom-right, top-right."""
+    import numpy as np
+    tex = np.asarray(img, dtype=np.float32) / 255
+    pos = np.c_[np.array(corners, float) / 16.0, np.ones(4)] @ m.T
+    return rim.Quad(pos[:, :3], np.array([(0, 0), (0, 1), (1, 1), (1, 0)], float), tex, emissive=True)
+
+
+def arm_decal(img, slim=False):
+    """Contract section 3: outer face, z -2..2, y 5..9, 0.3 px out; top toward the hand end."""
+    x = (-2 if slim else -3) - 0.3
+    return img, [(x, 9, -2), (x, 5, -2), (x, 5, 2), (x, 9, 2)]
+
+
+def illager_decal(img):
+    """Contract section 4: the crossed arms' middle box, front face, x -2..2, y 2..6, 0.1 px out."""
+    return img, [(-2, 2, -2.1), (-2, 6, -2.1), (2, 6, -2.1), (2, 2, -2.1)]
+
+
+def stand_in_skin():
+    """A plain skin of our own for the previews: tan arm, a short blue sleeve, like nobody's."""
+    import numpy as np
+    s = Image.new('RGBA', (64, 64), (0, 0, 0, 0))
+    p = s.load()
+    for y in range(16, 32):
+        for x in range(40, 56):
+            if y >= 20 or 44 <= x < 52:
+                sleeve = y < 23 or (y < 20 and x < 48)
+                p[x, y] = (54, 96, 150, 255) if sleeve else (184, 134, 102, 255)
+    return np.asarray(s, dtype=np.float32) / 255
+
+
+def held_item_quads(rim, model_ref='ascension_worlds:item/gateway_key'):
+    model = rim.load_model(model_ref)
+    return rim.transformed(rim.model_quads(model),
+                           rim.FIRST_PERSON_HAND @ rim.item_matrix(model, 'firstperson_righthand'))
+
+
+def first_person_views(path, stages=(1, 4, 7)):
+    import numpy as np
+    rim = _rim()
+    size = (1920, 1080)
+    proj = rim.perspective(70, size[0] / size[1])
+    skin = stand_in_skin()
+    crop = (1060, 560, 1780, 1080)
+    w, h = crop[2] - crop[0], crop[3] - crop[1]
+    rows = []
+    # (label, night, held item, whole screen instead of the crop)
+    for label, night, item, whole in (
+            ('empty hand, day', False, None, False),
+            ('empty hand, night (the mark is full-bright)', True, None, False),
+            ('holding a sword, if logic draws the arm at rest behind it (a combat-module sword as a prop)',
+             False, 'ascension_combat:item/divine_sunderer', False),
+            ('the whole screen, empty hand', False, None, True)):
+        row = []
+        for st in stages:
+            m = first_person_arm(rim)
+            q = cube_quads(rim, m, skin, 40, 16, (-3, -2, -2), (4, 12, 4))
+            img, corners = arm_decal(mark(st))
+            q.append(decal_quad(rim, m, img, corners))
+            if item:
+                q += held_item_quads(rim, item)
+            bg = rim.background(size, 'night' if night else 'day')
+            shot = rim.to_image(rim.rasterise(q, proj, np.eye(4), size, bg, night))
+            if whole:
+                shot = shot.resize((w, w * size[1] // size[0]), Image.LANCZOS)
+            else:
+                shot = shot.crop(crop)
+            row.append(shot)
+        rows.append((label, row))
+    heights = [max(im.height for im in row) for _, row in rows]
+    out = Image.new('RGB', (len(stages) * (w + 8), sum(hh + 22 for hh in heights) + 24), SHEET_BG)
+    d = ImageDraw.Draw(out)
+    d.text((6, 6), 'the mark in first person, stages ' + ', '.join(map(str, stages)) +
+           ': vanilla empty-hand pose, 70-degree hand camera, 1920 x 1080 (crop)', fill=INK)
+    y = 24
+    for (label, row), hh in zip(rows, heights):
+        d.text((6, y + 2), label, fill=INK)
+        for i, im in enumerate(row):
+            out.paste(im, (i * (w + 8), y + 18))
+        y += hh + 22
+    out.save(path)
+
+
+def stand_in_player(rim, pose, body, slim=False):
+    """Flat-coloured humanoid in model space (our own stand-in, as render-item-model's)."""
+    skin, shirt, pants, hair = (0.72, 0.52, 0.40, 1), (0.21, 0.38, 0.59, 1), (0.16, 0.22, 0.40, 1), (0.25, 0.17, 0.1, 1)
+    q = []
+    q += cube_quads(rim, pose, None, 0, 0, (-4, -8, -4), (8, 8, 8), skin)
+    q += cube_quads(rim, pose @ rim.T(0, -8.2 / 16, 0), None, 0, 0, (-4.2, 0, -4.2), (8.4, 2, 8.4), hair)
+    q += cube_quads(rim, pose, None, 0, 0, (-4, 0, -2), (8, 12, 4), shirt)
+    arm = pose @ body.arm('right')
+    q += cube_quads(rim, arm, None, 0, 0, (-2 if slim else -3, -2, -2), (3 if slim else 4, 12, 4), skin)
+    q += cube_quads(rim, arm, None, 0, 0, (-3.25, -2.25, -2.25), (4.5, 3.5, 4.5), shirt)
+    q += cube_quads(rim, pose @ body.arm('left'), None, 0, 0, (-1, -2, -2), (4, 12, 4), skin)
+    q += cube_quads(rim, pose @ body.arm('left'), None, 0, 0, (-1.25, -2.25, -2.25), (4.5, 3.5, 4.5), shirt)
+    for side in (-1, 1):
+        q += cube_quads(rim, pose @ rim.T(side * 1.9 / 16, 12 / 16, 0), None, 0, 0, (-2, 0, -2), (4, 12, 4), pants)
+    return q, arm
+
+
+def stand_in_illager(rim, pose):
+    """A flat-coloured illager in IllagerModel's proportions: crossed arms on the 'arms' part."""
+    skin, robe, dark = (0.55, 0.57, 0.56, 1), (0.30, 0.31, 0.34, 1), (0.20, 0.20, 0.23, 1)
+    q = cube_quads(rim, pose, None, 0, 0, (-4, -10, -4), (8, 10, 8), skin)
+    q += cube_quads(rim, pose @ rim.T(0, -2 / 16, 0), None, 0, 0, (-1, -1, -6), (2, 4, 2), skin)
+    q += cube_quads(rim, pose, None, 0, 0, (-4, 0, -3), (8, 12, 6), robe)
+    q += cube_quads(rim, pose, None, 0, 0, (-4.5, 0, -3.5), (9, 20, 7), dark)
+    arms = pose @ rim.T(0, 3 / 16, -1 / 16) @ rim.Rdeg('x', math.degrees(-0.75))
+    q += cube_quads(rim, arms, None, 0, 0, (-8, -2, -2), (4, 8, 4), robe)
+    q += cube_quads(rim, arms, None, 0, 0, (4, -2, -2), (4, 8, 4), robe)
+    q += cube_quads(rim, arms, None, 0, 0, (-4, 2, -2), (8, 4, 4), skin)
+    for side in (-1, 1):
+        q += cube_quads(rim, pose @ rim.T(side * 2 / 16, 12 / 16, 0), None, 0, 0, (-2, 0, -2), (4, 12, 4), dark)
+    return q, arms
+
+
+def third_person_views(path):
+    """Stages 1, 4 and 7 on a stand-in player seen from its right; then the player at stage 7 beside
+    an illager, both facing the camera, at a few blocks and close up."""
+    import numpy as np
+    rim = _rim()
+    relaxed = rim.Body(right=(0, 0, 5.7), left=(0, 0, -5.7))
+    size = (420, 520)
+    proj = rim.perspective(50, size[0] / size[1])
+    shots = []
+    for st in (1, 4, 7):
+        q, arm = stand_in_player(rim, rim.entity_pose(), relaxed)
+        img, corners = arm_decal(mark(st))
+        q.append(decal_quad(rim, arm, img, corners))
+        view = rim.look_at((-1.7, 1.25, 0.9), (-0.32, 0.72, 0.0))
+        shots.append((f'stage {st}, from the right', rim.to_image(
+            rim.rasterise(q + rim.ground_quads(), proj, view, size, rim.background(size, 'flat')))))
+    # side by side: the player (stage 7) at x -0.6, an illager at x +0.6, both facing south (+z)
+    pair = []
+    q, arm = stand_in_player(rim, rim.T(-0.6, 0, 0) @ rim.entity_pose(), relaxed)
+    img, corners = arm_decal(mark(7))
+    q.append(decal_quad(rim, arm, img, corners))
+    iq, arms = stand_in_illager(rim, rim.T(0.6, 0, 0) @ rim.entity_pose())
+    img, corners = illager_decal(Image.open(os.path.join(TEX, 'entity/mark/illager.png')).convert('RGBA'))
+    iq.append(decal_quad(rim, arms, img, corners))
+    for label, eye, target in (('the player at stage 7 beside an illager, 3 blocks off', (-0.9, 1.5, 3.2), (0, 1.0, 0)),
+                               ('closer, from the front-right', (-1.3, 1.25, 1.7), (0, 0.85, 0))):
+        im = rim.to_image(rim.rasterise(q + iq + rim.ground_quads(), proj, rim.look_at(eye, target), size,
+                                        rim.background(size, 'flat')))
+        pair.append((label, im))
+    allshots = shots + pair
+    out = Image.new('RGB', (len(allshots) * (size[0] + 6), size[1] + 40), SHEET_BG)
+    d = ImageDraw.Draw(out)
+    for i, (label, im) in enumerate(allshots):
+        out.paste(im, (i * (size[0] + 6), 36))
+        d.text((i * (size[0] + 6) + 4, 6), label, fill=INK)
+    d.text((4, 20), 'stand-in figures in flat colours; the decals are the real textures', fill=INK)
+    out.save(path)
+
+
+def mark_sheet(path, made):
+    """Every stage flat at 8x on three skin tones, and the illager's copy."""
+    tones = [(236, 200, 176), (184, 134, 102), (92, 60, 44)]
+    Z = 8
+    S = MARK_SIZE * Z
+    out = Image.new('RGB', (8 * (S + 10) + 10, len(tones) * (S + 10) + 40), SHEET_BG)
+    d = ImageDraw.Draw(out)
+    d.text((10, 8), 'mark/stage_1..7 and mark/illager (24 x 24, at 8x) on pale, mid and dark skin', fill=INK)
+    for r, tone in enumerate(tones):
+        for i, img in enumerate(made):
+            bg = Image.new('RGBA', img.size, tone + (255,))
+            bg.alpha_composite(img)
+            out.paste(bg.resize((S, S), Image.NEAREST), (10 + i * (S + 10), 30 + r * (S + 10)))
+    out.save(path)
+
+
 def main():
+    os.makedirs(DESIGN, exist_ok=True)
     script_sheet(os.path.join(DESIGN, 'script.png'))
-    print('wrote design/lore-art/script.png')
+
+    art.save(font_texture(), 'font/script.png')
+    write_json('font/script.json', font_json())
+    font_preview(os.path.join(DESIGN, 'font-signature.png'))
+
+    check_mark()
+    marks = [mark(st) for st in range(1, 8)]
+    for st, img in enumerate(marks, start=1):
+        art.save(img, f'entity/mark/stage_{st}.png')
+    art.save(mark(7), 'entity/mark/illager.png')        # the same picture: the player's becomes theirs
+    mark_sheet(os.path.join(DESIGN, 'mark-stages.png'), marks + [mark(7)])
+    if '--no-3d' not in sys.argv:
+        first_person_views(os.path.join(DESIGN, 'mark-first-person.png'))
+        third_person_views(os.path.join(DESIGN, 'mark-third-person.png'))
+    print('wrote the script, its font, the mark and their previews')
 
 
 if __name__ == '__main__':
