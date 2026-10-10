@@ -393,10 +393,14 @@ the tools in `tools/worldgen-diagnostics/`, and never touches the real dev world
 5. `python tools/worldgen-diagnostics/structure_starts.py
    run/server/<throwaway>/dimensions/ascension_worlds/moon/region gateway` shows the start, its
    origin and facing. `/locate` cannot find `fixed_position` structures; this can.
-6. Spot-check blocks while the area is still force-loaded: `rcon_client.py execute in
+6. Find a block wherever a structure put it: `python tools/worldgen-diagnostics/find_blocks.py
+   run/server/<throwaway>/dimensions/ascension_worlds/moon/region ascension_worlds:mark_glyph`
+   lists each one with its properties (after `save-all flush`). That is how the pylon's glyphs
+   were checked lighting with the gates.
+7. Spot-check blocks while the area is still force-loaded: `rcon_client.py execute in
    ascension_worlds:moon if block <x> <y> <z> <block>[state]` answers `Test passed` / `failed`.
    (Once `forceload remove` runs the chunks unload and every check reads "not loaded".)
-7. `rcon_client.py stop`, put `level-name`, `enable-rcon` and `rcon.password` back, restore
+8. `rcon_client.py stop`, put `level-name`, `enable-rcon` and `rcon.password` back, restore
    Chunky's `chunks=` values (step 3), delete the throwaway world.
 
 Terrain shape (holes, heights) has its own scanner, `scan_region.py`; see

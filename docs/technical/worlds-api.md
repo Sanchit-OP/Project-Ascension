@@ -669,6 +669,7 @@ can restyle or remove it, and the `api` record keeps its shape.
 | `glow` | none | `0xRRGGBB` atmosphere halo, brightest on the lit limb. |
 | `motion` | `fixed` | `fixed`: stays at `yaw`/`elevation`, right for a tidally locked moon's view of its planet. `vanilla_moon`: exactly where vanilla draws its moon, opposite the sun, turning with the sky, in the phase `Level.getMoonPhase` reports, so everything that reads the phase still matches the sky. `yaw`/`elevation` are ignored. |
 | `additive` | false | Drawn by adding light, as vanilla draws its sun and moon: right under an atmosphere, whose sky shows through the body's dark side. Off, the body covers the stars behind it, right from an airless world. |
+| `gate_light` | none | A light on the face that appears with the first lit gate and brightens with each one (45% at one gate, full at seven), unshaded and added on top, so it shines on the night side too. `texture`, `x` and `y` (-1 to 1 across the face, as seen upright), `size` (its width as a fraction of the body's). Our Moon over Earth carries the design's moon signal a little up and left of centre: the Archive's pylon, seen from Earth (2026-10-11). |
 
 **The Moon over Earth (2026-10-10, seen live)** is `ascension_sky/overworld.json`: our Moon texture, riding
 vanilla's moon, additive. Vanilla's own moon is hidden by shipping

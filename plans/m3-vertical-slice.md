@@ -51,8 +51,8 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
 3. **The gateway follow-ups** from his live test, when he raises them.
 4. **The armor/MR check** on the Cataclysm bosses: Sanchit will look himself.
 
-**Next:** the rest of gate progress's readers (step 4 below): the pylon glyphs with the moon
-signal, the orrery hologram, cats. Then Planet 3 once its questions are answered.
+**Next:** Sanchit's look at the first light in a client (step 4 below), then the orrery hologram
+with Tacita's signature, then cats. Then Planet 3 once its questions are answered.
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
@@ -90,12 +90,24 @@ phases; vanilla's moon texture shipped blank). Both seen in his client.
    - Checked on a dedicated server (clean boot, commands answer) and by 86 tests.
 3. **Done 2026-10-11: the refactor pass** (its section below). Its first job, the Chunky bug, is fixed in
    part and parked safely (below); the pass continues with the rest of its list.
-4. Then the rest of gate progress's readers, from `lore-art-design.md`'s "For the logic session"
-   list: the pylon's glyphs lighting with the moon signal in Earth's sky (one story beat), the
-   orrery hologram, cats shying from a marked player, Tacita's signature as a glyph row in the
-   reader, Endermen carrying Sealers' Record tiles, the keeper shrine. Then Planet 3 once its
-   questions are answered. Deferred to the alpha release: the two-client test (also covers
-   share-air) and the M1.9 measurement.
+4. The rest of gate progress's readers, from `lore-art-design.md`'s "For the logic session" list,
+   as three increments picked 2026-10-11:
+   - **The first light. Built 2026-10-11, checked on a dedicated server; not yet seen in a
+     client.** Glyph *k* on the Archive's pylon lights once gate *k* is lit (`GateGlyphs`: found
+     through each loading chunk's block palettes, remembered by position until it unloads,
+     relit on load and whenever the network changes). The Moon in Earth's sky carries the moon
+     signal as a sky-body `gate_light`, brightening with each gate. One entry point for a network
+     change, `GateProgress.networkChanged`, tells clients and relights glyphs together. Checked on
+     a fresh world over RCON with `find_blocks.py`: no glyph lit at first; Earth and the Moon lit
+     glyphs 0 and 1; a gate lit while the Archive was unloaded left glyph 2 dark on disk, and the
+     Archive's next load lit it; putting that gate out darkened it. `worlds` tests 92 → 94.
+   - **The Archive answers:** the orrery hologram, and Tacita's signature as a glyph row in the
+     reader.
+   - **The world reacts:** cats shying from a marked player.
+   - Then the refactor pass, then Planet 3 once its questions are answered. Still waiting on a
+     design call from Sanchit: Endermen carrying Sealers' Record tiles (how many, how many the
+     ending needs), and the keeper shrine's placement. Deferred to the alpha release: the
+     two-client test (also covers share-air) and the M1.9 measurement.
 
 (The tablet rewrite once listed here is done: the voice's eight tablets kept their slots and ids,
 `lunar-archive-format.md`, 2026-10-10 note.)

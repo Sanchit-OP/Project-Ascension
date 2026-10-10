@@ -7,6 +7,7 @@ import com.ascension.worlds.internal.GateProgress;
 import com.ascension.worlds.internal.GatewayDecorBlocks;
 import com.ascension.worlds.internal.archive.ArchiveContent;
 import com.ascension.worlds.internal.archive.ArchiveDecorBlocks;
+import com.ascension.worlds.internal.archive.GateGlyphs;
 import com.ascension.worlds.internal.archive.ArchiveEntry;
 import com.ascension.worlds.internal.GatewayFrames;
 import com.ascension.worlds.internal.PlanetEnvironments;
@@ -73,6 +74,7 @@ public final class AscensionWorlds {
         SpaceMechanics.register();
         PlanetWeatherMechanics.register();
         GateProgress.register();
+        GateGlyphs.register();
         VanillaPortals.register();
         container.registerConfig(ModConfig.Type.SERVER, WorldsConfig.SPEC);
 

@@ -133,6 +133,32 @@ final class SkyBodyRenderer {
         BufferUploader.drawWithShader(face.buildOrThrow());
 
         body.glow().ifPresent(colour -> drawGlow(disc, body.lit(), colour, visibility));
+        body.gateLight().ifPresent(light -> drawGateLight(disc, light, visibility));
+    }
+
+    /**
+     * The gate light: one quad flat on the face, added on top, unshaded, as bright as the gates
+     * lit so far allow ({@link SkyBody.GateLight#alpha}). Nothing at all before the first gate.
+     */
+    private static void drawGateLight(Disc disc, SkyBody.GateLight light, float visibility) {
+        float alpha = SkyBody.GateLight.alpha(ClientGateProgress.markStage()) * visibility;
+        if (alpha <= 0.0F) {
+            return;
+        }
+        additiveBlend();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, light.texture());
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+        float left = light.x() - light.size();
+        float right = light.x() + light.size();
+        float bottom = light.y() - light.size();
+        float top = light.y() + light.size();
+        BufferBuilder quad = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        disc.vertex(quad, left, top).setUv(0.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        disc.vertex(quad, left, bottom).setUv(0.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        disc.vertex(quad, right, bottom).setUv(1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        disc.vertex(quad, right, top).setUv(1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        BufferUploader.drawWithShader(quad.buildOrThrow());
     }
 
     private static void facePoint(BufferBuilder buffer, Disc disc, boolean lit, float radius, double angle) {
