@@ -1,9 +1,13 @@
 {
   "placement": {
-    "type": "minecraft:random_spread",
+    "type": "ascension_worlds:random_spread_keep_clear",
     "salt": 481516,
     "spacing": 16,
-    "separation": 7
+    "separation": 7,
+    "keep_clear_of": [
+      { "other_set": "ascension_worlds:lunar_archive", "chunk_count": 10 },
+      { "other_set": "ascension_worlds:gateway_frame_moon", "chunk_count": 6 }
+    ]
   },
   "structures": [
     { "structure": "ascension_worlds:large_crater", "weight": 1 }

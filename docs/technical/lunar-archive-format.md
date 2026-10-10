@@ -128,6 +128,32 @@ in a stores room, not on the main path.
 - `loot_table/archive/stores.json`.
 - Verification the same way as the gateway: headless structure starts, then a client walk-through.
 
+**Done 2026-10-10, everything design's handover asked for:**
+
+- **Worldgen.** The structure (`none`, `start_height` −21, `WORLD_SURFACE_WG`, size 1), both pools,
+  and the fixed set at `[-160, 0, -256]` (salt 3).
+- **Shapes.** The plinth and orrery have their boxes from the handover, and both are
+  `noOcclusion`.
+- **Craters kept away.** `large_crater` now uses `ascension_worlds:random_spread_keep_clear`
+  (`KeepClearRandomSpreadPlacement`): 10 chunks from the Archive, plus 6 from the gateway ruin,
+  which vanilla's single `exclusion_zone` could not also cover. The wild citadels in
+  compat-cataclysm keep 12 and 10 chunks clear of the same two.
+- **Headless check**, on a throwaway dedicated-server world:
+  - Real worldgen placed one start at (−160, −256), rotated 180°.
+  - 22,395 template cells were compared with the world, and all matched except 35, where raw
+    lunar basalt in the rubble core had become helium ore. Ores generate after structures, and
+    none of those 35 shows from inside a room.
+  - All eight plinths kept their entries, and both stores chests have their loot table.
+  - The court sits within −2 to +1 of the ground.
+  - Of 31 large craters in a 640-block radius, the nearest is 12 chunks from the Archive and 12
+    from the gateway.
+- **Not yet seen in a client.** That is the design note's live checklist
+  (`lunar-archive-design.md`).
+
+For design, if it matters: 50 raw-basalt cells in the vault border open air, in rubble piles and
+rough walls. On some seeds one of them can turn to glowing helium ore. It reads as natural rock;
+if it shouldn't, a non-ore stone for those cells would stop it.
+
 ## Design's handover (2026-10-07)
 
 Design record: [`lunar-archive-design.md`](lunar-archive-design.md). Everything below was run for

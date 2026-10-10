@@ -42,12 +42,14 @@ public final class ArchiveContent {
                     .networkSynchronized(ResourceLocation.STREAM_CODEC)
                     .build());
 
+    /** {@code noOcclusion}: neither model fills its cube (see the blocks' shapes). */
     public static final Supplier<ArchivePlinthBlock> ARCHIVE_PLINTH = BLOCKS.register(
-            "archive_plinth", () -> new ArchivePlinthBlock(unbreakable(MapColor.QUARTZ)));
+            "archive_plinth", () -> new ArchivePlinthBlock(unbreakable(MapColor.QUARTZ).noOcclusion()));
 
     /** Lit, so the orrery chamber is never pitch dark and never a spawner around its own heart. */
     public static final Supplier<ArchiveOrreryBlock> ARCHIVE_ORRERY = BLOCKS.register(
-            "archive_orrery", () -> new ArchiveOrreryBlock(unbreakable(MapColor.COLOR_BLACK).lightLevel(state -> 10)));
+            "archive_orrery", () -> new ArchiveOrreryBlock(
+                    unbreakable(MapColor.COLOR_BLACK).noOcclusion().lightLevel(state -> 10)));
 
     public static final Supplier<Item> ARCHIVE_PLINTH_ITEM = ITEMS.register(
             "archive_plinth", () -> new BlockItem(ARCHIVE_PLINTH.get(), new Item.Properties()));
