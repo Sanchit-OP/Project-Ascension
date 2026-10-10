@@ -117,7 +117,8 @@ ending. Only what you have seen does.
 
 ## Can we build it
 
-Yes, without touching Minecraft's code. This is a note for later, not a plan:
+**Built 2026-10-10:** the mark on players and illagers, fed by the gate-progress sync. The pylon,
+the cats and the orrery come next. The original note:
 
 - The mark is a layer drawn over the player's arm. NeoForge has hooks for both the first-person
   hand and the third-person model, so no mixins are needed.

@@ -1,5 +1,6 @@
 package com.ascension.worlds.client;
 
+import com.ascension.worlds.internal.net.GateProgressPayload;
 import com.ascension.worlds.internal.net.GatewayDestinationsPayload;
 import com.ascension.worlds.internal.net.OpenArchiveEntryPayload;
 import com.ascension.worlds.internal.net.PlanetWeatherSyncPayload;
@@ -30,5 +31,9 @@ public final class ClientNetworkHandlers {
 
     public static void openArchiveEntry(OpenArchiveEntryPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> ArchiveReader.open(payload.entry().orElse(null)));
+    }
+
+    public static void gateProgress(GateProgressPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> ClientGateProgress.accept(payload));
     }
 }

@@ -61,7 +61,21 @@ public final class WorldsCommands {
                                                 ctx.getSource().getPlayerOrException(), false)))
                                         .then(Commands.literal("active")
                                                 .executes(ctx -> report(ctx.getSource(), GatewayDebug.build(
-                                                        ctx.getSource().getPlayerOrException(), true))))))
+                                                        ctx.getSource().getPlayerOrException(), true)))))
+                                .then(Commands.literal("light")
+                                        .requires(source -> source.hasPermission(2))
+                                        .then(Commands.argument("planet", ResourceLocationArgument.id())
+                                                .suggests(WorldsCommands::suggestPlanetSurfaces)
+                                                .executes(ctx -> report(ctx.getSource(), GatewayDebug.setLit(
+                                                        ctx.getSource().getServer(),
+                                                        ResourceLocationArgument.getId(ctx, "planet"), true)))))
+                                .then(Commands.literal("unlight")
+                                        .requires(source -> source.hasPermission(2))
+                                        .then(Commands.argument("planet", ResourceLocationArgument.id())
+                                                .suggests(WorldsCommands::suggestPlanetSurfaces)
+                                                .executes(ctx -> report(ctx.getSource(), GatewayDebug.setLit(
+                                                        ctx.getSource().getServer(),
+                                                        ResourceLocationArgument.getId(ctx, "planet"), false))))))
                         .then(Commands.literal("archive")
                                 .requires(source -> source.hasPermission(2))
                                 .then(Commands.literal("tablet")

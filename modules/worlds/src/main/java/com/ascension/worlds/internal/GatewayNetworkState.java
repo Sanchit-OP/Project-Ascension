@@ -103,6 +103,28 @@ public final class GatewayNetworkState {
         return activePlanets.add(planetDimension);
     }
 
+    /**
+     * Marks a gate lit with no portal behind it, so no arrival spot: travel there falls back to the
+     * ordinary landing. Only the gateway debug commands do this, to step the mark through its
+     * stages before the worlds that would earn them exist.
+     *
+     * @return true if this planet's gateway was not already active.
+     */
+    public boolean activateWithoutPortal(ResourceLocation planetDimension) {
+        return activePlanets.add(planetDimension);
+    }
+
+    /**
+     * Puts this planet's gate out again. Play never does this (a lit gate stays lit); the gateway
+     * debug commands use it to step the mark back down while testing.
+     *
+     * @return true if this planet's gateway was active.
+     */
+    public boolean deactivate(ResourceLocation planetDimension) {
+        portals.remove(planetDimension);
+        return activePlanets.remove(planetDimension);
+    }
+
     /** Where arrivals at this planet's portal stand, or null if inactive or predating tracking. */
     @Nullable
     public BlockPos portalAt(ResourceLocation planetDimension) {

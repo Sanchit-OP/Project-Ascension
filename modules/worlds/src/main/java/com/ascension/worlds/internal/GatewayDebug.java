@@ -14,6 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -125,6 +126,22 @@ final class GatewayDebug {
         if (lit) {
             GatewayPortalActivation.register(level, placement);
         }
+        return null;
+    }
+
+    /**
+     * Lights or puts out one gate in the network by id, with no frame anywhere, and tells every
+     * client ({@link GateProgress}). Any id will do, real planet or not, which is how the mark is
+     * stepped through all seven stages while only two worlds exist. Returns null on success.
+     */
+    @Nullable
+    static Component setLit(MinecraftServer server, ResourceLocation planet, boolean lit) {
+        GatewayNetworkState network = server.overworld().getData(SpaceAttachments.GATEWAY_NETWORK_STATE);
+        boolean changed = lit ? network.activateWithoutPortal(planet) : network.deactivate(planet);
+        if (!changed) {
+            return Component.literal(planet + " is already " + (lit ? "lit." : "dark."));
+        }
+        GateProgress.broadcast(server);
         return null;
     }
 }

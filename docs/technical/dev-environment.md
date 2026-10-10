@@ -344,6 +344,10 @@ losing to a higher band looks exactly like a provider that does not work.
                                                 dormant, or attuned and lit
 /ascension worlds gateway travel <planet>       what the destination screen does; non-ops need
                                                 to have just used a lit portal
+/ascension worlds gateway light <id>            (op) mark a gate lit in the network, no frame
+                                                needed; any id (ascension_worlds:test_3...) steps
+                                                the mark through stages that have no world yet
+/ascension worlds gateway unlight <id>          (op) put it out again; the mark steps back down
 /ascension worlds archive tablet <entry>        (op) a tablet carrying that archive entry
 /ascension worlds archive plinth <entry>        (op) point the plinth you're looking at at an entry
 ```

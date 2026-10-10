@@ -113,4 +113,23 @@ class GatewayNetworkStateTest {
         state.activate(MOON, MOON_PORTAL);
         assertFalse(view.contains(MOON), "a caller's snapshot must not change under it");
     }
+
+    @Test
+    void debugLightingWithoutAPortalLeavesNoLandingPoint() {
+        GatewayNetworkState state = new GatewayNetworkState();
+        assertTrue(state.activateWithoutPortal(PLANET_3));
+        assertFalse(state.activateWithoutPortal(PLANET_3), "lighting twice must not report a change");
+        assertTrue(state.isActive(PLANET_3));
+        assertNull(state.portalAt(PLANET_3), "travel there falls back to the ordinary landing");
+    }
+
+    @Test
+    void deactivatingPutsTheGateOutAndForgetsItsPortal() {
+        GatewayNetworkState state = new GatewayNetworkState();
+        state.activate(MOON, MOON_PORTAL);
+        assertTrue(state.deactivate(MOON));
+        assertFalse(state.isActive(MOON));
+        assertNull(state.portalAt(MOON));
+        assertFalse(state.deactivate(MOON), "a dark gate cannot go dark again");
+    }
 }

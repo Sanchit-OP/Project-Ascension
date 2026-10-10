@@ -3,6 +3,7 @@ package com.ascension.worlds;
 import com.ascension.core.api.WorldEnvironmentRegistry;
 import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
+import com.ascension.worlds.internal.GateProgress;
 import com.ascension.worlds.internal.GatewayDecorBlocks;
 import com.ascension.worlds.internal.archive.ArchiveContent;
 import com.ascension.worlds.internal.archive.ArchiveDecorBlocks;
@@ -71,6 +72,7 @@ public final class AscensionWorlds {
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         SpaceMechanics.register();
         PlanetWeatherMechanics.register();
+        GateProgress.register();
         VanillaPortals.register();
         container.registerConfig(ModConfig.Type.SERVER, WorldsConfig.SPEC);
 
