@@ -497,13 +497,32 @@ def gate_hall(p):
     p.put(7, LOW + 2, 36, RAW)
 
 
-def sealed_room(p):
-    x0, x1, z0, z1 = 9, 15, 24, 29
-    room(p, x0, x1, LOW + 1, LOW + 5, z0, z1)
+# The Sealers' Record (lore art, section 7) belongs on the sealed room's back wall, read by someone
+# standing in the room facing it. The template leaves the frame empty: every cell a torn-out socket.
+# Frame cell (col, row), col 0 at the reader's left and row 0 at the top, takes record tile
+# first + row * 9 + col; record_frame() is that layout in vault coordinates.
+RECORD_WALL_Z = 23
+RECORD_LEFT_X = 8                # the reader faces north, so their left is west
+RECORD_BOTTOM = LOW + 2
+
+
+def record_frame():
+    """[(x, y, z, col, row, record tile)] for every cell of the record's frame."""
+    m = art.MURALS['sealers_record']
+    w, h = m['size']
+    return [(RECORD_LEFT_X + col, RECORD_BOTTOM + (h - 1 - row), RECORD_WALL_Z, col, row,
+             m['first'] + row * w + col) for row in range(h) for col in range(w)]
+
+
+def sealed_room(p, restored=False):
+    """restored: the frame with the record put back, for previews only. The template is never
+    written with it."""
+    x0, x1, z0, z1 = 8, 16, 24, 29
+    room(p, x0, x1, LOW + 1, LOW + 7, z0, z1)
     rng = random.Random(30)
     # the seal: rough blocks where the rest is dressed, laid in a hurry, broken through
     for x in range(x0, x1 + 1):
-        for y in range(LOW + 1, LOW + 6):
+        for y in range(LOW + 1, LOW + 8):
             p.put(x, y, 30, rng.choice([RAW, RAW, CRACKED]))
     p.fill(11, LOW + 1, 30, 13, LOW + 3, 30, AIR)
     for (x, z, st) in [(11, 29, RAW), (15, 28, CRACKED), (10, 28, slab(BRICK_SLAB)), (14, 29, slab(BRICK_SLAB)),
@@ -515,6 +534,12 @@ def sealed_room(p):
     p.fill(12, LOW, 26, 12, LOW, 27, LIT)
     # a stone bench along the west wall
     p.fill(x0, LOW + 1, 25, x0, LOW + 1, 27, slab(PALE_SLAB))
+    # the record's frame on the back wall, on a pale sill: every tile torn out of it
+    p.fill(x0, LOW + 1, RECORD_WALL_Z, x1, LOW + 1, RECORD_WALL_Z, PALE)
+    gouged = art.MURALS['record_gouged']['first']
+    srng = random.Random(23)
+    for x, y, z, col, row, tile in record_frame():
+        p.put(x, y, z, mural(tile if restored else gouged + srng.randrange(3)))
 
 
 # --- the entrance --------------------------------------------------------------------------------
@@ -917,11 +942,73 @@ def assembled(ent, vlt):
     return cells
 
 
+# --- the keeper shrine (lore art, section 8) -------------------------------------------------------------
+#
+# ascension_worlds:keeper_shrine, one template, placed by logic beside the Moon's citadel where the
+# Ender Guardian falls. A small chamber of the Archive's stone with one mural on its back wall: the
+# Sealers making the keepers and giving one the key. Shrine coordinates: x across, z from the door
+# (z = 0) to the mural's wall (z = 8). Rows 0-2 are a rubble footing, so it never stands on air;
+# SHRINE_FLOOR is the floor row, the one logic sets on the ground.
+
+SHRINE_SIZE = (9, 9, 9)
+SHRINE_FLOOR = 3
+SHRINE_OUT = os.path.join(ROOT, 'modules/worlds/src/main/resources/data/ascension_worlds/structure')
+
+
+def keeper_shrine():
+    p = Piece('keeper_shrine', SHRINE_SIZE)
+    F = SHRINE_FLOOR
+    p.fill(0, 0, 0, 8, F - 1, 8, RAW, CORE)                       # the footing
+    room(p, 1, 7, F + 1, F + 4, 1, 7, core_t=0)                  # walls, floor and roof
+    for x in range(9):
+        for z in range(9):
+            if x in (0, 8) or z in (0, 8):
+                p.put(x, F, z, PALE)                             # a pale border round the floor
+    for x, z in ((0, 0), (8, 0), (0, 8), (8, 8)):
+        p.fill(x, F + 1, z, x, F + 4, z, pillar())               # pale corners
+        p.put(x, F + 5, z, CHISELED)
+    p.fill(0, F + 5, 1, 0, F + 5, 7, PALE)                       # a pale cornice round the roof
+    p.fill(8, F + 5, 1, 8, F + 5, 7, PALE)
+    p.fill(1, F + 5, 0, 7, F + 5, 0, PALE)
+    p.fill(1, F + 5, 8, 7, F + 5, 8, PALE)
+    # the door: an opening under a pale lintel, the eye over it, as at the Archive's first door
+    p.fill(3, F + 1, 0, 5, F + 3, 0, AIR, OPEN)
+    p.fill(2, F + 4, 0, 6, F + 4, 0, PALE)
+    p.put(4, F + 4, 0, CHISELED)
+    # the mural on the back wall, on a sill, framed by two pillars standing in the corners
+    p.fill(2, F + 1, 8, 6, F + 1, 8, PALE)
+    place_mural(p, 'keeper_shrine', 6, F + 2, 'z', 8, 'north')
+    for x in (1, 7):
+        p.fill(x, F + 1, 7, x, F + 4, 7, pillar())
+    # lit script in the floor: at the door and where the mural's reader stands
+    p.put(4, F, 2, LIT)
+    p.put(4, F, 5, LIT)
+    return p
+
+
+def check_shrine(p):
+    problems = []
+    if any(n > 16 for n in p.size):
+        problems.append(f'keeper_shrine: size {p.size} exceeds 16')
+    m = art.MURALS['keeper_shrine']
+    want = set(range(m['first'], m['first'] + m['size'][0] * m['size'][1]))
+    have = {int(parse_state(st)[1]['tile']) for _, st in p.cells.values() if st.startswith(f'{NS}:archive_mural')}
+    if have != want:
+        problems.append(f'keeper_shrine: mural tiles {sorted(want - have)} missing')
+    for _, st in p.cells.values():
+        name = parse_state(st)[0]
+        if name in (f'{NS}:archive_plinth', 'minecraft:jigsaw', 'minecraft:chest'):
+            problems.append(f'keeper_shrine: holds {name}, which needs logic it does not have')
+    return problems
+
+
 def main():
     ent, vlt = entrance(), vault()
+    shrine = keeper_shrine()
     pieces = [ent, vlt]
     problems, seen = check(pieces)
-    for p in pieces:
+    problems += check_shrine(shrine)
+    for p in pieces + [shrine]:
         floors, dark, _ = dark_spots(p)
         print(f'{p.name}: {len(p.cells)} blocks, {floors} floor cells, {len(dark)} dark')
         if dark:
@@ -932,8 +1019,8 @@ def main():
         if '--force' not in sys.argv:
             sys.exit(1)
     os.makedirs(OUT, exist_ok=True)
-    for p in pieces:
-        path = os.path.join(OUT, f'{p.name}.nbt')
+    for p, out in [(ent, OUT), (vlt, OUT), (shrine, SHRINE_OUT)]:
+        path = os.path.join(out, f'{p.name}.nbt')
         with open(path, 'wb') as f:
             f.write(template_nbt(p))
         print('wrote', os.path.relpath(path, ROOT))

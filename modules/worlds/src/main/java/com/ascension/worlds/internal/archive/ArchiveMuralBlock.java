@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 public final class ArchiveMuralBlock extends Block {
 
     /** Must equal {@code MURAL_TILES} in {@code tools/generate-archive-art.py}, which checks it. */
-    public static final int TILES = 121;
+    public static final int TILES = 193;
 
     public static final IntegerProperty TILE = IntegerProperty.create("tile", 0, TILES - 1);
 

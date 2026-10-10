@@ -63,6 +63,9 @@ _ORDER = [
     ('ring_forge', (5, 3)),
     ('keeper', (3, 5)),
     ('the_quiet', (5, 3)),
+    ('sealers_record', (9, 6)),          # lore art, section 7: six panels of 3 x 3
+    ('record_gouged', (3, 1)),           # the record's empty frame: three torn-out sockets
+    ('keeper_shrine', (5, 3)),           # lore art, section 8
 ]
 MURALS = {}
 _next = 1
@@ -364,6 +367,43 @@ def figure(c, kind, x0, ground_y, flip=False, height=1, inlay=FIGURE_INK):
     c.sprite(rows, x0, ground_y - len(rows), key, flip=flip)
 
 
+def lying(kind):
+    """A builder's figure laid on its back, head to the left: the standing sprite turned a quarter."""
+    rows = FIGURES[kind]
+    h, w = len(rows), len(rows[0])
+    return [''.join(rows[h - 1 - y][x] for y in range(h))[::-1] for x in range(w)][::-1]
+
+
+# Cats, the only creatures that can see the Observers; the builders kept them in every gate hall
+# (docs/lore/the-moon.md). Black-figure like the builders, in profile. S sits facing right, tail
+# curled round; A arches and spits, facing left, at something the builders cannot see.
+CATS = {
+    'S': [
+        ".....#.#",
+        ".....###",
+        ".....###",
+        "#...###.",
+        "#..####.",
+        ".#.####.",
+        "..#####.",
+        "...##.##",
+    ],
+    'A': [
+        "#.#......#",
+        "###....#..",
+        "###..##...",
+        ".######...",
+        ".#######..",
+        ".##...##..",
+        ".#.....#..",
+    ],
+}
+
+
+def cat(c, kind, x0, ground_y, flip=False):
+    c.sprite(CATS[kind], x0, ground_y - len(CATS[kind]), {'#': dict(height=1, inlay=FIGURE_INK)}, flip=flip)
+
+
 def ground(c, y0, colour=None, height=1):
     """The world the scene stands on: a raised band to the bottom edge, one line cut along it."""
     for y in range(y0, c.h):
@@ -429,19 +469,25 @@ def m_stonecutters(c):
     c.line(63, 12, 63, 40, every=2, height=-1)              # the scaffold, scratched in
     c.line(56, 12, 78, 12, every=2, height=-1)
     c.line(63, 12, 70, 30, every=3, height=-1)              # a rope down to the next stone
+    cat(c, 'S', 71, 33, flip=True)                           # on the cut stones, watching the work
 
 
 def m_the_step(c):
-    """One step, and a new sky: the same ring, one world on either side of it."""
+    """One step, and a new sky: the same ring, one world on either side of it. The near side is the
+    blue world's stone, on the left, where the blue world sits in every mural."""
     ground(c, 41)
-    for y in range(41, c.h):                               # the far world is ash, not plaster
-        for x in range(48, c.w):
+    for y in range(41, c.h):                               # home is the blue world's stone ...
+        for x in range(0, 39):
+            c.px(x, y, height=1, inlay=EARTH[min(2, (y - 41) // 3)], group='earth')
+    for y in range(41, c.h):                               # ... and the far world is ash: the ring
+        for x in range(39, c.w):                           # stands on the seam between them
             c.px(x, y, height=1, inlay=ASH[min(3, 1 + (y - 41) // 3)], group='ash')
     sun(c, 9, 9, 4)
     planet(c, 68, 11, 7, ASH[1:], band=3)                   # a stranger sky over the far side
     gate(c, 31, 41, BASALT[3])
-    figure(c, 'W', 5, 41)
-    figure(c, 'W', 16, 41)
+    cat(c, 'S', 1, 41)                                      # sitting where the walkers set out
+    figure(c, 'W', 10, 41)
+    figure(c, 'W', 20, 41)
     figure(c, 'S', 35, 39, height=2)                        # in the ring, between worlds
     figure(c, 'W', 54, 41)
     for (x, y) in [(60, 30), (73, 26), (64, 34), (76, 32), (52, 22), (70, 36)]:
@@ -450,7 +496,8 @@ def m_the_step(c):
 
 def m_the_road(c):
     """Count the lights on the orrery: every world they walked, joined by the road out from the
-    Moon. The blue world's road is cut but never inlaid -- its gate was never opened."""
+    Moon. The road to the blue world was laid like the rest and then prised out: a gouged channel,
+    one sliver of its teal still caught in the cut. The Sealers cut Earth off on purpose."""
     cx, cy = -10, 24
     sun(c, cx, cy, 15)
     orbits = [22, 33, 44, 55, 66, 77]
@@ -472,7 +519,7 @@ def m_the_road(c):
         pts.append((x, y, rad))
         planet(c, x, y, rad, pal, band=band, glow=gl)
     ex, ey, er = pts[0]
-    mx, my = ex + 6, ey - 6                                  # the Moon, beside the blue world
+    mx, my = ex + 12, ey - 9                                 # the Moon, out from the blue world
     planet(c, mx, my, 2.0, GREY)
     road = [(mx, my, 2.0)] + pts[1:]
     for (x0, y0, r0), (x1, y1, r1) in zip(road, road[1:]):
@@ -480,7 +527,22 @@ def m_the_road(c):
         ux, uy = (x1 - x0) / d, (y1 - y0) / d
         c.line(x0 + ux * (r0 + 1), y0 + uy * (r0 + 1), x1 - ux * (r1 + 1), y1 - uy * (r1 + 1),
                inlay=TEAL[2], glow=True)
-    c.line(mx - 2, my + 2, ex + 3, ey - 3, every=2, height=-1)   # to the blue world: cut, never laid
+    # to the blue world: the channel cut like every other road, its inlay hacked out of it. What
+    # shows is the rough dark bed the teal was set in, bitten at the edges by the chisel, and one
+    # sliver the Sealers missed.
+    x0, y0, x1, y1 = mx - 2, my + 2, ex + 3, ey - 3
+    rng = random.Random(461)
+    n = int(max(abs(x1 - x0), abs(y1 - y0)))
+    bed = [mix(BASALT[2], ANORTH[1], 0.35), mix(BASALT[3], ANORTH[1], 0.5), BASALT[2]]
+    for i in range(n + 1):
+        t = i / n
+        gx, gy = x0 + (x1 - x0) * t, y0 + (y1 - y0) * t
+        for ox in (0, 1):
+            c.px(gx + ox, gy, height=-1, inlay=rng.choice(bed), group='gouge')
+        if 0 < i < n and rng.random() < 0.6:
+            c.px(gx + rng.choice((-1, 2)), gy + rng.choice((-1, 0, 1)), height=-1)
+    t = 0.35
+    c.px(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, inlay=TEAL[3], glow=True)
     for x, y, rad in road:
         c.px(x, y - rad - 2, height=1, inlay=TEAL[4], glow=True)  # each world's gate, lit
 
@@ -540,8 +602,8 @@ def m_ring_forge(c):
 
 
 def m_keeper(c):
-    """A keeper: stone that walks and remembers one order, standing in the ring it guards, a staff
-    topped with the network's eye planted beside it."""
+    """A keeper: stone that walks and remembers one order, standing in the ring it guards, its staff
+    held level across the opening like a bar across a door. It keeps the ring shut."""
     for y in range(4, 77):
         for x in range(4, 44):
             edge = x in (4, 5, 42, 43) or y in (4, 5, 75, 76)
@@ -575,24 +637,32 @@ def m_keeper(c):
     part(25, 47, 30, 70, body, 'rleg')
     part(15, 71, 23, 73, dark, 'lfoot')
     part(24, 71, 32, 73, dark, 'rfoot')
-    part(39, 18, 39, 73, ANORTH[4], 'staff')                         # the staff, pale, in its hand
-    part(33, 52, 38, 56, dark, 'rhand')
-    for dx, dy in [(0, -3), (-1, -2), (1, -2), (-2, -1), (2, -1), (-1, 0), (1, 0), (0, 1)]:
-        c.px(39 + dx, 14 + dy, height=1, inlay=ANORTH[5], group='staffeye')
-    c.px(39, 13, inlay=TEAL[3], glow=True)
     for y in (27, 34, 40):
         c.line(15, y, 32, y, height=-1)                              # courses: built, not born
     for y in (55, 61, 66):
         c.line(18, y, 21, y, height=-1)
         c.line(26, y, 29, y, height=-1)
     c.line(23, 30, 23, 45, height=-1)
+    # the staff, pale, held in both hands and laid across the opening from post to post: the
+    # network's eye at its end rests against the ring
+    c.rect(6, 54, 38, 55, height=2, inlay=ANORTH[4], group='staff')
+    for dx, dy in [(0, -3), (-1, -2), (1, -2), (-2, -1), (2, -1), (-1, 0), (1, 0), (0, 1)]:
+        c.px(39 + dx, 54 + dy + 1, height=2, inlay=ANORTH[5], group='staffeye')
+    c.px(39, 54, inlay=TEAL[3], glow=True)
+    part(9, 52, 14, 53, dark, 'lhand')                               # the hands close over it
+    part(33, 52, 38, 53, dark, 'rhand')
+    part(9, 56, 14, 57, dark, 'lhand')
+    part(33, 56, 38, 57, dark, 'rhand')
 
 
 def m_the_quiet(c):
-    """It began with the farthest gate. Four rings along the road, told in the order it happened:
-    the first to go dark at the left, the dark spreading right. The fifth ring, the Moon's own, is
+    """Four rings along the road, told in the order it happened: the dark comes out of the blue world
+    at the left (the side it sits on in every mural), puts out the nearest rings first and spreads
+    right. The voice says it came from the far worlds; the carving says otherwise. The fifth ring is
     only scratched in: the carving stops."""
     ground(c, 41)
+    planet(c, 7, 9, 5, EARTH)                               # the blue world, where it began
+    c.line(12, 13, 15, 22, every=2, height=-1)              # the road down from it to the first ring
     mini = [row[3:14] for row in GATE[8:]]
     xs = [3, 18, 33, 48, 63]
     for i, x in enumerate(xs[:4]):
@@ -616,17 +686,273 @@ def m_the_quiet(c):
         c.px(gx + 9, y, height=-1)
     c.line(gx + 1, 22, gx + 9, 22, every=2, height=-1)
     c.line(xs[3] + 11, 38, gx, 38, every=4, height=-1)
-    # the dark coming in from the far side: the plaster itself stained, densest at the left
+    # the dark spreading out of the blue world: the plaster itself stained, densest round it
     for y in range(1, 41):
         for x in range(1, c.w - 1):
-            s = (34 - x) / 34.0 + (math.sin(x * 0.45 + y * 0.3) + math.sin(y * 0.7 - x * 0.2)) * 0.08
+            d = math.hypot(x - 7, (y - 9) * 1.3)
+            s = 1.15 - d / 34.0 + (math.sin(x * 0.45 + y * 0.3) + math.sin(y * 0.7 - x * 0.2)) * 0.08
             c.stain[y][x] = max(0.0, min(0.7, s * 0.8))
+
+
+# --- the Sealers' Record and the keeper shrine (docs/technical/lore-art-format.md, sections 7, 8) ------
+#
+# The record is the truth of the Moon told only in pictures: six panels of 3 x 3 tiles on one canvas,
+# read left to right, top row then bottom. The porters carried it out of the sealed room tile by tile;
+# the template leaves its frame empty (RECORD_GOUGED) and logic gives its tiles to Endermen. The blue
+# world sits at the left of every panel that shows it, as in every other mural.
+
+PANEL = 48                       # each panel is 3 x 3 tiles
+MINI_RING = [row[3:14] for row in GATE[8:]]          # 11 x 20: the ring without blades or eye
+
+
+def mini_ring(c, x0, ground_y, lit, bricked=0, socket=False):
+    """A small ring standing on ground_y. bricked: how many rows of its field, from the bottom, are
+    walled up in stone courses. socket: the keystone (its bottom middle) prised out."""
+    y0 = ground_y - len(MINI_RING)
+    dark = mix(BASALT[0], ASH[0], 0.3)
+    key = {'R': dict(height=1, inlay=RING_STONE),
+           'r': dict(height=1, inlay=TEAL[3] if lit else DULL[1], glow=lit),
+           'F': dict(height=0, inlay=TEAL[3] if lit else dark, glow=lit),
+           'P': dict(height=2), 'B': dict(height=1, inlay=BASALT[3])}
+    c.sprite(MINI_RING, x0, y0, key)
+    if lit:
+        for y in range(y0 + 2, ground_y - 1):
+            for x in range(x0 + 2, x0 + 9):
+                if (x * 3 + y * 2) % 11 == 0:
+                    c.px(x, y, inlay=TEAL[4], glow=True)
+    for i in range(bricked):                         # stone courses, laid from the bottom up
+        y = ground_y - 2 - i
+        for x in range(x0 + 2, x0 + 9):
+            joint = (x - x0 + (i // 2) % 2 * 2) % 4 == 0
+            c.px(x, y, height=1 if not joint else 0,
+                 inlay=BASALT[2] if i % 2 else BASALT[3], group=('course', i))
+    if socket:
+        for x in (x0 + 4, x0 + 5, x0 + 6):
+            c.px(x, ground_y - 1, height=-1, inlay=BASALT[0], group='socket')
+
+
+def key_sprite(c, x0, y0):
+    """The gate's key, as the keepers hold it: a pale bow with the network's eye, teal in its pupil."""
+    rows = [".#.", "#o#", ".#.", ".#.", ".##", ".#.", ".##"]
+    c.sprite(rows, x0, y0, {'#': dict(height=2, inlay=ANORTH[5], group='key'),
+                            'o': dict(height=2, inlay=TEAL[4], glow=True)})
+
+
+def keeper_small(c, x0, ground_y, eye=True, rough=0):
+    """A keeper at panel scale, 18 wide and 34 tall, built in courses like The Keeper's. rough:
+    how many rows from its feet are still uncut stone."""
+    top = ground_y - 34
+    body, limb, darkc = BASALT[4], BASALT[3], BASALT[2]
+
+    def part(a, b, cc, d, col, grp):
+        c.rect(x0 + a, top + b, x0 + cc, top + d, height=1, inlay=col, group=grp)
+    part(5, 0, 12, 6, body, 'k_head')
+    if eye:
+        for dx, dy in ((7, 2), (8, 2), (9, 2), (6, 3), (10, 3), (7, 4), (8, 4), (9, 4)):
+            c.px(x0 + dx - 1, top + dy, inlay=TEAL[3], glow=True)
+        c.px(x0 + 7, top + 3, inlay=TEAL[5], glow=True)
+    else:
+        c.line(x0 + 5, top + 3, x0 + 10, top + 3, inlay=BASALT[1])        # the eye shut
+    part(6, 7, 11, 7, darkc, 'k_neck')
+    part(1, 8, 16, 11, limb, 'k_shoulders')
+    for y in range(12, 21):
+        half = 6 - (y - 12) // 3
+        part(8 - half, y, 9 + half, y, body, 'k_body')
+    part(0, 12, 2, 23, limb, 'k_larm')
+    part(15, 12, 17, 23, limb, 'k_rarm')
+    part(4, 21, 7, 33, body, 'k_lleg')
+    part(10, 21, 13, 33, body, 'k_rleg')
+    for y in (14, 18):
+        c.line(x0 + 3, top + y, x0 + 14, top + y, height=-1)
+    for y in range(34 - rough, 34):                   # the uncut block the carvers have not reached
+        for x in range(2, 16):
+            c.px(x0 + x, top + y, height=1, inlay=BASALT[3] if (x + y) % 5 else BASALT[2], group='k_rough')
+
+
+def blue_world(c, cx=8, cy=8, r=5):
+    planet(c, cx, cy, r, EARTH)
+
+
+def p_breathing(c):
+    """1. The colony breathing: the ring lit, its air drifting out to the people beside it."""
+    ground(c, 40)
+    blue_world(c)
+    mini_ring(c, 27, 40, lit=True)
+    figure(c, 'S', 6, 40)
+    figure(c, 'S', 15, 40)
+    for i, x in enumerate(range(26, 9, -3)):          # the air, drifting from the field to them
+        c.px(x, 24 + round(2 * math.sin(i * 1.3)), inlay=TEAL[4], glow=True)
+    for i, x in enumerate(range(25, 13, -4)):
+        c.px(x, 30 + round(1.5 * math.cos(i * 1.1)), inlay=TEAL[3], glow=True)
+    cat(c, 'S', 39, 40, flip=True)                    # every gate hall kept a cat
+
+
+def p_dark_spreads(c):
+    """2. The dark comes out of the blue world and along the road, ring by ring."""
+    planet(c, 9, 25, 7, EARTH)
+    worlds = [(22, 17, 2.5, GREY), (32, 29, 3, ASH), (42, 14, 3, ICE)]
+    planet(c, *worlds[0][:3], worlds[0][3])
+    for (xa, ya, ra, _), (xb, yb, rb, pal) in zip(worlds, worlds[1:]):
+        planet(c, xb, yb, rb, pal)
+    pts = [(9, 25, 7)] + [w[:3] for w in worlds]
+    for i, ((xa, ya, ra), (xb, yb, rb)) in enumerate(zip(pts, pts[1:])):
+        d = math.hypot(xb - xa, yb - ya)
+        ux, uy = (xb - xa) / d, (yb - ya) / d
+        a = (xa + ux * (ra + 1), ya + uy * (ra + 1))
+        b = (xb - ux * (rb + 1), yb - uy * (rb + 1))
+        if i < 2:
+            c.line(*a, *b, height=-1)                 # put out: the inlay gone dark
+        else:
+            c.line(*a, *b, inlay=TEAL[2], glow=True)
+    for x, y, r, _ in worlds[2:]:
+        c.px(x, y - r - 2, height=1, inlay=TEAL[4], glow=True)    # the farthest gate still lit
+    for y in range(1, PANEL - 1):                     # the stain, poured out of the blue world
+        for x in range(1, PANEL - 1):
+            d = math.hypot(x - 9, (y - 25) * 1.4)
+            s = 1.2 - d / 26.0 + (math.sin(x * 0.5 + y * 0.35) + math.sin(y * 0.8 - x * 0.25)) * 0.08
+            c.stain[y][x] = max(0.0, min(0.75, s * 0.85))
+
+
+def p_walling(c):
+    """3. The Sealers wall up their own ring and prise its keystone out."""
+    ground(c, 40)
+    mini_ring(c, 18, 40, lit=False, bricked=9, socket=True)
+    figure(c, 'C', 3, 40)                             # bringing another stone
+    figure(c, 'K', 28, 40, flip=True)                 # at the socket, with the chisel
+    c.line(27, 37, 26, 38, height=1, inlay=FIGURE_INK)
+    c.rect(37, 37, 40, 39, height=1, inlay=RING_STONE, group='keystone')   # the keystone, out
+    c.px(38, 38, inlay=DULL[2])
+    for x, y in ((42, 37), (42, 34), (45, 37)):       # the next courses, ready
+        c.rect(x, y, x + 2, y + 2, height=1, inlay=BASALT[3], group=('stone', x, y))
+
+
+def p_keepers(c):
+    """4. A keeper carved from the stone, and the key put in its hand."""
+    ground(c, 40)
+    keeper_small(c, 27, 40, eye=True, rough=5)
+    figure(c, 'K', 17, 40)                            # carving its foot
+    c.line(25, 37, 26, 36, height=1, inlay=FIGURE_INK)
+    c.rect(2, 33, 11, 39, height=1)                   # a step, to reach its hand
+    figure(c, 'S', 3, 33)
+    c.line(9, 21, 17, 17, height=1, inlay=FIGURE_INK)     # the arm, raised to the keeper
+    key_sprite(c, 18, 13)                             # the key, passing from hand to hand
+
+
+def p_stillness(c):
+    """5. After the gate went dark: the people lying still beside it. The cat is still there."""
+    ground(c, 40)
+    blue_world(c)
+    mini_ring(c, 36, 40, lit=False, bricked=17)
+    lie = lying('S')
+    c.sprite(lie, 2, 40 - len(lie), {'#': dict(height=1, inlay=FIGURE_INK, group='near')})
+    c.sprite(lie, 9, 40 - 2 * len(lie) - 2,                       # one further back, higher up
+             {'#': dict(height=1, inlay=mix(FIGURE_INK, ANORTH[1], 0.3), group='far')})
+    cat(c, 'S', 24, 40, flip=True)
+
+
+def p_last_ship(c):
+    """6. One figure leaves, on a ship rising on fire toward the blue world. That is Tacita."""
+    ground(c, 40)
+    blue_world(c, 9, 9, 6)
+    # the ship: a blunt hull rising up and to the left, toward the blue world, lit on its upper side
+    tail, nose = (33.0, 27.0), (21.0, 15.0)
+    ax, ay = nose[0] - tail[0], nose[1] - tail[1]
+    length = math.hypot(ax, ay)
+    ux, uy = ax / length, ay / length
+    for y in range(8, 34):
+        for x in range(13, 40):
+            px_, py_ = x + 0.5 - tail[0], y + 0.5 - tail[1]
+            u = px_ * ux + py_ * uy
+            v = -px_ * uy + py_ * ux                  # signed distance across the hull
+            if not 0 <= u <= length:
+                continue
+            half = 2.6 if u < length - 3 else 2.6 - (u - (length - 3)) * 0.8
+            if abs(v) <= half:
+                c.px(x, y, height=2, inlay=ANORTH[4] if v > 0.4 else ANORTH[2], group='ship')
+    c.px(25, 20, height=2, inlay=BASALT[1], group='window')          # one figure, at the window
+    c.px(25, 19, height=2, inlay=BASALT[1], group='window')
+    rng = random.Random(66)                                           # the fire under it
+    for i in range(1, 15):
+        x, y = 33.5 + i * 0.7, 28.5 + i * 0.7
+        w = 1 + i // 5
+        for k in range(-w, w + 1):
+            if rng.random() < 0.95 - i * 0.045:
+                col = FORGE[4] if i < 4 else FORGE[3] if i < 9 else FORGE[2]
+                c.px(x + k * 0.7, y - k * 0.7, inlay=col, glow=True)
+    for x in range(40, 47):                                          # scorched ground under it
+        c.px(x, 40, height=-1)
+
+
+RECORD_PANELS = [p_breathing, p_dark_spreads, p_walling, p_keepers, p_stillness, p_last_ship]
+
+
+def m_sealers_record(c):
+    """The six panels on one canvas, 3 across and 2 down, each in its own raised border."""
+    for i, draw in enumerate(RECORD_PANELS):
+        sub = Canvas(PANEL, PANEL, seed=700 + i)
+        draw(sub)
+        ox, oy = (i % 3) * PANEL, (i // 3) * PANEL
+        for y in range(PANEL):
+            for x in range(PANEL):
+                c.height[oy + y][ox + x] = sub.height[y][x]
+                c.inlay[oy + y][ox + x] = sub.inlay[y][x]
+                c.glow[oy + y][ox + x] = sub.glow[y][x]
+                c.stain[oy + y][ox + x] = sub.stain[y][x]
+                c.group[oy + y][ox + x] = None if sub.group[y][x] is None else (i, sub.group[y][x])
+    rib = [(x, y) for k in (1, 2) for x in (k * PANEL - 1, k * PANEL) for y in range(c.h)]
+    rib += [(x, y) for y in (PANEL - 1, PANEL) for x in range(c.w)]
+    for x, y in rib:                                  # the raised ribs between the panels
+        c.height[y][x], c.inlay[y][x], c.glow[y][x], c.stain[y][x] = 1, None, False, 0.0
+
+
+def m_record_gouged(c):
+    """Where the record's tiles were torn out of the sealed room's wall: three sockets of hacked
+    plaster, the rougher bed showing, chisel bites round the rim. The template fills the record's
+    frame with these; a recovered tile goes back in place of one."""
+    rng = random.Random(901)
+    bed = [mix(ANORTH[1], BASALT[4], 0.25), mix(ANORTH[1], BASALT[4], 0.4), mix(ANORTH[2], BASALT[4], 0.3)]
+    for t in range(3):
+        ox = t * 16
+        for y in range(2, 14):
+            for x in range(2, 14):
+                ragged = (x in (2, 13) or y in (2, 13)) and rng.random() < 0.35
+                if not ragged:
+                    c.px(ox + x, y, height=-1, inlay=rng.choice(bed), group=('bed', t))
+        for _ in range(7):                            # bites into the plaster left at the rim
+            x, y = rng.choice([(rng.randrange(2, 14), rng.choice((1, 14))), (rng.choice((1, 14)), rng.randrange(2, 14))])
+            c.px(ox + x, y, height=-1)
+        for _ in range(4):                            # gouges across the bed
+            x, y = rng.randrange(3, 10), rng.randrange(3, 12)
+            for i in range(rng.randrange(2, 5)):
+                c.px(ox + x + i, y + (i if t % 2 else 0), height=-1, inlay=mix(ANORTH[0], BASALT[3], 0.5),
+                     group=('gouge', t))
+
+
+def m_keeper_shrine(c):
+    """The Sealers making the Moon's keepers, a pair: the sleeper, its eye shut, takes the key into
+    its hand from a Sealer on a step; the guard, its eye open, is still being cut from the rock. One
+    to sleep until it is needed and one to stand, so one is always awake. It hangs behind the Ender
+    Guardian, and is found only after the fight."""
+    ground(c, 41)
+    keeper_small(c, 6, 41, eye=False)                  # the sleeper
+    c.rect(27, 35, 36, 40, height=1)                   # a step, to reach its hand
+    figure(c, 'S', 28, 35, flip=True)               # facing the sleeper
+    c.line(30, 23, 25, 27, height=1, inlay=FIGURE_INK)     # the arm, reaching up to the sleeper's hand
+    key_sprite(c, 26, 18)                              # the key, going into its hand
+    keeper_small(c, 54, 41, eye=True, rough=7)         # the guard, its legs still in the rock
+    figure(c, 'K', 44, 41)
+    c.line(52, 38, 53, 37, height=1, inlay=FIGURE_INK)
+    c.line(75, 5, 75, 40, every=2, height=-1)          # the scaffold round it, scratched in
+    c.line(51, 5, 77, 5, every=2, height=-1)
+    c.line(73, 21, 77, 21, height=1)                   # a plank, and a carver on it at its head
+    figure(c, 'W', 71, 21, flip=True)
 
 
 MURAL_FUNCS = {
     'stonecutters': m_stonecutters, 'the_step': m_the_step, 'the_road': m_the_road,
     'ring_ash': m_ring_ash, 'ring_ice': m_ring_ice, 'ring_forge': m_ring_forge,
     'keeper': m_keeper, 'the_quiet': m_the_quiet,
+    'sealers_record': m_sealers_record, 'record_gouged': m_record_gouged, 'keeper_shrine': m_keeper_shrine,
 }
 
 
@@ -958,8 +1284,8 @@ def mural_sheet(images, path, scale=4):
         rows.append((name, big))
     W = max(b.width for _, b in rows[:6]) * 2 + pad * 3
     out = Image.new('RGBA', (W, 10), BASALT[1] + (255,))
-    # two columns: the six hall murals; then keeper and the quiet
-    cols = [rows[0:3], rows[3:6], rows[6:8]]
+    # columns: the six hall murals; keeper and the quiet; the record, its sockets and the shrine
+    cols = [rows[0:3], rows[3:6], rows[6:8], rows[8:11]]
     heights = [sum(b.height + pad for _, b in col) for col in cols]
     widths = [max(b.width for _, b in col) for col in cols]
     out = Image.new('RGBA', (sum(widths) + pad * (len(cols) + 1), max(heights) + pad), BASALT[1] + (255,))

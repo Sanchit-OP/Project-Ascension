@@ -950,6 +950,75 @@ def _strip(panels, path):
     out.save(path)
 
 
+def room_shot(rim, rsp, vox, eye, target, size=(1440, 900), box=None, background=(0.05, 0.05, 0.07)):
+    """A textured view inside a template (no sky, no plain), cropped to `box` cells first."""
+    import numpy as np
+    if box:
+        (x0, x1), (y0, y1), (z0, z1) = box
+        vox = {p: st for p, st in vox.items() if x0 <= p[0] <= x1 and y0 <= p[1] <= y1 and z0 <= p[2] <= z1}
+    proj = rim.perspective(70, size[0] / size[1])
+    bg = np.zeros((size[1], size[0], 3), np.float32) + np.array(background, np.float32)
+    im = rim.to_image(rim.rasterise(scene_quads(rim, rsp, vox), proj, rim.look_at(eye, target), size, bg))
+    return im.resize((size[0] * 2 // 3, size[1] * 2 // 3), Image.LANCZOS)
+
+
+# --- 7 and 8 in the world: the record's frame and the keeper shrine ---------------------------------------
+
+def record_layout(path):
+    """The handover drawing: the record at 4x with every frame cell's (col, row) and tile number,
+    as the reader standing in the sealed room sees the frame."""
+    from_archive = _load('lunar_archive', 'generate-lunar-archive.py')
+    aa = from_archive.art
+    i = [n for n, _ in aa._ORDER].index('sealers_record')
+    tw, th = aa._ORDER[i][1]
+    c = aa.Canvas(tw * 16, th * 16, seed=100 + i)
+    aa.MURAL_FUNCS['sealers_record'](c)
+    base, glow = c.render()
+    Z = 4
+    img = Image.alpha_composite(base, glow).resize((tw * 16 * Z, th * 16 * Z), Image.NEAREST).convert('RGB')
+    d = ImageDraw.Draw(img)
+    for x, y, z, col, row, tile in from_archive.record_frame():
+        px, py = col * 16 * Z, row * 16 * Z
+        d.rectangle([px, py, px + 16 * Z - 1, py + 16 * Z - 1], outline=(250, 200, 80))
+        d.rectangle([px + 2, py + 2, px + 58, py + 26], fill=(20, 20, 24))
+        d.text((px + 5, py + 3), f'{col},{row}', fill=(250, 220, 140))
+        d.text((px + 5, py + 14), f'tile {tile}', fill=(230, 230, 230))
+    out = Image.new('RGB', (img.width + 20, img.height + 40), SHEET_BG)
+    out.paste(img, (10, 30))
+    ImageDraw.Draw(out).text((10, 8), "the Sealers' Record as the frame takes it: (col, row) from the reader's "
+                                     'top-left, and the archive_mural tile that belongs there', fill=INK)
+    out.save(path)
+
+
+def sealed_room_views(path):
+    """The sealed room's back wall from the breach: the frame as the template leaves it (every tile
+    torn out), and with the record put back. Lit by the preview's sun, not by the room's own script."""
+    from_archive = _load('lunar_archive', 'generate-lunar-archive.py')
+    rim, rsp = _rim(), _load('render_structure_preview', 'render-structure-preview.py')
+    shots = []
+    for restored in (False, True):
+        p = from_archive.vault()
+        if restored:
+            from_archive.sealed_room(p, restored=True)
+        vox = {pos: st for pos, (_, st) in p.cells.items()}
+        L = from_archive.LOW
+        shots.append(('the frame as the template leaves it' if not restored else 'the record put back',
+                      room_shot(rim, rsp, vox, (12.5, L + 2.9, 29.6), (12.5, L + 4.6, 23),
+                                box=((6, 18), (0, L + 9), (21, 29)))))
+    _strip(shots, path)
+
+
+def shrine_views(path):
+    from_archive = _load('lunar_archive', 'generate-lunar-archive.py')
+    rim, rsp = _rim(), _load('render_structure_preview', 'render-structure-preview.py')
+    _, vox, _ = rsp.load_nbt(os.path.join(from_archive.SHRINE_OUT, 'keeper_shrine.nbt'))
+    F = from_archive.SHRINE_FLOOR
+    shots = [('keeper_shrine from 8 blocks, at eye height', room_shot(
+                 rim, rsp, vox, (2.0, F + 2.62, -7.5), (4.5, F + 3, 4), background=(0.016, 0.02, 0.035))),
+             ('from its door', room_shot(rim, rsp, vox, (4.5, F + 2.62, 0.6), (4.5, F + 3.4, 8)))]
+    _strip(shots, path)
+
+
 # --- 9. the light on the Moon ---------------------------------------------------------------------------
 #
 # environment/moon_signal.png, 16 x 16: a point of teal light, for logic to draw over the vanilla moon
@@ -1065,6 +1134,9 @@ def main():
         first_person_views(os.path.join(DESIGN, 'mark-first-person.png'))
         third_person_views(os.path.join(DESIGN, 'mark-third-person.png'))
         pylon_views(os.path.join(DESIGN, 'pylon-court.png'), os.path.join(DESIGN, 'pylon-64.png'))
+        sealed_room_views(os.path.join(DESIGN, 'record-frame.png'))
+        shrine_views(os.path.join(DESIGN, 'keeper-shrine.png'))
+    record_layout(os.path.join(DESIGN, 'record-layout.png'))
     print('wrote the script, its font, the mark, the pylon glyphs, the moon signal and their previews')
 
 

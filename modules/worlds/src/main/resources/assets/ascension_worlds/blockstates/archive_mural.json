@@ -362,6 +362,222 @@
     },
     "tile=120": {
       "model": "ascension_worlds:block/archive_mural/tile_120"
+    },
+    "tile=121": {
+      "model": "ascension_worlds:block/archive_mural/tile_121"
+    },
+    "tile=122": {
+      "model": "ascension_worlds:block/archive_mural/tile_122"
+    },
+    "tile=123": {
+      "model": "ascension_worlds:block/archive_mural/tile_123"
+    },
+    "tile=124": {
+      "model": "ascension_worlds:block/archive_mural/tile_124"
+    },
+    "tile=125": {
+      "model": "ascension_worlds:block/archive_mural/tile_125"
+    },
+    "tile=126": {
+      "model": "ascension_worlds:block/archive_mural/tile_126"
+    },
+    "tile=127": {
+      "model": "ascension_worlds:block/archive_mural/tile_127"
+    },
+    "tile=128": {
+      "model": "ascension_worlds:block/archive_mural/tile_128"
+    },
+    "tile=129": {
+      "model": "ascension_worlds:block/archive_mural/tile_129"
+    },
+    "tile=130": {
+      "model": "ascension_worlds:block/archive_mural/tile_130"
+    },
+    "tile=131": {
+      "model": "ascension_worlds:block/archive_mural/tile_131"
+    },
+    "tile=132": {
+      "model": "ascension_worlds:block/archive_mural/tile_132"
+    },
+    "tile=133": {
+      "model": "ascension_worlds:block/archive_mural/tile_133"
+    },
+    "tile=134": {
+      "model": "ascension_worlds:block/archive_mural/tile_134"
+    },
+    "tile=135": {
+      "model": "ascension_worlds:block/archive_mural/tile_135"
+    },
+    "tile=136": {
+      "model": "ascension_worlds:block/archive_mural/tile_136"
+    },
+    "tile=137": {
+      "model": "ascension_worlds:block/archive_mural/tile_137"
+    },
+    "tile=138": {
+      "model": "ascension_worlds:block/archive_mural/tile_138"
+    },
+    "tile=139": {
+      "model": "ascension_worlds:block/archive_mural/tile_139"
+    },
+    "tile=140": {
+      "model": "ascension_worlds:block/archive_mural/tile_140"
+    },
+    "tile=141": {
+      "model": "ascension_worlds:block/archive_mural/tile_141"
+    },
+    "tile=142": {
+      "model": "ascension_worlds:block/archive_mural/tile_142"
+    },
+    "tile=143": {
+      "model": "ascension_worlds:block/archive_mural/tile_143"
+    },
+    "tile=144": {
+      "model": "ascension_worlds:block/archive_mural/tile_144"
+    },
+    "tile=145": {
+      "model": "ascension_worlds:block/archive_mural/tile_145"
+    },
+    "tile=146": {
+      "model": "ascension_worlds:block/archive_mural/tile_146"
+    },
+    "tile=147": {
+      "model": "ascension_worlds:block/archive_mural/tile_147"
+    },
+    "tile=148": {
+      "model": "ascension_worlds:block/archive_mural/tile_148"
+    },
+    "tile=149": {
+      "model": "ascension_worlds:block/archive_mural/tile_149"
+    },
+    "tile=150": {
+      "model": "ascension_worlds:block/archive_mural/tile_150"
+    },
+    "tile=151": {
+      "model": "ascension_worlds:block/archive_mural/tile_151"
+    },
+    "tile=152": {
+      "model": "ascension_worlds:block/archive_mural/tile_152"
+    },
+    "tile=153": {
+      "model": "ascension_worlds:block/archive_mural/tile_153"
+    },
+    "tile=154": {
+      "model": "ascension_worlds:block/archive_mural/tile_154"
+    },
+    "tile=155": {
+      "model": "ascension_worlds:block/archive_mural/tile_155"
+    },
+    "tile=156": {
+      "model": "ascension_worlds:block/archive_mural/tile_156"
+    },
+    "tile=157": {
+      "model": "ascension_worlds:block/archive_mural/tile_157"
+    },
+    "tile=158": {
+      "model": "ascension_worlds:block/archive_mural/tile_158"
+    },
+    "tile=159": {
+      "model": "ascension_worlds:block/archive_mural/tile_159"
+    },
+    "tile=160": {
+      "model": "ascension_worlds:block/archive_mural/tile_160"
+    },
+    "tile=161": {
+      "model": "ascension_worlds:block/archive_mural/tile_161"
+    },
+    "tile=162": {
+      "model": "ascension_worlds:block/archive_mural/tile_162"
+    },
+    "tile=163": {
+      "model": "ascension_worlds:block/archive_mural/tile_163"
+    },
+    "tile=164": {
+      "model": "ascension_worlds:block/archive_mural/tile_164"
+    },
+    "tile=165": {
+      "model": "ascension_worlds:block/archive_mural/tile_165"
+    },
+    "tile=166": {
+      "model": "ascension_worlds:block/archive_mural/tile_166"
+    },
+    "tile=167": {
+      "model": "ascension_worlds:block/archive_mural/tile_167"
+    },
+    "tile=168": {
+      "model": "ascension_worlds:block/archive_mural/tile_168"
+    },
+    "tile=169": {
+      "model": "ascension_worlds:block/archive_mural/tile_169"
+    },
+    "tile=170": {
+      "model": "ascension_worlds:block/archive_mural/tile_170"
+    },
+    "tile=171": {
+      "model": "ascension_worlds:block/archive_mural/tile_171"
+    },
+    "tile=172": {
+      "model": "ascension_worlds:block/archive_mural/tile_172"
+    },
+    "tile=173": {
+      "model": "ascension_worlds:block/archive_mural/tile_173"
+    },
+    "tile=174": {
+      "model": "ascension_worlds:block/archive_mural/tile_174"
+    },
+    "tile=175": {
+      "model": "ascension_worlds:block/archive_mural/tile_175"
+    },
+    "tile=176": {
+      "model": "ascension_worlds:block/archive_mural/tile_176"
+    },
+    "tile=177": {
+      "model": "ascension_worlds:block/archive_mural/tile_177"
+    },
+    "tile=178": {
+      "model": "ascension_worlds:block/archive_mural/tile_178"
+    },
+    "tile=179": {
+      "model": "ascension_worlds:block/archive_mural/tile_179"
+    },
+    "tile=180": {
+      "model": "ascension_worlds:block/archive_mural/tile_180"
+    },
+    "tile=181": {
+      "model": "ascension_worlds:block/archive_mural/tile_181"
+    },
+    "tile=182": {
+      "model": "ascension_worlds:block/archive_mural/tile_182"
+    },
+    "tile=183": {
+      "model": "ascension_worlds:block/archive_mural/tile_183"
+    },
+    "tile=184": {
+      "model": "ascension_worlds:block/archive_mural/tile_184"
+    },
+    "tile=185": {
+      "model": "ascension_worlds:block/archive_mural/tile_185"
+    },
+    "tile=186": {
+      "model": "ascension_worlds:block/archive_mural/tile_186"
+    },
+    "tile=187": {
+      "model": "ascension_worlds:block/archive_mural/tile_187"
+    },
+    "tile=188": {
+      "model": "ascension_worlds:block/archive_mural/tile_188"
+    },
+    "tile=189": {
+      "model": "ascension_worlds:block/archive_mural/tile_189"
+    },
+    "tile=190": {
+      "model": "ascension_worlds:block/archive_mural/tile_190"
+    },
+    "tile=191": {
+      "model": "ascension_worlds:block/archive_mural/tile_191"
+    },
+    "tile=192": {
+      "model": "ascension_worlds:block/archive_mural/tile_192"
     }
   }
 }
