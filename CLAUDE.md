@@ -70,7 +70,7 @@ Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behav
 **`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
 the Moon. **`ascension-combat`** (ADR-0012) is the League-style item/stat/rune system, built in a
 separate parallel session — do not fold its work into this one's without asking. Tier 2 compat
-jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators
+jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons
 (`docs/technical/architecture.md` has the table).
 
 **Start a new session at [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md), section

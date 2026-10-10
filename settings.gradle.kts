@@ -30,5 +30,6 @@ include(":modules:compat:immersivedamageindicators")
 include(":modules:compat:cataclysm")
 include(":modules:compat:endermanoverhaul")
 include(":modules:compat:bettercombat")
+include(":modules:compat:distanthorizons")
 // include(":modules:compat:curios")  // next, once Curios is installed in the test instance
 // include(":modules:compat:sable")   // M5
