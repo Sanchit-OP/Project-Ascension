@@ -190,6 +190,14 @@ Settled 2026-10-10: **Tacita's name is the way to close the seal.** The voice si
 with it, in the wrong order. The Moon's eight tablets now carry her signature, in words for now;
 the glyph row comes with the mark's art.
 
+The two orders are glyph indices, numbered in gate order (0 is Earth, 1 the Moon, 2 the burning
+world, 3 to 6 the later worlds):
+
+- **The voice's order**, signed on every tablet: 0 1 2 3 4 5 6. It is the order the locks break.
+- **Tacita's true order**, on the netherite plates, and the way to close the seal: 4 1 6 3 0 5 2.
+
+The true order is story data owned by logic. If it changes, change it here first.
+
 1. Which endings: A and B, or A, B and C with C secret? My recommendation is all three, with C
    secret.
 4. The factions as the Wardens and the Evokers: yes or no?

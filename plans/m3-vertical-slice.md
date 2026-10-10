@@ -59,7 +59,24 @@ its survival rule: wear gold) and `the-ending-and-names.md`. Settled: the Archiv
 name, signed by the voice on every tablet in the wrong order, is the way to close the seal. **The
 Moon's eight tablets are rewritten as the voice (2026-10-10)**, with entry ids unchanged. They were
 checked by `ArchiveLoreTest` but have not yet been read in a client. Still open: which endings, the
-faction names, and wear gold for Planet 3. After that: rewrite the Moon's tablets in
+faction names, and wear gold for Planet 3.
+
+**2026-10-10: the Archive is merged into main** (rebased onto main, both generators re-run
+byte-identical, `:modules:worlds:build` green with 80 tests). **The lore art went to a design
+session** through [`docs/technical/lore-art-format.md`](../docs/technical/lore-art-format.md) and
+`design/lore-art/design-session-prompt.md` (worktree `../Project-Ascension-lore-art`, branch
+`lore-art-design`). It covers the mark, the script glyphs and font, the pylon band, revised murals,
+the Sealers' Record, the keeper shrine and the moon signal.
+
+**Next logic build, picked by Sanchit 2026-10-10: the Archive in the world, then gate progress.**
+1. Archive worldgen from the design handover: structure, two pools, the fixed structure set at
+   x −160, z −256, the crater exclusion zone (on the gateway ruin too), and plinth and orrery shapes
+   with `noOcclusion`. Verify headless, then in a client.
+2. Gate progress synced to clients, once per attunement and never per tick. It is the one source
+   for the orrery hologram, the mark's stage, the pylon's lit glyphs, the signature line and the
+   moon signal.
+3. Use that sync for the orrery hologram, the mark's render layer (missing-texture placeholder until
+   design delivers), pylon lighting, and the moon signal. After that: rewrite the Moon's tablets in
 `tools/archive-lore.py` (five kept, three new for the sealed room) and re-point three plinths in the
 Archive generator. Then the orrery hologram, then Planet 3 once its questions are answered. Deferred to the alpha release: the two-client test (also covers
 share-air) and the M1.9 measurement.
