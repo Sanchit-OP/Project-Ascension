@@ -32,7 +32,7 @@ it is committed; ask Sanchit before pushing. Details live in the sections below 
 | Our Moon in Earth's sky in place of vanilla's | **Live 2026-10-10.** |
 | Background pre-generation (`ascension-compat-chunky`) | **Off by default since 2026-10-10**: a fresh server crashed under it. The Chunky bug, below. |
 | Cataclysm's five Earth bosses held for later planets | `/locate` on a fresh dedicated server 2026-10-11: bosses gone, small structures kept. |
-| The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact; since the refactor pass, an item frame inside the ship travels with it too. Not yet seen with a crew aboard or a real Aeronautics ship (none designed yet). |
+| The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact; since the refactor pass, an item frame inside the ship travels with it too. **Seen live 2026-10-11** (`live-test-2026-10-11.md`): Sanchit rode a command-built ship from Earth to space and down onto the Moon, its item frame along. Not yet seen with a real Aeronautics ship (none designed yet). |
 
 **Settled:** the keystone recipe (Deep Dark materials, one Warden tendril per gate, nothing from
 the Nether); Planet 3 is the **Nether world** (roofless, netherite, a boss; M3.3 below); Voxy
@@ -57,10 +57,10 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
    lore art was made.
 
-**Next:** Sanchit's look at everything built since 2026-10-10 in a client: the first light, the
-airship road (with a crew, and with a real Aeronautics ship once one exists), the Cataclysm
-bosses gone from Earth. Then the orrery hologram with Tacita's signature, then cats. Then Planet 3
-once its questions are answered.
+**Next:** the space view of planets (Sanchit, 2026-10-11: bodies in space drawn like the sky
+bodies, the Moon smaller than Earth). Then the orrery hologram with Tacita's signature, then cats.
+Then Planet 3 once its questions are answered. A real Aeronautics starter ship (decision 5) is
+still needed to see the road with propellers.
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
@@ -100,8 +100,8 @@ phases; vanilla's moon texture shipped blank). Both seen in his client.
    part and parked safely (below); the pass continues with the rest of its list.
 4. The rest of gate progress's readers, from `lore-art-design.md`'s "For the logic session" list,
    as three increments picked 2026-10-11:
-   - **The first light. Built 2026-10-11, checked on a dedicated server; not yet seen in a
-     client.** Glyph *k* on the Archive's pylon lights once gate *k* is lit (`GateGlyphs`: found
+   - **The first light. Built 2026-10-11; seen live 2026-10-11 (`live-test-2026-10-11.md`):
+     the Moon's light brightening with each gate, three pylon glyphs for three gates.** Glyph *k* on the Archive's pylon lights once gate *k* is lit (`GateGlyphs`: found
      through each loading chunk's block palettes, remembered by position until it unloads,
      relit on load and whenever the network changes). The Moon in Earth's sky carries the moon
      signal as a sky-body `gate_light`, brightening with each gate. One entry point for a network
