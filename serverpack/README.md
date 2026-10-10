@@ -9,17 +9,26 @@ runs the same configuration we ship. Files not listed here are left alone — Ch
 
 ## Pre-generating the spawn area
 
-**Chunky resumes its own task across restarts.** That is the answer to "start generating when
-the server starts": there is no startup hook to write, because Chunky already persists task
-state to `config/chunky/tasks/` and picks it up again on boot.
+> **Off by default since 2026-10-10.** A pre-generation on a fresh server crashed it with
+> nobody online: generated chunks were not unloaded while Chunky ran, and the 6 GB heap filled
+> in about six minutes (`plans/m3-vertical-slice.md`, the Chunky bug). Until that is found,
+> nothing pre-generates on its own:
+>
+> - `config/chunky/config.json` ships `"continueOnRestart": false`, so a restart does not
+>   resume an interrupted task. On the dev server this also stops the dev world's two saved
+>   tasks (Earth and the Moon) starting together at every boot, which is what crashed it first.
+> - `ascension-compat-chunky`'s own background pre-generation of every planet is off:
+>   `config/ascension_compat_chunky-server.toml`, `[pregeneration] background = false`.
+>
+> Pre-generating by hand still works, below. Watch memory while it runs, and `/chunky pause` if
+> the heap climbs: pausing lets the held chunks save and unload.
 
-`config/chunky/config.json` sets it:
+**Chunky can resume its own task across restarts** (`"continueOnRestart": true`). That was the
+answer to "start generating when the server starts": there is no startup hook to write, because
+Chunky already persists task state to `config/chunky/tasks/` and picks it up again on boot. It
+is off for now, as above; with it off, `/chunky continue` resumes a task by hand.
 
-```json
-"continueOnRestart": true
-```
-
-Then start the task **once**, as an operator:
+Start the task **once**, as an operator:
 
 ```
 /chunky world minecraft:overworld
@@ -29,7 +38,7 @@ Then start the task **once**, as an operator:
 /chunky start
 ```
 
-From then on every restart continues it automatically until it completes. `/chunky progress`
+With `continueOnRestart` on, every restart continues it automatically until it completes. `/chunky progress`
 reports where it is; `/chunky pause` and `/chunky continue` are manual overrides.
 
 ### What radius 4000 actually costs

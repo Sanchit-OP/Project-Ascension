@@ -1,8 +1,11 @@
 package com.ascension.compat.chunky;
 
 import com.ascension.compat.chunky.internal.ChunkyAttachments;
+import com.ascension.compat.chunky.internal.ChunkyCompatConfig;
 import com.ascension.compat.chunky.internal.ChunkySequentialPregen;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +26,8 @@ public final class AscensionCompatChunky {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AscensionCompatChunky.class);
 
-    public AscensionCompatChunky(IEventBus modBus) {
+    public AscensionCompatChunky(IEventBus modBus, ModContainer container) {
+        container.registerConfig(ModConfig.Type.SERVER, ChunkyCompatConfig.SPEC);
         ChunkyAttachments.register(modBus);
         ChunkySequentialPregen.register();
 

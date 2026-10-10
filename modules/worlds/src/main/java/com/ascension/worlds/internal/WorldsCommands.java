@@ -37,6 +37,14 @@ public final class WorldsCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("ascension")
                 .then(Commands.literal("worlds")
+                        .then(Commands.literal("debug")
+                                .requires(source -> source.hasPermission(3))
+                                .then(Commands.literal("chunks")
+                                        .executes(ctx -> {
+                                            ctx.getSource().sendSuccess(
+                                                    () -> ChunkReport.write(ctx.getSource().getServer()), true);
+                                            return 1;
+                                        })))
                         .then(Commands.literal("weather")
                                 .executes(ctx -> weather(ctx.getSource()))
                                 .then(Commands.literal("force")

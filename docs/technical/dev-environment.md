@@ -350,6 +350,7 @@ losing to a higher band looks exactly like a provider that does not work.
 /ascension worlds gateway unlight <id>          (op) put it out again; the mark steps back down
 /ascension worlds archive tablet <entry>        (op) a tablet carrying that archive entry
 /ascension worlds archive plinth <entry>        (op) point the plinth you're looking at at an entry
+/ascension worlds debug chunks                  (permission 3) vanilla's debug report per dimension; see "What is holding chunks in memory"
 ```
 
 The lore text itself lives in `tools/archive-lore.py`; run it after editing to regenerate the
@@ -372,20 +373,20 @@ the tools in `tools/worldgen-diagnostics/`, and never touches the real dev world
 1. Make sure no dev server is running (`session.lock` allows one per world).
 2. In `run/server/server.properties`: `level-name=<throwaway>`, `enable-rcon=true`, a
    `rcon.password`.
-3. `./gradlew runDevServer` in the background; wait for `RCON running` in its log. **Then run
-   `chunky pause` at once.** Chunky's tasks live in `run/server/config/chunky/tasks/`, which is
-   shared by every world, not saved per world, and they resume on boot. Left running, they spend
-   the dev world's pre-generation progress (`chunks=` in each task file) on the throwaway world, and
-   the dev world later skips that strip. Before the run, note the `chunks=` values, and put them
-   back afterwards. Too low only re-checks chunks that already exist; too high leaves a gap.
-   (Learned 2026-10-10, when the values had to be reset to safe lower bounds after the fact.)
-   - Setting `continueOnRestart` to `false` in `config/chunky/config.json` does not help:
-     `syncServerPackConfig` copies `serverpack/config` over `run/server/config` on every launch,
-     and the shipped file says `true`.
-   - Late is not good enough either. On 2026-10-10 a pause that arrived a minute late left both
-     tasks resumed at once on a fresh world, and ten minutes later, with no player online, the
-     Overworld held 35,331 loaded chunks, the 6 GB heap was full, and the watchdog killed the
-     server mid-save. Script the pause to fire the moment `RCON running` appears.
+3. `./gradlew runDevServer` in the background; wait for `RCON running` in its log. Since
+   2026-10-10 nothing pre-generates on its own (the server pack ships Chunky's
+   `continueOnRestart: false`, and `ascension-compat-chunky`'s background pre-generation is off),
+   so a throwaway world is left alone. **If either is ever switched back on, run `chunky pause`
+   the moment `RCON running` appears, and keep pausing until `chunky progress` says nothing runs.**
+   - Chunky's tasks live in `run/server/config/chunky/tasks/`, which is shared by every world, not
+     saved per world. A resumed task spends the dev world's progress (`chunks=` in each task file)
+     on the throwaway world, and the dev world later skips that strip. Note the `chunks=` values
+     before and put them back after; too low only re-checks existing chunks, too high leaves a gap.
+   - Edits to `run/server/config/chunky/config.json` do not stick: `syncServerPackConfig` copies
+     `serverpack/config` over `run/server/config` on every launch. Change the server pack's copy.
+   - Late is not good enough. On 2026-10-10 a pause a minute late let both saved tasks run at once
+     on a fresh world, and with no player online the heap filled and the watchdog killed the
+     server (the Chunky bug in `plans/m3-vertical-slice.md`).
 4. Force-generate the area: `RCON_PASSWORD=... python tools/worldgen-diagnostics/rcon_client.py
    execute in ascension_worlds:moon run forceload add <x1> <z1> <x2> <z2>`, wait a few seconds,
    then `save-all flush`.
@@ -400,6 +401,25 @@ the tools in `tools/worldgen-diagnostics/`, and never touches the real dev world
 
 Terrain shape (holes, heights) has its own scanner, `scan_region.py`; see
 [`moon-terrain-tuning.md`](moon-terrain-tuning.md).
+
+### What is holding chunks in memory
+
+`/ascension worlds debug chunks` (permission 3, works over RCON) writes vanilla's own debug
+report for every dimension to `run/server/debug/ascension-<time>/<namespace>/<dimension>/`: a
+client gets the same from F3 + L, but a dedicated server has no command for it. `chunks.csv` lists
+every loaded chunk with its level, status and the ticket holding it (`no_ticket` at level 45 means
+marked for unload but not unloaded yet), plus its block and fluid tick counts. Pair it with a heap
+histogram for the totals: `jcmd <pid> GC.class_histogram`, counting `LevelChunk`, `ProtoChunk`,
+`ChunkHolder` and `ScheduledTick`.
+
+### Leaving a mod out of the dev server
+
+`-Pdev_mods_server_exclude=<name>,<name>` drops every jar whose file name contains one of those
+from `run/server/mods`, without touching the CurseForge instance. **It replaces `gradle.properties`'
+list rather than adding to it**, and that list keeps `immersivedamageindicators` off the server,
+which crashes it. So always include it: `./gradlew runDevServer
+-Pdev_mods_server_exclude=immersivedamageindicators,modernfix`. This is how the Chunky bug was
+narrowed down.
 
 ## Testing expectations
 
