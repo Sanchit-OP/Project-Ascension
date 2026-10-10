@@ -102,7 +102,8 @@ phases; vanilla's moon texture shipped blank). Both seen in his client.
    - In first person it shows only with an empty hand: vanilla draws no arm while an item is held.
    - Debug commands `gateway light|unlight <id>` step through all seven stages.
    - Checked on a dedicated server (clean boot, commands answer) and by 86 tests.
-3. **Next: the refactor pass, which is due** (below). Its first job is the Chunky bug below.
+3. **Now: the refactor pass, which is due** (below). Its first job, the Chunky bug, is fixed in
+   part and parked safely (below); the pass continues with the rest of its list.
 4. Then the rest of gate progress's readers, from `lore-art-design.md`'s "For the logic session"
    list: the pylon's glyphs lighting with the moon signal in Earth's sky (one story beat), the
    orrery hologram, cats shying from a marked player, Tacita's signature as a glyph row in the
@@ -113,15 +114,47 @@ phases; vanilla's moon texture shipped blank). Both seen in his client.
 (The tablet rewrite once listed here is done: the voice's eight tablets kept their slots and ids,
 `lunar-archive-format.md`, 2026-10-10 note.)
 
-**Bug, found 2026-10-10: `ChunkySequentialPregen` (compat-chunky) treats a pause as a finished
-task.** Pausing Chunky fires its completion callback, so the hook starts the next planet's
-pre-generation at once: pause Earth and the Moon starts. Worse, on a fresh world the Earth task
-it starts at boot, at full speed (about 50 chunks/s), dropped the Overworld to 2.5 TPS and filled the
-dev server's 6 GB heap in about ten minutes with nobody online: the watchdog killed it with 35,331
-Overworld chunks loaded (crash report `crash-2026-10-10_21.36.23-server.txt`, run/server). Not
-caused by the Archive or the mark. To do: start the next planet only on a real completion, find
-out why that many chunks stay loaded (unload falling behind a 400 ms tick, or held tickets), and
-throttle or bound the pre-generation so a fresh server survives it.
+**The Chunky bug, found 2026-10-10. Parked safely; the root cause is still open.**
+
+What happened: a fresh dedicated server crashed twice with nobody online, both times while
+Chunky pre-generated Earth, once with the heap full at 35,331 loaded Overworld chunks.
+
+- **Fixed: a pause was taken for a finished task.** Chunky's public `onGenerationComplete` fires
+  at the end of every task, paused or cancelled ones included, so pausing Earth started the Moon.
+  `ChunkySequentialPregen` now listens to Chunky's `GenerationTaskFinishEvent` and moves on only
+  when the task's chunk iterator is empty. Verified on a dedicated server: pausing Earth starts
+  nothing.
+- **Fixed in passing:** the hook did level work on Chunky's own thread; now on the server thread.
+- **Added, but not the fix:** `PregenGovernor` pauses our task while ticks are over 40 ms and
+  resumes under 25 ms. It cannot catch this crash: ticks stayed at 3 to 10 ms until the heap was
+  full. It stays, so a pre-generation never lags players who are online.
+- **Root cause, not found.** While Chunky runs, almost every generated chunk stays in memory:
+  4,814 held of 4,853 generated at 90 s. Vanilla's own chunk dump (the new
+  `/ascension worlds debug chunks`) shows 8,446 of 8,498 holders with **no ticket**, most at level
+  45 (marked for unload), so nothing pins them: they are simply never unloaded while generation
+  runs. Pausing then unloads them all at once; saving 20,000 chunks in one go filled the heap and
+  one tick took 60 s.
+
+  | Server mods left out (`-Pdev_mods_server_exclude`) | Chunks held / generated at 90 s | Pending block ticks |
+  |---|---|---|
+  | none | 4,814 / 4,853 | about 600,000 |
+  | ModernFix | 4,676 / 4,558 | 653,476 |
+  | Lithium | 2,924 / 2,897 | 281,205 |
+  | Distant Horizons + Sable + Create Aeronautics | 4,743 / 4,636 | **32** |
+
+  None of those is the cause. Separately, one of DH, Sable and Aeronautics schedules the huge
+  number of block ticks that make each held chunk heavy (about 120 a chunk) and its save slow.
+- **Parked safely (Sanchit's call, 2026-10-10):** nothing pre-generates on its own any more.
+  `ascension-compat-chunky`'s background pre-generation is off by default
+  (`config/ascension_compat_chunky-server.toml`, `[pregeneration] background`), and the server
+  pack ships Chunky's `continueOnRestart: false`, so the dev world's saved Earth and Moon tasks no
+  longer start together at every boot. Verified on a dedicated server, fresh world: nothing runs,
+  the saved tasks are untouched. `/chunky` by hand still works.
+- **Next, when it is picked up again:** trial our mods plus Chunky alone; if chunks are still held,
+  try vanilla plus Chunky, which would make it Chunky's or vanilla's behaviour on 1.21.1. Then
+  halve the remaining mods. Separately, find which of DH, Sable and Aeronautics schedules the
+  block ticks. Crash reports: `run/server/crash-reports/crash-2026-10-10_21.36.23-server.txt` and
+  `crash-2026-10-10_23.33.26-server.txt`.
 
 **Cadence:** the last refactor pass was 2026-10-06 evening (`e8119d6`). Since then: the Archive's
 lore system, the tablet rewrite, the Archive's worldgen, gate progress with the mark. The next
