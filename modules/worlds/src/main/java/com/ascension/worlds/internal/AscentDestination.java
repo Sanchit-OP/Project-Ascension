@@ -10,7 +10,7 @@ import net.minecraft.world.phys.Vec3;
  * Minecraft runtime type involved, which is exactly the arithmetic ADR-0008 says unit tests
  * should be covering instead of "a person standing in a world and eyeballing it".
  *
- * <p>See {@code SpaceMechanics.checkAscent}'s own comment for why the destination is offset past
+ * <p>See {@code SpaceMechanics.arrivalInSpace}'s own comment for why the destination is offset past
  * {@code approach_radius} at all, rather than placed at the planet's own coordinate.
  */
 final class AscentDestination {

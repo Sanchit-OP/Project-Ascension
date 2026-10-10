@@ -4,6 +4,7 @@ import com.ascension.worlds.api.Planet;
 import com.ascension.worlds.api.WorldsRegistries;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -77,6 +78,14 @@ public final class SpaceMechanics {
     private static final int DESCENT_MARGIN = 20;
 
     /**
+     * How far below a surface's build height a vehicle coming down from space arrives
+     * ({@link #vehicleArrival}). Deeper than {@link #DESCENT_MARGIN}: a ship keeps most of its speed
+     * through the crossing, and one still climbing needs room to level off before it reaches the
+     * build height again and is carried straight back up.
+     */
+    private static final int VEHICLE_DESCENT_MARGIN = 40;
+
+    /**
      * How far {@link #findSafeLandingSpot} will search, in blocks, for open ground near a
      * remembered ascent point before giving up and falling back to the placeholder. Small and
      * bounded on purpose -- this runs once per dimension transition, not per tick, but it is still
@@ -120,43 +129,93 @@ public final class SpaceMechanics {
         if (server == null) {
             return;
         }
-        Registry<Planet> planets = server.registryAccess().registryOrThrow(WorldsRegistries.PLANET);
-        for (Map.Entry<ResourceKey<Planet>, Planet> entry : planets.entrySet()) {
-            Planet planet = entry.getValue();
-            if (!planet.surface().equals(level.dimension())) {
-                continue;
-            }
-            ServerLevel space = server.getLevel(SpaceDimension.KEY);
-            if (space == null) {
-                return;
-            }
-            // Arriving exactly AT this planet's own SpacePosition put its rendered body
-            // around/through the player rather than ahead of them, and was trivially inside its
-            // own approach shell (distance 0) besides, since approach_radius is always larger
-            // than body_radius by construction -- checkApproach saw that as a fresh arrival on the
-            // very next tick and immediately descended back to where the player just left. Placing
-            // the player past approach_radius instead, along the direction they were already
-            // facing, fixes both: they're genuinely outside their own departure shell (no special
-            // "already known" bookkeeping needed to avoid a self-triggered descent), and the body
-            // sits ahead of them, roughly back the way they came, like a real object receding
-            // behind an outbound ship rather than a skybox wrapped around the camera.
-
-            // Recorded here, at the moment of crossing, rather than polled periodically while on
-            // the ground: several players riding the same ship up together each stand somewhere
-            // slightly different on it, and none of those ground positions relate to each other
-            // once the ship's gone -- but this exact moment, crossing into space, is a shared
-            // anchor for all of them. See PlanetArrivalMemory's javadoc.
-            player.getData(SpaceAttachments.ARRIVAL_MEMORY)
-                    .recordAscent(level.dimension().location(), player.blockPosition(), player.getYRot());
-
-            double offset = planet.space().approachRadius() + ASCENT_CLEARANCE;
-            Vec3 destination = AscentDestination.compute(
-                    planet.space().x(), planet.space().z(), player.getYRot(), offset);
-            player.changeDimension(new DimensionTransition(
-                    space, destination, player.getDeltaMovement(), player.getYRot(), player.getXRot(),
-                    DimensionTransition.DO_NOTHING));
+        Planet planet = planetWithSurface(server, level.dimension()).orElse(null);
+        ServerLevel space = server.getLevel(SpaceDimension.KEY);
+        if (planet == null || space == null) {
             return;
         }
+        if (AscentCarriers.carries(player)) {
+            // Aboard a vehicle that crosses with its crew (AscentCarrier): going now would leave
+            // the ship behind a moment before it follows.
+            return;
+        }
+        if (!AscentCarriers.onFootAllowed(player)) {
+            if (player.tickCount % WARNING_INTERVAL_TICKS == 0) {
+                player.displayClientMessage(
+                        Component.literal("The sky ends here. Only a ship can carry you further."), true);
+            }
+            return;
+        }
+        // Recorded here, at the moment of crossing, rather than polled periodically while on the
+        // ground: several players riding the same ship up together each stand somewhere slightly
+        // different on it, and none of those ground positions relate to each other once the ship's
+        // gone -- but this exact moment, crossing into space, is a shared anchor for all of them.
+        // See PlanetArrivalMemory's javadoc.
+        noteDeparture(player);
+        player.changeDimension(new DimensionTransition(
+                space, arrivalInSpace(planet, player.getYRot()), player.getDeltaMovement(),
+                player.getYRot(), player.getXRot(), DimensionTransition.DO_NOTHING));
+    }
+
+    /** The planet whose surface is {@code dimension}. See {@link com.ascension.worlds.api.SpaceTravel}. */
+    public static Optional<Planet> planetWithSurface(MinecraftServer server, ResourceKey<Level> dimension) {
+        for (Planet planet : server.registryAccess().registryOrThrow(WorldsRegistries.PLANET)) {
+            if (planet.surface().equals(dimension)) {
+                return Optional.of(planet);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /** The planet whose body holds this point in space. See {@link com.ascension.worlds.api.SpaceTravel}. */
+    public static Optional<Planet> planetUnder(MinecraftServer server, double x, double z) {
+        for (Planet planet : server.registryAccess().registryOrThrow(WorldsRegistries.PLANET)) {
+            Planet.SpacePosition space = planet.space();
+            if (space.distanceSquaredTo((int) x, (int) z) <= (long) space.bodyRadius() * space.bodyRadius()) {
+                return Optional.of(planet);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Where something leaving {@code planet} heading {@code yaw} comes out in space.
+     *
+     * <p>Arriving exactly AT the planet's own SpacePosition put its rendered body around/through the
+     * player rather than ahead of them, and was trivially inside its own approach shell (distance 0)
+     * besides, since approach_radius is always larger than body_radius by construction --
+     * checkApproach saw that as a fresh arrival on the very next tick and immediately descended back
+     * to where the player just left. Placing them past approach_radius instead, along the direction
+     * they were already heading, fixes both: they're genuinely outside their own departure shell (no
+     * special "already known" bookkeeping needed to avoid a self-triggered descent), and the body
+     * sits behind them, back the way they came, like a real object receding behind an outbound ship
+     * rather than a skybox wrapped around the camera.
+     */
+    public static Vec3 arrivalInSpace(Planet planet, float yaw) {
+        double offset = planet.space().approachRadius() + ASCENT_CLEARANCE;
+        return AscentDestination.compute(planet.space().x(), planet.space().z(), yaw, offset);
+    }
+
+    /**
+     * Where a vehicle coming down from space arrives over {@code surface}: high above the spot
+     * {@code pilot} last rose from there, or above the world's centre if they never have. Only the
+     * remembered column is used, not its height, which was taken in the air at the moment of
+     * crossing.
+     */
+    public static Vec3 vehicleArrival(ServerLevel surface, @Nullable ServerPlayer pilot) {
+        double y = surface.getMaxBuildHeight() - VEHICLE_DESCENT_MARGIN;
+        PlanetArrivalMemory.DeparturePoint remembered = pilot == null
+                ? null
+                : pilot.getData(SpaceAttachments.ARRIVAL_MEMORY).lastAscentFrom(surface.dimension().location());
+        return remembered == null
+                ? new Vec3(0.5, y, 0.5)
+                : new Vec3(remembered.pos().getX() + 0.5, y, remembered.pos().getZ() + 0.5);
+    }
+
+    /** Remembers where {@code player} is leaving their current world from. */
+    public static void noteDeparture(ServerPlayer player) {
+        player.getData(SpaceAttachments.ARRIVAL_MEMORY)
+                .recordAscent(player.level().dimension().location(), player.blockPosition(), player.getYRot());
     }
 
     /**
@@ -206,7 +265,10 @@ public final class SpaceMechanics {
             return;
         }
         if (arrived) {
-            descendTo(player, server, shellPlanet);
+            // A player aboard a ship goes down with it, not ahead of it (AscentCarrier).
+            if (!AscentCarriers.carries(player)) {
+                descendTo(player, server, shellPlanet);
+            }
         } else if (player.tickCount % PRELOAD_REFRESH_INTERVAL_TICKS == 0) {
             preloadLanding(player, server, shellPlanet);
         }

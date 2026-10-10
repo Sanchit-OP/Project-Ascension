@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * The trig behind placing an ascending player past their departure planet's approach shell,
- * rather than exactly on top of it. See {@code SpaceMechanics.checkAscent}'s comment for the bug
+ * rather than exactly on top of it. See {@code SpaceMechanics.arrivalInSpace}'s comment for the bug
  * this geometry fixes (arriving at distance 0 from your own shell self-triggered an immediate
  * return descent).
  */
