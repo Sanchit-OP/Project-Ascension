@@ -950,6 +950,91 @@ def _strip(panels, path):
     out.save(path)
 
 
+# --- 9. the light on the Moon ---------------------------------------------------------------------------
+#
+# environment/moon_signal.png, 16 x 16: a point of teal light, for logic to draw over the vanilla moon
+# in Earth's night sky once a gate is lit. A white-hot core and a halo that falls off as a diamond
+# (Manhattan distance blended with round), so through a spyglass the light has the network's shape;
+# it has no rays, which at this size would be a cross. Alpha carries the falloff, for additive
+# blending the way the sun is drawn.
+
+def moon_signal():
+    img = new()
+    p = img.load()
+    for y in range(16):
+        for x in range(16):
+            dx, dy = abs(x - 7.5), abs(y - 7.5)
+            d = 0.65 * (dx + dy - 1) + 0.35 * math.hypot(dx, dy)
+            if d < 0.6:
+                c, a = TEAL[5], 255
+            elif d < 1.6:
+                c, a = mix(TEAL[4], TEAL[5], 0.4), 255
+            elif d < 2.7:
+                c, a = TEAL[4], 215
+            elif d < 4.0:
+                c, a = TEAL[3], 130
+            elif d < 5.4:
+                c, a = TEAL[2], 60
+            elif d < 6.6:
+                c, a = TEAL[2], 22
+            else:
+                continue
+            p[x, y] = c + (a,)
+    return img
+
+
+def stand_in_moon(size, rng):
+    """A grey disc of our own with a few maria, standing in for vanilla's moon (never read here)."""
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    p = img.load()
+    maria = [(rng.uniform(0.25, 0.75) * size, rng.uniform(0.25, 0.75) * size, rng.uniform(0.08, 0.18) * size)
+             for _ in range(5)]
+    r = size / 2 - 0.5
+    for y in range(size):
+        for x in range(size):
+            if math.hypot(x - r, y - r) > r:
+                continue
+            v = 0.82
+            if any(math.hypot(x - mx, y - my) < mr for mx, my, mr in maria):
+                v = 0.66
+            g = int(225 * v)
+            p[x, y] = (g, g, g - 6, 255)
+    return img
+
+
+def moon_signal_preview(path, signal):
+    """The signal over a stand-in moon in a night sky: as the moon appears at the default field of
+    view (its 32-pixel face about 175 px across at 1080p, the disc half that), and through a
+    spyglass (ten times closer), drawn additively at a quarter of the moon quad's width."""
+    rng = random.Random(9)
+    panels = []
+    for label, moon_px in (('the night sky at 1080p, default field of view', 88),
+                           ('through a spyglass', 880)):
+        W, H = 760, 460
+        sky = Image.new('RGB', (W, H), (6, 8, 18))
+        sp = sky.load()
+        for _ in range(160):
+            s = rng.randrange(120, 230)
+            sp[rng.randrange(W), rng.randrange(H)] = (s, s, s)
+        moon = stand_in_moon(16, random.Random(4)).resize((moon_px, moon_px), Image.NEAREST)
+        cx, cy = W // 2, H // 2
+        sky.paste(moon, (cx - moon_px // 2, cy - moon_px // 2), moon)
+        sig = signal.resize((moon_px // 2, moon_px // 2), Image.NEAREST)
+        ox, oy = cx - moon_px // 8 - sig.width // 2, cy - moon_px // 7 - sig.height // 2
+        base = sky.load()
+        q = sig.load()
+        for y in range(sig.height):
+            for x in range(sig.width):
+                r, g, b, a = q[x, y]
+                X, Y = ox + x, oy + y
+                if a and 0 <= X < W and 0 <= Y < H:
+                    k = a / 255
+                    o = base[X, Y]
+                    base[X, Y] = tuple(min(255, int(o[i] + (r, g, b)[i] * k)) for i in range(3))
+        panels.append((label, sky))
+    _strip(panels, path)
+
+
 def main():
     os.makedirs(DESIGN, exist_ok=True)
     script_sheet(os.path.join(DESIGN, 'script.png'))
@@ -971,12 +1056,16 @@ def main():
         art.write_mcmeta(f'block/mark_glyph/glyph_{k}_glow.png', frametime=3, interpolate=True)
     glyph_models()
     glyph_block_sheet(os.path.join(DESIGN, 'mark-glyph-blocks.png'))
-    if '--no-3d' not in sys.argv:
-        pylon_views(os.path.join(DESIGN, 'pylon-court.png'), os.path.join(DESIGN, 'pylon-64.png'))
+
+    signal = moon_signal()
+    art.save(signal, 'environment/moon_signal.png')
+    moon_signal_preview(os.path.join(DESIGN, 'moon-signal.png'), signal)
+
     if '--no-3d' not in sys.argv:
         first_person_views(os.path.join(DESIGN, 'mark-first-person.png'))
         third_person_views(os.path.join(DESIGN, 'mark-third-person.png'))
-    print('wrote the script, its font, the mark and their previews')
+        pylon_views(os.path.join(DESIGN, 'pylon-court.png'), os.path.join(DESIGN, 'pylon-64.png'))
+    print('wrote the script, its font, the mark, the pylon glyphs, the moon signal and their previews')
 
 
 if __name__ == '__main__':
