@@ -639,6 +639,20 @@ def lozenge(p, cx, cy, z, r, rim, inner=None, pupil=None, rim_from=None):
             p.put(cx + dx, cy + dy, z, st)
 
 
+def glyph(k):
+    """One glyph of the script cut into the pylon (lore art, section 5); logic lights glyph k when
+    gate k is lit."""
+    return B('mark_glyph', glyph=k, lit='false')
+
+
+# The standing pylon's script band is the seven glyphs, a column down the shaft's face toward the
+# court, glyph 0 at the top under a band of the eye and glyph 6 at the bottom: seven signs under an
+# eye, the way the mark sits on the player's hand.
+GLYPH_FACE = (1, 0)              # the face toward the court's avenue (+x from the west pylon)
+GLYPH_TOP = 14                   # rows above the paving: glyph 0 here, glyph 6 six rows down
+EYE_BAND = GLYPH_TOP + 1
+
+
 def pylon(p, cx, cz, broken):
     s = SURFACE_Y
     for x in range(cx - 2, cx + 3):
@@ -656,8 +670,11 @@ def pylon(p, cx, cz, broken):
                 st = pillar() if corner else PALE
                 if y == s + 3 and not corner:
                     st = CHISELED
-                if y == s + 14 and not corner:
-                    st = GATE
+                if not broken and not corner and y == s + EYE_BAND:
+                    st = CHISELED
+                if (not broken and (x - cx, z - cz) == GLYPH_FACE
+                        and s + GLYPH_TOP - 6 <= y <= s + GLYPH_TOP):
+                    st = glyph(s + GLYPH_TOP - y)
                 p.put(x, y, z, st)
     if broken:
         rng = random.Random(7)
@@ -722,6 +739,23 @@ def check(pieces):
                     problems.append(f'{p.name}: chest at {pos} has no loot table')
             elif name == 'minecraft:jigsaw':
                 jigsaws.append((p.name, pos, p.nbt[pos]))
+    # the pylon's glyphs (lore art, section 5): each of the seven exactly once, unlit, its face open
+    glyphs = {}
+    for p in pieces:
+        for pos, (_, state) in p.cells.items():
+            name, props = parse_state(state)
+            if name == f'{NS}:mark_glyph':
+                glyphs.setdefault(int(props['glyph']), []).append((p, pos, props))
+    for k in range(7):
+        found = glyphs.get(k, [])
+        if len(found) != 1:
+            problems.append(f'mark_glyph {k} placed {len(found)} times')
+            continue
+        p, (x, y, z), props = found[0]
+        if props['lit'] != 'false':
+            problems.append(f'mark_glyph {k} is placed lit')
+        if not any(p.get(x + dx, y, z + dz) in (None, AIR) for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+            problems.append(f'mark_glyph {k} at {(x, y, z)} has no face open to the air')
     for e in ENTRIES:
         if len(seen.get(e, [])) != 1:
             problems.append(f'entry {e} used {len(seen.get(e, []))} times')

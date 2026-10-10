@@ -633,6 +633,323 @@ def mark_sheet(path, made):
     out.save(path)
 
 
+# --- 5. the pylon's glyphs -----------------------------------------------------------------------------
+#
+# ascension_worlds:mark_glyph, glyph 0..6, lit false/true. Each glyph is cut at double size (10 x 10,
+# from its 5 x 5 form) into a dressed anorthosite panel bevelled like chiseled anorthosite, so a column
+# of them reads as an inscription set into the pylon's pale shaft. Light from the top-left: inside the
+# cut, the near (top and left) wall is in shadow and the far wall is lit, and the surface just past the
+# far rim catches the light. Lit, a full-bright second layer fills the cut with teal, the way the
+# gatestone's runes glow, breathing slowly; each glyph's breath is a seventh of a cycle behind the one
+# above it, so a lit column reads as one inscription waking rather than seven lamps.
+
+GLYPH_AT = 3                    # the doubled glyph sits 3 px in from the face's top-left
+GLOW_FRAMES = 16
+
+
+def glyph_cut(k):
+    """The texels cut for glyph k on a 16 x 16 face -> (cut, near wall, far rim on the surface)."""
+    cut = {(GLYPH_AT + 2 * x + dx, GLYPH_AT + 2 * y + dy)
+           for x, y, _ in cells(GLYPHS[k]) for dx in (0, 1) for dy in (0, 1)}
+    near = {(x, y) for x, y in cut if (x, y - 1) not in cut or (x - 1, y) not in cut}
+    rim = {(x, y) for x in range(16) for y in range(16)
+           if (x, y) not in cut and ((x - 1, y) in cut or (x, y - 1) in cut)}
+    return cut, near, rim
+
+
+def glyph_face(k):
+    img = art.polished(ANORTH, random.Random(500 + k), base_idx=3)
+    p = img.load()
+    for i in range(2, 14):                                   # the panel's groove, as chiseled's
+        p[i, 1] = ANORTH[2] + (255,)
+        p[1, i] = ANORTH[2] + (255,)
+    cut, near, rim = glyph_cut(k)
+    for x, y in rim:
+        p[x, y] = mix(p[x, y][:3], ANORTH[5], 0.7) + (255,)
+    for x, y in cut:
+        p[x, y] = (ANORTH[0] if (x, y) in near else ANORTH[1]) + (255,)
+    return img
+
+
+def glyph_glow(k):
+    strip = new(16, 16 * GLOW_FRAMES)
+    p = strip.load()
+    cut, near, _ = glyph_cut(k)
+    for f in range(GLOW_FRAMES):
+        b = 0.5 - 0.5 * math.cos(2 * math.pi * (f / GLOW_FRAMES - k / 7))
+        for x, y in cut:
+            c = mix(TEAL[2], TEAL[3], 0.3 + 0.5 * b) if (x, y) in near else mix(TEAL[4], TEAL[5], 0.1 + 0.45 * b)
+            p[x, y + 16 * f] = c + (255,)
+    return strip
+
+
+GLOW = {'block_light': 15, 'sky_light': 15, 'ambient_occlusion': False}
+SIDES = ('north', 'south', 'west', 'east')
+
+
+def glyph_models():
+    variants = {}
+    end = f'{NS}:block/anorthosite_bricks'
+    for k in range(7):
+        side = f'{NS}:block/mark_glyph/glyph_{k}'
+        faces = {f: {'texture': '#side', 'cullface': f} for f in SIDES}
+        faces.update({f: {'texture': '#end', 'cullface': f} for f in ('down', 'up')})
+        write_json(f'models/block/mark_glyph/glyph_{k}.json', {
+            'parent': 'minecraft:block/block',
+            'textures': {'particle': side, 'side': side, 'end': end},
+            'elements': [{'from': [0, 0, 0], 'to': [16, 16, 16], 'faces': faces}],
+        })
+        write_json(f'models/block/mark_glyph/glyph_{k}_lit.json', {
+            'parent': 'minecraft:block/block',
+            'render_type': 'minecraft:cutout',
+            'textures': {'particle': side, 'side': side, 'end': end, 'glow': side + '_glow'},
+            'elements': [
+                {'from': [0, 0, 0], 'to': [16, 16, 16], 'faces': faces},
+                {'from': [0, 0, 0], 'to': [16, 16, 16], 'shade': False, 'neoforge_data': GLOW,
+                 'faces': {f: {'texture': '#glow', 'cullface': f} for f in SIDES}},
+            ],
+        })
+        for lit in (False, True):
+            variants[f'glyph={k},lit={str(lit).lower()}'] = {
+                'model': f'{NS}:block/mark_glyph/glyph_{k}' + ('_lit' if lit else '')}
+    write_json('blockstates/mark_glyph.json', {'variants': variants})
+    write_json('models/item/mark_glyph.json', {'parent': f'{NS}:block/mark_glyph/glyph_0'})
+
+
+def glyph_block_sheet(path):
+    """Every state of mark_glyph drawn from its own model (render_block_model), unlit above and lit
+    below, and the seven faces flat at 8x."""
+    rsp = _load('render_structure_preview', 'render-structure-preview.py')
+    tiles = []
+    for lit in ('', '_lit'):
+        row = []
+        for k in range(7):
+            im = rsp.render_block_model(f'{NS}:block/mark_glyph/glyph_{k}{lit}', scale=10)
+            row.append(im.crop((im.width // 8, im.height // 8, im.width * 7 // 8, im.height * 7 // 8)))
+        tiles.append(row)
+    w, h = tiles[0][0].size
+    flat = [glyph_face(k).resize((128, 128), Image.NEAREST) for k in range(7)]
+    out = Image.new('RGB', (7 * (w + 6) + 10, 2 * (h + 6) + 128 + 60), SHEET_BG)
+    d = ImageDraw.Draw(out)
+    d.text((8, 6), 'mark_glyph, glyph 0-6: unlit, lit (glow layer full-bright, first frame), and the faces at 8x',
+           fill=INK)
+    for r, row in enumerate(tiles):
+        for k, im in enumerate(row):
+            out.paste(im.convert('RGB'), (8 + k * (w + 6), 24 + r * (h + 6)))
+    for k, im in enumerate(flat):
+        out.paste(im, (8 + k * (w + 6) + (w - 128) // 2, 24 + 2 * (h + 6) + 10))
+    out.save(path)
+
+
+# --- the pylon in the world: a textured view of the Archive's template ---------------------------------
+#
+# The structure preview tool paints each block in its texture's average colour, which is right at 64
+# blocks and useless for reading a carving from the court. This draws the template's real block
+# models (their elements, uvs and full-bright layers, first animation frame) through the same
+# rasteriser and hand camera as the mark's previews, at a player's eye height on a black sky.
+
+CUBE_FACES = {
+    'minecraft:block/cube_all': {f: '#all' for f in ('down', 'up', 'north', 'south', 'west', 'east')},
+    'minecraft:block/cube_column': dict({f: '#side' for f in SIDES}, down='#end', up='#end'),
+    'minecraft:block/cube_column_horizontal': dict({f: '#side' for f in ('down', 'up', 'west', 'east')},
+                                                   north='#end', south='#end'),
+    'minecraft:block/cube_bottom_top': dict({f: '#side' for f in SIDES}, down='#bottom', up='#top'),
+}
+SLAB_PARENTS = {'minecraft:block/slab': (0, 8), 'minecraft:block/slab_top': (8, 16)}
+
+
+def block_model(rsp, ref):
+    """A block model with its parents folded in, vanilla's cube and slab parents expanded."""
+    textures, elements = {}, None
+    while ref and ref not in CUBE_FACES and ref not in SLAB_PARENTS and ref != 'minecraft:block/block':
+        ns, path = ref.split(':') if ':' in ref else ('minecraft', ref)
+        found = rsp._find(ns, 'models', path + '.json')
+        if not found:
+            return None
+        m = json.load(open(found))
+        for k, v in m.get('textures', {}).items():
+            textures.setdefault(k, v)
+        if elements is None and 'elements' in m:
+            elements = m['elements']
+        ref = m.get('parent')
+    if elements is None and ref in CUBE_FACES:
+        elements = [{'from': [0, 0, 0], 'to': [16, 16, 16],
+                     'faces': {f: {'texture': t, 'cullface': f} for f, t in CUBE_FACES[ref].items()}}]
+    elif elements is None and ref in SLAB_PARENTS:
+        y0, y1 = SLAB_PARENTS[ref]
+        faces = {f: {'texture': '#side', 'uv': [0, 16 - y1, 16, 16 - y0], 'cullface': f} for f in SIDES}
+        faces['down'] = {'texture': '#bottom', 'cullface': 'down'}
+        faces['up'] = {'texture': '#top'} if y1 < 16 else {'texture': '#top', 'cullface': 'up'}
+        elements = [{'from': [0, y0, 0], 'to': [16, y1, 16], 'faces': faces}]
+    return None if elements is None else {'textures': textures, 'elements': elements}
+
+
+def _variant(rsp, state):
+    name, props = rsp.split_state(state)
+    ns, path = name.split(':')
+    bs = rsp._find(ns, 'blockstates', path + '.json')
+    if not bs:
+        return None
+    for key, v in json.load(open(bs)).get('variants', {}).items():
+        want = dict(kv.split('=', 1) for kv in key.split(',') if kv)
+        if all(props.get(k) == val for k, val in want.items()):
+            return v[0] if isinstance(v, list) else v
+    return None
+
+
+def scene_quads(rim, rsp, vox):
+    """Every visible face of a template's blocks, in block units, from their own models. A state
+    with no model we can read (stairs, vanilla blocks) falls back to its rough boxes in flat colour."""
+    import numpy as np
+    cache = {}
+
+    def first_frame(model, ref):
+        while ref.startswith('#'):
+            ref = model['textures'].get(ref[1:], '')
+        if ref not in cache:
+            ns, path = ref.split(':')
+            im = Image.open(rsp._find(ns, 'textures', path + '.png')).convert('RGBA')
+            cache[ref] = np.asarray(im.crop((0, 0, im.width, im.width)), dtype=np.float32) / 255
+        return cache[ref]
+    rim.texture = first_frame                     # element_quads looks it up by name: the first frame
+    full = {pos for pos, st in vox.items() if rsp.boxes_of(st) == rsp.FULL}
+    normal = {'down': (0, -1, 0), 'up': (0, 1, 0), 'north': (0, 0, -1), 'south': (0, 0, 1),
+              'west': (-1, 0, 0), 'east': (1, 0, 0)}
+    out = []
+    for (x, y, z), st in vox.items():
+        if rsp.boxes_of(st) == []:
+            continue
+        v = _variant(rsp, st)
+        model = block_model(rsp, v['model']) if v else None
+        place = rim.T(x, y, z)
+        if model is None or rsp.split_state(st)[0].endswith('_stairs'):
+            col = rsp.state_colour(st)
+            for b in rsp.boxes_of(st):
+                out += cube_quads(rim, place @ rim.S(16), None, 0, 0, b[:3], tuple(b[i + 3] - b[i] for i in range(3)),
+                                  tuple(c / 255 for c in col) + (1,))
+            continue
+        turn = (rim.T(0.5, 0.5, 0.5) @ rim.Rdeg('y', -v.get('y', 0)) @ rim.Rdeg('x', -v.get('x', 0))
+                @ rim.T(-0.5, -0.5, -0.5))
+        for el in model['elements']:
+            glow = el.get('neoforge_data', {}).get('block_light', 0) > 0
+            keep = {}
+            for f, fd in el['faces'].items():
+                n = normal[fd.get('cullface', f)] if fd.get('cullface') else None
+                if n and (x + n[0], y + n[1], z + n[2]) in full and not v.get('x') and not v.get('y'):
+                    continue
+                keep[f] = fd
+            if not keep:
+                continue
+            m = place @ turn @ rim.S(1 / 16)
+            if glow:                              # lift the full-bright layer off its base face
+                m = m @ rim.T(8, 8, 8) @ rim.S(1.004) @ rim.T(-8, -8, -8)
+            sub = {'textures': model['textures'], 'elements': [dict(el, faces=keep)]}
+            out += rim.transformed(rim.element_quads(sub), m)
+    return out
+
+
+GROUND = (0.42, 0.42, 0.41)       # the plain beyond the template, a flat regolith grey
+
+
+def ground_quads(rim, vox, y_top, margin=6):
+    """The ground in and round the template's footprint wherever the template does not set it
+    itself, at the paving's height, so it hides what lies below the paving. The plain beyond is
+    painted into the background (see shot)."""
+    import numpy as np
+    xs = [p[0] for p in vox]
+    zs = [p[2] for p in vox]
+    c = np.array(GROUND + (1,))
+    y = y_top - 0.002
+    defined = {(x, z) for (x, yy, z), st in vox.items() if y_top - 9 <= yy < y_top and rsp_solid(st)}
+    q = []
+    x0, x1, z0, z1 = min(xs), max(xs), min(zs), max(zs)
+    for x in range(x0 - margin, x1 + margin + 1):
+        for z in range(z0 - margin, z1 + margin + 1):
+            if (x, z) not in defined:
+                q.append(rim.Quad(np.array([(x, y, z), (x, y, z + 1), (x + 1, y, z + 1), (x + 1, y, z)], float),
+                                  color=c))
+    return q
+
+
+def rsp_solid(state):
+    return not (state.startswith('minecraft:air') or state.startswith('minecraft:structure_void'))
+
+
+def black_sky(size, seed=3):
+    import numpy as np
+    w, h = size
+    img = np.zeros((h, w, 3), np.float32) + np.array([0.016, 0.02, 0.035], np.float32)
+    rng = random.Random(seed)
+    for _ in range(int(w * h / 3000)):
+        img[rng.randrange(h), rng.randrange(w)] = rng.uniform(0.55, 0.92)
+    return img
+
+
+def pylon_views(court_path, far_path):
+    import numpy as np
+    from_archive = _load('lunar_archive', 'generate-lunar-archive.py')
+    rim, rsp = _rim(), _load('render_structure_preview', 'render-structure-preview.py')
+    _, vox, _ = rsp.load_nbt(os.path.join(from_archive.OUT, 'entrance.nbt'))
+    S = from_archive.SURFACE_Y
+    vox = {p: st for p, st in vox.items() if p[1] >= S - 9}
+    glyph_at = {k: p for p, st in vox.items() if 'mark_glyph' in st
+                for k in [int(rsp.split_state(st)[1]['glyph'])]}
+
+    def lit(n):
+        out = dict(vox)
+        for k, p in glyph_at.items():
+            if k < n:
+                out[p] = f'{NS}:mark_glyph[glyph={k},lit=true]'
+        return out
+    feet = S + 1
+    gx, gy, gz = glyph_at[3]
+    column = (gx + 1, gy + 0.5, gz + 0.5)            # the middle of the glyph face (it faces +x)
+    big = (1920, 1200)
+
+    def shot(scene, eye, target, night, size=big, crop_at=None, surface_only=False):
+        proj = rim.perspective(70, size[0] / size[1])
+        view = rim.look_at(eye, target)
+        if surface_only:                     # from afar, nothing below the paving shows
+            scene = {p: st for p, st in scene.items() if p[1] >= S}
+        q = scene_quads(rim, rsp, scene) + ground_quads(rim, scene, feet)
+        bg = black_sky(size)
+        ahead = np.array(target, float) - np.array(eye, float)
+        ahead[1] = 0
+        far = np.array(eye, float) + ahead / np.linalg.norm(ahead) * 1e5
+        far[1] = feet
+        h = proj @ view @ np.append(far, 1.0)
+        horizon = int(max(0, min(size[1], (1 - h[1] / h[3]) / 2 * size[1])))
+        bg[horizon:] = np.array(GROUND, np.float32) * (rim.NIGHT if night else 1.0)
+        im = rim.to_image(rim.rasterise(q, proj, view, size, bg, night))
+        if crop_at is None:
+            return im.resize((size[0] // 2, size[1] // 2), Image.LANCZOS)
+        c = proj @ view @ np.array(list(crop_at) + [1.0])
+        sx, sy = (c[0] / c[3] + 1) / 2 * size[0], (1 - c[1] / c[3]) / 2 * size[1]
+        return im.crop((int(sx) - 240, int(sy) - 300, int(sx) + 240, int(sy) + 300))
+    court_eye = (gx + 9.5, feet + 1.62, gz + 5.5)
+    _strip([('the pylon from the court, at eye height, 11 blocks off', shot(lit(0), court_eye, column, False)),
+            ('the band, unlit (1920 x 1200, native crop)', shot(lit(0), court_eye, column, False, crop_at=column)),
+            ('three gates lit (glyphs 0-2)', shot(lit(3), court_eye, column, False, crop_at=column)),
+            ('all seven lit, at night', shot(lit(7), court_eye, column, True, crop_at=column))], court_path)
+    far_eye = (gx + 46, feet + 1.62, gz + 45)
+    target = (gx, feet + 11, gz)
+    _strip([('from 64 blocks south-east: unlit', shot(lit(0), far_eye, target, False, surface_only=True)),
+            ('all seven lit', shot(lit(7), far_eye, target, False, surface_only=True)),
+            ('all seven lit, at night', shot(lit(7), far_eye, target, True, surface_only=True))], far_path)
+
+
+def _strip(panels, path):
+    h = max(im.height for _, im in panels)
+    out = Image.new('RGB', (sum(im.width + 6 for _, im in panels), h + 22), SHEET_BG)
+    d = ImageDraw.Draw(out)
+    x = 0
+    for label, im in panels:
+        out.paste(im, (x, 22))
+        d.text((x + 4, 5), label, fill=INK)
+        x += im.width + 6
+    out.save(path)
+
+
 def main():
     os.makedirs(DESIGN, exist_ok=True)
     script_sheet(os.path.join(DESIGN, 'script.png'))
@@ -647,6 +964,15 @@ def main():
         art.save(img, f'entity/mark/stage_{st}.png')
     art.save(mark(7), 'entity/mark/illager.png')        # the same picture: the player's becomes theirs
     mark_sheet(os.path.join(DESIGN, 'mark-stages.png'), marks + [mark(7)])
+
+    for k in range(7):
+        art.save(glyph_face(k), f'block/mark_glyph/glyph_{k}.png')
+        art.save(glyph_glow(k), f'block/mark_glyph/glyph_{k}_glow.png')
+        art.write_mcmeta(f'block/mark_glyph/glyph_{k}_glow.png', frametime=3, interpolate=True)
+    glyph_models()
+    glyph_block_sheet(os.path.join(DESIGN, 'mark-glyph-blocks.png'))
+    if '--no-3d' not in sys.argv:
+        pylon_views(os.path.join(DESIGN, 'pylon-court.png'), os.path.join(DESIGN, 'pylon-64.png'))
     if '--no-3d' not in sys.argv:
         first_person_views(os.path.join(DESIGN, 'mark-first-person.png'))
         third_person_views(os.path.join(DESIGN, 'mark-third-person.png'))

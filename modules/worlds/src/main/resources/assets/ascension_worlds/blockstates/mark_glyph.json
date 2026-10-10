@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "glyph=0,lit=false": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_0"
+    },
+    "glyph=0,lit=true": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_0_lit"
+    },
+    "glyph=1,lit=false": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_1"
+    },
+    "glyph=1,lit=true": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_1_lit"
+    },
+    "glyph=2,lit=false": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_2"
+    },
+    "glyph=2,lit=true": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_2_lit"
+    },
+    "glyph=3,lit=false": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_3"
+    },
+    "glyph=3,lit=true": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_3_lit"
+    },
+    "glyph=4,lit=false": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_4"
+    },
+    "glyph=4,lit=true": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_4_lit"
+    },
+    "glyph=5,lit=false": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_5"
+    },
+    "glyph=5,lit=true": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_5_lit"
+    },
+    "glyph=6,lit=false": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_6"
+    },
+    "glyph=6,lit=true": {
+      "model": "ascension_worlds:block/mark_glyph/glyph_6_lit"
+    }
+  }
+}
