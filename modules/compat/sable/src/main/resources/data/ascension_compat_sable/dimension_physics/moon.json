@@ -1,0 +1,9 @@
+{
+  "dimension": "ascension_worlds:moon",
+  "pressure_function": [
+    { "altitude": -38.37, "value": 1.5, "slope": -0.006 },
+    { "altitude": 63.0, "value": 1.0, "slope": -0.004 },
+    { "altitude": 263.0, "value": 0.4493, "slope": -0.001797 },
+    { "altitude": 320.0, "value": 0.3577, "slope": -0.001431 }
+  ]
+}

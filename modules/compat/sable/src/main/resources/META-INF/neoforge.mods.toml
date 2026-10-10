@@ -3,15 +3,20 @@ loaderVersion = "${loader_version_range}"
 license = "${mod_license}"
 issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
 
+# ADR-0016: one mixin, giving new ships storage slots free in every dimension.
+[[mixins]]
+config = "sable_compat.mixins.json"
+
 [[mods]]
 modId = "${mod_id}"
 version = "${mod_version}"
 displayName = "Ascension Compat: Sable"
 authors = "${mod_authors}"
 description = '''
-Carries Create Aeronautics ships between a planet's surface and space, crew and all, through
-Sable's own ship save and load: a ship leaving a world is saved there and loaded into the next,
-so its machinery comes with it.
+The airship road to space. A Create Aeronautics ship that climbs past a planet's sky is carried
+into space, crew and all, and one that reaches a planet in space is carried down to it. Moved
+through Sable's own ship save and load, so its machinery comes with it. Ships float free in
+space: no gravity there.
 
 Optional. Without Sable installed, this jar simply is not present (ADR-0006).
 '''

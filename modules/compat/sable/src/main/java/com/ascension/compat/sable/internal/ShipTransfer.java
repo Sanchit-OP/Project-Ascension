@@ -30,7 +30,8 @@ import org.jetbrains.annotations.Nullable;
  * entities and Create machinery survive that round trip every day. Moving a ship is the same round
  * trip with a different level on the far side: save the ship and everything attached to it (its
  * loading dependency chain, as Sable's {@code SubLevelHoldingChunkMap} does), take it out of the
- * source level, rewrite each saved pose to the destination, and load it there. Players aboard
+ * source level, rewrite each saved pose to the destination, refile its blocks for the destination's
+ * height range ({@link #restacked}), and load it there. Players aboard
  * move by the same offset, so they stand where they stood.
  *
  * <p><strong>Internal Sable code, so version-pinned.</strong> The serializer is not in Sable's
@@ -39,7 +40,9 @@ import org.jetbrains.annotations.Nullable;
  * <p><strong>Checked before anything moves.</strong> A saved ship remembers its storage slot (its
  * plot), and loading into a level where that slot is taken would fail halfway, with the ship
  * already gone from the source. So every part's slot is checked free in the destination first,
- * and the transfer is refused whole if any is not.
+ * and the transfer is refused whole if any is not. New ships are given slots free in every level
+ * ({@code SubLevelContainerMixin}, ADR-0016), so only ships built before this jar was installed
+ * can still meet a taken slot.
  */
 public final class ShipTransfer {
 
@@ -69,10 +72,7 @@ public final class ShipTransfer {
     @Nullable
     public static Component carry(ServerSubLevel ship, ServerLevel target, Vec3 destination) {
         ServerLevel source = ship.getLevel();
-        List<ServerSubLevel> parts = new ArrayList<>(SubLevelHelper.getLoadingDependencyChain(ship));
-        if (!parts.contains(ship)) {
-            parts.add(0, ship);
-        }
+        List<ServerSubLevel> parts = partsOf(ship);
         Vec3 from = toVec3(ship.logicalPose().position());
         Vec3 offset = destination.subtract(from);
 
@@ -85,11 +85,18 @@ public final class ShipTransfer {
         for (ServerSubLevel part : parts) {
             SubLevelData data = SubLevelSerializer.toData(part, chain);
             CompoundTag plot = data.fullTag().getCompound("plot");
-            if (targetShips.getSubLevel(plot.getInt("plot_x"), plot.getInt("plot_z")) != null) {
-                return Component.literal("A ship already holds this ship's storage slot in "
+            // Sable's occupancy record, not just the loaded ships: a ship parked out of range is
+            // unloaded but still owns its slot, and loading over it would cost that ship its place.
+            if (targetShips.getOccupancy().get(targetShips.getIndex(plot.getInt("plot_x"), plot.getInt("plot_z")))) {
+                return Component.literal("Another ship holds this ship's storage slot in "
                         + target.dimension().location() + "; not moved.");
             }
-            moved.add(relocated(data, offset));
+            SubLevelData there = relocated(data, offset, source, target);
+            if (there == null) {
+                return Component.literal("This ship does not fit within the height of "
+                        + target.dimension().location() + "; not moved.");
+            }
+            moved.add(there);
         }
         List<ServerPlayer> crew = crewOf(source, parts);
 
@@ -126,6 +133,19 @@ public final class ShipTransfer {
         return null;
     }
 
+    /** Everyone aboard {@code ship} or anything attached to it. */
+    static List<ServerPlayer> crewOf(ServerSubLevel ship) {
+        return crewOf(ship.getLevel(), partsOf(ship));
+    }
+
+    /** The ship and everything that loads with it, the ship first. */
+    private static List<ServerSubLevel> partsOf(ServerSubLevel ship) {
+        List<ServerSubLevel> parts = new ArrayList<>(SubLevelHelper.getLoadingDependencyChain(ship));
+        parts.remove(ship);
+        parts.add(0, ship);
+        return parts;
+    }
+
     private static List<ServerPlayer> crewOf(ServerLevel level, List<ServerSubLevel> parts) {
         List<ServerPlayer> crew = new ArrayList<>();
         for (ServerPlayer player : level.players()) {
@@ -145,13 +165,57 @@ public final class ShipTransfer {
                 && position.z >= bounds.minZ() - ABOARD_MARGIN && position.z <= bounds.maxZ() + ABOARD_MARGIN;
     }
 
-    /** The same saved ship with its pose moved by {@code offset}; orientation unchanged. */
-    private static SubLevelData relocated(SubLevelData data, Vec3 offset) {
+    /**
+     * The same saved ship with its pose moved by {@code offset}, orientation unchanged, and its
+     * blocks filed the way {@code target} reads them. Null if they would not fit there.
+     */
+    @Nullable
+    private static SubLevelData relocated(SubLevelData data, Vec3 offset, ServerLevel source, ServerLevel target) {
         CompoundTag tag = data.fullTag().copy();
+        CompoundTag plot = restacked(tag.getCompound("plot"), source, target);
+        if (plot == null) {
+            return null;
+        }
+        tag.put("plot", plot);
         Pose3d pose = SableNBTUtils.readPose3d(tag.getCompound("pose"));
         pose.position().add(offset.x, offset.y, offset.z);
         tag.put("pose", SableNBTUtils.writePose3d(pose));
         return new SubLevelData(data.uuid(), data.bounds(), pose, data.dependencies(), tag);
+    }
+
+    /**
+     * Sable files a ship's blocks by section number, counted up from the bottom of the level they
+     * were saved in. Earth and the Moon start at y -64, space at y -512, so the same number is a
+     * different height on each side: read unchanged, a ship's blocks sank 448 blocks inside its own
+     * storage, away from its chests' contents, which are saved by height. So every section is
+     * renumbered to keep its height, and the saved heightmaps, sized for the old level's height,
+     * are dropped for Sable to rebuild. Null if a section would land outside {@code target}.
+     */
+    @Nullable
+    private static CompoundTag restacked(CompoundTag plot, ServerLevel source, ServerLevel target) {
+        int shift = source.getMinSection() - target.getMinSection();
+        if (shift == 0 && source.getSectionsCount() == target.getSectionsCount()) {
+            return plot;
+        }
+        CompoundTag chunks = plot.getCompound("chunks");
+        CompoundTag restackedChunks = new CompoundTag();
+        for (String key : chunks.getAllKeys()) {
+            CompoundTag chunk = chunks.getCompound(key);
+            CompoundTag sections = chunk.getCompound("sections");
+            CompoundTag renumbered = new CompoundTag();
+            for (String index : sections.getAllKeys()) {
+                int to = Integer.parseInt(index) + shift;
+                if (to < 0 || to >= target.getSectionsCount()) {
+                    return null;
+                }
+                renumbered.put(String.valueOf(to), sections.get(index));
+            }
+            chunk.put("sections", renumbered);
+            chunk.remove("heightmaps");
+            restackedChunks.put(key, chunk);
+        }
+        plot.put("chunks", restackedChunks);
+        return plot;
     }
 
     private static Vec3 toVec3(org.joml.Vector3dc vector) {

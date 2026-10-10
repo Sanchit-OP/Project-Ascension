@@ -2,7 +2,7 @@ plugins {
     id("ascension.mod-conventions")
 }
 
-description = "Carries Create Aeronautics ships, crew and all, between planets and space (Sable)."
+description = "The airship road to space: Create Aeronautics ships (Sable) carry their crew between planets and space."
 
 val sableVersion: String = providers.gradleProperty("sable_version").get()
 
