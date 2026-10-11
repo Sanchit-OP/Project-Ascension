@@ -46,10 +46,10 @@ final class SkyHaze {
         if (haze == null || haze.colour().isEmpty() || event.getCamera().getFluidInCamera() != FogType.NONE) {
             return;
         }
-        int colour = haze.colour().get();
-        event.setRed(((colour >> 16) & 0xFF) / 255.0F);
-        event.setGreen(((colour >> 8) & 0xFF) / 255.0F);
-        event.setBlue((colour & 0xFF) / 255.0F);
+        float[] rgb = SkyBodyGeometry.rgb(haze.colour().get());
+        event.setRed(rgb[0]);
+        event.setGreen(rgb[1]);
+        event.setBlue(rgb[2]);
     }
 
     /** The haze where the camera is, or null if it has none or vanilla's own fog should win. */

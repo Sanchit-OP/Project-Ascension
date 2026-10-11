@@ -117,9 +117,10 @@ final class LitSphere {
      * the rim, so the halo follows the phase.
      */
     static void drawGlow(Disc disc, boolean lit, int colour, float alpha) {
-        float red = ((colour >> 16) & 0xFF) / 255.0F;
-        float green = ((colour >> 8) & 0xFF) / 255.0F;
-        float blue = (colour & 0xFF) / 255.0F;
+        float[] rgb = SkyBodyGeometry.rgb(colour);
+        float red = rgb[0];
+        float green = rgb[1];
+        float blue = rgb[2];
 
         additiveBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);

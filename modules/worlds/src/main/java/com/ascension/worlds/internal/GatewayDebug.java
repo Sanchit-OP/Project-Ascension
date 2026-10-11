@@ -103,9 +103,9 @@ final class GatewayDebug {
         }
         for (StructurePiece piece : start.getPieces()) {
             if (piece instanceof GatewayFramePiece framePiece) {
-                Optional<GatewayFrame> frame = GatewayFrames.get(level.registryAccess(), framePiece.frame());
-                if (frame.isPresent()) {
-                    int[] spot = framePiece.placement(frame.get()).arrivalSpot();
+                Optional<GatewayFrame.Placement> placement = framePiece.placement(level.registryAccess());
+                if (placement.isPresent()) {
+                    int[] spot = placement.get().arrivalSpot();
                     return new BlockPos(spot[0], spot[1], spot[2]);
                 }
             }

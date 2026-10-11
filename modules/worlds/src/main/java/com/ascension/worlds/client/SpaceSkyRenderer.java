@@ -209,10 +209,10 @@ public final class SpaceSkyRenderer {
             rightZ = -relX / horizontalDistance;
         }
 
-        int color = planet.color();
-        float red = ((color >> 16) & 0xFF) / 255.0F;
-        float green = ((color >> 8) & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
+        float[] rgb = SkyBodyGeometry.rgb(planet.color());
+        float red = rgb[0];
+        float green = rgb[1];
+        float blue = rgb[2];
 
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);

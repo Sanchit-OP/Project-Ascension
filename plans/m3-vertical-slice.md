@@ -838,6 +838,31 @@ ADR-0008's pass after the space view, the roofless Nether and the rot. Reviewed 
 **Checked:** the full build, every module's tests (`worlds` 107, `atmosphere` 53, `core` 21,
 `compat-sable` 15, `compat-chunky` 5, `combat` 4), and the dist check on all thirteen modules.
 
+## Refactor pass, 2026-10-11 (Planet 3, after the art merge)
+
+ADR-0008's pass after the gate ruin and key, the tablets, the haze, the art merge and its
+follow-ups. Reviewed everything since `adf3aa1`. No new features, one waste fixed.
+
+- **A bad palette entry no longer logs once per block.** `GatewayFrames.write` looked up every
+  frame cell's block in the registry, and a palette block that could not stand in for its cell
+  logged an error each time. The blocks are now worked out once per symbol per write.
+- **One dry-ground test.** The gate ruin's seek and the new `on_dry_ground` wrapper each compared
+  the two worldgen heightmaps; now both call `DryGroundStructure.dryGroundAt`.
+- **One way from a gate piece to its layout.** `goto`, the unbreakable-gate rule and the piece's own
+  worldgen each looked the frame up by id and laid it out; now `GatewayFramePiece.placement(access)`.
+- **One colour unpacking.** Three copies of `0xRRGGBB` to floats (the halo, the haze, a planet's
+  placeholder disc) now call `SkyBodyGeometry.rgb`, tested.
+- **Looked at and left:** the three tiled-mural block classes (the Archive's, the colony's, the
+  Sealers') differ only in their tile count, but a block's states are fixed while its constructor
+  runs, before a shared base class could be handed the count. The sky bodies' and the haze's
+  "is the viewer blinded" checks are two lines each and hide different things (bodies stay visible
+  under water, the haze does not).
+
+**Checked:** the full build, every module's tests (`worlds` 119, `atmosphere` 53, `core` 21,
+`compat-sable` 15, `compat-chunky` 5, `combat` 4), the dist check on all thirteen modules, and on a
+dedicated server on the first test seed: the gate's 418 frame cells all as attunement wants them, a
+colony hall matching its template, every structure still found by `/locate`.
+
 ## M3.3 — Planet 3: the Nether world
 
 **Settled 2026-10-11 (ADR-0017): Planet 3 is the real Nether, `minecraft:the_nether`, opened to the
@@ -901,7 +926,8 @@ stores loot ahead of it.
    (the deltas had overwritten its frame), and **pre-generated gates made unbreakable** (Sanchit's
    call: its frame is 98 gold blocks). Checked headless on the first test seed: the frame whole,
    four halls and two carvings as their templates, none on lava.
-7. **Next: one client test of the whole world** with Sanchit: arrive by ship, the haze and the sun,
+7. **A refactor pass. Done 2026-10-11** (its section above).
+8. **Next: one client test of the whole world** with Sanchit: arrive by ship, the haze and the sun,
    the rot with and without gold, find the gate ruin, read the tablets, kill the Monstrosity,
    attune the gate, the third glyph on the hand. The checklist is `nether-art-design.md`'s.
 

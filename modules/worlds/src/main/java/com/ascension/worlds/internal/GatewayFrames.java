@@ -3,6 +3,7 @@ package com.ascension.worlds.internal;
 import com.ascension.worlds.AscensionWorlds;
 import com.ascension.worlds.internal.gateway.GatewayFrame;
 import com.ascension.worlds.internal.gateway.GatewaySite;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -123,6 +124,7 @@ public final class GatewayFrames {
         BlockState field = fieldState(placement);
         BlockState keystone = WorldsContent.GATEWAY_KEYSTONE.get().defaultBlockState()
                 .setValue(GatewayKeystoneBlock.ACTIVE, lit);
+        Map<Character, BlockState> placed = placedStates(frame, palette);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
         for (GatewayFrame.Cell cell : frame.cells()) {
@@ -137,7 +139,7 @@ public final class GatewayFrames {
             } else if (cell.symbol() == frame.keystoneSymbol()) {
                 state = keystone;
             } else {
-                state = paletteState(frame.key().get(cell.symbol()), palette.get(cell.symbol()));
+                state = placed.get(cell.symbol());
                 if (state.hasProperty(BlockStateProperties.LIT)) {
                     state = state.setValue(BlockStateProperties.LIT, lit);
                 }
@@ -179,6 +181,16 @@ public final class GatewayFrames {
     private static BlockState fieldState(GatewayFrame.Placement placement) {
         return WorldsContent.GATEWAY_FIELD.get().defaultBlockState()
                 .setValue(GatewayFieldBlock.AXIS, placement.facing().fieldAlongX() ? Direction.Axis.X : Direction.Axis.Z);
+    }
+
+    /**
+     * What every key symbol is built from, worked out once per write rather than once per cell:
+     * one registry lookup a symbol, and a bad palette entry reported once, not once per block.
+     */
+    private static Map<Character, BlockState> placedStates(GatewayFrame frame, Map<Character, ResourceLocation> palette) {
+        Map<Character, BlockState> placed = new HashMap<>();
+        frame.key().forEach((symbol, key) -> placed.put(symbol, paletteState(key, palette.get(symbol))));
+        return placed;
     }
 
     /**
