@@ -84,17 +84,19 @@ the voice, Earthrise, **the mark** on the hand stepping with lit gates, no cloud
 space, and our own Moon in Earth's sky in place of vanilla's. Built but not yet seen: the Warden
 tendril drop and crafting Earth's keystone, the Cataclysm bosses' armour fix, and share-air
 (needs two clients). **The lore** is in `docs/lore/` (start at `what-the-warden-keeps.md`): the
-Observers, the trap, the mark, Tacita. **Planet 3 (M3.3) is the Nether world**; its open
-questions wait on Sanchit. **Background pre-generation is off by default** since a fresh server
+Observers, the trap, the mark, Tacita. **Planet 3 (M3.3) is the real Nether, opened to the sky**
+(ADR-0017): reached by airship, wear gold against the rot; its build starts with the roofless
+terrain. **Background pre-generation is off by default** since a fresh server
 crashed under it (the Chunky bug in the M3 plan, root cause open).
 
 **The road to space is by airship** (ADR-0015, Sanchit 2026-10-11): a Create Aeronautics ship
 climbing past a planet's build height is carried to space with its crew, and one reaching a planet
 in space comes down to it (`ascension-compat-sable`, through `ascension-worlds`' public
-`SpaceTravel` and `AscentCarrier`). Survival players can no longer rise to space on foot. Proven
-headless with a command-built ship; not yet seen with a crew or a real Aeronautics ship, because
-no starter ship has been designed. Cataclysm's Earth bosses are held for later planets. The
-refactor pass after them ran 2026-10-11; **next is Sanchit's client test** of all of it.
+`SpaceTravel` and `AscentCarrier`). Survival players can no longer rise to space on foot. **Seen
+live 2026-10-11:** Sanchit rode a command-built ship from Earth into space and down onto the Moon;
+not yet seen with a real Aeronautics ship, because no starter ship has been designed. Planets in
+space are drawn as the same lit spheres the skies show. Cataclysm's Earth bosses are held for
+later planets.
 
 The history below is M0–M2, kept for context.
 
