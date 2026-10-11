@@ -301,7 +301,7 @@ def nether_sun():
             colour = mix(N_SUN[2], N_SUN[3], max(0.0, (t - 0.75) / 0.25))
             alpha = 1.0 if r < 0.9 else max(0.0, (1 - r) / 0.1)
             wisp = smoke.fbm(u * 0.9 + 3, v * 3.2 + 1, 2.0, 2)
-            alpha *= 1 - 0.35 * min(1.0, max(0.0, (wisp - 0.55) / 0.1))
+            alpha *= 1 - 0.2 * min(1.0, max(0.0, (wisp - 0.55) / 0.1))
             img.putpixel((px, py), colour + (int(255 * alpha),))
     return img
 
@@ -328,8 +328,8 @@ def preview(tex):
 
 def lit_view(tex, sun, glow=None, size=SIZE, ambient=0.07):
     """The face lit by a sun direction (x right, y up, z toward the viewer), as LitSphere shades it,
-    with the lava's light added unshaded on top when `glow` is given (proposed: the space body's
-    `emissive`)."""
+    with the lava's light added unshaded on top when `glow` is given, mostly on the night side
+    (proposed: the space body's `emissive`, nether-art-format.md section 1)."""
     n = math.sqrt(sum(c * c for c in sun))
     sun = tuple(c / n for c in sun)
     out = Image.new('RGBA', (size, size), (0, 0, 0, 0))
@@ -345,8 +345,11 @@ def lit_view(tex, sun, glow=None, size=SIZE, ambient=0.07):
             r, g, b, _ = tex.getpixel((tx, ty))
             c = [r * light, g * light, b * light]
             if glow is not None:
+                # the lava's own light, added unshaded and weighted to the night side, where the
+                # face itself goes dark (the lit side already shows the lava in the face)
                 gr, gg, gb, ga = glow.getpixel((tx, ty))
-                c = [c[0] + gr * ga / 255, c[1] + gg * ga / 255, c[2] + gb * ga / 255]
+                k = ga / 255 * (1 - 0.85 * (light - ambient) / (1 - ambient))
+                c = [c[0] + gr * k, c[1] + gg * k, c[2] + gb * k]
             out.putpixel((px, py), tuple(min(255, int(v)) for v in c) + (255,))
     return out
 
@@ -396,6 +399,43 @@ def nether_sheet(tex, glow, sun_tex, path):
     sheet.save(path)
 
 
+def space_view(tex, distance, radius, sun, glow=None, size=(960, 540), fov=70.0, seed=5):
+    """A planet from space as SpaceSkyRenderer draws it: the face mapped onto a disc sized to the
+    sphere's true outline from `distance` (body radius `radius`), lit by `sun` (x right, y up, z
+    toward the viewer), over a starfield; with the lava's light added unshaded when `glow` is given."""
+    w, h = size
+    img = Image.new('RGBA', size, (4, 4, 9, 255))
+    rng = random.Random(seed)
+    for _ in range(w * h // 900):
+        g = rng.randrange(120, 230)
+        img.putpixel((rng.randrange(w), rng.randrange(h)), (g, g, min(255, g + 12), 255))
+    f = (h / 2) / math.tan(math.radians(fov) / 2)
+    r = f * math.tan(math.asin(min(0.999, radius / distance)))
+    side = int(2 * r) + 2
+    disc = lit_view(tex, sun, glow, size=max(8, side))
+    img.alpha_composite(disc, (int(w / 2 - side / 2), int(h / 2 - side / 2)))
+    return img
+
+
+def nether_space_sheet(tex, glow, path):
+    """From its approach shell (448 from its centre, body radius 320) and from 3,000 out, with the
+    sun to one side, as the face alone and with the lava's own light (the proposal)."""
+    from PIL import ImageDraw
+    sun = (-0.85, 0.25, 0.45)
+    shots = [('from the approach shell (448), face only', space_view(tex, 448, 320, sun)),
+             ("from the approach shell, with the lava's light (proposed)", space_view(tex, 448, 320, sun, glow)),
+             ('from 3,000 out, face only', space_view(tex, 3000, 320, sun)),
+             ("from 3,000 out, with the lava's light", space_view(tex, 3000, 320, sun, glow))]
+    w, hh = shots[0][1].size
+    out = Image.new('RGBA', (w * 2 + 6, (hh + 20) * 2), (14, 15, 20, 255))
+    d = ImageDraw.Draw(out)
+    for i, (label, im) in enumerate(shots):
+        x, y = (i % 2) * (w + 6), (i // 2) * (hh + 20)
+        out.alpha_composite(im, (x, y + 18))
+        d.text((x + 4, y + 3), label, fill=(225, 225, 225, 255))
+    out.save(path)
+
+
 def write_body(name, tex):
     tex.save(os.path.join(OUT, name + '.png'))
     sheet = Image.new('RGBA', (SIZE * 12, SIZE * 6))
@@ -417,6 +457,7 @@ def main():
     lava_light.save(os.path.join(OUT, 'nether_glow.png'))
     sun.save(os.path.join(OUT, 'nether_sun.png'))
     nether_sheet(face, lava_light, sun, os.path.join(DESIGN, 'nether-preview.png'))
+    nether_space_sheet(face, lava_light, os.path.join(DESIGN, 'nether-from-space.png'))
     print('wrote nether.png, nether_glow.png, nether_sun.png')
     Image.new('RGBA', VANILLA_MOON_SIZE, (0, 0, 0, 0)).save(os.path.join(VANILLA_OUT, 'moon_phases.png'))
     print('wrote the blank minecraft:textures/environment/moon_phases.png')

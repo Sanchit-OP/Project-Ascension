@@ -1,8 +1,17 @@
 {
-  "_comment": "PLACEHOLDER haze until the Planet 3 art session sets the Nether's look (nether-art-format.md). Vanilla's Nether fog closes in at about 96 blocks; this lets a ship coming down see the ground.",
   "dimension": "minecraft:the_nether",
   "haze": {
-    "start": 24,
-    "end": 160
-  }
+    "start": 48,
+    "end": 192
+  },
+  "bodies": [
+    {
+      "texture": "ascension_worlds:textures/environment/nether_sun.png",
+      "yaw": 165,
+      "elevation": 32,
+      "angular_size": 8,
+      "lit": false,
+      "additive": true
+    }
+  ]
 }

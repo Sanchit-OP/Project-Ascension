@@ -460,7 +460,8 @@ def gate_in_world(views, world_dir, fog):
     ox, oy, oz = TEST_GATE_ORIGIN
     world = views.RegionWorld(world_dir)
     sc = views.Scene(world, ox - 150, ox + 150, 20, 230, oz - 150, oz + 150)
-    views.paste_gateway(sc, FRAME_PATH, SITE_PATH, TEST_GATE_ORIGIN)
+    if '--gate-as-generated' not in sys.argv:              # else the world already holds this site
+        views.paste_gateway(sc, FRAME_PATH, SITE_PATH, TEST_GATE_ORIGIN)
     mid = (ox + 7.5, oy + 8, oz - 3)
     shots = []
     for label, (ex, ez), dy in [('from the front, 22 blocks', (ox + 7.5, oz + 22), 0),
@@ -470,7 +471,8 @@ def gate_in_world(views, world_dir, fog):
         ey = max(eye_over(sc, ex, ez, views), oy + 2.62) if dy is not None else 216
         shots.append((label, sc.render((ex, ey, ez), mid, haze=HAZE, fog=fog)))
     _sheet(shots, os.path.join(DESIGN, 'gate-ruin-in-world.png'),
-           f'the gate ruin where the gate stood on the test world, origin {TEST_GATE_ORIGIN}, haze {HAZE}')
+           f'the gate ruin on generated ground, origin {TEST_GATE_ORIGIN}, haze {HAZE}'
+           + (' (as worldgen placed it)' if '--gate-as-generated' in sys.argv else ' (pasted)'))
 
 
 def _sheet(shots, path, title, cols=2):
@@ -515,7 +517,11 @@ CARVING_OUT = os.path.join(DATA, 'structure/sealer_carving')
 ENTRIES = ['the_colony', 'the_ward', 'the_thieves', 'the_strongholds', 'the_gift', 'the_weapon', 'the_keeper']
 LOOT = f'{NS}:nether_colony/stores'
 MAX_PIECE = 48
-F = 6
+# The floor row, surface_y. One row of rubble under it and no deeper footing, on purpose: placed with
+# terrain_adaptation beard_thin, vanilla levels the ground to a piece's lowest row plus one, so the
+# plateau is built up to the floor and cut away above it. A deeper footing would be left standing
+# as a bare podium (measured: a six-deep one stood six above the levelled ground everywhere).
+F = 1
 AIR = 'minecraft:air'
 
 
@@ -1085,6 +1091,204 @@ def ruin_previews(views, ruins):
                         scale=16, title=f'{r.name}, floor row {F}: plinths in reading order', marks=marks)
 
 
+# --- the Sealers' carving -------------------------------------------------------------------------------
+#
+# The truth about the gift, with no words (nether-art-format.md section 5): a wall the Sealers
+# raised in the soul sand valley, the battlefield of the last war, built in their fortress brick,
+# with the soldier who falls and rises carved across it in their pale plaster. Before it burns their
+# fire, the soul fire they burned the returned with, the one fire the piglins still fear. No plinth:
+# the voice has nothing to say about it.
+#
+# Coordinates as the ruins': x across, z from the back (0) to the front, where its reader stands;
+# floor row CARVING_F, the row to set on the ground.
+
+CARVING_F = 1
+NB = mc('nether_bricks')
+NB_CRACKED = mc('cracked_nether_bricks')
+NB_CHISELED = mc('chiseled_nether_bricks')
+SOUL_SOIL = mc('soul_soil')
+SOUL_FIRE = mc('soul_fire')
+BONE = mc('bone_block', axis='y')
+
+
+def sealer_wall():
+    G = CARVING_F
+    p = Ruin('wall', (13, G + 10, 7), seed=501)
+    p.door_x = 6
+    rng = p.rng
+
+    def brick():
+        return NB_CRACKED if rng.random() < 0.25 else NB
+    # footing under it all, a court of soul soil before it, cleared
+    for x in range(0, 13):
+        for z in range(0, 7):
+            for y in range(0, G):
+                p.put(x, y, z, RAW if z < 3 else SOUL_SOIL, CORE)
+            p.put(x, G, z, NB if z < 3 else SOUL_SOIL, WALL)
+            for y in range(G + 1, G + 8):
+                p.put(x, y, z, AIR, OPEN)
+    # the wall, two thick, so the carving's back never shows
+    for x in range(1, 12):
+        for z in (1, 2):
+            for y in range(G + 1, G + 5):
+                p.put(x, y, z, brick())
+            p.put(x, G + 5, z, slab('nether_brick'))
+    # the carving, read from the court (looking north), on a sill, under a course
+    p.picture(f'{NS}:sealer_carving', nart.CARVINGS, 'the_returned', 3, G + 2, 'z', 2, 'south')
+    # its two piers, chiseled at their heads; the east one broken
+    for x, h in ((1, 9), (11, 6)):
+        for z in (1, 2):
+            for y in range(G + 1, G + 1 + h):
+                p.put(x, y, z, NB_CHISELED if y in (G + 4, G + h) else brick())
+    p.put(11, G + 7, 2, slab('nether_brick'))
+    # the Sealers' fire before it: soul soil in a brick bowl, burning for ever
+    for x in (1, 11):                                      # before the piers, clear of the picture
+        p.put(x, G + 1, 4, NB)
+        p.put(x, G + 2, 4, SOUL_SOIL)
+        p.put(x, G + 3, 4, SOUL_FIRE)
+    # bones of the battlefield half-sunk in the court
+    for (x, z) in ((5, 6), (8, 5)):
+        p.put(x, G, z, BONE)
+        p.put(x, G + 1, z, BONE)
+    p.put(9, G + 1, 6, BONE)
+    return p
+
+
+def check_carving(p):
+    problems = []
+    if any(n > 16 for n in p.size):
+        problems.append(f'sealer_carving/{p.name}: size {p.size} is not small')
+    m = nart.CARVINGS['the_returned']
+    want = set(range(m['first'], m['first'] + m['size'][0] * m['size'][1]))
+    have = {int(parse_state(st)[1]['tile']) for _, st in p.cells.values() if st.startswith(f'{NS}:sealer_carving')}
+    if have != want:
+        problems.append(f'sealer_carving/{p.name}: tiles {sorted(want - have)} missing')
+    # every tile's back and ends hidden behind brick, so no face shows a mirrored picture
+    for (x, y, z), (_, st) in p.cells.items():
+        if st.startswith(f'{NS}:sealer_carving'):
+            for d in ((0, 0, -1), (1, 0, 0), (-1, 0, 0)):
+                nb = p.get(x + d[0], y, z + d[2])
+                if nb is None or nb == AIR:
+                    problems.append(f'sealer_carving/{p.name}: tile at {(x, y, z)} shows a face toward {d}')
+    return problems
+
+
+def carving_previews(views, carving):
+    rsp = views.rsp
+    fog = views.FOG['minecraft:soul_sand_valley']
+    _, vox, _ = rsp.load_nbt(os.path.join(CARVING_OUT, carving.name + '.nbt'))
+    sx, sy, sz = carving.size
+    sc = views.Scene.flat(-70, sx + 70, 60, 150, -70, sz + 80, 99, ground='minecraft:soul_soil', top='minecraft:soul_sand')
+    sc.paste(vox, (0, 100 - CARVING_F, 0))
+    shots = [('reading it, 5 blocks out', sc.render((6.5, 101.62, 2 + 5.5), (6.5, 102.4, 2), haze=HAZE, fog=fog)),
+             ('from 16 blocks, south-east', sc.render((15, 101.62, 17), (6.5, 103, 2), haze=HAZE, fog=fog)),
+             ('from 48 blocks', sc.render((-10, 101.62, 46), (6.5, 104, 2), haze=HAZE, fog=fog)),
+             ('from above', sc.render((24, 122, 22), (6.5, 102, 3), haze=HAZE, fog=fog))]
+    _sheet(shots, os.path.join(DESIGN, 'sealer-carving.png'),
+           "the Sealers' carving on a soul sand plain, under the valley's haze")
+
+
+# --- the sky, seen from a ship and from the ground ---------------------------------------------------------
+
+SKY_PATH = os.path.join(RES, 'assets/ascension_worlds/ascension_sky/the_nether.json')
+
+
+def sky_previews(views, world_dir):
+    """The haze and the sun as ascension_sky/the_nether.json sets them, over the test world's real
+    ground round the gate: coming down from y 216, and standing on a plateau looking up. Each beside
+    the placeholder haze (24 to 160) it replaces. The fog colour is the biome's under the eye."""
+    sky = json.load(open(SKY_PATH))
+    haze = (sky['haze']['start'], sky['haze']['end'])
+    bodies = []
+    for b in sky.get('bodies', []):
+        ns, path = b['texture'].split(':')
+        bodies.append(dict(b, texture_path=os.path.join(RES, 'assets', ns, path)))
+    ox, oy, oz = TEST_GATE_ORIGIN
+    world = views.RegionWorld(world_dir)
+    sc = views.Scene(world, ox - 200, ox + 200, 20, 240, oz - 175, oz + 170)
+    if '--gate-as-generated' not in sys.argv:
+        views.paste_gateway(sc, FRAME_PATH, SITE_PATH, TEST_GATE_ORIGIN)
+    light = views.block_light(sc.ids, views.Looks(sc.palette))
+    gate = (ox + 7.5, oy + 6, oz - 3)
+
+    def fog_at(x, y, z):
+        return views.FOG.get(world.biome(int(x), min(int(y), 120), int(z)), views.FOG['minecraft:nether_wastes'])
+
+    views_ = [
+        ('a ship at y 216, 90 blocks south of the gate, looking at it', (ox + 7.5, 216, oz + 90), gate),
+        ('straight down from y 216 over the forest', (ox + 7.5, 216, oz + 30), (ox + 7.5, 100, oz + 29)),
+        ('on a plateau 100 blocks south-east, looking up at the sun', (ox + 90.5, 113.62, oz + 95), None),
+        ('before the gate, looking north at it', (ox + 7.5, oy + 2.62, oz + 22), (ox + 7.5, oy + 14, oz - 20)),
+    ]
+    for tag, h in (('', haze), ('-placeholder', (24, 160))):
+        shots = []
+        for label, eye, target in views_:
+            if target is None:                                   # up toward the sun, over its bearing
+                b = bodies[0] if bodies else {'yaw': 165, 'elevation': 32}
+                yaw, el = math.radians(b['yaw']), math.radians(b['elevation'] - 8)
+                target = (eye[0] - math.sin(yaw) * math.cos(el) * 50, eye[1] + math.sin(el) * 50,
+                          eye[2] + math.cos(yaw) * math.cos(el) * 50)
+            fog = fog_at(*eye)
+            shots.append((label, sc.render(eye, target, haze=h, fog=fog, bodies=bodies, light=light)))
+        _sheet(shots, os.path.join(DESIGN, f'sky{tag}.png'),
+               f'the Nether sky: haze {h[0]} to {h[1]}' + (' (the placeholder)' if tag else ' (ascension_sky/the_nether.json)')
+               + ', biome fog colours, the sun as the file sets it')
+
+
+# --- the ruins where worldgen put them ----------------------------------------------------------------
+
+def placed_previews(views, world_dir, structure_filter, names=('hall_a', 'hall_b', 'hall_c', 'wall')):
+    """Each template as a world really generated it (a throwaway datapack placing them, see the
+    design note), rendered from the world itself: its front from 16 blocks and from 64. The first
+    finished placement of each is used."""
+    sys.path.insert(0, os.path.join(HERE, 'worldgen-diagnostics'))
+    from structure_starts import starts_in
+    world = views.RegionWorld(world_dir)
+    done = {}
+    import glob
+    for path in sorted(glob.glob(os.path.join(world_dir, '*.mca'))):
+        for sid, start in starts_in(path, structure_filter):
+            for piece in start.get('Children', []):
+                loc = piece.get('pool_element', {}).get('location', '')
+                name = loc.split('/')[-1]
+                if name not in names or name in done:
+                    continue
+                r = {'NONE': 0, 'CLOCKWISE_90': 1, 'CLOCKWISE_180': 2, 'COUNTERCLOCKWISE_90': 3}[piece['rotation']]
+                x0, y0, z0, x1, y1, z1 = piece['BB']
+                if not all(world.chunk(cx, cz) for cx in range(x0 >> 4, (x1 >> 4) + 1)
+                           for cz in range(z0 >> 4, (z1 >> 4) + 1)):
+                    continue
+                done[name] = (piece, r)
+    for name, (piece, r) in sorted(done.items()):
+        x0, y0, z0, x1, y1, z1 = piece['BB']
+        floor = piece['PosY'] + (CARVING_F if name == 'wall' else F)
+        cx, cz = (x0 + x1) / 2 + 0.5, (z0 + z1) / 2 + 0.5
+        fx, fz = [(0, 1), (-1, 0), (0, -1), (1, 0)][r]                 # the template's front, turned
+        sc = views.Scene(world, int(cx) - 120, int(cx) + 120, max(0, floor - 60), min(255, floor + 80),
+                         int(cz) - 120, int(cz) + 120)
+        biome = world.biome(int(cx), floor, int(cz)) or 'minecraft:nether_wastes'
+        fog = views.FOG.get(biome, views.FOG['minecraft:nether_wastes'])
+        mid = (cx, floor + 3, cz)
+        near = 16 if name != 'wall' else 7
+        shots = []
+        for label, dist, side in ((f'from the front, {near} blocks', near + 6, 0.0), ('from 64 blocks', 64, 0.5),
+                                  ('from above', 30, 0.3)):
+            ex, ez = cx + (fx - side * fz) * dist, cz + (fz + side * fx) * dist
+            ey = floor + 1.62 if label != 'from above' else floor + 28
+            gy = None
+            for y in range(int(floor + 40), int(floor - 20), -1):
+                st = sc.get(int(ex), y, int(ez))
+                if st and views.Looks([st]).solid[0] and 'lava' not in st and views.Looks([st]).sparse[0] == 0:
+                    gy = y
+                    break
+            if gy is not None and label != 'from above':
+                ey = max(ey, gy + 2.62)
+            shots.append((label, sc.render((ex, ey, ez), mid, haze=HAZE, fog=fog)))
+        _sheet(shots + [('', shots[0][1].copy())][:0], os.path.join(DESIGN, f'placed-{name}.png'),
+               f'{name} where worldgen placed it: ({piece["PosX"]}, {piece["PosY"]}, {piece["PosZ"]}) '
+               f'{piece["rotation"]}, {biome.split(":")[-1]}, terrain_adaptation beard_thin', cols=3)
+
+
 def main():
     s = gate_site()
     problems = check_site(s)
@@ -1105,6 +1309,18 @@ def main():
             print('PROBLEM:', p)
         if '--force' not in sys.argv:
             sys.exit(1)
+    carving = sealer_wall()
+    problems = check_carving(carving)
+    if problems:
+        for p in problems:
+            print('PROBLEM:', p)
+        if '--force' not in sys.argv:
+            sys.exit(1)
+    os.makedirs(CARVING_OUT, exist_ok=True)
+    path = os.path.join(CARVING_OUT, carving.name + '.nbt')
+    with open(path, 'wb') as f:
+        f.write(template_nbt(carving))
+    print('wrote', os.path.relpath(path, ROOT))
     os.makedirs(COLONY_OUT, exist_ok=True)
     for r in ruins:
         path = os.path.join(COLONY_OUT, r.name + '.nbt')
@@ -1115,9 +1331,18 @@ def main():
         return
     views = _load('render_nether_views', 'render-nether-views.py')
     world = sys.argv[sys.argv.index('--world') + 1] if '--world' in sys.argv else None
-    if '--ruins-only' not in sys.argv:
+    only = sys.argv[sys.argv.index('--only') + 1].split(',') if '--only' in sys.argv else ['site', 'ruins', 'carving', 'sky']
+    if 'sky' in only and world:
+        sky_previews(views, world)
+    if '--placed' in sys.argv:
+        i = sys.argv.index('--placed')
+        placed_previews(views, sys.argv[i + 1], sys.argv[i + 2])
+    if 'site' in only:
         site_previews(views, world)
-    ruin_previews(views, ruins)
+    if 'ruins' in only:
+        ruin_previews(views, ruins)
+    if 'carving' in only:
+        carving_previews(views, carving)
 
 
 if __name__ == '__main__':
