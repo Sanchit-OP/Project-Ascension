@@ -179,6 +179,7 @@ public final class SpaceSkyRenderer {
         LitSphere.Disc disc = new LitSphere.Disc(IDENTITY, new float[] {(float) relX, (float) relY, (float) relZ},
                 direction, basis[0], basis[1], sun, halfSize);
         LitSphere.drawFace(disc, look.texture(), look.lit(), false, 1.0F);
+        look.emissive().ifPresent(emissive -> LitSphere.drawEmissive(disc, emissive, look.lit(), 1.0F));
         look.glow().ifPresent(colour -> LitSphere.drawGlow(disc, look.lit(), colour, 1.0F));
     }
 

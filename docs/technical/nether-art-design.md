@@ -252,7 +252,7 @@ None is teal but `N_WARPED`, the forest's own muted teal.
 On a dedicated server and in a client, on a fresh world:
 
 - [ ] From space, the Nether is the dark red sphere with lava and teal patches, lit into a phase,
-      its ember halo on the lit limb; nothing glows on its night side until logic adds `emissive`.
+      its ember halo on the lit limb; its lava glows on the night side (`emissive`, added by logic).
 - [ ] Coming down at y 216: the ground reads through the haze; the biome's colour overhead changes
       as the ship crosses biomes; the haze never ends short of the render distance's fog edge.
 - [ ] The sun hangs dim and red in the north-north-west in every biome, unfogged, and is hidden
@@ -262,8 +262,9 @@ On a dedicated server and in a client, on a fresh world:
 - [ ] The gate ruin: on its terrace, gold ring and avenue clear, frame in black and gold, the
       obelisk's fire burning, the braziers lit, nothing floating; the field and the walk-in clear;
       the Monstrosity's key attunes it (only after logic's fix where the deltas border it).
-- [ ] Piglins near the gate get angry when its gold is mined (they guard gold blocks), and a stripped
-      frame fails to attune until repaired with any block in its tags.
+- [ ] The gate's frame cannot be broken in survival, by hand, explosion or piston ("The ancients
+      built this gate to last."), while its terrace and decoration can (logic's change, 2026-10-11,
+      replacing the stripped-frame check).
 - [ ] Each colony ruin generates in the wastes and crimson forest on a plateau, the paving one step
       proud, never on a lava sea; its tall mark visible over the plateau's rim.
 - [ ] Every plinth reads its tablet upright, gold-edged, from the cell in front of it; the colony

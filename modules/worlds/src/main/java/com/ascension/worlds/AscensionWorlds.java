@@ -15,6 +15,7 @@ import com.ascension.worlds.internal.PlanetEnvironments;
 import com.ascension.worlds.internal.PlanetHazardMechanics;
 import com.ascension.worlds.internal.PlanetWeatherMechanics;
 import com.ascension.worlds.internal.PlanetSurfaces;
+import com.ascension.worlds.internal.PregeneratedGates;
 import com.ascension.worlds.internal.SpaceAttachments;
 import com.ascension.worlds.internal.SpaceEnvironment;
 import com.ascension.worlds.internal.SpaceMechanics;
@@ -80,6 +81,7 @@ public final class AscensionWorlds {
         GateProgress.register();
         GateGlyphs.register();
         VanillaPortals.register();
+        PregeneratedGates.register();
         container.registerConfig(ModConfig.Type.SERVER, WorldsConfig.SPEC);
 
         LOGGER.info("Ascension Worlds loaded ({})", container.getModInfo().getVersion());

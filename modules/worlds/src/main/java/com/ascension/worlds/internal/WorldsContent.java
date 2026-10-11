@@ -7,6 +7,7 @@ import com.ascension.worlds.internal.terrain.CraterPiece;
 import com.ascension.worlds.internal.terrain.CraterStructure;
 import com.ascension.worlds.internal.terrain.RockDebrisConfiguration;
 import com.ascension.worlds.internal.terrain.RockDebrisFeature;
+import com.ascension.worlds.internal.worldgen.DryGroundStructure;
 import com.ascension.worlds.internal.worldgen.FixedPositionStructurePlacement;
 import com.ascension.worlds.internal.worldgen.GatewayFramePiece;
 import com.ascension.worlds.internal.worldgen.GatewayFrameStructure;
@@ -284,6 +285,13 @@ public final class WorldsContent {
     /** Pre-generated gateways ({@code worldgen/structure/gateway_frame_*.json}) &mdash; see {@link GatewayFrameStructure}. */
     public static final Supplier<StructureType<GatewayFrameStructure>> GATEWAY_FRAME_STRUCTURE_TYPE =
             STRUCTURE_TYPES.register("gateway_frame", () -> () -> GatewayFrameStructure.CODEC);
+
+    /**
+     * Any structure, refused where its start would stand on a lava sea or a lake. The Nether's
+     * colony ruins and Sealers' carving use it. See {@link DryGroundStructure}.
+     */
+    public static final Supplier<StructureType<DryGroundStructure>> DRY_GROUND_STRUCTURE_TYPE =
+            STRUCTURE_TYPES.register("on_dry_ground", () -> () -> DryGroundStructure.CODEC);
 
     public static final Supplier<StructurePieceType> GATEWAY_FRAME_PIECE = STRUCTURE_PIECE_TYPES.register(
             "gateway_frame", () -> (StructurePieceType.ContextlessType) GatewayFramePiece::new);

@@ -348,6 +348,23 @@ public final class GatewayFrame {
             return true;
         }
 
+        /**
+         * Whether a block of the frame itself stands at this world position: any cell but the
+         * opening. What makes a pre-generated gate unbreakable ({@code PregeneratedGates}).
+         */
+        public boolean isFrameBlock(int x, int y, int z) {
+            for (Cell cell : cells) {
+                if (cell.symbol == fieldSymbol) {
+                    continue;
+                }
+                int[] at = world(cell.x, cell.y, cell.z);
+                if (at[0] == x && at[1] == y && at[2] == z) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /** World positions of every field cell. */
         public List<int[]> fieldPositions() {
             List<int[]> positions = new ArrayList<>();

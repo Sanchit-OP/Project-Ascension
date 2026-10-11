@@ -273,6 +273,17 @@ strips them leaves a frame that fails attunement until it is repaired with any b
 Sanchit's call whether that is a lesson or a trap; if a trap, a pre-generated frame could stay
 unbreakable until it is attuned, as the plinths are.
 
+**Logic's answer (2026-10-11), all built and checked headless:**
+
+- The gate moved to step `top_layer_modification`; on the test seed all 418 frame cells come out
+  right.
+- **Gold and the gate: Sanchit's call is that pre-generated gates cannot be broken**
+  (`gateway-frame-format.md`). The live checklist's line about piglins and a stripped frame no
+  longer applies.
+- `emissive` is in the space body format, and `nether.json` carries `nether_glow.png`.
+- The halls and the carving are in worldgen as proposed, wrapped in `ascension_worlds:on_dry_ground`
+  to keep them off lava seas and lakes, and kept out of the basalt deltas by their biome tags.
+
 **Decorative blocks.** `NetherDecorBlocks` (`colony_mural`, `sealer_carving`), registered by one
 line in `AscensionWorlds` beside `ArchiveDecorBlocks`. `colony_plinth` keeps the archive plinth's
 shape box for box; its look needs nothing more.

@@ -102,6 +102,20 @@ in that tag (anything else logs an error and falls back to `place`), so the pre-
 still passes the check a player-built one must when it is attuned. `block`-keyed cells (the
 gatestone ring, the keystone) never change.
 
+### Pre-generated gates cannot be broken (added 2026-10-11)
+
+Sanchit's call, after the Nether's ruin turned out to hold 98 gold blocks where a newly arrived
+player needs gold against the rot: a gate worldgen built on a planet cannot be broken. Every block
+of the frame itself (keystone included, the opening not) is protected from mining, explosions,
+pistons and block-breaking mobs; the site's decoration around it can still be mined. Creative
+players can break it. `PregeneratedGates` checks, per event, whether a gate's structure piece
+covers the block and the block is one of the frame's cells. A player-built gate on Earth stays
+breakable, and breaking its border still collapses its field.
+
+A pre-generated structure that sits among features that could overwrite it (the Nether's, beside
+the basalt deltas' lava pools) uses step `top_layer_modification`, the last, so nothing runs after
+it.
+
 ### Optional: a ruin that seeks its ground (added 2026-10-11)
 
 A pre-generated gateway structure can find its own spot instead of standing at a fixed one:

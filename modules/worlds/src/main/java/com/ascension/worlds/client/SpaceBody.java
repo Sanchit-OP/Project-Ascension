@@ -17,14 +17,19 @@ import net.minecraft.resources.ResourceLocation;
  *                {@link SkyBody}
  * @param lit     whether the sun shades it into a phase
  * @param glow    an atmosphere halo's colour ({@code 0xRRGGBB}) around the lit limb, if any
+ * @param emissive the body's own light, if any: a mostly transparent texture added unshaded over the
+ *                face and weighted to the night side, so a burning world's lava glows where the sun
+ *                is not (proposed by the Planet 3 design session, 2026-10-11)
  */
-record SpaceBody(ResourceLocation planet, ResourceLocation texture, boolean lit, Optional<Integer> glow) {
+record SpaceBody(ResourceLocation planet, ResourceLocation texture, boolean lit, Optional<Integer> glow,
+                 Optional<ResourceLocation> emissive) {
 
     static final Codec<SpaceBody> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     ResourceLocation.CODEC.fieldOf("planet").forGetter(SpaceBody::planet),
                     ResourceLocation.CODEC.fieldOf("texture").forGetter(SpaceBody::texture),
                     Codec.BOOL.optionalFieldOf("lit", true).forGetter(SpaceBody::lit),
-                    Codec.INT.optionalFieldOf("glow").forGetter(SpaceBody::glow))
+                    Codec.INT.optionalFieldOf("glow").forGetter(SpaceBody::glow),
+                    ResourceLocation.CODEC.optionalFieldOf("emissive").forGetter(SpaceBody::emissive))
             .apply(instance, SpaceBody::new));
 }
