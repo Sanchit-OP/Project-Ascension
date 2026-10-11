@@ -8,5 +8,5 @@
     "radius": 1536
   },
   "spawn_overrides": {},
-  "step": "surface_structures"
+  "step": "top_layer_modification"
 }

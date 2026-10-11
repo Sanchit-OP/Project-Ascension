@@ -258,4 +258,17 @@ class GatewayFrameTest {
         assertEquals(12, field.size());
         assertTrue(field.stream().allMatch(p -> p[0] == 0), "a west-facing frame's field lies in one x plane");
     }
+
+    @Test
+    void theRingAndKeystoneAreFrameBlocksAndTheOpeningIsNot() {
+        GatewayFrame.Placement placement = ring().placeOriginAt(0, 64, 0, GatewayFrame.Facing.SOUTH);
+        int[] keystone = placement.keystone();
+        assertTrue(placement.isFrameBlock(keystone[0], keystone[1], keystone[2]), "the keystone");
+        int[] corner = placement.world(0, 0, 0);
+        assertTrue(placement.isFrameBlock(corner[0], corner[1], corner[2]), "a ring block");
+        for (int[] field : placement.fieldPositions()) {
+            assertTrue(!placement.isFrameBlock(field[0], field[1], field[2]), "the opening");
+        }
+        assertTrue(!placement.isFrameBlock(corner[0] - 1, corner[1], corner[2]), "beside the frame");
+    }
 }

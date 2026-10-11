@@ -894,10 +894,16 @@ It covers the Nether from space, its haze, the gate ruin, the colony plinth, the
 for the seven tablets, and the Sealers' carving. Logic registered `colony_plinth` and the colony
 stores loot ahead of it.
 
-6. **After the art lands:** merge, wire the colony ruins' and the carving's worldgen from the
-   handed-over names and `surface_y` values, a headless check, then **one client test of the whole
-   world** with Sanchit: arrive by ship, the haze, the rot with and without gold, find the gate
-   ruin, read the tablets, kill the Monstrosity, attune the gate, the third glyph on the hand.
+6. **The art, merged 2026-10-11** (`nether-art-design.md`): the Nether from space with lava glowing
+   on its night side (`emissive`, logic's part), its haze and a dim sun, the gate ruin in black and
+   gold, the colony plinth, three colonists' halls, the Sealers' carving. Logic then: the halls and
+   the carving in worldgen (kept off lava seas by `on_dry_ground`), the gate moved after features
+   (the deltas had overwritten its frame), and **pre-generated gates made unbreakable** (Sanchit's
+   call: its frame is 98 gold blocks). Checked headless on the first test seed: the frame whole,
+   four halls and two carvings as their templates, none on lava.
+7. **Next: one client test of the whole world** with Sanchit: arrive by ship, the haze and the sun,
+   the rot with and without gold, find the gate ruin, read the tablets, kill the Monstrosity,
+   attune the gate, the third glyph on the hand. The checklist is `nether-art-design.md`'s.
 
 ## Explicitly out of scope for M3
 

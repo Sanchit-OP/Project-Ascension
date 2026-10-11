@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import java.util.function.DoubleBinaryOperator;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
@@ -33,6 +34,8 @@ final class LitSphere {
     private static final float GLOW_WIDTH = 0.08F;
     private static final float GLOW_ALPHA = 0.6F;
     private static final double RIM_SAMPLE = 0.9;
+    /** How much daylight drowns an emissive layer: on the full-lit face it keeps 15 %. */
+    private static final double EMISSIVE_DAY_DIMMING = 0.85;
 
     private LitSphere() {
     }
@@ -73,6 +76,22 @@ final class LitSphere {
         } else {
             RenderSystem.defaultBlendFunc();
         }
+        drawTextured(disc, texture, alpha, (u, v) -> lit ? disc.brightness(u, v) : 1.0);
+    }
+
+    /**
+     * A body's own light, added unshaded over its face and weighted to its night side: a burning
+     * world's lava seas glowing where the sun is not (the Nether, from space). Mostly transparent,
+     * so only what glows adds anything.
+     */
+    static void drawEmissive(Disc disc, ResourceLocation texture, boolean lit, float alpha) {
+        additiveBlend();
+        drawTextured(disc, texture, alpha,
+                (u, v) -> lit ? 1.0 - EMISSIVE_DAY_DIMMING * disc.daylight(u, v) : 1.0);
+    }
+
+    /** The disc's rings and segments, textured, each vertex shaded by {@code shade}. */
+    private static void drawTextured(Disc disc, ResourceLocation texture, float alpha, DoubleBinaryOperator shade) {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
@@ -83,10 +102,10 @@ final class LitSphere {
             for (int segment = 0; segment < SEGMENTS; segment++) {
                 double a0 = angle(segment);
                 double a1 = angle(segment + 1);
-                facePoint(face, disc, lit, inner, a0);
-                facePoint(face, disc, lit, outer, a0);
-                facePoint(face, disc, lit, outer, a1);
-                facePoint(face, disc, lit, inner, a1);
+                facePoint(face, disc, shade, inner, a0);
+                facePoint(face, disc, shade, outer, a0);
+                facePoint(face, disc, shade, outer, a1);
+                facePoint(face, disc, shade, inner, a1);
             }
         }
         BufferUploader.drawWithShader(face.buildOrThrow());
@@ -129,13 +148,13 @@ final class LitSphere {
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
     }
 
-    private static void facePoint(BufferBuilder buffer, Disc disc, boolean lit, float radius, double angle) {
+    private static void facePoint(BufferBuilder buffer, Disc disc, DoubleBinaryOperator shade, float radius, double angle) {
         float u = (float) Math.cos(angle) * radius;
         float v = (float) Math.sin(angle) * radius;
-        float shade = lit ? (float) disc.brightness(u, v) : 1.0F;
+        float light = (float) shade.applyAsDouble(u, v);
         disc.vertex(buffer, u, v)
                 .setUv(0.5F + 0.5F * u, 0.5F - 0.5F * v)
-                .setColor(shade, shade, shade, 1.0F);
+                .setColor(light, light, light, 1.0F);
     }
 
     /**

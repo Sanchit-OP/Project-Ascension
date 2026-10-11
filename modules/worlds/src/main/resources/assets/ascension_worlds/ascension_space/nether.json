@@ -2,5 +2,6 @@
   "planet": "ascension_worlds:nether",
   "texture": "ascension_worlds:textures/environment/nether.png",
   "lit": true,
-  "glow": 8007190
+  "glow": 8007190,
+  "emissive": "ascension_worlds:textures/environment/nether_glow.png"
 }

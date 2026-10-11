@@ -693,6 +693,11 @@ vanilla sky the bodies also fade with rain, as vanilla's moon does.
 - Textures come from `tools/generate-sky-art.py` (Earth, the Moon, and the blank vanilla moon); its preview sheets (`design/sky/`) show each
   texture flat and as lit in game.
 
+**Emissive (added 2026-10-11, for the Nether).** A space body can carry `"emissive": <texture>`: a
+mostly transparent layer added unshaded over the lit face and weighted to its night side
+(`1 - 0.85 x daylight`), so the Nether's lava seas glow where the sun is not. Proposed by the design
+session; the Nether's is `nether_glow.png`.
+
 **Haze (added 2026-10-11, for the Nether).** A sky file can also say how far the dimension's air
 lets you see, in place of its own fog. `bodies` is optional, so a file can carry only this:
 
@@ -709,7 +714,7 @@ lets you see, in place of its own fog. `bodies` is optional, so a file can carry
 Vanilla's Nether fog closes in at about 96 blocks, so a ship coming down at y 216 would see nothing
 of the ground. `SkyHaze` applies it (low priority, so a weather event's fog wins), and leaves
 vanilla's fog alone under water, in lava or snow, and while blinded or in darkness. The Nether's
-file is a placeholder (24 to 160, the biomes' own colours) until the Planet 3 art session sets it.
+file is the design session's: 48 to 192, the biomes' own colours, and a dim sun through the smoke.
 The last file loaded with a haze wins, with a warning.
 
 ### Space bodies: how a planet looks from space (added 2026-10-11)
@@ -817,12 +822,25 @@ Not yet: whether a sealed, pressurised room keeps the rot out (it is breathable 
 
 ### Planet 3's gate and keeper (added 2026-10-11)
 
+- **Its air is breathable** (Sanchit, 2026-10-11: "we let the nether have air, there is already a
+  lot more to deal with there"). `planet/nether.json` has no `environment`, so it is Earth-like
+  air; the rot is the only thing in it.
 - **The gate ruin** (`worldgen/structure/gateway_frame_nether.json`) is the same frame as the
   Moon's, built in Nether stone through its site's `frame_palette`, and it **seeks** its ground
   (`gateway-frame-format.md`): the warped-forest chunk nearest the origin with solid ground on top,
   searched up to 1,536 blocks out. The biome is `#ascension_worlds:nether_gate_biomes` (the warped
-  forest). Its site (`gateway_nether_site`) is a placeholder ring of blackstone until the Planet 3
-  art session delivers the ruin (`nether-art-format.md`).
+  forest). Its site (`gateway_nether_site`) is the design session's terrace, gold ring and avenue
+  (`nether-art-design.md`). It is placed at step `top_layer_modification`, after every feature:
+  on the first test seed the basalt deltas' lava pools beside it had overwritten twelve of its
+  frame's slabs, which would have failed attunement. Like every pre-generated gate it cannot be
+  broken (`gateway-frame-format.md`).
+- **The colonists' ruins and the Sealers' carving** (`worldgen/structure/nether_colony.json`,
+  `sealer_carving.json`): the design's templates as single-piece jigsaws (`start_height` -1
+  projected to `WORLD_SURFACE_WG`, `beard_thin`), wrapped in `ascension_worlds:on_dry_ground`
+  (`DryGroundStructure`), which refuses a start with lava or water on top at its centre or
+  `check_radius` blocks out. The three halls share one pool in the nether wastes and crimson forest,
+  `random_spread` 24/8; the carving is in soul sand valleys, 32/12; both keep 4 chunks from
+  fortresses and bastions.
 - **The key:** the Netherite Monstrosity drops a gateway key naming `minecraft:the_nether`, added to
   Cataclysm's own loot by a global loot modifier in `ascension-compat-cataclysm`, so Cataclysm's
   table is left whole. Attuning the ruin with it lights the Nether's gate.
@@ -834,6 +852,11 @@ Not yet: whether a sealed, pressurised room keeps the rot out (it is breathable 
   Magic Resist (`ascension-combat`'s boss tier). After a restart with the tablets in, the same roll
   also held the Forge Record (an archive tablet naming `ascension_worlds:nether/the_forge_record`),
   and a `colony_plinth` set by command kept its `entry`.
+- **Checked headless after the art merge, 2026-10-11**, on a fresh world on the first test seed
+  (-4091187734703303684), where the design session had found the gate's frame overwritten: all 418
+  frame cells as attunement wants them. In a 1,024-block square: four colony ruins and two carvings,
+  every template cell in place apart from fungi, vines and two ancient debris grown in afterwards,
+  none on lava, the ruins' ground a block below their floors.
 
 ## 5. Registry mechanism
 
