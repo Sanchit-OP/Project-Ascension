@@ -111,7 +111,8 @@ phases; vanilla's moon texture shipped blank). Both seen in his client.
      glyphs 0 and 1; a gate lit while the Archive was unloaded left glyph 2 dark on disk, and the
      Archive's next load lit it; putting that gate out darkened it. `worlds` tests 92 → 94.
    - **The Archive answers:** the orrery hologram, and Tacita's signature as a glyph row in the
-     reader.
+     reader. **The glyph row is built (2026-10-11, with Planet 3's tablets), not yet seen;** the
+     hologram is still to come.
    - **The world reacts:** cats shying from a marked player.
    - Then the refactor pass, then Planet 3 once its questions are answered. Still waiting on a
      design call from Sanchit: Endermen carrying Sealers' Record tiles (how many, how many the

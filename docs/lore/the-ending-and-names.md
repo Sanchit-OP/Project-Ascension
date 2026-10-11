@@ -187,8 +187,10 @@ Like Outer Wilds, the final scenes can change with what you found and did:
 
 Settled 2026-10-08: **the Archivist is Tacita.**
 Settled 2026-10-10: **Tacita's name is the way to close the seal.** The voice signs every tablet
-with it, in the wrong order. The Moon's eight tablets now carry her signature, in words for now;
-the glyph row comes with the mark's art.
+with it, in the wrong order. The Moon's eight tablets carry her signature in words and, since
+2026-10-11, as a glyph row in the script font under it; the Nether's seven tablets the same, and
+the Forge Record (the netherite plates the Monstrosity leaves) carries the true order in glyphs
+only. Text: `tools/archive-lore.py`.
 
 The two orders are glyph indices, numbered in gate order (0 is Earth, 1 the Moon, 2 the burning
 world, 3 to 6 the later worlds):
