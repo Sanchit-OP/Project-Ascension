@@ -1,0 +1,396 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "ascension_worlds:block/colony_plinth_stone",
+    "base": "ascension_worlds:block/colony_plinth_stone",
+    "foot": "ascension_worlds:block/colony_plinth_gold",
+    "column": "ascension_worlds:block/colony_plinth_column",
+    "column_top": "ascension_worlds:block/colony_plinth_stone",
+    "desk": "ascension_worlds:block/colony_plinth_desk",
+    "face": "ascension_worlds:block/archive_tablet_face",
+    "edge": "ascension_worlds:block/colony_plinth_gold",
+    "glow": "ascension_worlds:block/archive_tablet_face_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        2,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#base",
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#base",
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#base",
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#base",
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#base",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        2,
+        2
+      ],
+      "to": [
+        14,
+        4,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#foot",
+          "uv": [
+            2,
+            12,
+            14,
+            14
+          ]
+        },
+        "south": {
+          "texture": "#foot",
+          "uv": [
+            2,
+            12,
+            14,
+            14
+          ]
+        },
+        "west": {
+          "texture": "#foot",
+          "uv": [
+            2,
+            12,
+            14,
+            14
+          ]
+        },
+        "east": {
+          "texture": "#foot",
+          "uv": [
+            2,
+            12,
+            14,
+            14
+          ]
+        },
+        "up": {
+          "texture": "#foot",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "down": {
+          "texture": "#foot",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        4,
+        4
+      ],
+      "to": [
+        12,
+        11,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#column",
+          "uv": [
+            4,
+            5,
+            12,
+            12
+          ]
+        },
+        "south": {
+          "texture": "#column",
+          "uv": [
+            4,
+            5,
+            12,
+            12
+          ]
+        },
+        "west": {
+          "texture": "#column",
+          "uv": [
+            4,
+            5,
+            12,
+            12
+          ]
+        },
+        "east": {
+          "texture": "#column",
+          "uv": [
+            4,
+            5,
+            12,
+            12
+          ]
+        },
+        "up": {
+          "texture": "#column_top",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        },
+        "down": {
+          "texture": "#column",
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        11,
+        3
+      ],
+      "to": [
+        14,
+        13,
+        13
+      ],
+      "faces": {
+        "north": {
+          "texture": "#desk",
+          "uv": [
+            2,
+            3,
+            14,
+            5
+          ]
+        },
+        "south": {
+          "texture": "#desk",
+          "uv": [
+            2,
+            3,
+            14,
+            5
+          ]
+        },
+        "west": {
+          "texture": "#desk",
+          "uv": [
+            3,
+            3,
+            13,
+            5
+          ]
+        },
+        "east": {
+          "texture": "#desk",
+          "uv": [
+            3,
+            3,
+            13,
+            5
+          ]
+        },
+        "up": {
+          "texture": "#desk",
+          "uv": [
+            2,
+            3,
+            14,
+            13
+          ]
+        },
+        "down": {
+          "texture": "#desk",
+          "uv": [
+            2,
+            3,
+            14,
+            13
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        13,
+        3
+      ],
+      "to": [
+        14,
+        14.5,
+        13
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          13,
+          8
+        ],
+        "axis": "x",
+        "angle": -22.5
+      },
+      "faces": {
+        "up": {
+          "texture": "#face",
+          "uv": [
+            14,
+            13,
+            2,
+            3
+          ]
+        },
+        "north": {
+          "texture": "#edge",
+          "uv": [
+            2,
+            6,
+            14,
+            7.5
+          ]
+        },
+        "south": {
+          "texture": "#edge",
+          "uv": [
+            2,
+            6,
+            14,
+            7.5
+          ]
+        },
+        "west": {
+          "texture": "#edge",
+          "uv": [
+            3,
+            6,
+            13,
+            7.5
+          ]
+        },
+        "east": {
+          "texture": "#edge",
+          "uv": [
+            3,
+            6,
+            13,
+            7.5
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        13,
+        3
+      ],
+      "to": [
+        14,
+        14.5,
+        13
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          13,
+          8
+        ],
+        "axis": "x",
+        "angle": -22.5
+      },
+      "shade": false,
+      "neoforge_data": {
+        "block_light": 15,
+        "sky_light": 15,
+        "ambient_occlusion": false
+      },
+      "faces": {
+        "up": {
+          "texture": "#glow",
+          "uv": [
+            14,
+            13,
+            2,
+            3
+          ]
+        }
+      }
+    }
+  ]
+}

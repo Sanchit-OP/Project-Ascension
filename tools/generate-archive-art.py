@@ -92,8 +92,14 @@ class Canvas:
     from the top-left: raised work gets a lit upper-left edge and casts a shadow down-right; an
     incision is shadowed on its near (upper-left) wall and lit on its far rim."""
 
-    def __init__(self, w, h, seed):
+    def __init__(self, w, h, seed, ground=None, stain_to=None, base=0.60):
+        """ground: the ramp the face is cut in (default anorthosite plaster), six steps from shadow
+        to highlight; stain_to: the colour bare plaster darkens toward; base: where on the ramp the
+        bare face sits. The Nether's colony murals are cut in dark stone with these."""
         self.w, self.h = w, h
+        self.ground = ground or ANORTH
+        self.stain_to = stain_to or mix(ANORTH[0], BASALT[3], 0.5)
+        self.base = base
         self.rng = random.Random(seed)
         self.height = [[0] * w for _ in range(h)]
         self.inlay = [[None] * w for _ in range(h)]
@@ -154,6 +160,7 @@ class Canvas:
 
     def render(self):
         w, h = self.w, self.h
+        G = self.ground
         base = Image.new('RGBA', (w, h))
         glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
         bp, gp = base.load(), glow.load()
@@ -176,27 +183,27 @@ class Canvas:
 
         for y in range(h):
             for x in range(w):
-                v = 0.60 + (wash(x, y) - 0.5) * 0.10 + self.rng.uniform(-0.025, 0.025)
-                c = moon.ramp(ANORTH, v)
+                v = self.base + (wash(x, y) - 0.5) * 0.10 + self.rng.uniform(-0.025, 0.025)
+                c = moon.ramp(G, v)
                 me = ht(x, y)
                 up, left, down, right = ht(x, y - 1), ht(x - 1, y), ht(x, y + 1), ht(x + 1, y)
                 if me > 0:
-                    c = moon.ramp(ANORTH, 0.72 + 0.06 * (me - 1) + self.rng.uniform(-0.02, 0.02))
+                    c = moon.ramp(G, 0.72 + 0.06 * (me - 1) + self.rng.uniform(-0.02, 0.02))
                     if up < me or left < me:
-                        c = ANORTH[5]
+                        c = G[5]
                     elif down < me or right < me:
-                        c = ANORTH[2]
+                        c = G[2]
                 elif me < 0:
-                    c = ANORTH[2]
+                    c = G[2]
                     if up > me or left > me:
-                        c = ANORTH[1]
+                        c = G[1]
                     elif down > me or right > me:
-                        c = ANORTH[4]
+                        c = G[4]
                 else:
                     if ht(x - 1, y - 1) > 0 or up > 0:
-                        c = mix(c, ANORTH[1], 0.55)                 # shadow cast down-right
+                        c = mix(c, G[1], 0.55)                 # shadow cast down-right
                     if self.stain[y][x] > 0:
-                        c = mix(c, mix(ANORTH[0], BASALT[3], 0.5), self.stain[y][x])
+                        c = mix(c, self.stain_to, self.stain[y][x])
                 ink = self.inlay[y][x]
                 if ink is not None:
                     c = ink
@@ -216,10 +223,10 @@ class Canvas:
         # a carved frame groove one pixel in, and a dark arris at the very edge
         for x in range(w):
             for y in (0, h - 1):
-                bp[x, y] = mix(bp[x, y][:3], ANORTH[1], 0.6) + (255,)
+                bp[x, y] = mix(bp[x, y][:3], G[1], 0.6) + (255,)
         for y in range(h):
             for x in (0, w - 1):
-                bp[x, y] = mix(bp[x, y][:3], ANORTH[1], 0.6) + (255,)
+                bp[x, y] = mix(bp[x, y][:3], G[1], 0.6) + (255,)
         return base, glow
 
 
@@ -1176,20 +1183,20 @@ def stairs_models(kind, texture):
     write_json(f'models/item/{kind}_stairs.json', {'parent': f'{NS}:block/{kind}_stairs'})
 
 
-def plinth_model():
+def plinth_model(name='archive_plinth', tex=None):
     """A tablet resting on a pedestal, front (the tablet's face) to the north; the blockstate turns
     it to face its reader. The base covers the whole footprint: the block is a full cube to the
     renderer until logic gives it noOcclusion and a shape, and a narrower base would let the floor
-    under it be culled into a see-through gap."""
-    b, s = f'{NS}:block/', 'minecraft:block/'
-    tex = {
+    under it be culled into a see-through gap. The Nether's colony plinth is the same shape (so it
+    shares the archive plinth's collision box) in its own materials: `tex` names them."""
+    b = f'{NS}:block/'
+    tex = tex or {
         'particle': b + 'anorthosite_bricks',
         'base': b + 'polished_moon_basalt', 'foot': b + 'polished_moon_basalt',
         'column': b + 'anorthosite_pillar', 'column_top': b + 'anorthosite_pillar_top',
         'desk': b + 'anorthosite_bricks', 'face': b + 'archive_tablet_face', 'edge': b + 'chiseled_anorthosite',
         'glow': b + 'archive_tablet_face_glow',
     }
-    del s
 
     def box(frm, to, faces):
         return {'from': frm, 'to': to, 'faces': faces}
@@ -1223,16 +1230,16 @@ def plinth_model():
          'faces': {'up': {'texture': '#glow', 'uv': READ_UV}}},
     ]
     elements[2]['faces']['up']['texture'] = '#column_top'
-    write_json('models/block/archive_plinth.json', {
+    write_json(f'models/block/{name}.json', {
         'parent': 'minecraft:block/block', 'render_type': 'minecraft:cutout', 'textures': tex,
         'elements': elements})
-    write_json('blockstates/archive_plinth.json', {'variants': {
-        'facing=north': {'model': f'{NS}:block/archive_plinth'},
-        'facing=east': {'model': f'{NS}:block/archive_plinth', 'y': 90},
-        'facing=south': {'model': f'{NS}:block/archive_plinth', 'y': 180},
-        'facing=west': {'model': f'{NS}:block/archive_plinth', 'y': 270},
+    write_json(f'blockstates/{name}.json', {'variants': {
+        'facing=north': {'model': f'{NS}:block/{name}'},
+        'facing=east': {'model': f'{NS}:block/{name}', 'y': 90},
+        'facing=south': {'model': f'{NS}:block/{name}', 'y': 180},
+        'facing=west': {'model': f'{NS}:block/{name}', 'y': 270},
     }})
-    write_json('models/item/archive_plinth.json', {'parent': f'{NS}:block/archive_plinth'})
+    write_json(f'models/item/{name}.json', {'parent': f'{NS}:block/{name}'})
 
 
 def orrery_model():

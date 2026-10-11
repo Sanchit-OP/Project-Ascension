@@ -7,6 +7,7 @@ import com.ascension.worlds.internal.GateProgress;
 import com.ascension.worlds.internal.GatewayDecorBlocks;
 import com.ascension.worlds.internal.archive.ArchiveContent;
 import com.ascension.worlds.internal.archive.ArchiveDecorBlocks;
+import com.ascension.worlds.internal.nether.NetherDecorBlocks;
 import com.ascension.worlds.internal.archive.GateGlyphs;
 import com.ascension.worlds.internal.archive.ArchiveEntry;
 import com.ascension.worlds.internal.GatewayFrames;
@@ -64,6 +65,7 @@ public final class AscensionWorlds {
         GatewayDecorBlocks.register(modBus);
         ArchiveContent.register(modBus);
         ArchiveDecorBlocks.register(modBus);
+        NetherDecorBlocks.register(modBus);
         SpaceAttachments.register(modBus);
         modBus.addListener(this::onRegisterDataPackRegistries);
         modBus.addListener(this::onCommonSetup);
