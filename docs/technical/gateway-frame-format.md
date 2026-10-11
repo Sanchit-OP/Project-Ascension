@@ -95,6 +95,24 @@ The site's **bottom layer is extended down** through anything replaceable to sol
 8 blocks), so the ruin never floats over a crater rim. With no site, the frame's own bottom layer
 gets the same treatment.
 
+**A site can re-skin the frame** (added 2026-10-11, for the Nether's ruin): `"frame_palette":
+{"D": "minecraft:polished_blackstone_bricks", ...}` builds the frame's cells for that symbol from
+that block instead of their `place` block. Only symbols keyed by a `tag` take it, and only a block
+in that tag (anything else logs an error and falls back to `place`), so the pre-generated frame
+still passes the check a player-built one must when it is attuned. `block`-keyed cells (the
+gatestone ring, the keystone) never change.
+
+### Optional: a ruin that seeks its ground (added 2026-10-11)
+
+A pre-generated gateway structure can find its own spot instead of standing at a fixed one:
+`"seek": {"near": [x, z], "radius": 1536}` in `worldgen/structure/gateway_frame_*.json`. It then
+stands in the chunk nearest `near` (rings of chunks outward, at most `radius` blocks) whose middle
+column is in the structure's own `biomes` and has solid ground on top (not a lava sea or a lake).
+One per world. Its structure set must offer every chunk, `random_spread` with spacing 1 and
+separation 0; every chunk but the one found makes nothing. Vanilla's `/locate structure` finds it,
+and so does `gateway goto`. The Nether's ruin uses this to stand in the warped forest nearest the
+origin, wherever the seed put it.
+
 ### Blocks that light up (added 2026-10-06)
 
 Any frame block that has vanilla's `lit` blockstate property is switched to `lit=true` when the
@@ -109,8 +127,9 @@ Pre-generated and freshly built frames place these unlit.
   cell in each of the 4 rotations around the clicked keystone. All match → fill the field cells
   with `gateway_field` (correct `axis`), set the keystone `active=true`, register the portal with
   the network.
-- **Pre-generate (Moon):** place the site (if any) and the frame at a fixed spot near the arrival
-  point, front facing south, `place`/`block` per cell, field cells left as air, keystone
+- **Pre-generate (Moon, the Nether):** place the site (if any) and the frame at a fixed spot near
+  the arrival point (the Moon) or the spot it seeks (the Nether), front facing south,
+  `place`/`block` per cell (or the site's palette), field cells left as air, keystone
   `active=false`.
 - **Arrive:** travellers land on the ground just in front of the destination frame's field: the
   spot one block out from the field's bottom-centre, searched a few blocks up and down (and a few

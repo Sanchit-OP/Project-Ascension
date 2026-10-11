@@ -3,6 +3,7 @@ package com.ascension.worlds.internal;
 import com.ascension.worlds.AscensionWorlds;
 import com.ascension.worlds.internal.gateway.GatewayFrame;
 import com.ascension.worlds.internal.gateway.GatewaySite;
+import java.util.Map;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,6 +110,16 @@ public final class GatewayFrames {
      */
     public static void write(LevelAccessor level, GatewayFrame frame, GatewayFrame.Placement placement,
                              boolean lit, BoundingBox clip) {
+        write(level, frame, placement, lit, clip, Map.of());
+    }
+
+    /**
+     * {@link #write(LevelAccessor, GatewayFrame, GatewayFrame.Placement, boolean, BoundingBox)},
+     * with a site's {@code frame_palette} laid over the frame's own {@code place} blocks: the Nether's
+     * ruin stands in blackstone where the Moon's stands in Moon rock. See {@link #paletteState}.
+     */
+    public static void write(LevelAccessor level, GatewayFrame frame, GatewayFrame.Placement placement,
+                             boolean lit, BoundingBox clip, Map<Character, ResourceLocation> palette) {
         BlockState field = fieldState(placement);
         BlockState keystone = WorldsContent.GATEWAY_KEYSTONE.get().defaultBlockState()
                 .setValue(GatewayKeystoneBlock.ACTIVE, lit);
@@ -125,7 +137,7 @@ public final class GatewayFrames {
             } else if (cell.symbol() == frame.keystoneSymbol()) {
                 state = keystone;
             } else {
-                state = placedState(frame.key().get(cell.symbol()));
+                state = paletteState(frame.key().get(cell.symbol()), palette.get(cell.symbol()));
                 if (state.hasProperty(BlockStateProperties.LIT)) {
                     state = state.setValue(BlockStateProperties.LIT, lit);
                 }
@@ -167,6 +179,25 @@ public final class GatewayFrames {
     private static BlockState fieldState(GatewayFrame.Placement placement) {
         return WorldsContent.GATEWAY_FIELD.get().defaultBlockState()
                 .setValue(GatewayFieldBlock.AXIS, placement.facing().fieldAlongX() ? Direction.Axis.X : Direction.Axis.Z);
+    }
+
+    /**
+     * What to build one frame cell from, given a site's palette entry for its symbol (or null).
+     * The palette is taken only for a cell keyed by a tag, and only if its block is in that tag,
+     * so a pre-generated frame always passes the same check a player-built one must when it is
+     * attuned. Anything else falls back to the frame's own {@code place}, with an error logged.
+     */
+    static BlockState paletteState(GatewayFrame.Key key, @Nullable ResourceLocation paletteBlock) {
+        if (paletteBlock == null) {
+            return placedState(key);
+        }
+        Optional<Block> block = BuiltInRegistries.BLOCK.getOptional(paletteBlock);
+        if (key.tag().isEmpty() || block.isEmpty() || !matches(block.get().defaultBlockState(), key)) {
+            LOGGER.error("Gateway site palette block {} cannot stand in for {}: only an existing block in "
+                    + "the cell's own tag can; placing the frame's own block", paletteBlock, key);
+            return placedState(key);
+        }
+        return block.get().defaultBlockState();
     }
 
     public static BlockState placedState(GatewayFrame.Key key) {

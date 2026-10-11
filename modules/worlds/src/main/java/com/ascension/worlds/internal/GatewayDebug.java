@@ -17,6 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -61,22 +63,30 @@ final class GatewayDebug {
     }
 
     /**
-     * Where to stand in front of {@code level}'s pre-generated gateway, if any: the
-     * {@code fixed_position} placement says which chunk, and that chunk's structure start says
-     * exactly where the frame was laid out.
+     * Where to stand in front of {@code level}'s pre-generated gateway, if any: a
+     * {@code fixed_position} placement or a seeking ruin's search says which chunk, and that
+     * chunk's structure start says exactly where the frame was laid out.
      */
     @Nullable
     private static BlockPos pregeneratedArrival(ServerLevel level) {
+        ChunkGenerator generator = level.getChunkSource().getGenerator();
         for (Holder.Reference<Structure> holder : level.registryAccess().registryOrThrow(Registries.STRUCTURE).holders().toList()) {
-            if (!(holder.value() instanceof GatewayFrameStructure)) {
+            if (!(holder.value() instanceof GatewayFrameStructure gate)) {
                 continue;
             }
             for (StructurePlacement placement : level.getChunkSource().getGeneratorState().getPlacementsForStructure(holder)) {
-                if (!(placement instanceof FixedPositionStructurePlacement fixed)) {
+                ChunkPos site = null;
+                if (gate.seeks()) {
+                    site = gate.siteChunk(generator, generator.getBiomeSource(), level.getChunkSource().randomState(),
+                            level, level.getSeed()).orElse(null);
+                } else if (placement instanceof FixedPositionStructurePlacement fixed) {
+                    Vec3i at = fixed.locateAt();
+                    site = new ChunkPos(SectionPos.blockToSectionCoord(at.getX()), SectionPos.blockToSectionCoord(at.getZ()));
+                }
+                if (site == null) {
                     continue;
                 }
-                Vec3i at = fixed.locateAt();
-                LevelChunk chunk = level.getChunk(SectionPos.blockToSectionCoord(at.getX()), SectionPos.blockToSectionCoord(at.getZ()));
+                LevelChunk chunk = level.getChunk(site.x, site.z);
                 BlockPos arrival = arrivalFrom(level, chunk.getStartForStructure(holder.value()));
                 if (arrival != null) {
                     return arrival;

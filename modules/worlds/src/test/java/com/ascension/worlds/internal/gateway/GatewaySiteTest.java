@@ -55,4 +55,32 @@ class GatewaySiteTest {
         GatewayFrame.Placement east = frame.placeOriginAt(10, 64, 10, GatewayFrame.Facing.EAST);
         assertArrayEquals(east.world(-1, -1, -1), site.world(east, cell));
     }
+
+    @Test
+    void aSiteWithoutAPaletteBuildsTheFrameAsUsual() {
+        assertTrue(parse("[\"p\"]").getOrThrow().framePalette().isEmpty());
+    }
+
+    @Test
+    void readsAFramePaletteBySymbol() {
+        String json = """
+                { "key": { "p": { "block": "minecraft:stone_bricks" } },
+                  "frame_offset": [0, 0, 0],
+                  "frame_palette": { "D": "minecraft:polished_blackstone_bricks" },
+                  "layers": [["p"]] }""";
+        GatewaySite site = GatewaySite.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).getOrThrow();
+        assertEquals("minecraft:polished_blackstone_bricks", site.framePalette().get('D').toString());
+    }
+
+    @Test
+    void rejectsAPaletteKeyThatIsNotOneSymbol() {
+        String json = """
+                { "key": { "p": { "block": "minecraft:stone_bricks" } },
+                  "frame_offset": [0, 0, 0],
+                  "frame_palette": { "DD": "minecraft:polished_blackstone_bricks" },
+                  "layers": [["p"]] }""";
+        DataResult<GatewaySite> result = GatewaySite.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(json));
+        assertTrue(result.error().isPresent());
+        assertTrue(result.error().get().message().contains("frame_palette"), result.error().get().message());
+    }
 }

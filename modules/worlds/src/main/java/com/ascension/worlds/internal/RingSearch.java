@@ -2,23 +2,25 @@ package com.ascension.worlds.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Enumerates integer (dx, dz) offsets in widening square rings, nearest ring first &mdash; the
  * search pattern {@link SpaceMechanics#findSafeLandingSpot} walks to find a safe spot near a
- * remembered landing point. Split out during the M2.7 refactor pass: the ordering itself (ring 0
- * before ring 1 before ring 2, ...) is what makes that search "nearest safe spot" rather than
- * "some safe spot", and that property is plain integer arithmetic with no {@code ServerLevel} or
- * block lookup involved &mdash; worth its own test independent of whether any given block happens
- * to be standable.
+ * remembered landing point, and a seeking gateway ruin walks to find its ground
+ * ({@code GatewayFrameStructure}). Split out during the M2.7 refactor pass: the ordering itself
+ * (ring 0 before ring 1 before ring 2, ...) is what makes a search "nearest" rather than "some",
+ * and that property is plain integer arithmetic with no {@code ServerLevel} or block lookup
+ * involved &mdash; worth its own test independent of whether any given spot happens to qualify.
  */
-final class RingSearch {
+public final class RingSearch {
 
     private RingSearch() {
     }
 
     /** One integer offset from a search's centre point. */
-    record Offset(int dx, int dz) {
+    public record Offset(int dx, int dz) {
     }
 
     /**
@@ -28,15 +30,32 @@ final class RingSearch {
      */
     static List<Offset> offsetsUpTo(int maxRadius) {
         List<Offset> offsets = new ArrayList<>();
+        first(maxRadius, offset -> {
+            offsets.add(offset);
+            return false;
+        });
+        return offsets;
+    }
+
+    /**
+     * The first offset within {@code maxRadius} that {@code accept} takes, walking the same order
+     * as {@link #offsetsUpTo}, without building the list: a search that finds its spot in the
+     * second ring never visits the hundredth.
+     */
+    public static Optional<Offset> first(int maxRadius, Predicate<Offset> accept) {
         for (int radius = 0; radius <= maxRadius; radius++) {
             for (int dx = -radius; dx <= radius; dx++) {
-                for (int dz = -radius; dz <= radius; dz++) {
-                    if (Math.max(Math.abs(dx), Math.abs(dz)) == radius) {
-                        offsets.add(new Offset(dx, dz));
+                // On the ring's left and right edges every dz is on the ring; between them, only
+                // the top and bottom rows are.
+                int step = Math.abs(dx) == radius ? 1 : Math.max(1, 2 * radius);
+                for (int dz = -radius; dz <= radius; dz += step) {
+                    Offset offset = new Offset(dx, dz);
+                    if (accept.test(offset)) {
+                        return Optional.of(offset);
                     }
                 }
             }
         }
-        return offsets;
+        return Optional.empty();
     }
 }

@@ -869,9 +869,14 @@ there, an optional second boss. **Still open:** the Nether's sky and fog (art se
    here. Wear gold." Armour that calms piglins counts, so other mods' gold does too.
    `HazardDoses` tests the timing (`worlds` 101 → 107). The client check: with and without gold.
 3. **A refactor pass. Done 2026-10-11** (its section above).
-4. **The Monstrosity's key and the gate ruin,** once the art session has delivered: the boss drops
-   the Nether's gateway key, as the Moon's Guardian does, and the pre-generated gate ruin sits in the
-   warped forest. With the colony-ruin tablets in the voice.
+4. **The Monstrosity's key and the gate ruin. Logic built 2026-10-11, checked headless; the
+   ruin's look waits on the art session.** The Monstrosity drops the Nether's gateway key (a global
+   loot modifier over Cataclysm's table); it and Ignis get the boss tier's Armor and Magic Resist.
+   The gate ruin seeks the warped forest nearest the origin (`gateway-frame-format.md`, "a ruin
+   that seeks its ground") and stands in Nether stone through its site's new `frame_palette`; its
+   site is a placeholder ring until the art lands. Details: `worlds-api.md`, "Planet 3's gate and
+   keeper". Tests: `RingSearch.first`, the palette (`worlds` 107 → 114). Still to come: the colony
+   ruins with their tablets in the voice.
 5. **The recipe debt paid:** check that Earth's keystone and the Nether-only items are now
    obtainable in survival, and close `todo.md`'s item.
 

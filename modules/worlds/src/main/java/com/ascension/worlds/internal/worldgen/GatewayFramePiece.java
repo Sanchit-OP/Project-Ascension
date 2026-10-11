@@ -126,7 +126,8 @@ public final class GatewayFramePiece extends StructurePiece {
         } else {
             writeFoundation(level, gatewayFrame.cells(), gatewayFrame.key(), placement::world, box);
         }
-        GatewayFrames.write(level, gatewayFrame, placement, false, box);
+        GatewayFrames.write(level, gatewayFrame, placement, false, box,
+                loadedSite.map(GatewaySite::framePalette).orElse(Map.of()));
     }
 
     private static void writeSite(WorldGenLevel level, GatewaySite site, GatewayFrame.Placement placement, BoundingBox box) {

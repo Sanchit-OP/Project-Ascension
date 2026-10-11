@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "name": "gateway_key",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ascension_worlds:gateway_key",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "ascension_worlds:gateway_key_for_planet": "minecraft:the_nether"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

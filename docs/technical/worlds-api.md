@@ -796,6 +796,24 @@ and gold keeps it off.
 Not yet: whether a sealed, pressurised room keeps the rot out (it is breathable air, so
 `ascension-atmosphere` has no say today).
 
+### Planet 3's gate and keeper (added 2026-10-11)
+
+- **The gate ruin** (`worldgen/structure/gateway_frame_nether.json`) is the same frame as the
+  Moon's, built in Nether stone through its site's `frame_palette`, and it **seeks** its ground
+  (`gateway-frame-format.md`): the warped-forest chunk nearest the origin with solid ground on top,
+  searched up to 1,536 blocks out. The biome is `#ascension_worlds:nether_gate_biomes` (the warped
+  forest). Its site (`gateway_nether_site`) is a placeholder ring of blackstone until the Planet 3
+  art session delivers the ruin (`nether-art-format.md`).
+- **The key:** the Netherite Monstrosity drops a gateway key naming `minecraft:the_nether`, added to
+  Cataclysm's own loot by a global loot modifier in `ascension-compat-cataclysm`, so Cataclysm's
+  table is left whole. Attuning the ruin with it lights the Nether's gate.
+- **Checked headless, 2026-10-11**, on a fresh world: `/locate` put the ruin at chunk (1, 20), about
+  330 blocks south of the origin, with its keystone at y 107 on a plateau in the warped forest; no
+  Moon stone anywhere in it, the frame in blackstone and quartz. A summoned Monstrosity's loot,
+  rolled with `/loot ... kill`, held its four usual items plus the key with
+  `gateway_key_for_planet: minecraft:the_nether`. The Monstrosity and Ignis read 100 Armor and 40
+  Magic Resist (`ascension-combat`'s boss tier).
+
 ## 5. Registry mechanism
 
 A **datapack registry**, via NeoForge's `DataPackRegistryEvent.NewRegistry`, with a codec and
