@@ -693,6 +693,25 @@ vanilla sky the bodies also fade with rain, as vanilla's moon does.
 - Textures come from `tools/generate-sky-art.py` (Earth, the Moon, and the blank vanilla moon); its preview sheets (`design/sky/`) show each
   texture flat and as lit in game.
 
+**Haze (added 2026-10-11, for the Nether).** A sky file can also say how far the dimension's air
+lets you see, in place of its own fog. `bodies` is optional, so a file can carry only this:
+
+```json
+{ "dimension": "minecraft:the_nether", "haze": { "start": 24, "end": 160, "color": 3346442 } }
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `haze.start` | required | Where the haze begins, in blocks. |
+| `haze.end` | required | Where nothing shows through it, in blocks; beyond `start`. Never past the render distance. |
+| `haze.color` | none | `0xRRGGBB` haze colour, in place of the biome's fog colour. In a world with no sky of its own, like the Nether, it is also the colour overhead. |
+
+Vanilla's Nether fog closes in at about 96 blocks, so a ship coming down at y 216 would see nothing
+of the ground. `SkyHaze` applies it (low priority, so a weather event's fog wins), and leaves
+vanilla's fog alone under water, in lava or snow, and while blinded or in darkness. The Nether's
+file is a placeholder (24 to 160, the biomes' own colours) until the Planet 3 art session sets it.
+The last file loaded with a haze wins, with a warning.
+
 ### Space bodies: how a planet looks from space (added 2026-10-11)
 
 In space each planet is drawn at its real place and size (`client/SpaceSkyRenderer`). A planet

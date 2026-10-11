@@ -2,6 +2,7 @@ package com.ascension.worlds.client;
 
 import com.ascension.worlds.internal.GateProgress;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
@@ -113,16 +114,42 @@ record SkyBody(
     }
 
     /**
-     * One {@code ascension_sky} file: bodies for one dimension. Several files may name the same
-     * dimension, from any namespace, and their bodies add up, so a mod can put its own planet in
-     * our Moon's sky without touching our file.
+     * One {@code ascension_sky} file: bodies for one dimension, and optionally its haze. Several
+     * files may name the same dimension, from any namespace, and their bodies add up, so a mod can
+     * put its own planet in our Moon's sky without touching our file. Haze does not add up: the
+     * last file loaded with one wins.
      */
-    record SkyFile(ResourceLocation dimension, List<SkyBody> bodies) {
+    record SkyFile(ResourceLocation dimension, List<SkyBody> bodies, Optional<Haze> haze) {
 
         static final Codec<SkyFile> CODEC = RecordCodecBuilder.create(instance -> instance
                 .group(
                         ResourceLocation.CODEC.fieldOf("dimension").forGetter(SkyFile::dimension),
-                        SkyBody.CODEC.listOf().fieldOf("bodies").forGetter(SkyFile::bodies))
+                        SkyBody.CODEC.listOf().optionalFieldOf("bodies", List.of()).forGetter(SkyFile::bodies),
+                        Haze.CODEC.optionalFieldOf("haze").forGetter(SkyFile::haze))
                 .apply(instance, SkyFile::new));
+    }
+
+    /**
+     * How far a dimension's air lets you see, in place of its own fog: built for the Nether opened
+     * to the sky, whose vanilla fog closes in at about 96 blocks, so a ship coming down from 216
+     * would see nothing of the ground. Applied by {@link SkyHaze}, never past the render distance,
+     * and not while the camera is under water, in lava or blinded.
+     *
+     * @param start  where the haze begins, in blocks
+     * @param end    where nothing shows through it any more, in blocks
+     * @param colour the haze's colour ({@code 0xRRGGBB}), if it overrides the biome's fog colour.
+     *               In a world with no sky of its own (the Nether) this is also the colour overhead
+     */
+    record Haze(float start, float end, Optional<Integer> colour) {
+
+        static final Codec<Haze> CODEC = RecordCodecBuilder.<Haze>create(instance -> instance
+                        .group(
+                                Codec.floatRange(0.0F, 4096.0F).fieldOf("start").forGetter(Haze::start),
+                                Codec.floatRange(1.0F, 4096.0F).fieldOf("end").forGetter(Haze::end),
+                                Codec.INT.optionalFieldOf("color").forGetter(Haze::colour))
+                        .apply(instance, Haze::new))
+                .validate(haze -> haze.end() > haze.start()
+                        ? DataResult.success(haze)
+                        : DataResult.error(() -> "haze end must be beyond its start"));
     }
 }
