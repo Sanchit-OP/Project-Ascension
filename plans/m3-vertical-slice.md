@@ -878,8 +878,10 @@ there, an optional second boss. **Still open:** the Nether's sky and fog (art se
    site is a placeholder ring until the art lands. Details: `worlds-api.md`, "Planet 3's gate and
    keeper". Tests: `RingSearch.first`, the palette (`worlds` 107 → 114). Still to come: the colony
    ruins with their tablets in the voice.
-5. **The recipe debt paid:** check that Earth's keystone and the Nether-only items are now
-   obtainable in survival, and close `todo.md`'s item.
+5. **The recipe debt paid (Nether half), checked headless 2026-10-11.** On a fresh world's roofless
+   Nether: blaze spawners in a fortress (three, all blaze), nether wart, 1,419 glowstone under
+   overhangs and in caves, ancient debris, quartz, soul sand. Earth's keystone never needed the
+   Nether (Deep Dark materials). `todo.md`'s item now keeps only the End half.
 
 **The art contract** (its sky and fog, the gate ruin, colony and Sealer ruins, tablets) can be
 written in parallel with increment 1, for the design session to start on.

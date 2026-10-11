@@ -95,12 +95,14 @@ See the register or the linked doc for reasoning:
   atmosphere's oxygen tank, emitter and refill station.
 
 **Systems gaps identified 2026-09-05:**
-- **Nether removal has a recipe debt (ADR-0014, 2026-10-06).** Vanilla Nether/End portals are
-  dormant, so blaze, nether quartz, netherite, ancient debris and End-only items are unobtainable
-  in survival until those worlds exist as planets. The Nether is Planet 3, which settles netherite.
-  Our own recipes are clear: the gateway keystone's lodestone was swapped for Deep Dark materials
-  on 2026-10-06 (`gateway-portal-design.md`). Still to watch: any later recipe that reaches for
-  blaze rods, eyes of ender (blaze powder), or End items before their planet exists.
+- **Portal removal had a recipe debt (ADR-0014, 2026-10-06). The Nether half is paid
+  (2026-10-11):** Planet 3 is the real Nether, reached by airship, and a fresh world's roofless
+  Nether has blaze spawners in its fortresses, nether wart, glowstone (under overhangs and in
+  caves, y 32 to 100+), ancient debris, quartz, soul sand and magma, checked headless. **The End
+  half is still open:** End-only items stay unobtainable until the End is a planet. Our own recipes
+  were never in debt: the gateway keystone uses Deep Dark materials (`gateway-portal-design.md`).
+  Still to watch: any later recipe that reaches for End items, or puts a Nether item on the road
+  before Planet 3 (eyes of ender need blaze powder).
 - **The late-joiner gap.** "Joins at the team's current tier" collides with "unique planetary
   resources gate progression" — they get the dimension unlocked and no gear to survive it.
   Needs a catch-up mechanism, not just a permission flag.
