@@ -33,6 +33,7 @@ it is committed; ask Sanchit before pushing. Details live in the sections below 
 | Background pre-generation (`ascension-compat-chunky`) | **Off by default since 2026-10-10**: a fresh server crashed under it. The Chunky bug, below. |
 | Planets in space drawn as the lit spheres they are in other skies (`ascension_space` looks, `LitSphere`); the Moon in Earth's sky 10° → 8° | **Live 2026-10-11:** "it checks out its cool". |
 | Cataclysm's five Earth bosses held for later planets | `/locate` on a fresh dedicated server 2026-10-11: bosses gone, small structures kept. |
+| Planet 3, the real Nether opened to the sky (ADR-0017, M3.3 below): roofless terrain, the rot and the gold ward, the gate ruin seeking the warped forest, the Monstrosity's key and Forge Record, seven tablets in the voice with glyph signatures, the haze, the Moon at 4,000 | **Headless 2026-10-11:** terrain, the ruin's placement and palette, the key and boss stats, every Nether material. **Not yet seen in a client:** Sanchit wants to see the whole world at once, after its art lands. |
 | The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact; since the refactor pass, an item frame inside the ship travels with it too. **Seen live 2026-10-11** (`live-test-2026-10-11.md`): Sanchit rode a command-built ship from Earth to space and down onto the Moon, its item frame along. Not yet seen with a real Aeronautics ship (none designed yet). |
 
 **Settled:** the keystone recipe (Deep Dark materials, one Warden tendril per gate, nothing from
@@ -58,10 +59,14 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
    lore art was made.
 
-**Next: Planet 3, the real Nether opened to the sky** (ADR-0017, M3.3 below), starting with its
-roofless terrain. Decision 1 is answered; Ignis's place is the one Planet 3 question left. Also
-waiting: the orrery hologram with Tacita's signature, then cats; and a real Aeronautics starter
-ship (decision 5).
+**Next: Planet 3's art session, then one client test of the whole world** (Sanchit, 2026-10-11:
+"i want to add all the things needed in this world and see it all at once"). The logic is built
+(M3.3 below); the art contract is [`nether-art-format.md`](../docs/technical/nether-art-format.md)
+and the prompt to paste into a new session is
+[`design/nether/design-session-prompt.md`](../design/nether/design-session-prompt.md). When it is
+merged, logic wires the colony ruins' worldgen from the handed-over piece names, then the client
+test. Sanchit also has the Nether tablets' draft text to read (`tools/archive-lore.py`). Also
+waiting: the orrery hologram, then cats; and a real Aeronautics starter ship (decision 5).
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
@@ -883,8 +888,16 @@ there, an optional second boss. **Still open:** the Nether's sky and fog (art se
    overhangs and in caves, ancient debris, quartz, soul sand. Earth's keystone never needed the
    Nether (Deep Dark materials). `todo.md`'s item now keeps only the End half.
 
-**The art contract** (its sky and fog, the gate ruin, colony and Sealer ruins, tablets) can be
-written in parallel with increment 1, for the design session to start on.
+**The art contract is written** (2026-10-11): [`nether-art-format.md`](../docs/technical/nether-art-format.md),
+with the prompt in [`design/nether/design-session-prompt.md`](../design/nether/design-session-prompt.md).
+It covers the Nether from space, its haze, the gate ruin, the colony plinth, the colonists' ruins
+for the seven tablets, and the Sealers' carving. Logic registered `colony_plinth` and the colony
+stores loot ahead of it.
+
+6. **After the art lands:** merge, wire the colony ruins' and the carving's worldgen from the
+   handed-over names and `surface_y` values, a headless check, then **one client test of the whole
+   world** with Sanchit: arrive by ship, the haze, the rot with and without gold, find the gate
+   ruin, read the tablets, kill the Monstrosity, attune the gate, the third glyph on the hand.
 
 ## Explicitly out of scope for M3
 
