@@ -48,7 +48,7 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
 
 1. ~~**Planet 3's remaining questions**~~ **Answered 2026-10-11** (ADR-0017): the real Nether
    opened to the sky, wear gold, the Nether's own terrain as the traversal, vanilla mobs, art by a
-   design session. Left: whether Ignis stays in the Nether.
+   design session. Ignis stays in the Nether, and the Moon moves to 4,000 blocks (both 2026-10-11).
 2. **The ending**: which of A (the Eye opens), B (the seal) and C (the mirror), the two factions'
    names, and whether the lone human on the beach is the player (`the-ending-and-names.md`).
 3. **The gateway follow-ups** from his live test, when he raises them.
@@ -679,8 +679,8 @@ desert structures.
 | Cursed Pyramid, the Ancient Remnant | `ascension_worlds:cursed_pyramid_biomes` | a desert world |
 | Ancient Factory, the Harbinger | `ascension_worlds:ancient_factory_biomes` | a machine world |
 | Ruined Citadel, Ender Golem and Ender Guardian | `ascension_worlds:ruined_citadel_biomes` | the Moon (done, M3.1) |
-| Soul Black Smith, the Netherite Monstrosity | not yet overridden | Planet 3, the Nether world |
-| Burning Arena, Ignis | not yet overridden | unassigned (the vanilla Nether is dormant, ADR-0014) |
+| Soul Black Smith, the Netherite Monstrosity | not overridden: Cataclysm's own Nether placement | Planet 3, the Nether world |
+| Burning Arena, Ignis | not overridden: Cataclysm's own Nether placement | Planet 3 too, optional (Sanchit, 2026-10-11) |
 
 Checked on a fresh dedicated server with `/locate`: none of the five bosses can be found; the
 abandoned village and spire, the desert site and temple, and the amethyst nest still are; the
@@ -828,9 +828,8 @@ way into the nether." This replaces the earlier plan of our own Nether-like dime
 | Power generation, ash storms | No (2026-10-06). |
 | Art | A separate design session through a contract doc. |
 
-**Still open (not blocking the first increment):** whether Ignis (Cataclysm's Burning Arena, which
-also generates in the Nether) stays there or is held for another world; the Nether's sky and
-fog (art session).
+**Answered 2026-10-11:** Ignis (Cataclysm's Burning Arena, which also generates in the Nether) stays
+there, an optional second boss. **Still open:** the Nether's sky and fog (art session).
 
 **Build order:**
 

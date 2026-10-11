@@ -100,36 +100,40 @@ Three places exist. Only one of them is shared.
   minecraft:overworld           ascension_worlds:space            ascension_worlds:moon
   (Earth's surface)             ONE shared dimension              (Moon's surface)
 
-    ┌──────────┐              [0,0]             [8000,0]            ┌──────────┐
-    │ fly up   │ ─ ascend ─▶   ⬤ Earth ···· 8000 blocks ····▶ ⬤ Moon ─ descend ─▶ │ you land │
+    ┌──────────┐              [0,0]             [4000,0]            ┌──────────┐
+    │ fly up   │ ─ ascend ─▶   ⬤ Earth ···· 4000 blocks ····▶ ⬤ Moon ─ descend ─▶ │ you land │
     └──────────┘              body_r 384        body_r 192          └──────────┘
                                                 approach_r 320
 ```
 
 **There is no "Earth orbit" and no "Moon orbit".** That is precisely what
 [ADR-0010](../decisions/0010-orbit-is-one-shared-space-dimension.md) changed. There is one
-space; Earth is at `[0, 0]` in it and the Moon is at `[8000, 0]`, and **8000 is the distance you
+space; Earth is at `[0, 0]` in it and the Moon is at `[4000, 0]`, and **4000 is the distance you
 fly.**
 
 Ascending from Earth's surface puts you in space just outside Earth's body. From there the Moon
-is 8000 blocks away. Reach its `approach_radius` and descent to `ascension_worlds:moon` becomes
+is 4000 blocks away. Reach its `approach_radius` and descent to `ascension_worlds:moon` becomes
 possible.
 
-### Why 8000
+### Why 4000
 
 | Travel method | One way |
 |---|---|
-| Elytra and rockets, ~35 b/s | ~3.8 min |
-| A ship at 60 b/s | ~2.2 min |
-| Creative fast flight, ~22 b/s | ~6 min |
+| Elytra and rockets, ~35 b/s | ~1.9 min |
+| A ship at 60 b/s | ~1.1 min |
+| Creative fast flight, ~22 b/s | ~3 min |
 
-A trip you feel, without being a chore. **Settled 2026-09-05.** Distances for planets 4–7 should
-be laid out before any of them is built, because travel time is pacing and a distance a player
-has already learned cannot be changed quietly.
+A trip you feel, without being a chore. **Settled 2026-09-05 at 8,000; halved to 4,000 by
+Sanchit on 2026-10-11.** The road to space is now an airship (ADR-0015), slower than the 60 b/s
+assumed here, and test flights no longer need the Moon close because the carry commands move a
+ship anywhere (`dev-environment.md`). The Moon had sat at a 1,500 test value since 2026-09-19.
+The numbers below are for 4,000; where the 8,000 analysis said something that no longer holds, it
+says so. Distances for planets 4–7 should be laid out before any of them is built, because travel
+time is pacing and a distance a player has already learned cannot be changed quietly.
 
 ### Two consequences worth stating before M2.5
 
-**A planet body in space is rendered, not built.** At 8000 blocks — roughly 500 chunks —
+**A planet body in space is rendered, not built.** At 4000 blocks — roughly 250 chunks —
 Minecraft will never draw a sphere made of blocks. So a planet in space is a rendered body like
 the sun or the moon, and `body_radius` is *its apparent size plus a volume you cannot fly
 into*. You never land on it in space; approaching triggers descent to its surface dimension.
@@ -137,8 +141,8 @@ into*. You never land on it in space; approaching triggers descent to its surfac
 This is also what keeps the shared space affordable: there is nothing there to load, which is
 what makes seeing across it cheap (ADR-0010).
 
-For scale: a 192-block radius body seen from 8000 blocks subtends about 2.7°, roughly five times
-the apparent size of the real moon from Earth. Clearly a place, clearly far away.
+For scale: a 192-block radius body seen from 4000 blocks subtends about 5.5°, roughly eleven
+times the apparent size of the real moon from Earth. Clearly a place, clearly far away.
 
 **Earth needs a `body_radius` too**, now that it is a body in space you can look at and cannot
 fly through.
@@ -163,7 +167,7 @@ A planet is drawn at a size derived from its distance, `2 * atan(radius / distan
 |---|---|---|
 | 320 — the Moon's approach shell | **62 deg**, fills the view | |
 | 512 — just launched from Earth | | **74 deg**, Earth behind you |
-| 8,000 — the Moon seen from Earth | **2.75 deg**, a clear disc | 5.50 deg |
+| 4,000 — the Moon seen from Earth | **5.50 deg**, a clear disc | 11.0 deg |
 | 18,000 — Planet 3 | 1.22 deg | |
 | 100,000 — Planet 7 | **0.22 deg**, a bright dot | |
 
@@ -188,29 +192,30 @@ you were pointing is not.
 
 A heading error does **not** slow your approach in proportion. It converts almost entirely into
 *miss distance*, and it does so immediately. For a straight shot at the Moon with no steering,
-closest approach is `8000 * sin(error)`:
+closest approach is `4000 * sin(error)`:
 
 | Heading error | Closest approach | Arrive? |
 |---|---|---|
-| 0.5 deg | 70 | yes |
-| 1 deg | 140 | yes |
-| 2 deg | 279 | yes |
-| **2.3 deg** | **321** | **miss** |
-| 5 deg | 697 | miss |
-| 45 deg | 5,657 | miss |
-| 89 deg | 7,999 | miss |
+| 0.5 deg | 35 | yes |
+| 1 deg | 70 | yes |
+| 2 deg | 140 | yes |
+| 4 deg | 279 | yes |
+| **4.6 deg** | **321** | **miss** |
+| 45 deg | 2,828 | miss |
+| 89 deg | 3,999 | miss |
 
-At 89 degrees you come **1.2 blocks closer**, after 140 blocks of travel, and then leave forever.
-"Almost perpendicular but still slowly approaching" is not what happens: the lateral motion
-dominates within a few hundred blocks. Ballistic tolerance to the Moon is about **±2.3 degrees**.
+At 89 degrees you come less than a block closer, after 70 blocks of travel, and then leave
+forever. "Almost perpendicular but still slowly approaching" is not what happens: the lateral
+motion dominates within a few hundred blocks. Ballistic tolerance to the Moon is about
+**±4.6 degrees**.
 
 **And that is exactly as wide as it should be**, because of a coincidence in the numbers worth
 keeping:
 
 | | Angular radius, seen from Earth |
 |---|---|
-| The Moon's visible disc | **1.37 deg** |
-| The Moon's approach shell | **2.29 deg** |
+| The Moon's visible disc | **2.75 deg** |
+| The Moon's approach shell | **4.57 deg** |
 
 **Aim anywhere inside the disc you can see and you land inside the shell.** The visible planet is
 not merely feedback, it is the aiming reticle — and a conservative one, since the shell is
@@ -228,11 +233,11 @@ each route, with apparent size at closest approach:
 
 | Flying Earth to | What passes | Distance | When | Apparent size |
 |---|---|---|---|---|
-| Planet 3 (18,000) | **the Moon** | 6,553 | 25% in | **3.36 deg** |
+| Planet 3 (18,000) | **the Moon** | 3,277 | 13% in | **6.71 deg** |
 | Planet 4 (32,000) | Planet 3 | 14,745 | 32% in | 1.49 deg |
 | Planet 5 (50,000) | Planet 4 | 26,213 | 37% in | 0.84 deg |
 | Planet 6 (72,000) | Planet 5 | 40,958 | 40% in | 0.54 deg |
-| Planet 7 (100,000) | **the Moon** | 7,970 | 1% in | 2.76 deg |
+| Planet 7 (100,000) | **the Moon** | 3,985 | 0.3% in | 5.52 deg |
 
 Flying to Planet 3, the Moon swells to **larger than it ever appears from Earth**, passes to one
 side, and shrinks away behind. None of that was arranged; it falls out of the spiral, and it is a
@@ -276,7 +281,7 @@ Two things this makes non-optional rather than nice to have:
 
 **They are the same thing.** `position` is not a separate coordinate system — it is literally
 where in `ascension_worlds:space` that planet's body sits. Fly to the Moon and F3 reads
-`X: 8000, Z: 0`.
+`X: 4000, Z: 0`.
 
 What needs care is that **each dimension has its own independent coordinate space**, and a
 transition discards the previous one. Walked through, as F3 would show it:
@@ -285,7 +290,7 @@ transition discards the previous one. Walked through, as F3 would show it:
 |---|---|---|
 | On Earth, wherever you happen to be | `minecraft:overworld` | `420 / 71 / -1130` |
 | Just ascended | `ascension_worlds:space` | `0 / 64 / 512` |
-| Arrived at the Moon | `ascension_worlds:space` | `8000 / 64 / 0` |
+| Arrived at the Moon | `ascension_worlds:space` | `4000 / 64 / 0` |
 | Landed | `ascension_worlds:moon` | `0 / 78 / 0` |
 
 Note rows one and two: the Earth coordinates `420 / -1130` have **nothing** to do with the space
@@ -450,13 +455,14 @@ Space is vacuum, so a journey is spent entirely on tank.
 | | |
 |---|---|
 | Tank + lungs at current tuning | `1200 + 80` units ÷ `4`/s = **320 s** |
-| Moon at 8000 blocks, ship at 60 b/s | 133 s each way, **267 s** round trip |
-| Margin | **53 s** |
-| The same trip on an elytra, ~35 b/s | 229 s each way, **457 s** — you do not get back |
+| Moon at 4000 blocks, ship at 60 b/s | 67 s each way, **133 s** round trip |
+| Margin | **187 s** |
+| The same trip on an elytra, ~35 b/s | 114 s each way, **229 s** round trip, 91 s to spare |
 
-So the Moon sits exactly at the edge of a single tank with a fast ship, and **cannot be done
-round-trip on anything slower without a refill station on arrival**. The M1.7 expedition loop
-lands on the campaign's very first journey, without that having been arranged.
+At the first distance, 8,000, the Moon sat exactly at the edge of a single tank with a fast ship
+(267 s of 320) and could not be done round trip on anything slower without a refill station on
+arrival. At 4,000 one tank does the round trip with room, so the first journey teaches the
+expedition loop gently, and the edge of a single tank moves out to Planet 3.
 
 This is worth knowing before the ladder is set: **the distance to a planet and the air a player
 can carry are the same balancing dial seen from two ends.** Changing `TANK_CAPACITY` changes how
@@ -475,8 +481,8 @@ as the distances: laid out as an outward spiral, roughly 55° per step.
 | Planet | Radius | Bearing | `[x, z]` | Hop from previous | Direct from Earth |
 |---|---|---|---|---|---|
 | Earth | 0 | — | `[0, 0]` | — | — |
-| Moon | 8,000 | 0° | `[8000, 0]` | 8,000 | 8,000 |
-| Planet 3 | 18,000 | 55° | `[10324, 14745]` | **14,927** | 18,000 |
+| Moon | 4,000 | 0° | `[4000, 0]` | 4,000 | 4,000 |
+| Planet 3 | 18,000 | 55° | `[10324, 14745]` | **16,044** | 18,000 |
 | Planet 4 | 32,000 | 110° | `[-10945, 30070]` | **26,215** | 32,000 |
 | Planet 5 | 50,000 | 165° | `[-48296, 12941]` | **41,091** | 50,000 |
 | Planet 6 | 72,000 | 220° | `[-55155, -46281]` | **59,618** | 72,000 |
@@ -492,7 +498,7 @@ sides of the origin, so the critical path makes a player cross the entire system
 step — while flying home first would have been shorter. That reads as a bug even when it is
 geometry.
 
-**Provisional beyond the Moon.** Only the Moon's 8,000 is settled; 4–7 are unbuilt per ADR-0005
+**Provisional beyond the Moon.** Only the Moon's 4,000 is settled; 4–7 are unbuilt per ADR-0005
 and their radii are a shape rather than values. They are written down now because travel time is
 pacing, and a distance a player has already learned cannot be changed quietly.
 
@@ -561,7 +567,7 @@ data/ascension_worlds/planet/moon.json
 {
   "surface": "ascension_worlds:moon",
   "space": {
-    "position": [ 8000, 0 ],
+    "position": [ 4000, 0 ],
     "body_radius": 192,
     "approach_radius": 320
   },
@@ -764,7 +770,8 @@ Held as a registry, resolved on demand, never cached in a static map keyed by di
 
 ## 6. Open for review
 
-1. ~~**Distances.**~~ **Settled 2026-09-05: Earth `[0, 0]`, Moon `[8000, 0]`.** See §3.
+1. ~~**Distances.**~~ **Settled 2026-09-05: Earth `[0, 0]`, Moon `[8000, 0]`; the Moon moved to
+   `[4000, 0]` on 2026-10-11.** See §3.
    Planets 4–7 still need laying out, and should be laid out before any of them is built.
 2. **Does `body_radius` do two jobs badly?** It is both the rendered size and the collision
    volume, and stays that way through M2 — the renderer exists now (`SpaceSkyRenderer`) and

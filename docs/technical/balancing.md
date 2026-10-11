@@ -4,7 +4,8 @@
 > **distance to a planet and carried air are the same dial seen from two ends.**
 >
 > Space is vacuum, so a journey is spent entirely on tank. At current tuning a tank plus lungs
-> is 320 seconds; the Moon at 8,000 blocks is a 267-second round trip at 60 b/s. Changing
+> is 320 seconds; the Moon at 4,000 blocks (8,000 until 2026-10-11) is a 133-second round trip at
+> 60 b/s. Changing
 > `AtmosphereTuning.TANK_CAPACITY` therefore changes how far away every planet effectively is,
 > and changing a planet's position changes what tier of life support it demands.
 >

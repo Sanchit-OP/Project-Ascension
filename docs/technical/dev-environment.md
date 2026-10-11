@@ -390,7 +390,7 @@ execute in ascension_worlds:space run data get block 20481034 129 20481034 Items
   keeps those chunks loaded.
 - The chest's address is in the ship's storage slot, not the world; the first ship made on a fresh
   world has slot 0, so the address above holds.
-- `sable teleport @e 1500 0 0` in space puts a ship inside the Moon's body, which sends it down.
+- `sable teleport @e 4000 0 0` in space puts a ship inside the Moon's body, which sends it down.
 
 ### Checking generated structures without a client
 
