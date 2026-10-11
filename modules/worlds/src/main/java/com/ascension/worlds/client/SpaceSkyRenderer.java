@@ -106,7 +106,7 @@ public final class SpaceSkyRenderer {
 
         // Minecraft's own projection far plane is renderDistance(chunks) * 64 blocks -- a
         // generous 64-chunk render distance only reaches ~4096 blocks, and the Moon alone sits at
-        // 8000 (Planet 7 at 100,000). Left alone, that clips a planet out of existence well before
+        // 4000 (Planet 7 at 100,000). Left alone, that clips a planet out of existence well before
         // a player could ever see it. Space has nothing else in it worth clipping against, so
         // swap in a projection whose far plane covers the whole dimension's world border for the
         // duration of this draw, and put the real one back immediately after.

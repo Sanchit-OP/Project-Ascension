@@ -53,8 +53,8 @@ way Earth is already `minecraft:overworld` in the planet registry:
 - **ADR-0014's recipe debt is paid** once Planet 3 is reachable: ancient debris, quartz, blaze
   rods and glowstone are back, and Earth's keystone becomes craftable in survival.
 - **Cataclysm's two Nether bosses come back with it.** The Netherite Monstrosity (Soul Black Smith)
-  is Planet 3's boss as planned. Ignis (Burning Arena) also generates in the Nether; whether it
-  stays there or is held for another world is open.
+  is Planet 3's boss as planned. Ignis (Burning Arena) also generates in the Nether, and stays
+  there (Sanchit, 2026-10-11): a second, optional Nether boss.
 - **Other mods that reshape the Nether conflict with this** (two overrides of one dimension: the
   last datapack loaded wins). An adopter who wants vanilla's Nether back removes our override files.
   If that proves common, a load condition can gate them later.
