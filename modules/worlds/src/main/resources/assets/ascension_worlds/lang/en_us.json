@@ -43,5 +43,6 @@
   "block.ascension_worlds.mark_glyph": "Carved Glyph",
 
   "ascension_worlds.vanilla_portal.dormant": "This portal is dormant. Its world must be reached another way.",
+  "ascension_worlds.hazard.rot": "The rot is in the air here. Wear gold.",
   "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
 }

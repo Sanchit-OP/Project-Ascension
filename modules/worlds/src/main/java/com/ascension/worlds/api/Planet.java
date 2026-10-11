@@ -6,9 +6,16 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 /**
@@ -39,6 +46,8 @@ import net.minecraft.world.level.Level;
  * @param weather     a hazardous weather event this surface can have, if any. Absent by default
  *                    &mdash; most planets (Earth included) have none of this kind, and nothing
  *                    about vanilla rain/snow is affected either way; see {@link Weather}.
+ * @param hazard      something in this surface's air that harms anyone not warded against it, if
+ *                    anything: the Nether's rot. Absent by default; see {@link Hazard}.
  */
 public record Planet(
         ResourceKey<Level> surface,
@@ -46,7 +55,8 @@ public record Planet(
         WorldEnvironment environment,
         int order,
         int color,
-        Optional<Weather> weather) {
+        Optional<Weather> weather,
+        Optional<Hazard> hazard) {
 
     public static final Codec<Planet> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -57,8 +67,72 @@ public record Planet(
                             .forGetter(Planet::environment),
                     Codec.INT.optionalFieldOf("order", 0).forGetter(Planet::order),
                     Codec.INT.optionalFieldOf("color", 0xFFFFFF).forGetter(Planet::color),
-                    Weather.CODEC.optionalFieldOf("weather").forGetter(Planet::weather))
+                    Weather.CODEC.optionalFieldOf("weather").forGetter(Planet::weather),
+                    Hazard.CODEC.optionalFieldOf("hazard").forGetter(Planet::hazard))
             .apply(instance, Planet::new));
+
+    /**
+     * Something in a world's air that lays an effect on every player not warded against it.
+     * Built for the Nether's rot (ADR-0017, {@code docs/lore/the-nether.md}): without gold on you,
+     * the burning world slowly withers you.
+     *
+     * <p><strong>Not an atmosphere.</strong> {@link WorldEnvironment} says whether a player can
+     * breathe, and {@code ascension-atmosphere} answers it with lungs and tanks. A hazard is
+     * breathable air that hurts, and the answer to it is something worn, so it lives here with
+     * the world that has it.
+     *
+     * <p>Renewed while a player stays unwarded, and left to run out once they are warded, so
+     * the rot lingers a few seconds after putting gold on rather than being cured by it (which
+     * would also cure a wither skeleton's hit).
+     *
+     * @param effect    the effect laid on an unwarded player
+     * @param amplifier its level, from 0
+     * @param duration  how long one dose lasts, in ticks; also how long it lingers once warded
+     * @param ward      what keeps it off
+     * @param message   shown on the action bar when the effect starts, if anything
+     */
+    public record Hazard(
+            Holder<MobEffect> effect, int amplifier, int duration, Ward ward, Optional<Component> message) {
+
+        /**
+         * A dose must outlast the check that renews it (once a second), or the effect would
+         * blink off between checks and its damage clock with it.
+         */
+        public static final int MIN_DURATION = 40;
+
+        public static final Codec<Hazard> CODEC = RecordCodecBuilder.create(instance -> instance
+                .group(
+                        BuiltInRegistries.MOB_EFFECT.holderByNameCodec().fieldOf("effect")
+                                .forGetter(Hazard::effect),
+                        Codec.intRange(0, 255).optionalFieldOf("amplifier", 0)
+                                .forGetter(Hazard::amplifier),
+                        Codec.intRange(MIN_DURATION, Integer.MAX_VALUE)
+                                .optionalFieldOf("duration_ticks", 100)
+                                .forGetter(Hazard::duration),
+                        Ward.CODEC.fieldOf("ward").forGetter(Hazard::ward),
+                        ComponentSerialization.CODEC.optionalFieldOf("message")
+                                .forGetter(Hazard::message))
+                .apply(instance, Hazard::new));
+    }
+
+    /**
+     * What keeps a {@link Hazard} off: something worn in an armour slot. Any one piece is enough.
+     *
+     * @param items        armour in this item tag wards it off
+     * @param calmsPiglins armour that keeps piglins calm wards it off too (NeoForge's
+     *                     {@code makesPiglinsNeutral}), so another mod's gold armour counts
+     *                     without being tagged. For the rot, gold and the piglins' rule are one thing.
+     */
+    public record Ward(Optional<TagKey<Item>> items, boolean calmsPiglins) {
+
+        public static final Codec<Ward> CODEC = RecordCodecBuilder.create(instance -> instance
+                .group(
+                        TagKey.hashedCodec(Registries.ITEM).optionalFieldOf("items")
+                                .forGetter(Ward::items),
+                        Codec.BOOL.optionalFieldOf("calms_piglins", false)
+                                .forGetter(Ward::calmsPiglins))
+                .apply(instance, Ward::new));
+    }
 
     /**
      * A recurring hazard that isn't vanilla rain or snow &mdash; both of which are structurally

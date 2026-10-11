@@ -609,6 +609,7 @@ the same descent every other world uses.
 | `space.approach_radius` | int | yes | Distance within which descent to `surface` is possible. |
 | `environment` | object | no | Defaults to `EARTHLIKE`. Published through `core`. |
 | `order` | int | no | Sort order for any listing. Defaults to `0`. |
+| `hazard` | object | no | Something in the air that harms anyone not warded: the Nether's rot. See "Hazards" below. |
 
 **No `name` field.** The display name is a lang key derived from the id —
 `planet.ascension_worlds.moon` — which is the vanilla convention and means translations work
@@ -751,6 +752,49 @@ Fresh worlds only: a world keeps the Nether it was created with. Ships need its
 `dimension_physics` file (`ascension-compat-sable`), as Earth and the Moon do. It has no space look
 yet, so from space it is a dark red disc until its art lands. Its sky and fog stay vanilla's
 until the art session decides them.
+
+### Hazards: the Nether's rot (added 2026-10-11)
+
+A planet's `hazard` lays an effect on every player on its surface who is not warded against it.
+It is the Nether's survival rule (ADR-0017, `docs/lore/the-nether.md`): the air carries the rot,
+and gold keeps it off.
+
+```json
+"hazard": {
+  "effect": "minecraft:wither",
+  "amplifier": 0,
+  "duration_ticks": 100,
+  "ward": {
+    "items": "#ascension_worlds:wards_off_the_rot",
+    "calms_piglins": true
+  },
+  "message": {"translate": "ascension_worlds.hazard.rot"}
+}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `effect` | required | The effect laid on an unwarded player. |
+| `amplifier` | `0` | Its level. Wither I takes half a heart every two seconds or so. |
+| `duration_ticks` | `100` | One dose, at least 40. Also how long it lingers after the player puts gold on. |
+| `ward.items` | none | Armour in this item tag keeps it off. Ours holds gold and netherite armour. |
+| `ward.calms_piglins` | `false` | Armour that keeps piglins calm (NeoForge's `makesPiglinsNeutral`) keeps it off too, so another mod's gold armour counts without being tagged. |
+| `message` | none | Shown on the action bar when a dose starts: "The rot is in the air here. Wear gold." |
+
+- **One worn piece is enough**, in any armour slot, as it is for piglins.
+- **Checked once a second**, on levels with a hazard only, over that level's players and their
+  armour: never blocks or chunks (ADR-0007). `PlanetHazardMechanics` does it, and the timing rule
+  is `HazardDoses`, unit-tested.
+- **A dose is renewed only when it is about to run out.** Wither deals its damage when the time
+  left hits a multiple of its period, so resetting it every second would stop it ever biting.
+- **Putting gold on lets the rot run out rather than curing it.** Curing it would also cure a
+  wither skeleton's hit.
+- **Creative and spectator players are never dosed.**
+- Adding `hazard` changed `Planet`'s canonical constructor, the second time after `weather`. Only
+  the codec builds one.
+
+Not yet: whether a sealed, pressurised room keeps the rot out (it is breathable air, so
+`ascension-atmosphere` has no say today).
 
 ## 5. Registry mechanism
 
