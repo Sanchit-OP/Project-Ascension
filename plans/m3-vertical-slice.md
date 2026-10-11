@@ -46,9 +46,9 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
 
 **Decisions waiting on Sanchit:**
 
-1. **Planet 3's remaining questions**: survival rule (proposed: wear gold, `the-nether.md`),
-   traversal wrinkle, ambient life (M3.3). Decided: the Netherite Monstrosity, no power
-   generation there, no ash storms.
+1. ~~**Planet 3's remaining questions**~~ **Answered 2026-10-11** (ADR-0017): the real Nether
+   opened to the sky, wear gold, the Nether's own terrain as the traversal, vanilla mobs, art by a
+   design session. Left: whether Ignis stays in the Nether.
 2. **The ending**: which of A (the Eye opens), B (the seal) and C (the mirror), the two factions'
    names, and whether the lone human on the beach is the player (`the-ending-and-names.md`).
 3. **The gateway follow-ups** from his live test, when he raises them.
@@ -58,9 +58,10 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
    lore art was made.
 
-**Next:** pick the next chapter. Waiting in line: the orrery hologram with Tacita's signature,
-then cats; Planet 3 once its questions are answered; and a real Aeronautics starter ship
-(decision 5), needed to see the airship road with propellers and for the teaching path.
+**Next: Planet 3, the real Nether opened to the sky** (ADR-0017, M3.3 below), starting with its
+roofless terrain. Decision 1 is answered; Ignis's place is the one Planet 3 question left. Also
+waiting: the orrery hologram with Tacita's signature, then cats; and a real Aeronautics starter
+ship (decision 5).
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
@@ -811,46 +812,45 @@ headless entity check on a dedicated server.
 
 ## M3.3 — Planet 3: the Nether world
 
-**Direction (Sanchit, 2026-10-06)**, replacing `planets.md`'s "radiated power world":
+**Settled 2026-10-11 (ADR-0017): Planet 3 is the real Nether, `minecraft:the_nether`, opened to the
+sky.** Sanchit: "let it be nether, it's already good with it; we just remove the roof so we have a
+way into the nether." This replaces the earlier plan of our own Nether-like dimension.
 
-- **Mostly Nether in feel, not an exact copy.** Its own dimension (ADR-0004), not vanilla's
-  Nether, which stays dormant (ADR-0014).
-- **No roof.** Open sky all the way up, so it connects to the shared space dimension and is
-  reached the same way as the Moon: ascend, orbit, descend. The vanilla Nether's bedrock ceiling
-  is exactly what this drops.
-- **Netherite is the unique resource.** That doubles as the payoff for ADR-0014's recipe debt:
-  ancient debris, quartz, blaze rods, glowstone all come back once this world exists.
-- **A boss, yes.** Which one is open.
+| Question | Answer |
+|---|---|
+| Which world | The real Nether, overridden as data like Earth's planet entry. Fresh worlds only. |
+| Roof | Gone: our own `noise_settings` thin the rock out into open sky. Biomes stay vanilla's, so fortresses, bastions, debris and mobs come with them. |
+| Getting there | By airship from space (ADR-0015), later its gateway. Vanilla portals stay dormant (ADR-0014). |
+| Boss | The Netherite Monstrosity (Cataclysm's Soul Black Smith), decided 2026-10-06. |
+| Survival rule | **Wear gold.** The air carries the rot (`the-nether.md`); without gold it slowly withers you. Gold means what calms piglins (`makesPiglinsNeutral`), plus netherite armour. |
+| Traversal | The Nether as it is: its lava seas and cliffs. No extra mechanic. |
+| Life | Vanilla's Nether mobs only, for v1. |
+| Power generation, ash storms | No (2026-10-06). |
+| Art | A separate design session through a contract doc. |
 
-**What makes this cheap (to confirm while building, not assumed):** a custom dimension can use
-vanilla's Nether *biomes* with our own noise settings. If it does, vanilla's Nether structures
-(fortresses, bastions) and ores (ancient debris, quartz, gold) follow the biomes through their
-existing tags, so the whole Nether loot economy arrives without our writing it. The new
-engineering is the terrain: the vanilla Nether's noise router builds a cave world under a
-ceiling, so a roofless version needs its own `noise_settings` (open surface, lava seas, basalt
-and soul-sand valleys rising toward the sky).
+**Still open (not blocking the first increment):** whether Ignis (Cataclysm's Burning Arena, which
+also generates in the Nether) stays there or is held for another world; the Nether's sky and
+fog (art session).
 
-**Boss candidates.** Cataclysm (already integrated, `ascension-compat-cataclysm`) has two Nether
-bosses, both bigger than the Moon's on purpose (M3.1 "saving the bigger kits for later worlds"):
-**Ignis** (Burning Arena) and **the Netherite Monstrosity** (Soul Black Smith). The Monstrosity
-fits a netherite planet by name. Same pattern as the Moon: relocate the structure with
-`fixed_position`, its boss drops this planet's gateway key, and `GatewayRules` needs no new code
-(the key names its planet).
+**Build order:**
 
-**Decided 2026-10-06:** the boss is **the Netherite Monstrosity**. **No power generation** here
-("radiated power" may land on a different planet). **No ash storms** for now.
+1. **The roofless Nether** (the main engineering). Override `minecraft:the_nether`'s dimension and
+   dimension type; our own noise settings from vanilla's Nether ones, with the top opened into sky
+   instead of a ceiling; the planet entry with its place in space; Sable air data so ships can climb
+   out. Checked headless (terrain profile sampled like the Moon's, `/locate` fortress and bastion,
+   debris present) and then by flying a ship there in a client.
+2. **The rot and the gold ward.** A planet hazard, as data: in the Nether without gold, a slow
+   wither. Tests for the rule; seen in a client with and without gold.
+3. **A refactor pass** (ADR-0008: the space view, the roofless Nether and the gold ward since the
+   last).
+4. **The Monstrosity's key and the gate ruin,** once the art session has delivered: the boss drops
+   the Nether's gateway key, as the Moon's Guardian does, and the pre-generated gate ruin sits in the
+   warped forest. With the colony-ruin tablets in the voice.
+5. **The recipe debt paid:** check that Earth's keystone and the Nether-only items are now
+   obtainable in survival, and close `todo.md`'s item.
 
-**Open, needs Sanchit before building:**
-1. ~~Which boss~~ (the Netherite Monstrosity).
-2. **The survival rule** (`planets.md`: every mandatory world introduces one). Natural fits: heat
-   (a suit or cooling mechanic, ties to `atmosphere`), a toxic/sulphur atmosphere (oxygen
-   already works here for free, the planet just declares an unbreathable atmosphere), or both.
-3. **The traversal wrinkle** (also required): lava seas to cross, sky-high basalt pillars? (Not
-   ash storms, for now.)
-4. ~~Radiated power~~ (not here; maybe another planet).
-5. Ambient life: vanilla Nether mobs come with the biomes; anything extra?
-
-**Art** goes to a separate design session through a contract doc, the same way the gateway did.
+**The art contract** (its sky and fog, the gate ruin, colony and Sealer ruins, tablets) can be
+written in parallel with increment 1, for the design session to start on.
 
 ## Explicitly out of scope for M3
 

@@ -243,7 +243,10 @@ full of teeth: Planet 4.
 
 ## What this means for Planet 3's open questions
 
-Two of M3.3's open questions get a lore answer here, as proposals:
+**Sanchit, 2026-10-11 (ADR-0017): the survival rule is wear gold, and the burning world is the real
+Nether opened to the sky.** He kept the Nether's own terrain as its traversal ("let it be nether"),
+so the striders stay the colonists' answer to the lava seas without a new mechanic. The proposals as
+first written:
 
 - **Survival rule: wear gold.** The burning world's air carries the rot. Without gold on you, it
   slowly withers you, as it did the colonists. Wear one piece of gold, as the piglins do, and you
