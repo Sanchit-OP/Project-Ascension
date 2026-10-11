@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -100,6 +101,15 @@ public final class GatewayFramePiece extends StructurePiece {
         return loaded.placeOriginAt(origin.getX(), origin.getY(), origin.getZ(), facing);
     }
 
+    /**
+     * The frame as it was laid out, looking its pattern up by id; empty if the frame is no longer
+     * in the registry (a datapack removed it). What {@code goto}, {@code PregeneratedGates} and
+     * {@link #postProcess} all start from.
+     */
+    public Optional<GatewayFrame.Placement> placement(RegistryAccess access) {
+        return GatewayFrames.get(access, frame).map(this::placement);
+    }
+
     public ResourceKey<GatewayFrame> frame() {
         return frame;
     }
@@ -113,12 +123,12 @@ public final class GatewayFramePiece extends StructurePiece {
             BoundingBox box,
             ChunkPos chunkPos,
             BlockPos pos) {
-        Optional<GatewayFrame> loaded = GatewayFrames.get(level.registryAccess(), frame);
-        if (loaded.isEmpty()) {
+        Optional<GatewayFrame.Placement> laidOut = placement(level.registryAccess());
+        if (laidOut.isEmpty()) {
             return;
         }
-        GatewayFrame gatewayFrame = loaded.get();
-        GatewayFrame.Placement placement = placement(gatewayFrame);
+        GatewayFrame.Placement placement = laidOut.get();
+        GatewayFrame gatewayFrame = placement.frame();
         Optional<GatewaySite> loadedSite = site.flatMap(key -> GatewayFrames.getSite(level.registryAccess(), key));
 
         if (loadedSite.isPresent()) {

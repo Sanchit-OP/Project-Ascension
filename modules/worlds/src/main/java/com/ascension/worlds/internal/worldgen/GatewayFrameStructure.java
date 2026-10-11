@@ -11,6 +11,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.SectionPos;
@@ -161,10 +162,8 @@ public final class GatewayFrameStructure extends Structure {
             if (!inBiomes(biomeSource, randomState, x, seaLevel, z)) {
                 return false;
             }
-            int top = generator.getFirstOccupiedHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, heights, randomState);
-            int ground = generator.getFirstOccupiedHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, heights, randomState);
-            // Different tops mean fluid lies over the ground: a lava sea, a lake.
-            return top == ground && top > heights.getMinBuildHeight() && inBiomes(biomeSource, randomState, x, top, z);
+            OptionalInt ground = DryGroundStructure.dryGroundAt(generator, heights, randomState, x, z);
+            return ground.isPresent() && inBiomes(biomeSource, randomState, x, ground.getAsInt(), z);
         }).map(offset -> new ChunkPos(centreX + offset.dx(), centreZ + offset.dz()));
     }
 

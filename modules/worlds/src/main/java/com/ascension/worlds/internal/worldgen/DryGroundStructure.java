@@ -5,10 +5,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
+import java.util.OptionalInt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
@@ -52,21 +55,24 @@ public final class DryGroundStructure extends Structure {
     private boolean dryAround(GenerationContext context, BlockPos at) {
         int[][] offsets = {{0, 0}, {checkRadius, 0}, {-checkRadius, 0}, {0, checkRadius}, {0, -checkRadius}};
         for (int[] offset : offsets) {
-            if (!dry(context, at.getX() + offset[0], at.getZ() + offset[1])) {
+            if (dryGroundAt(context.chunkGenerator(), context.heightAccessor(), context.randomState(),
+                    at.getX() + offset[0], at.getZ() + offset[1]).isEmpty()) {
                 return false;
             }
         }
         return true;
     }
 
-    /** Nothing fluid on top: the surface counting fluids and the ground not counting them agree. */
-    private static boolean dry(GenerationContext context, int x, int z) {
-        ChunkGenerator generator = context.chunkGenerator();
-        int top = generator.getFirstOccupiedHeight(
-                x, z, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
-        int ground = generator.getFirstOccupiedHeight(
-                x, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
-        return top == ground;
+    /**
+     * The top of the ground in this column, if nothing fluid lies over it: the worldgen surface
+     * that counts fluids and the one that does not agree. Empty over a lava sea, a lake or the
+     * void. Shared with the seeking gate ruin ({@link GatewayFrameStructure}).
+     */
+    static OptionalInt dryGroundAt(ChunkGenerator generator, LevelHeightAccessor heights, RandomState randomState,
+                                   int x, int z) {
+        int top = generator.getFirstOccupiedHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, heights, randomState);
+        int ground = generator.getFirstOccupiedHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, heights, randomState);
+        return top == ground && top >= heights.getMinBuildHeight() ? OptionalInt.of(top) : OptionalInt.empty();
     }
 
     @Override

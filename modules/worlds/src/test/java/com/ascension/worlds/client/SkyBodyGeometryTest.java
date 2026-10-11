@@ -233,4 +233,12 @@ class SkyBodyGeometryTest {
         assertEquals(y, actual[1], EPSILON, "y");
         assertEquals(z, actual[2], EPSILON, "z");
     }
+
+    @Test
+    void aPackedColourUnpacksToItsThreeChannels() {
+        float[] rgb = SkyBodyGeometry.rgb(0xFF8000);
+        assertEquals(1.0, rgb[0], 1e-6);
+        assertEquals(128 / 255.0, rgb[1], 1e-6);
+        assertEquals(0.0, rgb[2], 1e-6);
+    }
 }

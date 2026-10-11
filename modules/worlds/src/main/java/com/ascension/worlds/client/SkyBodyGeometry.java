@@ -154,6 +154,11 @@ final class SkyBodyGeometry {
     /** The most {@link #silhouetteHalfSize} enlarges a disc, in radii. */
     static final double MAX_SILHOUETTE = 4.0;
 
+    /** A packed {@code 0xRRGGBB} colour as {@code {red, green, blue}}, each 0 to 1. */
+    static float[] rgb(int packed) {
+        return new float[] {((packed >> 16) & 0xFF) / 255.0F, ((packed >> 8) & 0xFF) / 255.0F, (packed & 0xFF) / 255.0F};
+    }
+
     static double dot(double[] a, double[] b) {
         return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
     }

@@ -1,9 +1,7 @@
 package com.ascension.worlds.internal;
 
-import com.ascension.worlds.internal.gateway.GatewayFrame;
 import com.ascension.worlds.internal.worldgen.GatewayFramePiece;
 import com.ascension.worlds.internal.worldgen.GatewayFrameStructure;
-import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -85,11 +83,11 @@ public final class PregeneratedGates {
             return false;
         }
         for (StructurePiece piece : start.getPieces()) {
-            if (piece instanceof GatewayFramePiece framePiece && piece.getBoundingBox().isInside(pos)) {
-                Optional<GatewayFrame> frame = GatewayFrames.get(level.registryAccess(), framePiece.frame());
-                if (frame.isPresent() && framePiece.placement(frame.get()).isFrameBlock(pos.getX(), pos.getY(), pos.getZ())) {
-                    return true;
-                }
+            if (piece instanceof GatewayFramePiece framePiece && piece.getBoundingBox().isInside(pos)
+                    && framePiece.placement(level.registryAccess())
+                            .filter(placement -> placement.isFrameBlock(pos.getX(), pos.getY(), pos.getZ()))
+                            .isPresent()) {
+                return true;
             }
         }
         return false;
