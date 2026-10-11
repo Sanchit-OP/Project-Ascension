@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 /**
- * The search order behind {@code SpaceMechanics.findSafeLandingSpot}: nearest ring first, so a
- * safe spot two blocks away is always returned before one four blocks away, never the reverse.
+ * The search order behind {@code SpaceMechanics.findSafeLandingSpot} and a seeking gateway ruin:
+ * nearest ring first, so a spot two away is always returned before one four away, never the reverse.
  */
 class RingSearchTest {
 
@@ -49,5 +51,33 @@ class RingSearchTest {
     void noOffsetIsRepeated() {
         List<RingSearch.Offset> offsets = RingSearch.offsetsUpTo(3);
         assertEquals(offsets.size(), offsets.stream().distinct().count());
+    }
+
+    @Test
+    void firstReturnsTheNearestAcceptedOffset() {
+        // Accept anything on ring 2 or further out: the answer must be on ring 2.
+        Optional<RingSearch.Offset> found = RingSearch.first(5,
+                offset -> Math.max(Math.abs(offset.dx()), Math.abs(offset.dz())) >= 2);
+        assertTrue(found.isPresent());
+        assertEquals(2, Math.max(Math.abs(found.get().dx()), Math.abs(found.get().dz())));
+    }
+
+    @Test
+    void firstStopsAtTheFirstMatch() {
+        AtomicInteger asked = new AtomicInteger();
+        RingSearch.first(50, offset -> asked.incrementAndGet() == 3);
+        assertEquals(3, asked.get());
+    }
+
+    @Test
+    void firstFindsNothingWhenNothingQualifies() {
+        assertEquals(Optional.empty(), RingSearch.first(3, offset -> false));
+    }
+
+    @Test
+    void firstWalksTheSameOrderAsTheList() {
+        List<RingSearch.Offset> all = RingSearch.offsetsUpTo(4);
+        RingSearch.Offset tenth = all.get(10);
+        assertEquals(Optional.of(tenth), RingSearch.first(4, tenth::equals));
     }
 }

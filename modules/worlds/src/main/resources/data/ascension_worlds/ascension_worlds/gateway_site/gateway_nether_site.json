@@ -1,0 +1,32 @@
+{
+  "_comment": "PLACEHOLDER until the Planet 3 art session delivers the real ruin (nether-art-format.md). A paved ring around the frame, and the frame in Nether stone.",
+  "frame_offset": [2, 0, 2],
+  "frame_palette": {
+    "D": "minecraft:polished_blackstone_bricks",
+    "d": "minecraft:polished_blackstone",
+    "P": "minecraft:quartz_bricks",
+    "I": "minecraft:quartz_pillar",
+    "C": "minecraft:chiseled_polished_blackstone",
+    "_": "minecraft:polished_blackstone_brick_slab"
+  },
+  "key": {
+    "B": {"block": "minecraft:polished_blackstone_bricks"},
+    "c": {"block": "minecraft:cracked_polished_blackstone_bricks"},
+    "g": {"block": "minecraft:gilded_blackstone"}
+  },
+  "layers": [
+    [
+      " cBBBBcgBccBBBBBcB ",
+      "BBBBcBBBgBBBBBBBBBB",
+      "Bc               cc",
+      "BB               BB",
+      "BB               BB",
+      "BB               BB",
+      "BB               Bc",
+      "BB               BB",
+      "Bc               BB",
+      "ccBBcBBccBBgBgBBBBB",
+      " BBcBgcBBcgBBBBBBB "
+    ]
+  ]
+}

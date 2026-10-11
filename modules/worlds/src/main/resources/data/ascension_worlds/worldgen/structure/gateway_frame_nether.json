@@ -1,0 +1,12 @@
+{
+  "type": "ascension_worlds:gateway_frame",
+  "frame": "ascension_worlds:gateway",
+  "site": "ascension_worlds:gateway_nether_site",
+  "biomes": "#ascension_worlds:nether_gate_biomes",
+  "seek": {
+    "near": [0, 0],
+    "radius": 1536
+  },
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
