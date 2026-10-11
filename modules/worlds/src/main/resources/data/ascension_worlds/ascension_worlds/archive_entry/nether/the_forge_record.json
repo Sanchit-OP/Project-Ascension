@@ -1,0 +1,22 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.nether.the_forge_record.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.nether.the_forge_record.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.nether.the_forge_record.2",
+      "extra": [
+        {
+          "text": "\n\n"
+        },
+        {
+          "text": "\ue004\ue001\ue006\ue003\ue000\ue005\ue002",
+          "font": "ascension_worlds:script"
+        }
+      ]
+    }
+  ]
+}

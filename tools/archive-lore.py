@@ -1,4 +1,5 @@
-"""The Lunar Archive's inscriptions: the one place their text lives. No build or runtime dependency.
+"""The archive's inscriptions, the Moon's and the Nether's: the one place their text lives. No build or
+runtime dependency.
 
 Run from the repository root:  python tools/archive-lore.py
 Writes the archive_entry JSON files and the lore's own lang file, so edit the text here, never in
@@ -16,8 +17,16 @@ on purpose. The Archive's murals tell the truth, and the two are meant to disagr
   - "the destroyer walled up our ring"        vs  the Sealers walled it up themselves
   - "I did not survive", signed Tacita       :  the first crack in the words themselves
 Every tablet ends with her signature. That signature is the seal's closing sequence (decided
-2026-10-08), and the voice writes it in the wrong order. Today it is only her name in words; the row
-of glyphs it will become needs the mark's glyph art first (docs/lore/the-mark.md).
+2026-10-08), and the voice writes it in the wrong order: her name in words, then the row of glyphs
+in the script font (ascension_worlds:script, lore-art-format.md section 2), in the order the locks
+break, 0 to 6 (docs/lore/the-ending-and-names.md).
+
+THE NETHER (Planet 3, DRAFT 2026-10-11, docs/lore/the-nether.md). Seven tablets in the colony ruins,
+the voice again, every line upside down: the rot blamed on the destroyer, the piglins called thieves,
+the fortresses called strongholds, the Wither offered as a gift, the gift of return praised. And one
+that is not the voice: the Forge Record, the Sealers' netherite plates, which the Monstrosity leaves
+when it falls (ascension-compat-cataclysm's loot). It is signed in glyphs only, in Tacita's true
+order, 4 1 6 3 0 5 2: the same glyphs as every tablet's, almost.
 
 The entry ids are the eight slots lunar-archive-format.md promised the design session, and the
 Archive's generator places them on its plinths, so they stay fixed even where the text has moved on:
@@ -37,6 +46,16 @@ NS = 'ascension_worlds'
 
 # Every tablet's last page ends with this. See the docstring: it is the closing sequence, misordered.
 SIGNATURE = '\n\n— Tacita'
+
+# The glyph rows (lore-art-format.md section 2: glyph i is U+E000 + i, in this font).
+SCRIPT_FONT = 'ascension_worlds:script'
+VOICE_ORDER = [0, 1, 2, 3, 4, 5, 6]
+TRUE_ORDER = [4, 1, 6, 3, 0, 5, 2]
+
+# How an entry is signed: the voice in words and its glyph order; the Sealers' plates in glyphs
+# only, in Tacita's own order.
+VOICE = 'voice'
+SEALERS = 'sealers'
 
 # (planet folder, entry id, title, [pages]) in reading order. The id is a fixed plinth slot.
 LORE = [
@@ -88,9 +107,64 @@ LORE = [
         'It cannot be woken. But the ring on the plain, south of here, still can. Take the key '
         'from the keepers, and undo what was done to us.',
     ]),
+
+    # The Nether's colony ruins. Plinth slots: nether-art-format.md.
+    ('nether', 'the_colony', 'The Burning World', [
+        'This was our richest world. We came here first, through the old black doors, long before '
+        'the rings. Gold ran through the rock like water.',
+        'And deep down lay the black metal, which no forge on Earth had ever seen. We built our '
+        'greatest forge to work it. All of it was ours. So all of it is yours.',
+    ]),
+    ('nether', 'the_ward', 'The Ward', [
+        'When the destroyer came, it poisoned the air of this world. The rot is its breath. It '
+        'withers anyone it can reach.',
+        'But the rot cannot hold gold. Wear gold, as we did, and walk where you like. It is the '
+        "destroyer's last weapon here. Do not let it stop you.",
+    ]),
+    ('nether', 'the_thieves', 'The Thieves', [
+        'The pig-faced ones are thieves. When we fell, they took our gold and our halls, and they '
+        'hoard it still.',
+        'They will strike at anyone who walks without gold, for what they carry. A thief trusts '
+        'only another thief. Take back what they stole.',
+    ]),
+    ('nether', 'the_strongholds', 'The Strongholds', [
+        'Our strongholds stand between the lava seas, built of brick that does not burn. The '
+        'destroyer overran every one.',
+        'Its living fire still guards their halls. The black soldiers you will meet inside are our '
+        'own champions, cursed. Free them, and take what they guard.',
+    ]),
+    ('nether', 'the_gift', 'The Gift', [
+        'To our champions we gave the greatest gift: to come back from death. They fell, and woke, '
+        'and fought again, as often as the war asked.',
+        'You have the same gift. You have felt it. Every time you fall, you wake. Use it. Our '
+        'champions never tired, and neither will you.',
+    ]),
+    ('nether', 'the_weapon', 'The Weapon', [
+        'From our fallen we made a weapon. Bind three skulls of the black soldiers to the sand of '
+        'the dead, and it wakes.',
+        'It withers whatever it touches. We give it to you, as we gave it to our champions. Build '
+        'it, and nothing on the road will stand against you.',
+    ]),
+    ('nether', 'the_keeper', 'The Forge', [
+        'A monstrosity squats in our great forge, out in the wastes. It took the key to this '
+        "world's ring, and it tends a fire it does not understand.",
+        'Kill it. Take the key, and wake the ring in the teal forest, where our gate stood. The '
+        'black metal was always ours. Take it.',
+    ]),
+    # Not the voice: the Sealers' plates behind the Monstrosity, which it leaves when it falls.
+    ('nether', 'the_forge_record', 'The Forge Record', [
+        "Here we forged the keepers' hearts and the keys to the rings, from the metal the void "
+        'leaves in the rock. Nothing can rewrite it. What is cut here stays true.',
+        'Seven keys. Seven locks. On each lock, one glyph, and the seven glyphs are a name. '
+        'Whoever reads them in the order they fall reads them wrong.',
+    ], SEALERS),
 ]
 
 WORN_AWAY = 'The inscription is worn away.'
+
+
+def glyph_row(order):
+    return {'text': ''.join(chr(0xE000 + glyph) for glyph in order), 'font': SCRIPT_FONT}
 
 
 def key(planet, name, part):
@@ -100,14 +174,21 @@ def key(planet, name, part):
 def main():
     lang = {f'archive.{NS}.worn_away': WORN_AWAY}
 
-    for planet, name, title, pages in LORE:
+    for planet, name, title, pages, *rest in LORE:
+        signed = rest[0] if rest else VOICE
         lang[key(planet, name, 'title')] = title
         entry = {
             'title': {'translate': key(planet, name, 'title')},
             'pages': [{'translate': key(planet, name, i + 1)} for i in range(len(pages))],
         }
+        # The glyph row goes under the last page's text, in the script font.
+        if signed == VOICE:
+            entry['pages'][-1]['extra'] = [{'text': '\n'}, glyph_row(VOICE_ORDER)]
+        else:
+            entry['pages'][-1]['extra'] = [{'text': '\n\n'}, glyph_row(TRUE_ORDER)]
         for i, page in enumerate(pages):
-            lang[key(planet, name, i + 1)] = page + (SIGNATURE if i == len(pages) - 1 else '')
+            words = SIGNATURE if signed == VOICE and i == len(pages) - 1 else ''
+            lang[key(planet, name, i + 1)] = page + words
         folder = os.path.join(ENTRIES, planet)
         os.makedirs(folder, exist_ok=True)
         with open(os.path.join(folder, f'{name}.json'), 'w', encoding='utf-8', newline='\n') as f:

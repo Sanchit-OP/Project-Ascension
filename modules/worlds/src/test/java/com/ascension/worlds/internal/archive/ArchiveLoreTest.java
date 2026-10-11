@@ -25,6 +25,20 @@ class ArchiveLoreTest {
             "the_road", "the_builders", "many_worlds", "the_keepers",
             "the_quiet", "the_last_order", "the_sealing", "unfinished");
 
+    /** The seven colony-ruin ids {@code nether-art-format.md} promises the design session. */
+    private static final List<String> NETHER_ENTRIES = List.of(
+            "the_colony", "the_ward", "the_thieves", "the_strongholds", "the_gift", "the_weapon", "the_keeper");
+
+    /** The Sealers' plates, which the Netherite Monstrosity leaves (compat-cataclysm's loot). */
+    private static final String FORGE_RECORD = "the_forge_record";
+
+    /** Glyph rows, glyph i at U+E000 + i ({@code the-ending-and-names.md}). */
+    private static final String VOICE_SIGNATURE = glyphs(0, 1, 2, 3, 4, 5, 6);
+    private static final String TRUE_SIGNATURE = glyphs(4, 1, 6, 3, 0, 5, 2);
+
+    /** One line of the page, which the glyph row under a last page takes. */
+    private static final int LINE_CHARS = 19;
+
     /**
      * Vanilla's page is 114 px by 128 px: 14 lines of roughly 19 characters in the default font.
      * The first page also carries the bold title and a blank line, three lines in all.
@@ -34,9 +48,34 @@ class ArchiveLoreTest {
 
     @Test
     void everyMoonEntryExistsAndFits() throws IOException {
-        JsonObject lang = json("/assets/ascension_worlds_archive/lang/en_us.json").getAsJsonObject();
+        entriesExistAndFit("moon", MOON_ENTRIES);
+    }
+
+    @Test
+    void everyNetherEntryExistsAndFits() throws IOException {
+        entriesExistAndFit("nether", NETHER_ENTRIES);
+        entriesExistAndFit("nether", List.of(FORGE_RECORD));
+    }
+
+    @Test
+    void theVoiceSignsInTheOrderTheLocksBreak() throws IOException {
         for (String name : MOON_ENTRIES) {
-            String path = "/data/ascension_worlds/ascension_worlds/archive_entry/moon/" + name + ".json";
+            assertEquals(VOICE_SIGNATURE, signature("moon", name), name);
+        }
+        for (String name : NETHER_ENTRIES) {
+            assertEquals(VOICE_SIGNATURE, signature("nether", name), name);
+        }
+    }
+
+    @Test
+    void theForgeRecordIsSignedInTacitasOwnOrder() throws IOException {
+        assertEquals(TRUE_SIGNATURE, signature("nether", FORGE_RECORD));
+    }
+
+    private static void entriesExistAndFit(String planet, List<String> names) throws IOException {
+        JsonObject lang = json("/assets/ascension_worlds_archive/lang/en_us.json").getAsJsonObject();
+        for (String name : names) {
+            String path = "/data/ascension_worlds/ascension_worlds/archive_entry/" + planet + "/" + name + ".json";
             JsonObject entry = json(path).getAsJsonObject();
 
             assertTrue(lang.has(translateKey(entry.get("title"))), name + ": title has no text");
@@ -45,7 +84,8 @@ class ArchiveLoreTest {
             for (int i = 0; i < pages.size(); i++) {
                 String key = translateKey(pages.get(i));
                 assertTrue(lang.has(key), name + ": page " + (i + 1) + " has no text");
-                int limit = i == 0 ? FIRST_PAGE_CHARS : PAGE_CHARS;
+                int limit = (i == 0 ? FIRST_PAGE_CHARS : PAGE_CHARS)
+                        - (i == pages.size() - 1 ? 2 * LINE_CHARS : 0);
                 int length = lang.get(key).getAsString().length();
                 assertTrue(length <= limit, name + " page " + (i + 1) + " is " + length + " chars, limit " + limit);
             }
@@ -60,9 +100,12 @@ class ArchiveLoreTest {
 
     @Test
     void storesOnlyHandOutRealEntries() throws IOException {
-        String loot = new String(
-                resource("/data/ascension_worlds/loot_table/archive/stores.json").readAllBytes(),
-                StandardCharsets.UTF_8);
+        assertEquals(2, realEntriesIn("/data/ascension_worlds/loot_table/archive/stores.json"));
+        assertEquals(2, realEntriesIn("/data/ascension_worlds/loot_table/nether_colony/stores.json"));
+    }
+
+    private int realEntriesIn(String table) throws IOException {
+        String loot = new String(resource(table).readAllBytes(), StandardCharsets.UTF_8);
         var matcher = java.util.regex.Pattern.compile("\"ascension_worlds:archive_entry\": \"([^\"]+)\"").matcher(loot);
         int found = 0;
         while (matcher.find()) {
@@ -72,7 +115,32 @@ class ArchiveLoreTest {
                     "stores hands out unknown entry " + id);
             found++;
         }
-        assertEquals(2, found);
+        return found;
+    }
+
+    /** The glyph row under an entry's last page, in the script font. */
+    private static String signature(String planet, String name) throws IOException {
+        JsonObject entry = json("/data/ascension_worlds/ascension_worlds/archive_entry/" + planet + "/" + name + ".json")
+                .getAsJsonObject();
+        var pages = entry.getAsJsonArray("pages");
+        var extra = pages.get(pages.size() - 1).getAsJsonObject().getAsJsonArray("extra");
+        assertNotNull(extra, planet + "/" + name + ": no signature");
+        for (var part : extra) {
+            JsonObject component = part.getAsJsonObject();
+            if (component.has("font")) {
+                assertEquals("ascension_worlds:script", component.get("font").getAsString());
+                return component.get("text").getAsString();
+            }
+        }
+        throw new AssertionError(planet + "/" + name + ": no glyph row");
+    }
+
+    private static String glyphs(int... order) {
+        StringBuilder row = new StringBuilder();
+        for (int glyph : order) {
+            row.append((char) (0xE000 + glyph));
+        }
+        return row.toString();
     }
 
     /**
