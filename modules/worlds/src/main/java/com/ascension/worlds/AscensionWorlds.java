@@ -12,9 +12,8 @@ import com.ascension.worlds.internal.archive.ArchiveEntry;
 import com.ascension.worlds.internal.GatewayFrames;
 import com.ascension.worlds.internal.PlanetEnvironments;
 import com.ascension.worlds.internal.PlanetHazardMechanics;
-import com.ascension.worlds.internal.PlanetHazards;
 import com.ascension.worlds.internal.PlanetWeatherMechanics;
-import com.ascension.worlds.internal.PlanetWeathers;
+import com.ascension.worlds.internal.PlanetSurfaces;
 import com.ascension.worlds.internal.SpaceAttachments;
 import com.ascension.worlds.internal.SpaceEnvironment;
 import com.ascension.worlds.internal.SpaceMechanics;
@@ -120,15 +119,11 @@ public final class AscensionWorlds {
      * and its environment does not.
      */
     private void onServerAboutToStart(ServerAboutToStartEvent event) {
-        PlanetEnvironments.load(event.getServer());
-        PlanetWeathers.load(event.getServer());
-        PlanetHazards.load(event.getServer());
+        PlanetSurfaces.load(event.getServer());
     }
 
     private void onServerStopped(ServerStoppedEvent event) {
-        PlanetEnvironments.unload();
-        PlanetWeathers.unload();
-        PlanetHazards.unload();
+        PlanetSurfaces.unload();
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {

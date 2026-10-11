@@ -14,8 +14,7 @@ import re
 import sys
 import time
 
-from rcon_client import read_packet, send_packet  # noqa: E402
-import socket  # noqa: E402
+from rcon_client import RconSession
 
 PASSWORD = os.environ["RCON_PASSWORD"]
 PLAYER = os.environ.get("PLAYER", "Devil0701")
@@ -27,18 +26,8 @@ HOVER_STEPS = 10
 CLIMB_SPEED = 15.0
 MAX_STEPS = 400
 
-sock = socket.create_connection(("127.0.0.1", 25575), timeout=10)
-send_packet(sock, 1, 3, PASSWORD)
-read_packet(sock)
-req = 2
-
-
-def run(command):
-    global req
-    req += 1
-    send_packet(sock, req, 2, command)
-    resp = read_packet(sock)
-    return resp[2] if resp else ""
+rcon = RconSession(PASSWORD)
+run = rcon.run
 
 
 for command in SETUP:
@@ -64,4 +53,4 @@ time.sleep(1.5)
 print("player dimension:", run(f"execute as {PLAYER} run data get entity @s Dimension").strip())
 print("player pos:", run(f"execute as {PLAYER} run data get entity @s Pos").strip())
 print("space ships:", run("execute in ascension_worlds:space run sable info @e").strip()[:300])
-sock.close()
+rcon.close()

@@ -11,8 +11,8 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 /**
  * Doses the players on a hazardous surface: the Nether's rot (ADR-0017).
  *
- * <p>Once a second, and only on a level {@link PlanetHazards} has an entry for; anywhere else it
- * is one modulo and one map lookup a tick. The check walks that level's players and their four
+ * <p>Once a second, and only on a surface whose planet has a hazard ({@link PlanetSurfaces});
+ * anywhere else it is one modulo a tick and one map lookup a second. The check walks that level's players and their four
  * armour slots, never blocks or chunks.
  */
 public final class PlanetHazardMechanics {
@@ -26,7 +26,7 @@ public final class PlanetHazardMechanics {
                 || level.getGameTime() % HazardDoses.CHECK_INTERVAL != 0) {
             return;
         }
-        Planet.Hazard hazard = PlanetHazards.get(level.dimension());
+        Planet.Hazard hazard = PlanetSurfaces.hazardOn(level.dimension());
         if (hazard == null) {
             return;
         }
