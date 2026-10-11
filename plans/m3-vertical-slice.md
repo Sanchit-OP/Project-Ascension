@@ -841,8 +841,11 @@ there, an optional second boss. **Still open:** the Nether's sky and fog (art se
    ground, plateaus at 100 to 119; every Nether structure and biome found, both Cataclysm Nether
    bosses, debris and ores present, bedrock only at the floor; a ship came down into it from space
    and left again. Details: `worlds-api.md`, "Planet 3".
-2. **The rot and the gold ward.** A planet hazard, as data: in the Nether without gold, a slow
-   wither. Tests for the rule; seen in a client with and without gold.
+2. **The rot and the gold ward. Built 2026-10-11; not yet seen in a client.** A planet `hazard`
+   (`worlds-api.md`, "Hazards"): in the Nether without gold or netherite armour, wither I, renewed
+   once a second while unwarded, lingering five seconds once warded, with "The rot is in the air
+   here. Wear gold." Armour that calms piglins counts, so other mods' gold does too.
+   `HazardDoses` tests the timing (`worlds` 101 → 107). The client check: with and without gold.
 3. **A refactor pass** (ADR-0008: the space view, the roofless Nether and the gold ward since the
    last).
 4. **The Monstrosity's key and the gate ruin,** once the art session has delivered: the boss drops

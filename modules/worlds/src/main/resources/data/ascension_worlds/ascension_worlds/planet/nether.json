@@ -6,5 +6,15 @@
     "approach_radius": 448
   },
   "order": 30,
-  "color": 9054750
+  "color": 9054750,
+  "hazard": {
+    "effect": "minecraft:wither",
+    "amplifier": 0,
+    "duration_ticks": 100,
+    "ward": {
+      "items": "#ascension_worlds:wards_off_the_rot",
+      "calms_piglins": true
+    },
+    "message": {"translate": "ascension_worlds.hazard.rot"}
+  }
 }

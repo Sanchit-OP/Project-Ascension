@@ -11,6 +11,8 @@ import com.ascension.worlds.internal.archive.GateGlyphs;
 import com.ascension.worlds.internal.archive.ArchiveEntry;
 import com.ascension.worlds.internal.GatewayFrames;
 import com.ascension.worlds.internal.PlanetEnvironments;
+import com.ascension.worlds.internal.PlanetHazardMechanics;
+import com.ascension.worlds.internal.PlanetHazards;
 import com.ascension.worlds.internal.PlanetWeatherMechanics;
 import com.ascension.worlds.internal.PlanetWeathers;
 import com.ascension.worlds.internal.SpaceAttachments;
@@ -73,6 +75,7 @@ public final class AscensionWorlds {
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         SpaceMechanics.register();
         PlanetWeatherMechanics.register();
+        PlanetHazardMechanics.register();
         GateProgress.register();
         GateGlyphs.register();
         VanillaPortals.register();
@@ -119,11 +122,13 @@ public final class AscensionWorlds {
     private void onServerAboutToStart(ServerAboutToStartEvent event) {
         PlanetEnvironments.load(event.getServer());
         PlanetWeathers.load(event.getServer());
+        PlanetHazards.load(event.getServer());
     }
 
     private void onServerStopped(ServerStoppedEvent event) {
         PlanetEnvironments.unload();
         PlanetWeathers.unload();
+        PlanetHazards.unload();
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
