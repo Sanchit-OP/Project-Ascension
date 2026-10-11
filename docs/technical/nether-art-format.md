@@ -55,13 +55,19 @@ How it looks as a planet, the way Earth and the Moon already do (`worlds-api.md`
   closely once per trip. Until it exists, it is a flat dark red disc (the planet's `color`).
 - The art guide's own sky textures come from `tools/generate-sky-art.py`; extending that script is
   the natural place.
+- **Proposed by design (2026-10-11): `emissive`**, an optional texture on a space body, added
+  unshaded on top of the lit face and weighted to its night side (`1 - 0.85 x daylight`), so the
+  lava seas glow where the sphere goes dark. A burning world whose night side is plain black reads
+  as any rock. `textures/environment/nether_glow.png` is the layer (RGBA, transparent but for the
+  lava); `design/sky/nether-from-space.png` shows it. Not in `nether.json` until the format has it.
 
 
 ## 2. The Nether's sky and haze
 
 The Nether has no sky of its own: vanilla draws no sun, moon or stars there, and what is overhead
-is the fog colour, which follows the biome (dark red over the wastes, teal over the warped forest,
-blue-grey over the soul sand valleys). Its time is fixed at night. Vanilla's fog closes in at about
+is the fog colour, which follows the biome (dark red over the wastes and crimson forest, a
+purple-black over the warped forest, dark teal over the soul sand valleys, grey over the deltas:
+the biomes' own `fog_color`). Its time is fixed at night. Vanilla's fog closes in at about
 96 blocks, which made sense under a roof; now a ship comes down at y 216 over plateaus at y 100 to
 125 and lava seas at y 31.
 
@@ -77,6 +83,11 @@ blue-grey over the soul sand valleys). Its time is fixed at night. Vanilla's fog
 Show it in previews: the view down from y 216 on arrival, and the view up from a plateau. If the
 look needs something this cannot express (a gradient, embers in the air, a glow on the horizon
 from the lava seas), propose it here first and logic builds it.
+
+**Delivered (2026-10-11):** haze 48 to 192 with the biomes' own colours, and one body, the sun
+through the smoke (`nether_sun.png`, unlit, additive, 8 degrees, yaw 165, elevation 32). Earth and
+the Moon are not drawn. Reasons and previews: `nether-art-design.md`, section 2. Nothing more is
+asked of the format for the sky.
 
 
 ## 3. The gate ruin
@@ -190,17 +201,78 @@ sets and the biome tags.
 
 ## Handover checklist for design
 
-- [ ] `ascension_space/nether.json` and `textures/environment/nether.png`; a preview of the sphere
+- [x] `ascension_space/nether.json` and `textures/environment/nether.png`; a preview of the sphere
       lit and from its approach shell.
-- [ ] `ascension_sky/the_nether.json`: the haze (and any bodies); previews from y 216 looking down
+- [x] `ascension_sky/the_nether.json`: the haze (and any bodies); previews from y 216 looking down
       and from a plateau looking up. Anything the format cannot do, proposed in section 2.
-- [ ] `gateway_site/gateway_nether_site.json` with its palette; previews of the ruin from the front,
+- [x] `gateway_site/gateway_nether_site.json` with its palette; previews of the ruin from the front,
       from above, and from 64 blocks.
-- [ ] `colony_plinth`: model, blockstate (four facings), texture, lang name.
-- [ ] At least three colony ruin templates with the seven tablets spread across them, each
+- [x] `colony_plinth`: model, blockstate (four facings), texture, lang name.
+- [x] At least three colony ruin templates with the seven tablets spread across them, each
       variant's `surface_y`, a preview of each.
-- [ ] The Sealers' carving template(s) and their blocks.
-- [ ] Every generator reproduces the committed files byte for byte; `./gradlew :modules:worlds:build`
+- [x] The Sealers' carving template(s) and their blocks.
+- [x] Every generator reproduces the committed files byte for byte; `./gradlew :modules:worlds:build`
       passes.
-- [ ] A design note, `docs/technical/nether-art-design.md`, ending in a live checklist and the list
+- [x] A design note, `docs/technical/nether-art-design.md`, ending in a live checklist and the list
       of piece names and `surface_y` values for logic.
+
+
+## Design's handover (2026-10-11)
+
+Design record: [`nether-art-design.md`](nether-art-design.md). Everything below was placed by real
+worldgen on a dedicated server, in fresh worlds on the first test world's seed, through a throwaway
+datapack shaped as proposed here, and compared with the world block for block
+(`tools/worldgen-diagnostics/template_fit.py`).
+
+**Pieces and `surface_y`.** Every template's floor is row **1** (one row of rubble under it).
+
+| Piece | Size | Holds | Biomes |
+|---|---|---|---|
+| `nether_colony/hall_a` | 21 × 16 × 32 | `the_colony`, `the_ward`, `the_strongholds` | nether wastes, crimson forest |
+| `nether_colony/hall_b` | 25 × 15 × 28 | `the_colony`, `the_gift`, `the_thieves`; one stores chest | nether wastes, crimson forest (the crimson forest for preference: `the_thieves` and the colonists' mural are here) |
+| `nether_colony/hall_c` | 23 × 17 × 30 | `the_colony`, `the_weapon`, `the_keeper`; one stores chest | nether wastes, crimson forest |
+| `sealer_carving/wall` | 13 × 11 × 7 | the Sealers' carving, no plinth | soul sand valley |
+
+**Worldgen, as tested.** For each: `type minecraft:jigsaw`, a start pool of one
+`single_pool_element` (`projection rigid`), `size 1`, **`start_height {"absolute": -1}`**,
+`project_start_to_heightmap WORLD_SURFACE_WG`, **`terrain_adaptation beard_thin`**, step
+`surface_structures`. A pool per ruin, or one pool for the three halls with equal weights (any three
+different ruins find all seven tablets; every ruin begins with `the_colony` at its door).
+
+- **`beard_thin`, not `none`.** Vanilla levels the ground to a piece's lowest row plus one, so with
+  the floor at row 1 it builds the plateau up to the floor and cuts it away above. Measured on 23
+  ruins and 19 carvings: every template cell present (the only differences were fungi, vines and
+  mushrooms grown in afterwards); round ruins on plateaus the ground sat one below the floor (means
+  −1.0 to −1.7). A first version with a six-deep footing stood six above the levelled ground under
+  `beard_thin`, and hung over cliffs under `none`; that is why the footing went.
+- **Keep them off the lava seas (request).** One ruin in 23 and two carvings in 19 were set on a lava
+  sea at y 31, because `WORLD_SURFACE_WG` counts the lava. The gate's seek already has the check that
+  would stop it (`WORLD_SURFACE_WG` equal to `OCEAN_FLOOR_WG` at the start). A structure type or a
+  placement condition doing the same for these would do.
+- **Keep the ruins out of the basalt deltas** (as above): in an all-biomes test the deltas' features
+  grew 1,100 to 2,700 basalt blocks into one ruin and poured lava through its floor.
+- **Spacing (proposal).** Halls `random_spread` spacing 24, separation 8 (about one per 380 blocks of
+  wastes and crimson forest); the carving spacing 32, separation 12 (rare). Both with
+  `exclusion_zone {"other_set": "minecraft:nether_complexes", "chunk_count": 4}`: in a test a hall
+  overlapped a fortress.
+- **Loot:** chests name `ascension_worlds:nether_colony/stores`, as the contract says.
+
+**The gate: features overwrite its frame (bug, logic's).** On the test seed the ruin stands at
+(17, 105, 331) on the warped forest's border with the basalt deltas. Generated for real, 4,484 of its
+4,585 cells came out as written; the rest were overwritten afterwards by features, among them
+**twelve of the frame's own back step slabs, turned to lava and magma by the deltas' lava pools**. A
+frame missing those cells fails the check attunement makes, so on this seed the Monstrosity's key
+would not light it. Suggested fix: move `gateway_frame_nether` to step
+**`top_layer_modification`**, the last, so no feature runs after it (the giant fungi then grow before
+it, and its own cleared cells cut through any cap that overhangs the terrace, which reads as cut-back
+growth). Or write the frame's cells again after features. The Moon's copy has no such neighbours.
+
+**Gold and the gate.** The frame is gold (`P` and `C`): 98 gold blocks where a newly arrived player
+needs gold to survive the rot. Piglins guard them as vanilla guards gold blocks, but a player who
+strips them leaves a frame that fails attunement until it is repaired with any block in its tags.
+Sanchit's call whether that is a lesson or a trap; if a trap, a pre-generated frame could stay
+unbreakable until it is attuned, as the plinths are.
+
+**Decorative blocks.** `NetherDecorBlocks` (`colony_mural`, `sealer_carving`), registered by one
+line in `AscensionWorlds` beside `ArchiveDecorBlocks`. `colony_plinth` keeps the archive plinth's
+shape box for box; its look needs nothing more.

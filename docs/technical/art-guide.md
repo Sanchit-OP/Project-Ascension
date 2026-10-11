@@ -228,6 +228,11 @@ and the game turns the states with the piece, so real stairs, top slabs, facing 
 | A pale incision on pale plaster vanished (the Road's prised-out channel) | the mural at 6x | show the dark bed the inlay sat in |
 | A keeper laid on its side read as a machine | the mural at 6x | stand it up, eye shut |
 | `render_iso`, `render_iso_states` and `render_block_model` draw mirror images (their right vector is reversed) | a glyph face rendered head-on beside its texture | flagged as its own task; render through `render-item-model.py`'s rasteriser meanwhile (`scene_quads` in the lore script) |
+| The rot's breath drawn as wavy incised lines read as letters (S, 2) | the colony mural at 6x | a drift of dull specks, no strokes |
+| A six-deep rubble footing under a ruin placed with `beard_thin` stood as a bare podium six above the ground | placing it with real worldgen and measuring the ground round it (`template_fit.py`) | floor at row 1: vanilla levels the ground to a piece's lowest row plus one |
+| The Nether's gate hidden by the warped forest's giant fungi, which generate after structures | the ruin rendered on generated ground, not a plain | a deep forecourt, an obelisk over the canopy with a fire in its cap, nothing planted by the site |
+| The basalt deltas' lava pools overwrote the gate frame's own cells | comparing the generated site with its file, cell by cell | logic's: generate the gate in the last step (`nether-art-format.md`, the handover) |
+| A haze of 24 to 160 lost the ground from a ship at y 216 | the arrival rendered from y 216 over generated terrain | 48 to 192 |
 
 ## The palettes
 
@@ -249,6 +254,12 @@ Values live in the scripts; these are the families and what they're for.
 | `EARTH` | archive | muted blue | inlay: the blue world on *The Road* |
 | `GREY` | archive | neutral mid-grey | inlay: the far, unnamed worlds and the Moon on *The Road* |
 | `SUN` | archive | pale gold | inlay: the sun; the orrery's star-map top |
+| `N_RACK`, `N_CRIMSON`, `N_WARPED`, `N_SOUL`, `N_BASALT`, `N_LAVA`, `N_ASH` | sky | the Nether's grounds from orbit, dark under ash; the warped forests the forest's own muted teal | `nether.png` |
+| `N_SUN` | sky | dull red | the sun through the burning world's smoke |
+| `COLONY` | nether art | cool violet-black | the colonists' dressed stone: the colony plinth, the ground of their mural |
+| `GOLD` | nether art | beaten gold, a metal (specular top, dark foot) | the colony plinth's trim; the colonists in their mural |
+| `ASHEN`, `ROT` | nether art | ash grey; a dull bruise | the figure without gold, and the rot on it |
+| `RETURNED` | nether art | warm stone to black | the soldier in the Sealers' carving, darker at each return |
 
 The archive's inlay stones are muted on purpose: coloured stone set into plaster, not paint. None
 of them is teal, which stays the network's.
@@ -310,6 +321,10 @@ A block item's model parents its block model.
 | `tools/generate-archive-art.py` | the Archive's murals (a carved-plaster `Canvas`: relief heights lit top-left, coloured inlay, teal inlay on a glow layer), the plinth, orrery and tablet looks, stair and mural models and blockstates, the inlay palettes above. Refuses to run if its tile count differs from `ArchiveMuralBlock.TILES` |
 | `tools/generate-lore-art.py` | the script (`GLYPHS`, `GLYPHS_8`, `EYE_8`, `EYE_MARK`), its font, the mark decals, `mark_glyph`, the moon signal. Its previews: vanilla's first-person arm (`first_person_arm`), ModelPart cubes with skin uvs (`cube_quads`), a decal quad, and any template drawn from its real block models through the item rasteriser (`scene_quads`, `room_shot`) |
 | `tools/generate-lunar-archive.py` | the Archive's structure templates, and the keeper shrine's, as deterministic NBT (sorted palette, fixed block order, gzip with mtime 0), built from `room()`, `run()` and friends. Before writing it checks the contract (entries, orrery clear volume, loot, jigsaws, free-standing plinths) and floods block light to prove no floor a mob could stand on is dark |
+| `tools/generate-nether-art.py` | the colony plinth (the Archive's `plinth_model` with its own textures), and two tiled picture blocks: `colony_mural` (the Archive's `Canvas` on a dark ground, figures in gold) and `sealer_carving` (the `Canvas` as the Moon's murals use it). Refuses to run if a block's `TILES` differs from its catalogue |
+| `tools/generate-nether-colony.py` | Planet 3's gate site JSON and its structure templates (the colony's three ruins, the Sealers' carving), built from `Ruin` (`ground`, `wall`, `column`, `roof`, `lamp`, `crimson`, `picture`...) on the Archive's `Piece` and NBT writer. Checks the contract before writing; its previews need a test world (`--world`, `--placed`) |
+| `tools/render-nether-views.py` | a dimension's generated chunks read straight from its region files (`RegionWorld`), and ray-marched views of them with a sky file's haze, the biome's fog colour, block light and the game's lightmap; `paste_gateway` and `Scene.paste` put a site or template on that ground. Vanilla blocks in rough colours, our own from their textures |
+| `tools/worldgen-diagnostics/template_fit.py` | the jigsaw pieces a world generated, compared with their templates block for block, and how they met the ground (the land round each against its floor, footing over air or lava) |
 
 The gateway files are `.../ascension_worlds/gateway_frame/gateway.json` and
 `.../ascension_worlds/gateway_site/gateway_moon_site.json`.
