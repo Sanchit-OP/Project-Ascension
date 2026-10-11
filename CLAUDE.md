@@ -85,8 +85,10 @@ space, and our own Moon in Earth's sky in place of vanilla's. Built but not yet 
 tendril drop and crafting Earth's keystone, the Cataclysm bosses' armour fix, and share-air
 (needs two clients). **The lore** is in `docs/lore/` (start at `what-the-warden-keeps.md`): the
 Observers, the trap, the mark, Tacita. **Planet 3 (M3.3) is the real Nether, opened to the sky**
-(ADR-0017): reached by airship, wear gold against the rot; its build starts with the roofless
-terrain. **Background pre-generation is off by default** since a fresh server
+(ADR-0017): reached by airship, wear gold against the rot. Its logic is built and checked headless
+(roofless terrain, the rot, the gate ruin in the warped forest, the Monstrosity's key, seven tablets
+in the voice); its art goes to a design session (`nether-art-format.md`), and Sanchit sees the
+whole world in one client test after that. The Moon is at 4,000 blocks (2026-10-11). **Background pre-generation is off by default** since a fresh server
 crashed under it (the Chunky bug in the M3 plan, root cause open).
 
 **The road to space is by airship** (ADR-0015, Sanchit 2026-10-11): a Create Aeronautics ship

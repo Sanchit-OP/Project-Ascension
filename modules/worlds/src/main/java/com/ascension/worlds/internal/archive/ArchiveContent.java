@@ -46,6 +46,13 @@ public final class ArchiveContent {
     public static final Supplier<ArchivePlinthBlock> ARCHIVE_PLINTH = BLOCKS.register(
             "archive_plinth", () -> new ArchivePlinthBlock(unbreakable(MapColor.QUARTZ).noOcclusion()));
 
+    /**
+     * The Nether colony ruins' plinth (Planet 3, {@code nether-art-format.md}): an archive plinth in
+     * every way but its look, which the design session owns. Same block entity, same {@code entry}.
+     */
+    public static final Supplier<ArchivePlinthBlock> COLONY_PLINTH = BLOCKS.register(
+            "colony_plinth", () -> new ArchivePlinthBlock(unbreakable(MapColor.COLOR_BLACK).noOcclusion()));
+
     /** Lit, so the orrery chamber is never pitch dark and never a spawner around its own heart. */
     public static final Supplier<ArchiveOrreryBlock> ARCHIVE_ORRERY = BLOCKS.register(
             "archive_orrery", () -> new ArchiveOrreryBlock(
@@ -53,6 +60,9 @@ public final class ArchiveContent {
 
     public static final Supplier<Item> ARCHIVE_PLINTH_ITEM = ITEMS.register(
             "archive_plinth", () -> new BlockItem(ARCHIVE_PLINTH.get(), new Item.Properties()));
+
+    public static final Supplier<Item> COLONY_PLINTH_ITEM = ITEMS.register(
+            "colony_plinth", () -> new BlockItem(COLONY_PLINTH.get(), new Item.Properties()));
 
     public static final Supplier<Item> ARCHIVE_ORRERY_ITEM = ITEMS.register(
             "archive_orrery", () -> new BlockItem(ARCHIVE_ORRERY.get(), new Item.Properties()));
@@ -63,7 +73,7 @@ public final class ArchiveContent {
     @SuppressWarnings("DataFlowIssue") // the data-fixer type is null by design for mod block entities
     public static final Supplier<BlockEntityType<ArchivePlinthBlockEntity>> PLINTH_BLOCK_ENTITY =
             BLOCK_ENTITY_TYPES.register("archive_plinth", () -> BlockEntityType.Builder
-                    .of(ArchivePlinthBlockEntity::new, ARCHIVE_PLINTH.get())
+                    .of(ArchivePlinthBlockEntity::new, ARCHIVE_PLINTH.get(), COLONY_PLINTH.get())
                     .build(null));
 
     public static void register(IEventBus modBus) {
@@ -87,6 +97,7 @@ public final class ArchiveContent {
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(ARCHIVE_PLINTH_ITEM.get());
+            event.accept(COLONY_PLINTH_ITEM.get());
             event.accept(ARCHIVE_ORRERY_ITEM.get());
         }
     }
