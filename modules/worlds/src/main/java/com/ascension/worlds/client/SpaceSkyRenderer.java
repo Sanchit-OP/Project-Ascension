@@ -77,6 +77,9 @@ public final class SpaceSkyRenderer {
      */
     private static final float FAR_PLANE = 200_000.0F;
 
+    /** Model-view for {@link LitSphere.Disc}: none, as RenderSystem's already holds the camera's. */
+    private static final Matrix4f IDENTITY = new Matrix4f();
+
     @SubscribeEvent
     public static void onRenderLevelStage(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
@@ -153,9 +156,6 @@ public final class SpaceSkyRenderer {
         RenderSystem.depthMask(true);
         RenderSystem.restoreProjectionMatrix();
     }
-
-    /** Model-view for {@link LitSphere.Disc}: none, as RenderSystem's already holds the camera's. */
-    private static final Matrix4f IDENTITY = new Matrix4f();
 
     private static double distanceSquared(Vec3 cameraPos, Planet planet) {
         double x = planet.space().x() - cameraPos.x;

@@ -143,7 +143,7 @@ public final class WorldsCommands {
     private static int weather(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         ServerLevel level = player.serverLevel();
-        Planet.Weather config = PlanetWeathers.get(level.dimension());
+        Planet.Weather config = PlanetSurfaces.weatherOn(level.dimension());
         if (config == null) {
             source.sendSuccess(() -> Component.literal(
                     level.dimension().location() + " has no weather configured."), false);
@@ -166,7 +166,7 @@ public final class WorldsCommands {
     private static int forceWeather(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         ServerLevel level = player.serverLevel();
-        if (PlanetWeathers.get(level.dimension()) == null) {
+        if (PlanetSurfaces.weatherOn(level.dimension()) == null) {
             source.sendFailure(Component.literal(
                     level.dimension().location() + " has no weather configured."));
             return 0;

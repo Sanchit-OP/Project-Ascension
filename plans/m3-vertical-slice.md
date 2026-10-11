@@ -810,6 +810,28 @@ everything since `611b142`. No new features; one real bug found and fixed.
 `compat-sable` 15, `compat-chunky` 5, `combat` 4), the dist check on all thirteen modules, and the
 headless entity check on a dedicated server.
 
+## Refactor pass, 2026-10-11 (Planet 3, increment 3)
+
+ADR-0008's pass after the space view, the roofless Nether and the rot. Reviewed everything since
+`0900d40`. No new features, no bugs found.
+
+- **One planet lookup per surface.** `PlanetEnvironments`, `PlanetWeathers` and the new
+  `PlanetHazards` each flattened the planet registry into their own map keyed by surface, each
+  loaded and emptied separately. Now `PlanetSurfaces` holds the one map (surface → planet) and
+  answers air, weather and hazard; `PlanetEnvironments` is only the bridge into `core`. Two classes
+  gone, one load and one teardown instead of three.
+- **One RCON session for the ship scripts.** `ship_fly.py` and `ship_lift.py` each carried their own
+  copy of a long-lived RCON connection, neither checking the login; `rcon_client.RconSession` is now
+  the one copy, and it fails loudly on a wrong password.
+- **Small things:** `SpaceSkyRenderer`'s `IDENTITY` moved up with the other constants; two javadocs
+  still named the classes that went.
+- **Looked at and left:** `SkyBodies` and `SpaceBodies` are two reload listeners of the same shape,
+  but over different folders, keys and records; folding them would need a generic loader for two
+  callers.
+
+**Checked:** the full build, every module's tests (`worlds` 107, `atmosphere` 53, `core` 21,
+`compat-sable` 15, `compat-chunky` 5, `combat` 4), and the dist check on all thirteen modules.
+
 ## M3.3 — Planet 3: the Nether world
 
 **Settled 2026-10-11 (ADR-0017): Planet 3 is the real Nether, `minecraft:the_nether`, opened to the
@@ -846,8 +868,7 @@ there, an optional second boss. **Still open:** the Nether's sky and fog (art se
    once a second while unwarded, lingering five seconds once warded, with "The rot is in the air
    here. Wear gold." Armour that calms piglins counts, so other mods' gold does too.
    `HazardDoses` tests the timing (`worlds` 101 → 107). The client check: with and without gold.
-3. **A refactor pass** (ADR-0008: the space view, the roofless Nether and the gold ward since the
-   last).
+3. **A refactor pass. Done 2026-10-11** (its section above).
 4. **The Monstrosity's key and the gate ruin,** once the art session has delivered: the boss drops
    the Nether's gateway key, as the Moon's Guardian does, and the pre-generated gate ruin sits in the
    warped forest. With the colony-ruin tablets in the voice.

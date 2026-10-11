@@ -12,11 +12,10 @@ Used for the live test of 2026-10-11 (plans/live-test-2026-10-11.md).
 import math
 import os
 import re
-import socket
 import sys
 import time
 
-from rcon_client import read_packet, send_packet
+from rcon_client import RconSession
 
 PASSWORD = os.environ["RCON_PASSWORD"]
 PLAYER = os.environ.get("PLAYER", "Devil0701")
@@ -29,18 +28,8 @@ MAX_DV = 1.0          # blocks/s per step: 10 b/s^2, gentle
 SLOW_NEAR = 10.0      # speed when reaching the body
 MAX_STEPS = 600
 
-sock = socket.create_connection(("127.0.0.1", 25575), timeout=10)
-send_packet(sock, 1, 3, PASSWORD)
-read_packet(sock)
-req = 2
-
-
-def run(command):
-    global req
-    req += 1
-    send_packet(sock, req, 2, command)
-    resp = read_packet(sock)
-    return resp[2] if resp else ""
+rcon = RconSession(PASSWORD)
+run = rcon.run
 
 
 for step in range(MAX_STEPS):
@@ -71,4 +60,4 @@ time.sleep(1.5)
 print("player:", run(f"execute as {PLAYER} run data get entity @s Dimension").strip(),
       run(f"execute as {PLAYER} run data get entity @s Pos").strip())
 print("moon ships:", run("execute in ascension_worlds:moon run sable info @e").strip()[:260])
-sock.close()
+rcon.close()

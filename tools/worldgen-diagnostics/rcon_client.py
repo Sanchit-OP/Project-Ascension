@@ -45,6 +45,38 @@ def read_packet(sock):
     return req_id, ptype, body
 
 
+class RconSession:
+    """One authenticated connection for many commands, for scripts that send one every tick or so.
+
+        with RconSession(password) as rcon:
+            print(rcon.run("list"))
+    """
+
+    def __init__(self, password, host="127.0.0.1", port=25575):
+        self.sock = socket.create_connection((host, port), timeout=10)
+        send_packet(self.sock, 1, 3, password)
+        auth_resp = read_packet(self.sock)
+        if auth_resp is None or auth_resp[0] == -1:
+            self.sock.close()
+            raise RuntimeError("RCON auth failed")
+        self.req = 1
+
+    def run(self, command):
+        self.req += 1
+        send_packet(self.sock, self.req, 2, command)
+        resp = read_packet(self.sock)
+        return resp[2] if resp else ""
+
+    def close(self):
+        self.sock.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        self.close()
+
+
 def rcon_exec(host, port, password, command):
     sock = socket.create_connection((host, port), timeout=10)
     try:

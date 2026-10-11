@@ -15,8 +15,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 /**
  * Ticks each surface's {@link PlanetWeatherState} and tells whoever needs to know when it flips.
  *
- * <p>Only levels {@link PlanetWeathers} actually has an entry for pay any cost here &mdash; a
- * planet with no {@code weather} block is one map lookup per level tick, not a scan of anything.
+ * <p>Only surfaces whose planet has a {@code weather} block pay any cost here; every other level
+ * is one map lookup per tick ({@link PlanetSurfaces}), not a scan of anything.
  */
 public final class PlanetWeatherMechanics {
 
@@ -30,7 +30,7 @@ public final class PlanetWeatherMechanics {
         if (!(event.getLevel() instanceof ServerLevel level)) {
             return;
         }
-        Planet.Weather weather = PlanetWeathers.get(level.dimension());
+        Planet.Weather weather = PlanetSurfaces.weatherOn(level.dimension());
         if (weather == null) {
             return;
         }
@@ -64,7 +64,7 @@ public final class PlanetWeatherMechanics {
         if (server == null) {
             return;
         }
-        Planet.Weather weather = PlanetWeathers.get(dimension);
+        Planet.Weather weather = PlanetSurfaces.weatherOn(dimension);
         boolean active = false;
         if (weather != null) {
             ServerLevel level = server.getLevel(dimension);
