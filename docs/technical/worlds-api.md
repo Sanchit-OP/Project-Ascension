@@ -831,7 +831,9 @@ Not yet: whether a sealed, pressurised room keeps the rot out (it is breathable 
   Moon stone anywhere in it, the frame in blackstone and quartz. A summoned Monstrosity's loot,
   rolled with `/loot ... kill`, held its four usual items plus the key with
   `gateway_key_for_planet: minecraft:the_nether`. The Monstrosity and Ignis read 100 Armor and 40
-  Magic Resist (`ascension-combat`'s boss tier).
+  Magic Resist (`ascension-combat`'s boss tier). After a restart with the tablets in, the same roll
+  also held the Forge Record (an archive tablet naming `ascension_worlds:nether/the_forge_record`),
+  and a `colony_plinth` set by command kept its `entry`.
 
 ## 5. Registry mechanism
 
