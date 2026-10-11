@@ -1,0 +1,10 @@
+{
+  "surface": "minecraft:the_nether",
+  "space": {
+    "position": [10324, 14745],
+    "body_radius": 320,
+    "approach_radius": 448
+  },
+  "order": 30,
+  "color": 9054750
+}

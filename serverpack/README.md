@@ -68,7 +68,7 @@ settings with a reason behind them:
 | `white-list` | `true` | With `online-mode=true` this is belt and braces; without it, it is the only thing standing between the server and the internet. |
 | `view-distance` | `8` | Deliberately modest. Distant Horizons covers distance visually; raising this pays twice for one result. See [`optimisation-stack.md`](../docs/technical/optimisation-stack.md). |
 | `simulation-distance` | `6` | Ticking radius, which is the expensive one. |
-| `allow-nether` | `false` | Dimension access is progression, and progression is not built yet. A stopgap — see below. |
+| `allow-nether` | either | Only stops portal travel into the Nether, which `ascension-worlds` already makes dormant (ADR-0014). The Nether is Planet 3 (ADR-0017) and still loads either way; ships and gateways reach it. See below. |
 | `max-players` | as needed | The dev server ships `4`. |
 | `difficulty` | `normal` | Suffocation damage is tuned against vanilla drowning. |
 
@@ -84,9 +84,9 @@ two are comparable.
 
 ## Locking the Nether and the End
 
-`allow-nether=false` closes nether portals. **The End has no equivalent server property**, and
-is currently gated only by needing a stronghold and twelve ender eyes.
+Superseded: `ascension-worlds` makes vanilla's Nether and End portals dormant on its own
+(ADR-0014, server config `vanilla.disableVanillaPortals`), in single-player too. And the Nether is
+no longer locked at all: it is **Planet 3** (ADR-0017), opened to the sky and reached by airship
+from space. `allow-nether` is read in exactly one place in vanilla, its portal code, so either
+value leaves the Nether loaded and reachable by ship. Leaving it `false` changes nothing.
 
-This is a stopgap and should be recorded as one. **Dimension access is the spine of this
-project's progression**, so gating it belongs in `ascension-progression` (M3) as a designed
-mechanic, not in a server property. Anything built on top of the property will have to be undone.

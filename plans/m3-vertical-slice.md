@@ -834,11 +834,14 @@ fog (art session).
 
 **Build order:**
 
-1. **The roofless Nether** (the main engineering). Override `minecraft:the_nether`'s dimension and
-   dimension type; our own noise settings from vanilla's Nether ones, with the top opened into sky
-   instead of a ceiling; the planet entry with its place in space; Sable air data so ships can climb
-   out. Checked headless (terrain profile sampled like the Moon's, `/locate` fortress and bastion,
-   debris present) and then by flying a ship there in a client.
+1. **The roofless Nether. Built 2026-10-11, checked headless; not yet seen in a client.** The
+   real Nether's dimension, dimension type and noise settings overridden (the noise settings
+   generated from vanilla's by `tools/generate-roofless-nether.py`: the top fades into air, the
+   bedrock roof rules gone); its planet entry at the design ladder's `[10324, 14745]`; Sable air
+   data. On a fresh world: rock never above y 125, open sky to 256, lava seas a quarter of the
+   ground, plateaus at 100 to 119; every Nether structure and biome found, both Cataclysm Nether
+   bosses, debris and ores present, bedrock only at the floor; a ship came down into it from space
+   and left again. Details: `worlds-api.md`, "Planet 3".
 2. **The rot and the gold ward.** A planet hazard, as data: in the Nether without gold, a slow
    wither. Tests for the rule; seen in a client with and without gold.
 3. **A refactor pass** (ADR-0008: the space view, the roofless Nether and the gold ward since the
