@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "ascension_worlds:block/sealer_carving/tile_0",
+    "side": "ascension_worlds:block/sealer_carving/tile_10"
+  }
+}

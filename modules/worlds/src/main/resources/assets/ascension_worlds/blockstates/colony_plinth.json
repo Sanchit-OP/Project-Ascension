@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ascension_worlds:block/colony_plinth"
+    },
+    "facing=east": {
+      "model": "ascension_worlds:block/colony_plinth",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "ascension_worlds:block/colony_plinth",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ascension_worlds:block/colony_plinth",
+      "y": 270
+    }
+  }
+}
