@@ -43,8 +43,11 @@ Defines the project pillars, intended player experience, and non-negotiable desi
 
 - First arrival to a planet requires physical travel.
 - Players always enter a planet through orbit first.
-- Planets cannot be skipped in the main progression route.
-- Unique planetary resources gate future progression.
+- ~~Planets cannot be skipped in the main progression route.~~ **Superseded by
+  [ADR-0018](decisions/0018-no-world-is-required.md) (2026-10-12): no world is required; players
+  go where they choose.**
+- ~~Unique planetary resources gate future progression.~~ **ADR-0018: they reward rather than
+  unlock.** The best gear asks for materials from many worlds.
 - Revisit loops must become faster after mastery.
 - Team progression is shared at the team level.
 - Combat is intended to stay demanding into late progression.

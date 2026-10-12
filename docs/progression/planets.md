@@ -79,6 +79,9 @@ Defines the role of each planet in the progression route.
 
 ## Critical-Path Rules
 
+> **Superseded 2026-10-12 by [ADR-0018](../decisions/0018-no-world-is-required.md):** no world
+> is required, so there is no critical path. Kept for the per-world design rules, which still hold.
+
 - No mandatory world can exist only to provide a resource.
 - Every mandatory world must introduce one primary survival rule.
 - Every mandatory world must introduce one movement or traversal wrinkle.

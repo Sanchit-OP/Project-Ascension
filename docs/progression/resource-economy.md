@@ -1,10 +1,12 @@
 # The resource economy
 
-> **Draft for discussion, 2026-10-12. Nothing here is decided.** Sanchit stepped back from
-> Planet 3 to look at materials as a whole: what each one is *for*, how loot is managed, how a
-> player finds out where things come from, and how the combat items are ever obtained. This page
-> audits what exists, names what is broken, and proposes a shape. Once decided, the answers go to
-> an ADR. It also stands in for the "resource ledger" `todo.md` lists as missing.
+> **Draft, 2026-10-12, partly decided.** Sanchit stepped back from Planet 3 to look at materials as
+> a whole: what each one is *for*, how loot is managed, how a player finds out where things come
+> from, and how the combat items are ever obtained. The first draft's seven questions were answered
+> the same day (§8). The biggest answer went to its own ADR: **no world is ever required**
+> ([ADR-0018](../decisions/0018-no-world-is-required.md)). Still open: the details of the combat
+> items' build paths (§5). This page also stands in for the "resource ledger" `todo.md` lists as
+> missing.
 
 ## 1. What exists today
 
@@ -15,8 +17,8 @@
 | Raw titanium | Titanium ore on **Earth**, y −64 to 0; Lunar Archive stores (2 to 5) | **Nothing.** No ingot, no smelting recipe. |
 | Raw helium crystal | Lunar helium ore on **the Moon**, y −64 to 24; Archive stores (1 to 4) | **Nothing.** |
 | Warden tendril | The Warden (`add_table` modifier) | The gateway keystone (Earth's gate) |
-| Gateway key, Moon | The Ender Guardian in the Moon's citadel, **only with compat-cataclysm** | Attunes the Moon's gate |
-| Gateway key, Nether | The Netherite Monstrosity, **only with compat-cataclysm** | Attunes the Nether's gate |
+| Gateway key, Moon | The Ender Guardian in the Moon's citadel (compat-cataclysm) | Attunes the Moon's gate |
+| Gateway key, Nether | The Netherite Monstrosity (compat-cataclysm) | Attunes the Nether's gate |
 | Forge Record | The Netherite Monstrosity (same jar) | Lore |
 | Inscribed gatestone | Crafted (polished deepslate or Moon basalt, with sculk or an echo shard); Archive stores | Gate frames |
 | Archive tablets | Archive and colony stores, plinths | Lore |
@@ -35,79 +37,62 @@ in the creative tab: no recipe, no loot, no drop.
 
 JEI is installed and shows every crafting recipe, because recipes are sent to the client. It shows
 nothing about where a raw material comes from, because loot tables, mob drops and ore placement
-stay on the server. `ascension-compat-jei` has been on the architecture map since ADR-0003 and was
-never started.
+stay on the server.
 
 ## 2. What is broken
-
-Most blocking first.
 
 ### 2.1 The road to space is closed in survival
 
 Checked in the installed jars on 2026-10-12 (Create 6.0.10, Create Aeronautics 1.3.2):
 
 - In space, balloons do nothing and **only propellers push a ship** (ADR-0015).
-- Every Aeronautics propeller needs **brass casing**: `propeller_bearing`, `smart_propeller` and
-  `gyroscopic_propeller_bearing`. So do the `navigation_table` and most of Aeronautics' controls.
-- Create makes brass in **one** way: copper and zinc in a *heated* mixer. The only heat source is a
-  Blaze Burner. Its casing is made with netherrack, and its fire is a captured blaze. **Both are
-  Nether-only, and the Nether is Planet 3** (ADR-0014, ADR-0017).
-- So a survival player can build a hot-air balloon from Earth materials: wool envelopes, and an
-  adjustable burner made of iron plates, andesite alloy, redstone and a coal block. It may climb to
-  space, but once there it has nothing to push it to the Moon. **The Moon is unreachable, and so is
-  everything after it.** The live test on 2026-10-11 used a ship built by command, which is why
-  nobody hit this.
-- Untested: whether anything else can push a ship in space, such as Aeronautics' steam vents or
-  Simulated's sails.
-- Brass also gates most of Create's middle tier: deployers, mechanical arms, mechanical crafters,
-  sequenced assembly. **Earth's Create is andesite and copper only.**
+- Every Aeronautics propeller needs **brass**.
+- Create makes brass in **one** way: copper and zinc in a *heated* mixer. The only heat comes from
+  a Blaze Burner: a captured blaze in a casing made with netherrack. **Both are Nether-only.**
+- So a survival player can build a hot-air balloon from Earth materials, and may climb to space
+  with it. Once there, nothing pushes it on to the Moon. The live test on 2026-10-11 used a ship
+  built by command, which is why nobody hit this.
+- What else brass and the Nether hold back in Create and Aeronautics is listed in Appendix A.
 
-This also decides the starter ship (decision 5 in `plans/m3-vertical-slice.md`): there is nothing to
-design until a propeller can be made on Earth.
+**Decided:** a titanium propeller bearing, from Earth (§4).
 
-### 2.2 The Moon can be skipped
+### 2.2 The Moon could be skipped
 
-Planet 3 is 18,000 blocks from Earth. At 60 b/s that is 300 s, against 320 s of air in one tank, and
-a player may carry two (ADR-0009). Nothing from the Moon is needed to reach Planet 3 or survive
-there. That breaks the vision's "planets cannot be skipped in the main progression route".
-
-**Range is a soft gate**: carry another tank, build a faster ship. It may be no gate at all. If an
-Oxygen Emitter keeps a sealed cabin on a ship breathable in space, air stops limiting range
-entirely. **Untested.**
+Planet 3 is within one iron tank of Earth, so nothing from the Moon is needed to reach it. The first
+draft proposed a hard gate to fix that. **Decided the other way** (ADR-0018): no world is
+required, so this is not a problem.
 
 ### 2.3 Titanium and helium have no job
 
 They are mined and looted, and they do nothing. The lore has already promised them jobs
-(`docs/lore/the-moon.md`):
-- **Titanium:** "the ancients' rocket metal… You will build your next ship from it."
-- **Helium:** the ancients' fuel. By helium light, things touched by the Observers show what they
-  really are.
+(`docs/lore/the-moon.md`): titanium is "the ancients' rocket metal… You will build your next ship
+from it"; helium is the ancients' fuel, and by its light, things touched by the Observers show what
+they really are.
 
 ### 2.4 The combat items cannot be obtained
 
-None of the 26 can be made, found or dropped.
+None of the 26 can be made, found or dropped. **Decided:** League-style build paths (§5).
 
 ### 2.5 Nothing says where anything comes from
 
-There is no ledger for us, and nothing in JEI for players.
+There is no ledger for us, and nothing in JEI for players. **Decided:** add Just Enough Resources,
+and build our own JEI pages for what it cannot know (§7).
 
 ### 2.6 The gateway keys exist only with Cataclysm installed
 
-`ascension-worlds` on its own has no way to light the Moon's or the Nether's gate. That is fine for
-our pack. It is a gap for anyone using the module on its own, which is ADR-0003's first priority.
+**Decided:** keep it that way. Cataclysm is part of the pack, and the keys stay in its compat jar.
 
-## 3. Proposed principles
+## 3. Principles
 
-1. **A material has a job before the next material is added.** At least one use on the critical
-   path, and ideally one optional use. A material with sources and no uses is a bug.
-2. **Each world's material pays for the next world, plus one new verb.** It buys the part that gets
-   you onward. It also buys one new thing to *do*, never just bigger numbers. That second part is
-   the tech tree's "new capabilities, not stronger numbers".
-3. **The onward gate is hard, not soft.** It is a thing you cannot do without the part: land, cross,
-   survive. More air and more speed are soft gates, because a player can always carry more, and
-   §2.2 shows they leak.
+1. **A material has a job before the next material is added.** A material with sources and no uses
+   is a bug.
+2. **Materials reward; they never lock** (ADR-0018). A world's materials make a player stronger or
+   their machines better. The best gear asks for materials from several worlds, so going to many is
+   worth it, but no world is required for another.
+3. **Mod tiers become upgrades, not walls.** Brass is the propeller upgrade, not the price of
+   leaving Earth.
 4. **Materials cross module lines as `c:` tags, never as item ids.** Suppose a recipe in
-   `ascension-atmosphere` asks for `#c:ingots/titanium`:
+   `ascension-combat` asks for `#c:ingots/titanium`:
    - It loads whether `ascension-worlds` is installed or not, and is just uncraftable when it isn't.
    - Another mod's titanium works in it.
    That is ADR-0003's connector idea applied to data, and it keeps Tier 1 modules apart (ADR-0011).
@@ -123,82 +108,96 @@ our pack. It is a gap for anyone using the module on its own, which is ADR-0003'
    - A test fails when one of our items has no source, or one of our materials has no use.
    - Titanium would have failed that test on the day it was added.
 
-## 4. A proposed shape for v1
-
-Three worlds, each paying for the next. Every line is a proposal.
+## 4. Each world's materials
 
 ### Earth: titanium, the rocket metal
 
 - Raw titanium smelts to **titanium ingots** in a blast furnace. Create's crusher gives its usual
-  bonus.
-- **Its job: the first ship that can cross space.** The recommendation is a second recipe for
-  Aeronautics' own propeller bearing, with titanium where the brass casing was.
-  - It is a data file, with no code and no new block, in the Aeronautics compat jar.
-  - Only the plain propeller bearing gets the titanium recipe. Smart and gyroscopic propellers, the
-    navigation table, and Create's whole brass tier stay a later world's reward.
-  - The other way is **titanium brass**: an unheated mixing recipe of copper, zinc and titanium.
-    That opens all of Create's middle tier on Earth, after a deep dig.
-- Optional: the oxygen tank's shell moves from iron to `#c:ingots/titanium`, so the first trip to
-  space asks for a deep dig on Earth.
+  bonus, once a player has crushing wheels.
+- **The titanium propeller bearing (decided).** A second recipe for Aeronautics' own plain propeller
+  bearing, with titanium where the brass casing was. It is a data file in the Aeronautics compat
+  jar, with no code. A first ship can now cross space from Earth.
+- **Brass as the propeller upgrade (decided).**
+  - **How it works now (proposed):** the plain bearing stays one block, and the upgrades are
+    Aeronautics' own brass propellers, the smart propeller and the gyroscopic propeller bearing.
+    So are the brass controls: the throttle lever and the navigation table. No code against
+    Aeronautics' classes.
+  - **The other way:** a weaker titanium bearing as its own block, so even the plain brass bearing
+    is an upgrade. That means a block of our own built on Aeronautics' classes, which is more
+    fragile across their updates.
+- **In the combat build paths:** titanium is Earth's metal for the physical-damage components
+  (§5).
 
 ### The Moon: helium, the fuel and the light
 
-- **Its job: the part a ship needs to come down on Planet 3.** Call it a heat shield, for the
-  burning world: titanium and helium.
-  - **How the check works.** A planet's JSON names a block tag, and the descent from space only
-    lands a ship that carries a block from it. Without one, the ship stays in space with a message.
-  - **Data-driven.** One generic mechanism, so every later planet can ask for its own part with no
-    new class. That is the familiar rocket-tier shape, done with our ships.
-  - **It makes the Moon impossible to skip**, whatever the range.
-- **Its verb: the helium lamp** (`the-moon.md`). By its light, hidden Sealer carvings show, and so
-  does what the Observers touched. Planet 3's Sealer carving could carry a line only helium light
-  reveals. That gives the Moon a second, softer reason to matter on Planet 3.
-- Optional: a **helium burner**, a Create heat source, so brass opens at the Moon instead of at
-  Planet 3.
+- No ship part (ADR-0018). Its jobs:
+  - **In the combat build paths:** helium is the Moon's material for the magic-damage and energy
+    components (§5).
+  - **The helium lamp** (`the-moon.md`): by its light, hidden Sealer carvings show, and so does
+    what the Observers touched. It is a new thing to do, not a number. Planet 3's Sealer carving
+    could carry a line only helium light reveals.
+  - **Optional, later:** a helium burner, a Create heat source, would open brass without the
+    Nether. Not needed now that the titanium bearing gets ships into space.
 
 ### Planet 3: gold, blazes and netherite
 
-- Already doing jobs: gold is the ward, and netherite is vanilla's top tier.
-- **Blazes open Create's brass tier** (through the Blaze Burner), and the superheated tier with it,
-  unless the helium burner opened brass at the Moon. That is the tech tree's "Planet 3 unlocks
-  stronger production", for free.
-- **The onward part for Planet 4** (not in v1) can wait for Planet 4's design. Netherite is the
-  obvious candidate.
+- **Already doing jobs:** gold is the ward, and netherite is vanilla's top tier.
+- **Blazes open Create's brass tier** through the Blaze Burner, and the superheated tier with it.
+  That covers the propeller upgrades, deployers, mechanical crafters, crushing wheels and trains
+  (Appendix A).
+- **Quartz** opens electron tubes, observers and comparators.
+- **In the combat build paths:** blaze powder, magma cream, ghast tears and netherite are Planet 3's
+  materials (§5).
 
-## 5. The combat items
+## 5. The combat items: League-style build paths
 
-The combat session builds this. This page only proposes where the items sit in the economy.
+**Decided (Sanchit, 2026-10-12):**
+- League-style build paths.
+- Materials from different places.
+- One weapon is very hard to make.
+- A boss drop is needed to finish an item, so every extra item means more boss kills.
 
-### How they are made
+The combat module is the parallel combat session's. This section is the contract for it, the way
+the art contracts work. Everything below the decided lines is a proposal.
 
-Three options:
+### Three tiers, as in League
 
-- **(a) Crafting-table recipes.** The simplest, and JEI shows them for free.
-- **(b) League-style build paths.** A few components are crafted first (a titanium edge, a helium
-  core, a netherite core), then combined. Familiar to League players, but more items to make and
-  draw.
-- **(c) Smithing templates as Sealer records (recommended).**
-  - At a smithing table: a vanilla piece of the same slot, plus that world's material, plus a
-    template found on that world. For example, diamond boots, titanium and an Earth template make
-    Ninja Tabi.
-  - It is exactly how vanilla's netherite upgrade works, so players already know it.
-  - `the-nether.md` already calls the netherite template "a Sealer record in pictures".
-  - Templates in the Archive's and the colony halls' stores give exploration a gear reward.
-  - Like vanilla, a template copies itself with diamonds and that world's stone.
+| Tier | What it is | Made from |
+|---|---|---|
+| **Basic** | League's starter components: Long Sword, Dagger, Cloth Armor, Null-Magic Mantle, Ruby Crystal, Amplifying Tome, Boots | One world's refined material, in quantity. For example, a Long Sword from titanium ingots (Earth) or an Amplifying Tome from helium (the Moon). |
+| **Epic** | League's middle components: Pickaxe, B.F. Sword, Recurve Bow, Chain Vest, Negatron Cloak, Phage, Caulfield's Warhammer, and so on | Two or three basics, plus a rarer material from **a different world** than its basics. So every epic touches at least two worlds. |
+| **Legendary** | The 26 items in `combat-api.md` §6 | Two or three epics, plus **a boss's heart** |
 
-### Which world each item belongs to
+An illustrative path, not a final recipe. **Darius's Axe** needs three things:
+- **Phage:** a Long Sword (Earth titanium) and a Ruby Crystal, with blaze powder from Planet 3.
+- **Caulfield's Warhammer:** two Long Swords, with helium from the Moon.
+- **The Warden's heart.**
 
-A first cut to argue with: eight per world, plus two that only bosses drop.
+So it takes Earth, the Moon, Planet 3 and a boss.
 
-| World | Items |
-|---|---|
-| **Earth** | All six boots: Ninja Tabi, Mercury Treads, Swifty, Berserker's Greaves, Wizard's Agony, Tasted Blood. Darius's Axe. Mortal Reminder. |
-| **Moon** | Veigo's Blade, Wraithblade, Spear of Shojin, Galeforce, Heartwood of Pallas, Edge of Night, Gargoyle Stoneplate, Rocketbelt. |
-| **Planet 3** | Darken Blade, Ragefang, Endless Hunger, Divine Sunderer, The Protean Mask, Collector's Pants, Unending Despair, Sterak's Harness. |
-| **Boss drops only** | Guardian's Wing (revive) and Zonia's Hourglass (stasis): the two that cheat death. The vision says "bosses unlock capability"; these are capability. |
+### The boss drop
 
-The anti-tank family lands one or two to a world: Darius's Axe and Mortal Reminder on Earth, Veigo's
-Blade on the Moon, Divine Sunderer on Planet 3. The family stays a thread through the whole game.
+Every boss drops its own heart. The lore already gives the bosses netherite hearts: they are the
+Sealers' keepers. Each legendary names the heart it needs.
+- **Bosses:** the Warden, the Ender Golem, the Ender Guardian, the Netherite Monstrosity, Ignis and
+  the Wither, and later worlds' bosses as they come.
+- **Why one heart per boss:** a weapon then means hunting a particular boss, and Sanchit's "more
+  grind" means fighting that boss again for every copy.
+- **The alternative:** one shared boss material that every boss drops. Simpler, and any boss farm
+  works, but it makes no difference which boss you fight.
+
+### Rough cost of one legendary
+
+About five to seven basics, two or three rare materials from other worlds, and one heart (two for
+the strongest items). That is two or three worlds and a boss kill per item.
+
+### Still open
+
+- **Boots:** League's boots are the cheap first item. Should ours skip the heart, or take one too?
+- **Hearts:** one per boss (proposed), or one shared?
+- **Where items are crafted:** a crafting table to start, so JEI shows every step. A dedicated
+  forge block could come later; Planet 5 was imagined as the forge world.
+- **Who builds it:** the combat session, from this contract (proposed), or this session?
 
 ## 6. Managing loot
 
@@ -206,57 +205,123 @@ Blade on the Moon, Divine Sunderer on Planet 3. The family stays a thread throug
 |---|---|
 | Ores | Planet worldgen for our planets. A biome modifier for Earth, which is vanilla's dimension. |
 | Our structures' chests | Our own tables (`archive/stores`, `nether_colony/stores`) |
-| Mob and boss drops | `add_table` modifiers. A boss's drop lives in that boss's compat jar. |
-| Vanilla chests | `add_table` modifiers on vanilla's tables. For example: Earth templates in ancient cities and trial vaults, titanium nuggets in ruined portals. |
+| Mob and boss drops, including the hearts | `add_table` modifiers. A boss's drop lives in that boss's compat jar, or in ours for vanilla bosses. |
+| Vanilla chests | `add_table` modifiers on vanilla's tables, where a component or a material should turn up |
 
 **The ledger tool:** `tools/resource-ledger.py`. It reads every module's data and writes two things:
 - `docs/progression/resource-ledger.md`, for us: every item, every source, every use.
-- A sources file for JEI, for players (§7).
+- A sources file for our JEI pages (§7).
 
 The test from principle 6 runs over the same data.
 
 ## 7. JEI: where things come from
 
-- **Recipes already show**, for free.
-- **Our own `ascension-compat-jei` (recommended).** A "Where it's found" page for each of our items:
-  - **Mined:** which planet, what depth, what pickaxe.
-  - **Dropped:** by what, at what chance, on which planet.
-  - **Found:** in which ruin's chest, on which planet.
-
-  It also adds info pages for things that are not recipes: a key attunes a gate, gold wards off
-  the rot. It reads the ledger's sources file, shipped inside the jar, so it works on a dedicated
-  server, where loot tables never reach the client.
-- **Just Enough Resources** (a third-party JEI add-on, with a NeoForge 1.21.1 build listed) does
-  the same for vanilla and other mods: mob drops, chest loot, ore heights.
+- **Recipes already show**, build paths included, as long as they are crafting recipes.
+- **Just Enough Resources (decided).** A JEI add-on that shows mob drops, chest loot and ore
+  heights for vanilla and other mods.
+  - The file: `JustEnoughResources-NeoForge-1.21.1-1.6.0.12.jar` on CurseForge, by way2muchnoise.
+    It is marked beta, and is the only 1.21.1 NeoForge build.
   - It knows nothing about planets: it would place titanium at y −64 to 0 without saying which
     world.
-  - It is an optional pack addition next to ours. Its behaviour on a dedicated server needs
-    checking first.
+  - Its behaviour on a dedicated server needs checking once it is installed.
+- **Our own `ascension-compat-jei`** fills in what JER cannot know.
+  - **A "Where it's found" page** for each of our items: which planet, what depth, which boss, which
+    ruin's chest.
+  - **Info pages** for things that are not recipes: a key attunes a gate, gold wards off the rot.
+  - **Its data:** the ledger's sources file, shipped inside the jar, so it works on a dedicated
+    server.
 
-## 8. Decisions for Sanchit
+## 8. Decisions
 
-1. **How the first ship crosses space on Earth materials:** a titanium recipe for the propeller
-   bearing (recommended), or titanium brass?
-2. **What makes the Moon necessary:** a part a ship must carry to land on Planet 3, from helium
-   (recommended, and data-driven for every later planet)? Or retuning distances, or accepting that
-   the Moon can be skipped in v1?
-3. **Where Create's brass tier opens:** at Planet 3 with blazes (as now), or at the Moon with a
-   helium burner?
-4. **How the combat items are made:** smithing templates (recommended), crafting recipes, or build
-   paths?
-5. **The item-to-world table in §5**, and the two items only bosses drop: agree, or move things?
-6. **Keys without Cataclysm:** fine as pack-only, or should Tier 1 have a fallback?
-7. **Just Enough Resources** in the pack, as well as our own JEI pages?
+**Answered by Sanchit, 2026-10-12:**
 
-## 9. Order of work, once decided
+1. **The first ship:** a titanium propeller bearing. Brass becomes the propeller upgrade.
+2. **Making the Moon necessary:** no. No world is ever required, and players go where they choose
+   (ADR-0018). Helium is not a ship part.
+3. **Where brass opens:** with blazes on Planet 3, as an upgrade, not a wall.
+4. **The combat items:** League-style build paths, materials from different places, very hard to
+   make, with a boss drop needed.
+5. **The first draft's item-to-world table:** replaced by the build paths, where each item draws
+   on several worlds.
+6. **Keys without Cataclysm:** keep Cataclysm. The keys stay pack-only.
+7. **Just Enough Resources:** add it.
 
-1. **The road to space** (decision 1). It blocks every survival playthrough, and the starter ship
-   waits on it.
-2. **The ledger tool and its test.** Every gap on this page becomes a failing test.
-3. **Titanium's and helium's jobs**, including the landing check if decision 2 goes that way.
-4. **`ascension-compat-jei`'s sources pages.**
-5. **The combat items' recipes and templates**, with the combat session.
-6. **A refactor pass** (ADR-0008).
+**Still open:**
+- How brass upgrades propellers: Aeronautics' own brass propellers (proposed), or a weaker
+  titanium bearing of our own (§4).
+- The four build-path questions in §5.
 
-Planet 3's one client test is separate and can come before or after this, as Sanchit prefers. It
-carries a ship to the Nether by command, so §2.1 does not block it.
+## 9. Order of work
+
+1. **Titanium ingots and the titanium propeller bearing.** It unblocks every survival playthrough
+   and the starter ship.
+2. **Install Just Enough Resources**, and check it on a dedicated server.
+3. **The ledger tool and its test.** Every gap on this page becomes a failing test.
+4. **The build-path contract**, finished from §5 and handed to the combat session.
+5. **`ascension-compat-jei`'s pages.**
+6. **The helium lamp.**
+7. **A refactor pass** (ADR-0008).
+
+Planet 3's client test is separate, and can come before or after any of this.
+
+## Appendix A: what brass and the Nether hold back
+
+Worked out on 2026-10-12 from every recipe and item tag in vanilla 1.21.1, NeoForge, Create 6.0.10
+and the three mods inside Create Aeronautics 1.3.2 (Aeronautics, Simulated, Offroad).
+- **Blocked** means no recipe for it, or for anything it needs, avoids a Nether or End input.
+- **Machines count.** A deployer step needs a deployer, and a deployer needs brass.
+- **Not counted:** scrap outputs and chance-only outputs.
+
+**Why so much is blocked.** Three things sit underneath almost everything below:
+- **Brass:** only a heated mixer makes it, and only a blaze heats one.
+- **Electron tubes:** made from rose quartz, which is made from Nether quartz.
+- **The two big machines:** deployers and mechanical crafters need both of the above. So does
+  everything made on them. That includes **crushing wheels**: without them, Earth has no
+  ore-doubling.
+
+Create can crush diorite into quartz, but only with crushing wheels, so that door is shut on Earth
+too.
+
+### Aeronautics, Simulated, Offroad
+
+| Held back by | Items |
+|---|---|
+| Brass | `propeller_bearing` (getting a titanium recipe), `directional_linked_receiver`, `modulating_linked_receiver`, `redstone_inductor`, `throttle_lever` |
+| Brass and quartz | `smart_propeller`, `gyroscopic_propeller_bearing`, `gyroscopic_mechanism`, `navigation_table`, `analog_transmission`, `docking_connector`, `gimbal_sensor`, `optical_sensor`, `linked_typewriter`, `plunger_launcher`, `redstone_accumulator`, `mounted_potato_cannon`, `rockcutting_wheel` (Offroad) |
+| The End | `levitite_blend` and `end_stone_powder`: levitite, the floating stone, needs End stone and a heated mixer |
+
+**What Earth can build for a ship:**
+- **Lift:** hot-air balloons (the envelopes, and the adjustable burner of iron, andesite alloy,
+  redstone and a coal block).
+- **Steering and structure:** `steering_wheel`, `physics_assembler`, `swivel_bearing`.
+- **Power:** `red_portable_engine`, `steam_vent`.
+- **Sensors:** altitude, velocity and laser sensors.
+- **Rigging:** rope winches and couplings, honey glue, the redstone magnet.
+- **Ground vehicles:** wheels and tyres (Offroad).
+
+### Create
+
+| Held back by | Items |
+|---|---|
+| Brass | brass ingot, nugget, sheet, block and casing; brass hand; `display_link`, `elevator_pulley`, `flywheel`, `pulse_repeater`, `pulse_extender`, `pulse_timer`, `attribute_filter`, `placard`; brass bars, doors, ladders, scaffolding, table cloth |
+| Brass and quartz | **`deployer`, `mechanical_arm`, `mechanical_crafter`, `crushing_wheel`** (and with it every crushed ore, `powdered_obsidian`, `sturdy_sheet`), `precision_mechanism`, brass funnel and tunnel, `smart_chute`, `smart_fluid_pipe`, `sequenced_gearshift`, `rotation_speed_controller`, `content_observer`, `stockpile_switch`, `clockwork_bearing`, `mechanical_roller`, `controls`, `extendo_grip`, `potato_cannon`, `wand_of_symmetry`, `factory_gauge`, **every train part** (`track`, `track_station`, `track_signal`, `track_observer`, `railway_casing`, `schedule`, train doors), `blaze_cake` |
+| The Nether, without brass | `electron_tube` and the rose quartz family, `nixie_tube`, `display_board`, `contraption_controls`, `controller_rail`, `adjustable_chain_gearshift` (all quartz); `empty_blaze_burner` (netherrack); `chocolate` (heated); scoria; the netherite backtank and diving gear |
+
+**What Earth's Create still has:**
+- **Power and transmission:** shafts, cogs, gearboxes, clutches and gearshifts; water wheels,
+  windmills, steam engines.
+- **Processing:** presses, unheated mixers, millstones, fans (washing, smelting, smoking; no
+  haunting), saws, drills, ploughs.
+- **Moving things:** bearings, rope pulleys, gantries, chassis and stickers.
+- **Logistics:** belts, chutes, andesite funnels and tunnels, depots.
+- **Fluids:** pumps, spouts, item drains, fluid tanks.
+- **Control and building:** redstone links, the linked controller, the schematicannon.
+
+### Vanilla items the dormant Nether also holds back
+
+Comparators, observers and daylight detectors (quartz); ender eyes, ender chests, fire charges and
+brewing stands (blaze); redstone lamps and respawn anchors (glowstone); beacons; netherite gear;
+soul torches and lanterns.
+
+Several of these are everyday redstone parts. Since ADR-0018 lets a player go to the Nether
+whenever they can get there, this is the price of a first trip rather than a wall.
