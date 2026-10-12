@@ -1,5 +1,6 @@
 """Authoring helper for the worlds module's raw materials: the Moon's three stones, its helium ore,
-Earth's titanium ore, their raw drops, and the gateway key. No build or runtime dependency.
+Earth's titanium ore, their raw drops, the titanium ingot, and the gateway key. No build or runtime
+dependency.
 
 Run from the repository root:  python tools/generate-moon-materials-art.py
 Needs Pillow. Rewrites every PNG it owns under
@@ -375,6 +376,43 @@ def raw_titanium(rng):
     return img
 
 
+def titanium_ingot():
+    """The smelted metal: a clean bar, where the raw chunk is faceted and pitted. Drawn as a box in
+    oblique view, depth running up and to the right, so its three faces take the light from the
+    top-left: lit top, mid front, shadowed end. Its sheen is the raw chunk's anodised blue-violet,
+    so the two read as one material."""
+    left, length, base, height, depth = 1, 11, 11, 4, 3
+    right = left + length - 1
+    front = {(x, y) for x in range(left, right + 1) for y in range(base - height + 1, base + 1)}
+    top = {(x + d, base - height + 1 - d) for d in range(1, depth + 1) for x in range(left, right + 1)}
+    end = {(right + d, y - d) for d in range(1, depth + 1) for y in range(base - height + 2, base + 1)}
+    end -= top
+    img = new()
+    px = img.load()
+    for (x, y) in top:
+        px[x, y] = TITAN[3] + (255,)
+    for (x, y) in front:
+        px[x, y] = TITAN[2] + (255,)
+    for (x, y) in end:
+        px[x, y] = TITAN[1] + (255,)
+    edge_y = base - height + 1
+    for x in range(left, right + 1):                       # the lit edge where top meets front
+        px[x, edge_y] = mix(TITAN[3], TITAN[2], 0.4) + (255,)
+    for x in range(left, right + 1):                       # bottom rim, turned from the light
+        px[x, base] = mix(TITAN[1], TITAN[2], 0.5) + (255,)
+    px[left + 1, edge_y - 1] = TITAN[4] + (255,)           # specular glint on the near corner
+    px[left + 2, edge_y - 1] = mix(TITAN[4], TITAN[3], 0.5) + (255,)
+    px[left + 6, edge_y + 2] = mix(TINTS[0], TITAN[2], 0.4) + (255,)   # anodised sheen
+    px[left + 7, edge_y + 2] = mix(TINTS[1], TITAN[2], 0.4) + (255,)
+    body = top | front | end
+    for x in range(16):
+        for y in range(16):
+            if (x, y) not in body and any((x + dx, y + dy) in body
+                                          for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                px[x, y] = (30, 30, 44, 255)
+    return img
+
+
 def gateway_key():
     """The Moon boss's drop, in the network's own language: a pale stone key whose bow is the
     gateway's floating eye, with a teal pupil and a run of rune inlay down the shaft."""
@@ -420,6 +458,7 @@ def main():
     put('block/titanium_ore.png', titanium_ore(random.Random(15)))
     put('item/raw_helium.png', raw_helium())
     put('item/raw_titanium.png', raw_titanium(random.Random(16)))
+    put('item/titanium_ingot.png', titanium_ingot())
     put('item/gateway_key.png', gateway_key())
 
     art.sheet(list(made.items()), os.path.join(DESIGN, 'textures.png'))

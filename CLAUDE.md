@@ -94,11 +94,18 @@ crashed under it (the Chunky bug in the M3 plan, root cause open).
 **The road to space is by airship** (ADR-0015, Sanchit 2026-10-11): a Create Aeronautics ship
 climbing past a planet's build height is carried to space with its crew, and one reaching a planet
 in space comes down to it (`ascension-compat-sable`, through `ascension-worlds`' public
-`SpaceTravel` and `AscentCarrier`). Survival players can no longer rise to space on foot. **Seen
+`SpaceTravel` and `AscentCarrier`). Survival players can no longer rise to space on foot. Aeronautics propellers need brass, which
+Create only makes with a Nether blaze, so a titanium recipe for the plain propeller bearing
+(2026-10-12) is what lets a survival ship leave Earth. **Seen
 live 2026-10-11:** Sanchit rode a command-built ship from Earth into space and down onto the Moon;
 not yet seen with a real Aeronautics ship, because no starter ship has been designed. Planets in
 space are drawn as the same lit spheres the skies show. Cataclysm's Earth bosses are held for
 later planets.
+
+**The resource economy** (2026-10-12): `docs/progression/resource-economy.md` says what every
+material is for. **No world is ever required** (ADR-0018): players go where they choose, and
+materials reward rather than unlock. The combat items get League-style build paths across worlds,
+the strong ones finished with a boss's heart; that contract is the combat session's to build.
 
 The history below is M0–M2, kept for context.
 

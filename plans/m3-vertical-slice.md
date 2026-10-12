@@ -57,9 +57,10 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
 5. **A starter airship.** Nobody has an Aeronautics ship design yet (Sanchit, 2026-10-11). One that
    climbs past y 320 in thin air is needed to see the road with a crew aboard and for the
    teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
-   lore art was made. **Blocked, found 2026-10-12:** every Aeronautics propeller needs brass, and
-   Create's brass needs a Blaze Burner, which is Nether-only. A survival player cannot make a
-   propeller on Earth, so cannot cross space at all.
+   lore art was made. **Found 2026-10-12:** every Aeronautics propeller needs brass, and Create's
+   brass needs a Blaze Burner, which is Nether-only, so a survival player could not cross space at
+   all. **Fixed the same day:** a titanium recipe for the plain propeller bearing (below, "The
+   airship road to space"). Brass stays the propeller upgrade.
 6. **The resource economy** (2026-10-12): what titanium and helium are for, how the combat items
    are obtained, loot and JEI, and the brass blocker above.
    [`docs/progression/resource-economy.md`](../docs/progression/resource-economy.md) §8 has seven
@@ -754,6 +755,23 @@ players to build one. Keep propulsion simple: no vacuum, no rockets. Recorded in
 
 - A crew aboard: players going with the ship, and the on-foot message. These need a client.
 - A real Aeronautics ship climbing to y 320 in thin air. No design exists yet; decision 5 above.
+
+**The titanium propeller (2026-10-12).** A survival player could not cross space: every Aeronautics
+propeller needs brass, and Create only makes brass with a Nether blaze
+(`docs/progression/resource-economy.md` §2.1, Appendix A).
+- **What was added:**
+  - Titanium ingots in `ascension-worlds`, smelted or blasted from raw titanium or the ore.
+  - `c:` tags for the ingot, the raw chunk and the ore.
+  - In `ascension-compat-sable`, a second recipe for Aeronautics' plain propeller bearing: three
+    `#c:ingots/titanium` round an iron plate, a wooden slab on top. It only loads with Aeronautics
+    installed. Brass stays the upgrade: the smart and gyroscopic propellers.
+- **Checked on a dedicated server:**
+  - The recipe count went from 3,273 to 3,278, exactly the five new recipes.
+  - `/neoforge tags` shows the ingot in `c:ingots/titanium` and `c:ingots`, and the raw chunk and
+    ore in theirs.
+  - No errors.
+- **Not yet seen:** the ingot in a client, the bearing's recipe in JEI, a ship built with it.
+- ADR-0008 count: the first increment since the last refactor pass.
 
 **Open:**
 

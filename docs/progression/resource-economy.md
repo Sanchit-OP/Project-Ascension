@@ -112,11 +112,17 @@ and build our own JEI pages for what it cannot know (§7).
 
 ### Earth: titanium, the rocket metal
 
-- Raw titanium smelts to **titanium ingots** in a blast furnace. Create's crusher gives its usual
-  bonus, once a player has crushing wheels.
-- **The titanium propeller bearing (decided).** A second recipe for Aeronautics' own plain propeller
-  bearing, with titanium where the brass casing was. It is a data file in the Aeronautics compat
-  jar, with no code. A first ship can now cross space from Earth.
+- **Built 2026-10-12, checked on a dedicated server, not yet seen in a client:**
+  - **Titanium ingots.** Raw titanium or the ore smelts to an ingot in a furnace, or twice as fast
+    in a blast furnace. The ingot carries `#c:ingots/titanium`, the raw chunk
+    `#c:raw_materials/titanium`, and the ore `#c:ores/titanium`.
+  - **The titanium propeller bearing.** A second recipe for Aeronautics' own plain propeller
+    bearing: three titanium ingots round an iron plate, a wooden slab on top. The original uses
+    brass casing.
+    - It lives in `ascension-compat-sable`, loads only when Aeronautics is installed, and asks for
+      `#c:ingots/titanium`.
+    - It is data only, with no code. A first ship can now cross space from Earth.
+  - Create has no crushed titanium, so no ore-doubling for it yet.
 - **Brass as the propeller upgrade (decided).**
   - **How it works now (proposed):** the plain bearing stays one block, and the upgrades are
     Aeronautics' own brass propellers, the smart propeller and the gyroscopic propeller bearing.
@@ -166,7 +172,7 @@ the art contracts work. Everything below the decided lines is a proposal.
 |---|---|---|
 | **Basic** | League's starter components: Long Sword, Dagger, Cloth Armor, Null-Magic Mantle, Ruby Crystal, Amplifying Tome, Boots | One world's refined material, in quantity. For example, a Long Sword from titanium ingots (Earth) or an Amplifying Tome from helium (the Moon). |
 | **Epic** | League's middle components: Pickaxe, B.F. Sword, Recurve Bow, Chain Vest, Negatron Cloak, Phage, Caulfield's Warhammer, and so on | Two or three basics, plus a rarer material from **a different world** than its basics. So every epic touches at least two worlds. |
-| **Legendary** | The 26 items in `combat-api.md` §6 | Two or three epics, plus **a boss's heart** |
+| **Legendary** | The 26 items in `combat-api.md` §6 | Two or three epics. The strong ones, above all those that heal, also need **a boss's heart** (below). |
 
 An illustrative path, not a final recipe. **Darius's Axe** needs three things:
 - **Phage:** a Long Sword (Earth titanium) and a Ruby Crystal, with blaze powder from Planet 3.
@@ -177,7 +183,15 @@ So it takes Earth, the Moon, Planet 3 and a boss.
 
 ### The boss drop
 
-Every boss drops its own heart. The lore already gives the bosses netherite hearts: they are the
+**Decided (Sanchit, 2026-10-12):**
+- **Boots never need a heart.** They are the cheap first item, as in League.
+- **Hearts go into the strong items**, mostly the ones that heal:
+  - The healers: Divine Sunderer, Endless Hunger, Unending Despair and Sterak's Harness.
+  - Tasted Blood heals too, but it is boots, so it needs no heart.
+  - Proposed: also the two that cheat death, Guardian's Wing (revive) and Zonia's Hourglass
+    (stasis).
+
+**Proposed:** every boss drops its own heart. The lore already gives the bosses netherite hearts: they are the
 Sealers' keepers. Each legendary names the heart it needs.
 - **Bosses:** the Warden, the Ender Golem, the Ender Guardian, the Netherite Monstrosity, Ignis and
   the Wither, and later worlds' bosses as they come.
@@ -188,13 +202,23 @@ Sealers' keepers. Each legendary names the heart it needs.
 
 ### Rough cost of one legendary
 
-About five to seven basics, two or three rare materials from other worlds, and one heart (two for
-the strongest items). That is two or three worlds and a boss kill per item.
+About five to seven basics, and two or three rare materials from other worlds. Strong items also
+take one heart, and the strongest two. That is two or three worlds per item, and a boss kill for
+the strong ones.
+
+### Balance and enchantments
+
+**Sanchit, 2026-10-12:** the items need balancing, and they should feel strong. That fits the
+cost: an item that takes three worlds and a boss has to be worth it.
+
+Enchantments still need thinking through: how vanilla's enchantments stack with each item's stats
+and procs. For example, Sharpness on Darius's Axe, Looting next to Collector's Pants, Mending on
+Guardian's Wing. `docs/progression/enchantments.md` holds the open questions. That work belongs to
+the combat session.
 
 ### Still open
 
-- **Boots:** League's boots are the cheap first item. Should ours skip the heart, or take one too?
-- **Hearts:** one per boss (proposed), or one shared?
+- **Hearts:** one per boss (proposed), or one shared? And which strong items take one.
 - **Where items are crafted:** a crafting table to start, so JEI shows every step. A dedicated
   forge block could come later; Planet 5 was imagined as the forge world.
 - **Who builds it:** the combat session, from this contract (proposed), or this session?
@@ -240,21 +264,23 @@ The test from principle 6 runs over the same data.
    (ADR-0018). Helium is not a ship part.
 3. **Where brass opens:** with blazes on Planet 3, as an upgrade, not a wall.
 4. **The combat items:** League-style build paths, materials from different places, very hard to
-   make, with a boss drop needed.
+   make, with a boss drop needed. Boots never need a heart, and hearts go into the strong items,
+   mostly the ones that heal. The items must feel strong, and their balance and how enchantments
+   interact with them come next.
 5. **The first draft's item-to-world table:** replaced by the build paths, where each item draws
    on several worlds.
 6. **Keys without Cataclysm:** keep Cataclysm. The keys stay pack-only.
-7. **Just Enough Resources:** add it.
+7. **Just Enough Resources:** add it. Sanchit is adding it to the instance himself.
 
 **Still open:**
 - How brass upgrades propellers: Aeronautics' own brass propellers (proposed), or a weaker
   titanium bearing of our own (§4).
-- The four build-path questions in §5.
+- The three build-path questions still open in §5.
 
 ## 9. Order of work
 
-1. **Titanium ingots and the titanium propeller bearing.** It unblocks every survival playthrough
-   and the starter ship.
+1. **Titanium ingots and the titanium propeller bearing. Built 2026-10-12** (§4). It unblocks every
+   survival playthrough and the starter ship. It is seen in a client at the next client test.
 2. **Install Just Enough Resources**, and check it on a dedicated server.
 3. **The ledger tool and its test.** Every gap on this page becomes a failing test.
 4. **The build-path contract**, finished from §5 and handed to the combat session.
