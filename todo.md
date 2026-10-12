@@ -135,6 +135,7 @@ Captured during M1.6 testing; none block v0.1.
 - Quest and onboarding design — FTB Quests appears in the mod list with no design behind it. In
   a campaign this authored, the quest book is effectively the game's UI.
 - Multiplayer and server operations
-- Resource ledger — seven gating materials with no single page tracking what each is and which
-  recipes consume it
+- Resource ledger — **drafted 2026-10-12 as
+  [`docs/progression/resource-economy.md`](docs/progression/resource-economy.md)**, with seven
+  decisions waiting on Sanchit. The generated ledger itself comes after those.
 - Testing and playtest plan
