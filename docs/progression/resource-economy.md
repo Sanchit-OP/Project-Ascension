@@ -102,11 +102,11 @@ and build our own JEI pages for what it cannot know (§7).
      already do.
    - The one existing exception, compat-cataclysm's replacement of the Ender Guardian's table,
      gets a written reason.
-6. **One ledger, generated, and checked by the build.**
+6. **One ledger, generated, and checked by the build. Built 2026-10-12** (§6).
    - A tool reads our recipes, loot tables, loot modifiers and ore placements, and writes the
      ledger.
-   - A test fails when one of our items has no source, or one of our materials has no use.
-   - Titanium would have failed that test on the day it was added.
+   - The build fails when one of our items has no source, or one of our materials has no use.
+   - Titanium would have failed that check on the day it was added.
 
 ## 4. Each world's materials
 
@@ -191,13 +191,13 @@ So it takes Earth, the Moon, Planet 3 and a boss.
   - Proposed: also the two that cheat death, Guardian's Wing (revive) and Zonia's Hourglass
     (stasis).
 
-**Proposed:** every boss drops its own heart. The lore already gives the bosses netherite hearts: they are the
+**Decided (Sanchit, 2026-10-12): one heart per boss.** Every boss drops its own heart. The lore already gives the bosses netherite hearts: they are the
 Sealers' keepers. Each legendary names the heart it needs.
 - **Bosses:** the Warden, the Ender Golem, the Ender Guardian, the Netherite Monstrosity, Ignis and
   the Wither, and later worlds' bosses as they come.
 - **Why one heart per boss:** a weapon then means hunting a particular boss, and Sanchit's "more
   grind" means fighting that boss again for every copy.
-- **The alternative:** one shared boss material that every boss drops. Simpler, and any boss farm
+- **Turned down:** one shared boss material that every boss drops. Simpler, and any boss farm
   works, but it makes no difference which boss you fight.
 
 ### Rough cost of one legendary
@@ -218,7 +218,7 @@ the combat session.
 
 ### Still open
 
-- **Hearts:** one per boss (proposed), or one shared? And which strong items take one.
+- **Which strong items take a heart, and whose.** One per boss is decided.
 - **Where items are crafted:** a crafting table to start, so JEI shows every step. A dedicated
   forge block could come later; Planet 5 was imagined as the forge world.
 - **Who builds it:** the combat session, from this contract (proposed), or this session?
@@ -232,11 +232,36 @@ the combat session.
 | Mob and boss drops, including the hearts | `add_table` modifiers. A boss's drop lives in that boss's compat jar, or in ours for vanilla bosses. |
 | Vanilla chests | `add_table` modifiers on vanilla's tables, where a component or a material should turn up |
 
-**The ledger tool:** `tools/resource-ledger.py`. It reads every module's data and writes two things:
-- `docs/progression/resource-ledger.md`, for us: every item, every source, every use.
-- A sources file for our JEI pages (§7).
+**The ledger (built 2026-10-12).** `tools/resource-ledger.py` writes
+[`resource-ledger.md`](resource-ledger.md): every item we register, where a player gets it, and what
+uses it.
 
-The test from principle 6 runs over the same data.
+- **What it reads:** every module's own data. That is recipes, loot tables and loot modifiers, ore
+  features and the biomes they are placed in, planet terrain, structure templates (followed from
+  each structure's start pool through its jigsaw links), and gate ruin sites.
+- **What the data cannot say** lives in `tools/resource-ledger-rules.json`: which items are
+  equipment, which code consumes, the names of structures, and the known gaps with their reasons.
+- **The build runs it with `--check`.** Every module's `check` task fails when:
+  - an item has no source, or a material has no use, and the rules don't excuse it;
+  - the rules excuse something that no longer needs it, so the gap list only shrinks;
+  - a loot modifier isn't registered, so it would never run;
+  - the ledger page is stale.
+- **The JEI sources file** (§7) comes with `ascension-compat-jei`, from the same reading.
+
+**What it found on its first run:**
+- **Both ores dropped only their raw material,** with no Silk Touch drop. So the ore blocks could
+  not be had at all, and the new ore-smelting recipes could never be used. Fixed: Silk Touch now
+  drops the ore, as vanilla's ores do. There is still no Fortune bonus; that is a rarity call.
+- **The Nether planet had no display name,** so the gate destination screen would have shown
+  `planet.ascension_worlds.nether` once its gate was lit. It is "The Nether" now.
+- **27 known gaps:**
+  - the 26 combat items, waiting on the build paths;
+  - raw helium, waiting on its jobs.
+- **Five creative-only blocks, by design:**
+  - the Archive's and the colony halls' unbreakable plinths;
+  - the orrery;
+  - the carved glyph;
+  - the combat session's test blade.
 
 ## 7. JEI: where things come from
 
@@ -282,7 +307,7 @@ The test from principle 6 runs over the same data.
 1. **Titanium ingots and the titanium propeller bearing. Built 2026-10-12** (§4). It unblocks every
    survival playthrough and the starter ship. It is seen in a client at the next client test.
 2. **Install Just Enough Resources**, and check it on a dedicated server.
-3. **The ledger tool and its test.** Every gap on this page becomes a failing test.
+3. **The ledger tool and its check. Built 2026-10-12** (§6). It runs with every build.
 4. **The build-path contract**, finished from §5 and handed to the combat session.
 5. **`ascension-compat-jei`'s pages.**
 6. **The helium lamp.**

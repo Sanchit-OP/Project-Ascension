@@ -40,6 +40,26 @@ tasks.register("runDevClient") {
     dependsOn("$devRunHost:runClient")
 }
 
+// --- The resource ledger ----------------------------------------------------
+//
+// docs/progression/resource-ledger.md is generated from every module's data by
+// tools/resource-ledger.py: each item we register, where a player gets it, what uses it. Every
+// module's `check` (so every `build`) runs it with --check, which fails when an item has no
+// source, a material has no use, or the ledger is stale; the rules file excuses known gaps, with
+// reasons. Titanium was mined for a month with no use; this is what catches that now
+// (docs/progression/resource-economy.md, principle 6). Needs Python 3 on PATH as `python`,
+// standard library only. Half a second, so it always runs.
+val checkResourceLedger = tasks.register<Exec>("checkResourceLedger") {
+    group = "verification"
+    description = "Fails if an item has no source, a material has no use, or the resource ledger is stale."
+    workingDir = rootDir
+    commandLine("python", "tools/resource-ledger.py", "--check")
+}
+
+subprojects {
+    tasks.matching { it.name == "check" }.configureEach { dependsOn(checkResourceLedger) }
+}
+
 tasks.register("moduleReport") {
     group = "ascension"
     description = "Lists Ascension modules and their tier."

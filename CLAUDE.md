@@ -106,6 +106,10 @@ later planets.
 material is for. **No world is ever required** (ADR-0018): players go where they choose, and
 materials reward rather than unlock. The combat items get League-style build paths across worlds,
 the strong ones finished with a boss's heart; that contract is the combat session's to build.
+**Every build runs `tools/resource-ledger.py --check`** (needs Python on PATH): it fails when an item
+we register has no source or a material has no use, and regenerating it rewrites
+`docs/progression/resource-ledger.md`. Known gaps are excused, with reasons, in
+`tools/resource-ledger-rules.json`.
 
 The history below is M0–M2, kept for context.
 
