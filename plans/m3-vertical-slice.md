@@ -773,6 +773,22 @@ propeller needs brass, and Create only makes brass with a Nether blaze
 - **Not yet seen:** the ingot in a client, the bearing's recipe in JEI, a ship built with it.
 - ADR-0008 count: the first increment since the last refactor pass.
 
+**The resource ledger (2026-10-12).** `tools/resource-ledger.py` writes
+`docs/progression/resource-ledger.md` from every module's data.
+- **The build check:** every module's `check` runs it with `--check`, which fails when an item has
+  no source or a material has no use (`resource-economy.md` §6).
+- **Found:**
+  - Both ores lacked a Silk Touch drop, so the ore blocks were unobtainable; fixed.
+  - The Nether planet had no display name for the gate screen; now "The Nether".
+- **Checked:**
+  - Breaking the rule on purpose fails the Gradle build, with a message naming the item.
+  - On a dedicated server, `/loot ... mine` with and without Silk Touch gives the ore block and the
+    raw material, for both ores.
+- **Noticed, not touched:** `keeper_shrine.nbt`, the lore art's shrine (`lore-art-design.md` §8),
+  is finished but nothing places it yet.
+- ADR-0008 count: the second increment since the last refactor pass. **The next increment is a
+  refactor pass.**
+
 **Open:**
 
 - A player who steps off a ship in space falls under ordinary gravity with no way to steer.

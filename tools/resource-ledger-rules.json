@@ -1,0 +1,69 @@
+{
+  "_comment": [
+    "What tools/resource-ledger.py cannot read from the data. Every gap entry needs its reason.",
+    "structures: the name a structure or gate site goes by in the ledger.",
+    "equipment: items a player uses directly, so they need a source but no use. 'namespace:*' matches a module.",
+    "used_by_code: items code consumes, with what it does. They count as used.",
+    "tag_uses: item tags code reads, with what membership does.",
+    "no_source_yet / no_use_yet: known gaps, with the reason and where the fix is planned.",
+    "creative_only: items with no survival source on purpose, and why."
+  ],
+  "structures": {
+    "ascension_worlds:lunar_archive": "the Lunar Archive (the Moon)",
+    "ascension_worlds:nether_colony": "the colonists' halls (the Nether)",
+    "ascension_worlds:sealer_carving": "the Sealer carving (the Nether)",
+    "ascension_worlds:gateway_moon_site": "the Moon's gate ruin",
+    "ascension_worlds:gateway_nether_site": "the Nether's gate ruin",
+    "cataclysm:acropolis": "Cataclysm's Acropolis",
+    "cataclysm:ancient_factory": "Cataclysm's Ancient Factory",
+    "cataclysm:frosted_prison": "Cataclysm's Frosted Prison"
+  },
+  "equipment": {
+    "ascension_combat:*": "weapons and armour",
+    "ascension_atmosphere:oxygen_tank": "carried air",
+    "ascension_worlds:archive_tablet": "read"
+  },
+  "used_by_code": {
+    "ascension_worlds:gateway_key": "Attunes its own planet's gate (GatewayAttunement)",
+    "ascension_worlds:warden_tendril": "Wakes Earth's player-built gate, one tendril per gate (GatewayPortalActivation)"
+  },
+  "tag_uses": {},
+  "no_source_yet": {
+    "ascension_combat:berserkers_greaves": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:collectors_pants": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:darius_axe": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:darken_blade": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:divine_sunderer": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:edge_of_night": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:endless_hunger": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:galeforce": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:gargoyle_stoneplate": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:guardian_wing": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:heartwood_of_pallas": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:mercury_treads": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:mortal_reminder": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:ninja_tabi": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:protean_mask": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:ragefang": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:rocketbelt": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:spear_of_shojin": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:steraks_harness": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:swifty": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:tasted_blood": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:unending_despair": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:veigos_blade": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:wizards_agony": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:wraithblade": "League-style build paths, to be built by the combat session (resource-economy.md §5).",
+    "ascension_combat:zonias_hourglass": "League-style build paths, to be built by the combat session (resource-economy.md §5)."
+  },
+  "no_use_yet": {
+    "ascension_worlds:raw_helium": "Helium's jobs: the Moon's material in the combat build paths, and the helium lamp (resource-economy.md §4, §5)."
+  },
+  "creative_only": {
+    "ascension_combat:test_magic_blade": "The combat session's test item for magic damage, not a player item.",
+    "ascension_worlds:archive_plinth": "Unbreakable: the Lunar Archive holds its tablets on these, and the story reads them in place.",
+    "ascension_worlds:colony_plinth": "Unbreakable: the colonists' halls' plinth, as the Archive's.",
+    "ascension_worlds:archive_orrery": "Unbreakable: the Archive's orrery, its centrepiece.",
+    "ascension_worlds:mark_glyph": "Unbreakable and drops nothing: a glyph of the script cut into the pylon, read in place."
+  }
+}

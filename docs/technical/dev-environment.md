@@ -48,6 +48,9 @@ Two files, one rule each. Never duplicate a version across both.
 - `JAVA_HOME` set at user scope; `%JAVA_HOME%\bin` is first on the user PATH.
 - CurseForge at `C:\Users\sanch\curseforge` — used for production-instance testing.
 - Gradle is not installed system-wide and does not need to be; the wrapper provides it.
+- **Python 3 on PATH as `python`.** Since 2026-10-12 every module's `check`, and so every `build`,
+  runs `tools/resource-ledger.py --check` (standard library only). The art generators in `tools/`
+  also need Pillow.
 
 ### The Java trap, and what was actually wrong
 
