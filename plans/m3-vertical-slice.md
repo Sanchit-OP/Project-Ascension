@@ -57,7 +57,13 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
 5. **A starter airship.** Nobody has an Aeronautics ship design yet (Sanchit, 2026-10-11). One that
    climbs past y 320 in thin air is needed to see the road with a crew aboard and for the
    teaching path (a sky-dock ruin with its schematic). Possibly its own design session, the way the
-   lore art was made.
+   lore art was made. **Blocked, found 2026-10-12:** every Aeronautics propeller needs brass, and
+   Create's brass needs a Blaze Burner, which is Nether-only. A survival player cannot make a
+   propeller on Earth, so cannot cross space at all.
+6. **The resource economy** (2026-10-12): what titanium and helium are for, how the combat items
+   are obtained, loot and JEI, and the brass blocker above.
+   [`docs/progression/resource-economy.md`](../docs/progression/resource-economy.md) §8 has seven
+   decisions.
 
 **Next: Planet 3's art session, then one client test of the whole world** (Sanchit, 2026-10-11:
 "i want to add all the things needed in this world and see it all at once"). The logic is built
