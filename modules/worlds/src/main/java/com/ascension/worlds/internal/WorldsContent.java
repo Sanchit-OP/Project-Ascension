@@ -218,6 +218,16 @@ public final class WorldsContent {
             "raw_titanium", () -> new Item(new Item.Properties()));
 
     /**
+     * Smelted from {@link #RAW_TITANIUM}. Its first job is the ship: a titanium recipe for Create
+     * Aeronautics' propeller bearing ({@code ascension-compat-sable}), so a first ship can cross
+     * space without brass, which Create only makes with a Nether blaze
+     * ({@code docs/progression/resource-economy.md}). Other modules ask for it as
+     * {@code #c:ingots/titanium}, never by id.
+     */
+    public static final Supplier<Item> TITANIUM_INGOT = ITEMS.register(
+            "titanium_ingot", () -> new Item(new Item.Properties()));
+
+    /**
      * What wakes Earth's player-built gateway frame (Sanchit's call, 2026-10-05). Dropped by the
      * Warden via a NeoForge {@code add_table} loot modifier
      * ({@code data/ascension_worlds/loot_modifiers/warden_tendril.json}), so vanilla's own Warden
@@ -323,6 +333,7 @@ public final class WorldsContent {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(RAW_HELIUM.get());
             event.accept(RAW_TITANIUM.get());
+            event.accept(TITANIUM_INGOT.get());
             event.accept(WARDEN_TENDRIL.get());
             event.accept(GATEWAY_KEY.get());
         }

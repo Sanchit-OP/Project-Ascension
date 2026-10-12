@@ -29,6 +29,7 @@ render, and that render was never committed.
 | `titanium_ore` | silver grains with an anodised blue-violet sheen, in dark strata | Anodised titanium shows exactly those colours. |
 | `raw_helium` | three crystals rising out of a lump of host rock | |
 | `raw_titanium` | a faceted, lobed chunk with matrix pits | A raw chunk, not a smooth nugget. |
+| `titanium_ingot` | a clean bar seen from the front and a little above: lit top, mid front, shadowed end, two pixels of the raw chunk's blue-violet sheen | The smelted metal, so smooth where the raw chunk is pitted. A box in oblique view, computed from its three faces, not vanilla's diagonal ingot. Added 2026-10-12 for the titanium propeller (`docs/progression/resource-economy.md`). |
 | `gateway_key` | a pale stone key whose bow is the gateway's floating eye, teal pupil, rune inlay down the shaft | The network's motif (`gateway-portal-design.md`), so the boss's drop and the gate it opens visibly belong together. |
 
 **One material, two finishes.** Raw anorthosite and lunar basalt use the same palettes as the
@@ -72,4 +73,5 @@ is out of date as of this change. It is left for whoever next edits that doc.
 - [ ] Highland cliffs (anorthosite) and mare floors (basalt): no loud repetition.
 - [ ] Helium ore in a dark cave: crystals glow, no z-fighting between the two layers.
 - [ ] Titanium ore at y < 0 on Earth: sits naturally in deepslate.
-- [ ] Items in the inventory and in hand: raw helium, raw titanium, gateway key all read at a glance.
+- [ ] Items in the inventory and in hand: raw helium, raw titanium, the titanium ingot, gateway key
+  all read at a glance. The ingot should read as a bar, not a pill.
