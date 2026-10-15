@@ -1,0 +1,9 @@
+{
+  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15.",
+  "values": {
+    "minecraft:netherite_helmet": { "stats": { "health": 10 } },
+    "minecraft:netherite_chestplate": { "stats": { "health": 10 } },
+    "minecraft:netherite_leggings": { "stats": { "health": 10 } },
+    "minecraft:netherite_boots": { "stats": { "health": 10 } }
+  }
+}

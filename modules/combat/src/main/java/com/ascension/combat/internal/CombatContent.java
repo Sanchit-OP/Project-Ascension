@@ -1,7 +1,9 @@
 package com.ascension.combat.internal;
 
 import com.ascension.combat.AscensionCombat;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -213,10 +215,8 @@ public final class CombatContent {
      * 4), the first item in the catalog that does &mdash; see
      * {@link com.ascension.combat.internal.mechanics.CombatStateTracking}, stood up alongside this
      * item since it's the first real consumer. Applied by
-     * {@link com.ascension.combat.internal.armor.ProteanMaskEffects}. Its material is {@link
-     * ArmorMaterials#DIAMOND} in every number &mdash; same placeholder reasoning every weapon in
-     * this catalog uses {@link Tiers#DIAMOND} for &mdash; but its own on the body: see {@link
-     * #armor}.
+     * {@link com.ascension.combat.internal.armor.ProteanMaskEffects}. Its material gives no
+     * vanilla armour and is its own on the body: see {@link #armor}.
      */
     public static final Supplier<Item> PROTEAN_MASK = ITEMS.register(
             "protean_mask",
@@ -402,21 +402,30 @@ public final class CombatContent {
     }
 
     /**
-     * An armor item with its own material: {@link ArmorMaterials#DIAMOND}'s numbers, copied
-     * rather than restated so no stat can drift from where it was, and its own look on the body,
+     * An armor item with its own material and its own look on the body,
      * {@code textures/models/armor/<id>_layer_1.png} (helmets, chestplates, boots) or
      * {@code _layer_2.png} (leggings), drawn by tools/generate-combat-art.py. One material per
      * item because each is its own League item, not one piece of a set. The material registers
      * now, with the class; the item reads it lazily ({@link ArmorItem} memoizes its modifiers),
      * so registry event order doesn't matter.
+     *
+     * <p>No vanilla armour or toughness (2026-10-15): vanilla armour now converts into combat's
+     * stats (docs/technical/item-stats.md section 5), and borrowing diamond's would have handed
+     * every piece here diamond's Armor, Magic Resist and Health on top of its own. Its stats come
+     * from its effects class, and later from data. Enchantability, sound and repair stay
+     * {@link ArmorMaterials#DIAMOND}'s.
      */
     private static Supplier<Item> armor(String id, ArmorItem.Type type) {
         Holder<ArmorMaterial> material = ARMOR_MATERIALS.register(id, () -> {
             ArmorMaterial diamond = ArmorMaterials.DIAMOND.value();
-            return new ArmorMaterial(diamond.defense(), diamond.enchantmentValue(), diamond.equipSound(),
+            Map<ArmorItem.Type, Integer> noDefense = new EnumMap<>(ArmorItem.Type.class);
+            for (ArmorItem.Type each : ArmorItem.Type.values()) {
+                noDefense.put(each, 0);
+            }
+            return new ArmorMaterial(noDefense, diamond.enchantmentValue(), diamond.equipSound(),
                     diamond.repairIngredient(),
                     List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, id))),
-                    diamond.toughness(), diamond.knockbackResistance());
+                    0.0f, 0.0f);
         });
         return () -> new ArmorItem(material, type, new Item.Properties());
     }
