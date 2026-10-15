@@ -1,9 +1,13 @@
 # Player power: where a player's stats come from
 
-> **Draft for discussion, 2026-10-15. Nothing here is decided.** Sanchit paused the combat items'
-> build paths (`resource-economy.md` §5) to settle what sits under them first: how a player gains
-> HP and the other stats during play, and a rune system worth using. The combat module is the
-> parallel combat session's (ADR-0012). This page only proposes, and changes no combat code.
+> **Draft for discussion, 2026-10-15.** Sanchit's answer to decision 1, the same day: the work goes
+> to three new sessions, using the prompts in `plans/session-prompts/`. Stats for every item, runes
+> and growth. Build paths come after. The rest of this page is their starting point, not a
+> decision.
+>
+> Sanchit paused the combat items' build paths (`resource-economy.md` §5) to settle what sits under
+> them first: how a player gains HP and the other stats during play, and a rune system worth using.
+> This page only proposes, and changes no combat code.
 
 ## 1. What exists today
 
