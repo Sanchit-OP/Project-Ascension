@@ -179,6 +179,8 @@ last committed on 2026-10-08.
 3. **Co-op growth:** each player who fought, or the whole team (recommended, since it fixes the
    late-joiner gap)?
 4. **Vanilla armour:** count it again at a fixed rate (recommended), or leave it cosmetic?
+   *Answered 2026-10-15: it counts again. Each armour point gives 3.5 Armor and 2.5 Magic Resist,
+   each toughness point 2.5 Health, and netherite +10 Health a piece (`item-stats.md` §5).*
 5. **Runes:**
    - Three keystones per path, with two rows of three minors? Or keep one keystone?
    - Stat shards?

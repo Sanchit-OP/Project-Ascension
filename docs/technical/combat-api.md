@@ -98,13 +98,14 @@ build**, so the rune and growth sessions can write against it. It lands in incre
 - **The stats** are `com.ascension.combat.api.stat.CombatStats`: `HEALTH`, `ATTACK_DAMAGE`,
   `ATTACK_SPEED`, `MOVE_SPEED`, `ARMOR`, `MAGIC_RESIST`, `OMNIVAMP`, `LETHALITY`,
   `ARMOR_PENETRATION` and `MAGIC_PENETRATION`.
-- **Read them** only through `StatReader`: `total`, `base` and `bonus`, plus `breakdown` per
-  source. Never read an attribute directly for gameplay.
-- **Base** is the entity's own value, a held weapon's own damage and speed, growth, and mob data.
-  **Bonus** is everything else: item stats, converted vanilla armour, runes and potions.
+- **Read them** only through `StatReader.value(entity, stat)`, which gives the total, and
+  `breakdown` per source for display. Never read an attribute directly for gameplay.
+- **There is no base/bonus split** (Sanchit, 2026-10-15). An item that scales "off Attack Damage"
+  reads the total. A bare hand is 1, and everything else adds to that.
 - **Give a stat** with an attribute modifier on `CombatStat#attribute()`. Its id must start with a
-  prefix registered through `StatSources.register(prefix, layer, label)`. Growth registers as
-  `BASE`, runes as `BONUS`. An unregistered modifier counts as bonus and shows as "Other".
+  prefix registered through `StatSources.register(prefix, label)`, for example
+  `ascension_combat:growth/` labelled "Growth". An unregistered modifier shows as "Other" on the
+  character sheet.
 
 **Requested stats.** Another session that needs a stat adds a line here, or asks through Sanchit.
 The stats session adds it to `CombatStats`. Nobody else registers attributes.
