@@ -68,9 +68,10 @@ stats over the game, and possibly a skill tree so different players grow in diff
 ## Working beside other sessions
 
 Two other sessions start at the same time.
-- **Stats (prompt 1)** owns the stat definitions and the API for reading stats, including base
-  versus bonus. Growth adds to a player's base stats through that API. Agree with that session,
-  through Sanchit, how growth's stats count, and ask it for any new stat rather than adding one.
+- **Stats (prompt 1)** owns the stat definitions and the API for reading stats
+  (`combat-api.md` §3, `item-stats.md` §6). There is no base/bonus split: items scale off a stat's
+  total (Sanchit, 2026-10-15). Growth gives stats as attribute modifiers under a prefix it
+  registers with `StatSources`. Ask that session for any new stat rather than adding one.
 - **Runes (prompt 2)** builds the rune system and a professional rune screen. Keep the boundary
   clear:
   - **growth:** permanent;

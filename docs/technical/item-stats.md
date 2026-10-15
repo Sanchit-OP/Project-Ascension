@@ -1,16 +1,16 @@
 # Item stats: one system for every item
 
-> **Design, 2026-10-15.** Not built yet. The decisions waiting on Sanchit are in §11. The
-> structural choice is [ADR-0019](../decisions/0019-item-stats-are-data.md), proposed until he
-> answers.
+> **Design, 2026-10-15. Sanchit answered the four decisions the same day** (§11). Not built yet.
+> The structural choice is [ADR-0019](../decisions/0019-item-stats-are-data.md).
 >
 > Sanchit, 2026-10-15: *"we cant really only have our items have stats … either it comes from diff
 > mod or not doesnt matter i need a unified system."*
 
 **In one paragraph:** every item's stats come from one data file, keyed by item or by tag, for
-vanilla's items, ours and other mods' alike. Any armour from any mod counts as our Armor through a
-conversion rate, with no file needed. Stats are read through one API, which splits base from
-bonus. Nothing ticks, and nothing needs a mixin.
+vanilla's items, ours and other mods' alike. Any armour from any mod gives Armor, Magic Resist and
+Health through conversion rates, with no file needed. Stats are read through one API, as totals:
+items scale off your total Attack Damage, never a base/bonus split. Nothing ticks, and nothing
+needs a mixin.
 
 ## 1. What NeoForge 1.21.1 gives us
 
@@ -39,8 +39,8 @@ Checked against the NeoForge 21.1.249 source this project builds with, not again
   - `ItemTooltipEvent` can add our own lines anywhere in the tooltip, including the top.
 - **Modifier ids tell you where a stat came from.** An attribute keeps each modifier under its own
   id. NeoForge marks a weapon's own damage and speed as "base" modifiers, the green tooltip
-  numbers: `minecraft:base_attack_damage` and `minecraft:base_attack_speed`. Base versus bonus
-  (§6) builds on that.
+  numbers: `minecraft:base_attack_damage` and `minecraft:base_attack_speed`. The character sheet's
+  sources (§7) build on that.
 
 ### What doesn't, and the traps
 
@@ -78,8 +78,8 @@ Checked against the NeoForge 21.1.249 source this project builds with, not again
 | Part | What it is | Where |
 |---|---|---|
 | **Stat definitions** | The ten stats, their short names in data, how each is written | Code, `combat.api.stat` |
-| **Item stats** | Per item or per tag: a weapon's own numbers and bonus stats | Data map on items |
-| **Conversions** | "Each vanilla armour point is worth N of our Armor", for every mod's armour at once | Data map on attributes |
+| **Item stats** | Per item or per tag: a weapon's own attack and any added stats | Data map on items |
+| **Conversions** | "Each vanilla armour point is worth N Armor and M Magic Resist", for every mod's armour at once | Data map on attributes |
 | **Mob stats** | Per entity type or per tier tag | Data map on entity types |
 
 One code path applies item stats: an `ItemAttributeModifierEvent` listener that looks up the item
@@ -94,8 +94,8 @@ These are the stat definitions this session owns. Other sessions ask for new one
 |---|---|---|---|---|
 | `health` | Health | vanilla max health | `4` = +4 health (2 hearts) | flat |
 | `attack_damage` | Attack Damage | vanilla attack damage | `5` = +5 | flat |
-| `attack_speed` | Attack Speed | vanilla attack speed | `20` = +20% | % of base, summed |
-| `move_speed` | Move Speed | vanilla movement speed | `10` = +10% | % of base, summed |
+| `attack_speed` | Attack Speed | vanilla attack speed | `20` = +20% | % of the weapon's speed, summed |
+| `move_speed` | Move Speed | vanilla movement speed | `10` = +10% | % of walking speed, summed |
 | `armor` | Armor | combat's own | `40` = +40 | flat |
 | `magic_resist` | Magic Resist | combat's own | `40` = +40 | flat |
 | `omnivamp` | Omnivamp | combat's own | `8` = 8% | flat |
@@ -104,7 +104,7 @@ These are the stat definitions this session owns. Other sessions ask for new one
 | `magic_penetration` | Magic Penetration | combat's own | `15` = 15% | flat |
 
 - **Percent stats are written as you say them:** `8` means 8%, not 0.08.
-- **Attack Speed and Move Speed bonuses add up first, then scale the base.** Two +20% bonuses make
+- **Attack Speed and Move Speed bonuses add up first, then scale the speed.** Two +20% bonuses make
   +40%, as in League. Today Berserker's Greaves multiplies instead. The move to data fixes that.
 
 ## 4. The item data
@@ -127,15 +127,16 @@ These are the stat definitions this session owns. Other sessions ask for new one
 }
 ```
 
-(The axe and shield lines show the format. They are not proposed numbers.)
+(These lines show the format. None of them is a proposed number.)
 
 **An entry has three optional parts:**
 
-- **`weapon`**: the weapon's own numbers, written as the tooltip shows them.
-  - `damage`: a diamond sword is 7.
+- **`weapon`**: the weapon's own attack, written as the tooltip shows it.
+  - `damage`: a diamond sword is 7, which includes the 1 a bare hand does.
   - `speed`: attacks per second; a sword is 1.6.
-  - These replace the item's own numbers and count as **base** (§6).
-- **`stats`**: any stat from §3, by name. These count as **bonus**.
+  - These replace the item's own numbers. Speed needs its own place: a weapon's speed is attacks
+    per second, while `attack_speed` in `stats` is a percentage bonus.
+- **`stats`**: any stat from §3, by name, added on top.
 - **`slot`**: where the stats count. One of `mainhand`, `offhand`, `hand`, `head`, `chest`, `legs`,
   `feet`, `armor` or `any`. Without it, armour counts in its armour slot and everything else in the
   main hand.
@@ -163,67 +164,74 @@ These are the stat definitions this session owns. Other sessions ask for new one
 
 ## 5. Vanilla armour counts again
 
+**Sanchit's rates, 2026-10-15:**
+- each armour point gives **3.5 Armor and 2.5 Magic Resist**;
+- each toughness point gives **2.5 Health**.
+
 `data/ascension_combat/data_maps/attribute/stat_conversions.json`:
 
 ```json
 {
   "values": {
-    "minecraft:generic.armor": { "stat": "armor", "per_point": 5 },
-    "minecraft:generic.armor_toughness": { "stat": "armor", "per_point": 5 }
+    "minecraft:generic.armor": { "armor": 3.5, "magic_resist": 2.5 },
+    "minecraft:generic.armor_toughness": { "health": 2.5 }
   }
 }
 ```
 
-**Any item, from any mod, whose own modifiers give vanilla armour now gives our Armor at this rate.**
-No file per item is needed: Cataclysm's armour, Create's diving gear and horse armour all count
-automatically. An item whose data names `armor` skips the conversion (rule 2).
+**Any item, from any mod, whose own modifiers give vanilla armour or toughness now gives our stats
+at these rates.** No file per item is needed: Cataclysm's armour, Create's diving gear and horse
+armour all count automatically.
 
+- **Each item's result is rounded down**, so every tooltip shows whole numbers. A diamond helmet's 3
+  armour points give 10 Armor, not 10.5.
+- **An item whose data names a stat skips that stat's conversion** (rule 2). That is how netherite
+  gets more Health than its toughness alone gives (below).
 - **Vanilla's own Armor and Toughness lines are hidden from the tooltip**, so a chestplate never
   shows two different "Armor" numbers.
 - Vanilla's armour bar above the hotbar still shows. It still rises with better armour.
 - Protection enchantments keep working as they do today. They were never part of this.
 
-**Proposed rate:** 5 Armor for every armour point and every toughness point. Every 100 Armor
-halves physical damage (`combat-api.md` §3).
+**Netherite's own line.** Sanchit wants a diamond set to give +20 Health and a netherite set +40.
+- A diamond piece has 2 toughness, so the rate gives it +5 Health and the set +20.
+- A netherite piece has 3 toughness, which the rate would turn into +7.
+- So each netherite piece names its own `"health": 10` in the item data. That makes the set +40.
 
-| Full set | Armour points | Toughness | Our Armor | Physical damage taken |
-|---|---|---|---|---|
-| Leather | 7 | 0 | 35 | 78% |
-| Gold | 11 | 0 | 55 | 68% |
-| Chainmail | 12 | 0 | 60 | 66% |
-| Iron | 15 | 0 | 75 | 59% |
-| Diamond | 20 | 8 | 140 | 38% |
-| Netherite | 20 | 12 | 160 | 33% |
+Every 100 Armor or Magic Resist halves the damage of its type (`combat-api.md` §3).
 
-- **Toughness has to count for something.** Without it, netherite and diamond are equal, since
-  both are 20 armour points.
-- **Toughness goes to Armor, not Magic Resist.** Magic Resist only reduces combat's weapon procs.
-  On a player it would only matter against another player.
-- **For comparison:** vanilla's diamond set stops 60–80% of a hit; this stops 62%. A boss's
-  100 Armor sits between iron and diamond. One number in one file changes it all.
-- **Mobs wearing armour gain Armor the same way**, as they gain protection from it in vanilla. A
-  zombie in an iron chestplate gets +30.
+| Full set | Armour points | Toughness | Armor | Magic Resist | Health | Physical damage taken |
+|---|---|---|---|---|---|---|
+| Leather | 7 | 0 | 23 | 16 | — | 85% |
+| Gold | 11 | 0 | 37 | 26 | — | 77% |
+| Chainmail | 12 | 0 | 41 | 29 | — | 75% |
+| Iron | 15 | 0 | 52 | 37 | — | 70% |
+| Diamond | 20 | 8 | 69 | 49 | +20 | 62% |
+| Netherite | 20 | 12 | 69 | 49 | +40 | 62% |
 
-## 6. Base versus bonus, and the one way to read a stat
+- **These numbers land close to vanilla's survival.** Count damage taken and health together:
+  - in diamond, about 65 raw physical damage kills you (40 health, 62% of each hit taken);
+  - in vanilla diamond, it takes 50 to 100, depending on how big each hit is;
+  - in netherite, about 97. Big hits get through vanilla's armour more, and ours treats every hit
+    the same.
+- **Magic Resist counts later.** Today it only reduces combat's weapon procs. Sanchit plans magic
+  damage for some bosses.
+- **A boss's 100 Armor is above any vanilla set.** The planets' bosses stay a real threat.
+- **Putting armour on raises your maximum health but does not heal you**, as vanilla health
+  bonuses behave. You regenerate into it. Healing on equip would let a player swap armour mid-fight
+  to heal.
+- **Mobs wearing armour gain the same stats**, as they gain protection from it in vanilla. A
+  zombie in an iron chestplate gets +21 Armor and +15 Magic Resist.
 
-League items often scale off *bonus* stats: "deal 50% of your bonus Attack Damage". So every stat
-splits in two.
+## 6. Reading stats: totals only
 
-**Base** is what the player is:
-- the entity's own value: a player's 20 health and 1 Attack Damage, and 0 Armor;
-- **the held weapon's own damage and speed**, the `weapon` part of its data. These are vanilla's
-  green tooltip numbers: a weapon is your attack in Minecraft, as a champion's base attack is in
-  League;
-- growth, which the growth session adds;
-- a mob's stats from mob data (§9).
+**Sanchit, 2026-10-15: no base/bonus split.** League items often scale off *bonus* Attack Damage.
+Ours scale off **your total Attack Damage**, "Attack Damage scaling", so nobody has to know which
+part is which.
+- A bare hand is 1 Attack Damage.
+- Everything else adds to that: the weapon, items' stats, growth, runes, potions.
+- An item that "deals 50% of your Attack Damage" reads one number.
 
-**Bonus** is what the build adds:
-- items' `stats`, and the converted vanilla armour;
-- runes;
-- potions, and anything else.
-
-**Total = base + bonus.** With percentage modifiers, bonus is defined as total minus base, the same
-as League's.
+The same holds for every stat: a stat is one total.
 
 ### The API, `com.ascension.combat.api.stat`
 
@@ -241,25 +249,22 @@ public final class CombatStats {
 
 // The one place stats are read, on either side.
 public final class StatReader {
-    public static double total(LivingEntity entity, CombatStat stat);
-    public static double base(LivingEntity entity, CombatStat stat);
-    public static double bonus(LivingEntity entity, CombatStat stat);
-    public static StatBreakdown breakdown(LivingEntity entity, CombatStat stat); // per source
+    public static double value(LivingEntity entity, CombatStat stat);                 // the total
+    public static StatBreakdown breakdown(LivingEntity entity, CombatStat stat);      // per source
 }
 
-public enum StatLayer { BASE, BONUS }
-
-// Lets another system say what its modifiers are. Unregistered modifiers count as bonus.
+// Names another system's modifiers on the character sheet. Unregistered ones show as "Other".
 public final class StatSources {
-    public static void register(ResourceLocation modifierIdPrefix, StatLayer layer, Component label);
+    public static void register(ResourceLocation modifierIdPrefix, Component label);
 }
 ```
 
 **The contract for the rune and growth sessions:**
 - **Give a stat** by adding an attribute modifier to the stat's attribute (`CombatStat#attribute`).
-  Its id must start with a prefix you registered with `StatSources`. Growth registers as `BASE`,
-  runes as `BONUS`.
-- **Read stats only through `StatReader`.** Never read an attribute directly for gameplay.
+  Its id must start with a prefix you registered with `StatSources`, such as
+  `ascension_combat:growth/` labelled "Growth".
+- **Read stats only through `StatReader.value`.** Never read an attribute directly for gameplay.
+  Items that scale do it off the total.
 - **Ask for a new stat** in `combat-api.md` §3, "Requested stats". Don't register attributes
   yourself.
 
@@ -270,23 +275,27 @@ label, and "Other" for the rest. That is what the character sheet shows (§7).
 
 ### Tooltips: League's stat block
 
+**Sanchit, 2026-10-15:** take League's item cards as the inspiration. A held item's stats count
+while it is in the main hand.
+
 Every item with stats gets a block of stat lines **at the top of its tooltip, under the name**, as
 League's item cards have them:
 
 ```
 Darius's Axe
-8 Attack Damage          <- the weapon's own, white
+In main hand
+8 Attack Damage          <- the weapon's own attack, white
 1.0 Attack Speed
-+4 Attack Damage         <- bonus, coloured by stat
++4 Attack Damage         <- added stats, coloured by stat
 +4 Health
 +15% Armor Penetration
-When held
 ```
 
 - **One colour per stat, the same on the character sheet:** Attack Damage orange, Attack Speed
   yellow, Health green, Armor gold, Magic Resist blue, Omnivamp red, Lethality and Armor
   Penetration dark orange, Magic Penetration violet, Move Speed white.
-- A small grey line says where the stats count: "When held", "When worn" or "In off hand".
+- **A small grey line says where the stats count:** "In main hand", "When worn" or "In off hand".
+  A weapon's stats count in the main hand only.
 - **Vanilla's "When in Main Hand: 7 Attack Damage" block is replaced** by this for every item that
   has stats, vanilla's and other mods' included.
 - Attributes we don't know, such as another mod's reach or knockback resistance, still print below
@@ -296,10 +305,9 @@ When held
 
 Each row gains its sources.
 
-- **Hover a stat to see where it comes from.** For example: "Armor 145: Netherite set 130 ·
-  Growth 15".
-- **Stats a League item can scale from show base + bonus**, as League's own stat panel does:
-  "Attack Damage 14 (8 + 6)".
+- **Hover a stat to see where it comes from.** For example: "Armor 84: Netherite set 69 · Growth
+  15", or "Attack Damage 12: bare hand 1 · Netherite Sword 7 · Runes 4".
+- **The main-hand item counts**, whatever it is, and shows as its own line.
 - This fixes the sheet's Attack Damage line, which today shows 1 whatever you hold (trap 4 in §1).
 
 ## 8. Other mods' items
@@ -323,7 +331,8 @@ Tier 1 code never names another mod (ADR-0003).
 
 ## 9. Mobs in the same data
 
-**Proposed:** `MobStats`' hard-coded tiers become data.
+**Sanchit, 2026-10-15: yes.** `MobStats`' hard-coded tiers become data. (The Warden line below
+shows the format, not a proposed number.)
 
 - **The tiers become entity tags:** `ascension_combat:tier/swarm`, `light`, `medium`, `heavy` and
   `boss`. NeoForge's `#c:bosses` is included in `boss`, so any mod's boss that tags itself gets boss
@@ -362,27 +371,30 @@ Tier 1 code never names another mod (ADR-0003).
 - **Data over code.** A new mod's item, a retuned rate or a new mob is a JSON edit (ADR-0007
   rule 10).
 
-## 11. Decisions for Sanchit
+## 11. Decisions
 
-Asked 2026-10-15. Each has a recommendation first.
+**Answered by Sanchit, 2026-10-15:**
 
-1. **Vanilla armour's rate.** 5 Armor for every armour and toughness point, so a diamond set is
-   140 Armor (recommended)? Or toughness becomes Magic Resist instead? Or vanilla armour stays
-   cosmetic?
-2. **Base versus bonus.** A held weapon's own damage counts as base, and everything else as bonus
-   (recommended)? Or all of an item's Attack Damage is bonus, leaving only the player's own 1 as
-   base?
-3. **Tooltips.** League's stat block at the top, replacing vanilla's "When in Main Hand" lines
-   (recommended)? Or keep vanilla's lines and only format ours?
-4. **Mobs.** Move mob stats into the same data, with tiers as tags (recommended)? Or leave
-   `MobStats` in code?
+1. **Vanilla armour.** He chose his own numbers over the proposed 5 Armor per armour and
+   toughness point:
+   - each armour point is worth 3.5 Armor and 2.5 Magic Resist, rounded down per item;
+   - each toughness point is worth 2.5 Health;
+   - netherite pieces carry their own +10 Health each, so a diamond set gives +20 and a
+     netherite set +40.
+
+   Magic Resist will matter once some bosses deal magic damage (§5).
+2. **Base versus bonus: neither.** Items scale off total Attack Damage. A bare hand is 1 (§6).
+3. **Tooltips:** League's item cards are the inspiration. A held item's stats count in the main
+   hand (§7).
+4. **Mobs:** into the same data, with tiers as tags (§9).
 
 **Asked later, when the work reaches them:**
 
-5. **Our 26 items' starting numbers.** Proposed: League's own numbers, scaled.
+5. **Our 26 items' starting numbers.** These will be sized against the armour numbers above,
+   which now set what a full set is worth. Proposed: League's own numbers, scaled.
    - Armor, Magic Resist and every percentage stay as League has them. Our curve equals League's
      at 100: both halve damage there.
-   - Attack Damage is divided by 10, and Health by 100.
+   - Attack Damage and Health get scaled down to Minecraft's size.
    - Then you tune by playing, as always.
 6. **Extras for vanilla weapons**, for example Lethality on axes. Optional, and one line of data
    each.
@@ -394,10 +406,10 @@ A refactor pass comes every third increment.
 
 | # | Increment | Seen working when |
 |---|---|---|
-| 1 | **Vanilla armour counts.** The stat definitions, the item and conversion data maps (synced), the item listener, the item-beats-tag merge (unit-tested), and refreshing worn gear on `/reload` | In iron armour the sheet shows 75 Armor and a zombie's hit lands softer. On a dedicated server the numbers survive a reconnect. After `/reload` with a new rate, worn armour changes |
-| 2 | **The reading API, and the sheet's sources.** `StatReader`, `StatSources`, Attack Damage synced | The sheet shows a diamond sword's 7 Attack Damage and lists each stat's sources |
+| 1 | **Vanilla armour counts.** The stat definitions, the item and conversion data maps (synced), the item listener, the item-beats-tag merge (unit-tested), netherite's Health lines, and refreshing worn gear on `/reload` | In iron the sheet shows 52 Armor and 37 Magic Resist, and a zombie's hit lands softer. In diamond max health is 40, and in netherite 60. On a dedicated server the numbers survive a reconnect. After `/reload` with a new rate, worn armour changes |
+| 2 | **The reading API, and the sheet's sources.** `StatReader`, `StatSources`, Attack Damage synced | The sheet shows 7 Attack Damage holding a diamond sword (its 6 plus a bare hand's 1), as its tooltip says and lists each stat's sources |
 | 3 | **Refactor pass** | |
-| 4 | **League-style tooltips** | A diamond chestplate shows "+50 Armor" once. A modded sword shows its stat block |
+| 4 | **League-style tooltips** | A diamond chestplate shows +28 Armor, +20 Magic Resist and +5 Health, once each. A modded sword shows its stat block |
 | 5 | **Our 26 items into data.** The per-tick boot rules go, and our armour stops borrowing diamond's numbers | Each item's tooltip and the sheet agree with its data line. Ninja Tabi gives 15 Armor exactly once |
 | 6 | **Refactor pass** | |
 | 7 | **Mobs into data**, Cataclysm's bosses included | Jade shows the same Armor and Magic Resist as before, from data. A tag edit plus `/reload` changes a live mob |
