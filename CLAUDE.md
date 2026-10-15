@@ -64,7 +64,7 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
   discretionary.
 - Every milestone ends with a recorded measurement in `docs/technical/performance-log.md`.
 
-## Current state (2026-10-11)
+## Current state (2026-10-15)
 
 Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behaviour).
 **`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
@@ -87,8 +87,8 @@ tendril drop and crafting Earth's keystone, the Cataclysm bosses' armour fix, an
 Observers, the trap, the mark, Tacita. **Planet 3 (M3.3) is the real Nether, opened to the sky**
 (ADR-0017): reached by airship, wear gold against the rot. Its logic is built and checked headless
 (roofless terrain, the rot, the gate ruin in the warped forest, the Monstrosity's key, seven tablets
-in the voice); its art goes to a design session (`nether-art-format.md`), and Sanchit sees the
-whole world in one client test after that. The Moon is at 4,000 blocks (2026-10-11). **Background pre-generation is off by default** since a fresh server
+in the voice); its art was made by a design session and merged (`nether-art-design.md`), and
+next is one client test of the whole world. The Moon is at 4,000 blocks (2026-10-11). **Background pre-generation is off by default** since a fresh server
 crashed under it (the Chunky bug in the M3 plan, root cause open).
 
 **The road to space is by airship** (ADR-0015, Sanchit 2026-10-11): a Create Aeronautics ship

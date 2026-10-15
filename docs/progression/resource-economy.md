@@ -1,6 +1,6 @@
 # The resource economy
 
-> **Draft, 2026-10-12, partly decided.** Sanchit stepped back from Planet 3 to look at materials as
+> **Decided 2026-10-12, except the build paths' details (§5).** Sanchit stepped back from Planet 3 to look at materials as
 > a whole: what each one is *for*, how loot is managed, how a player finds out where things come
 > from, and how the combat items are ever obtained. The first draft's seven questions were answered
 > the same day (§8). The biggest answer went to its own ADR: **no world is ever required**
@@ -54,7 +54,7 @@ Checked in the installed jars on 2026-10-12 (Create 6.0.10, Create Aeronautics 1
   built by command, which is why nobody hit this.
 - What else brass and the Nether hold back in Create and Aeronautics is listed in Appendix A.
 
-**Decided:** a titanium propeller bearing, from Earth (§4).
+**Built 2026-10-12:** a titanium propeller bearing, from Earth (§4).
 
 ### 2.2 The Moon could be skipped
 
@@ -295,7 +295,8 @@ uses it.
 5. **The first draft's item-to-world table:** replaced by the build paths, where each item draws
    on several worlds.
 6. **Keys without Cataclysm:** keep Cataclysm. The keys stay pack-only.
-7. **Just Enough Resources:** add it. Sanchit is adding it to the instance himself.
+7. **Just Enough Resources:** add it. **Done:** Sanchit added 1.6.0.17. It loads on the dedicated
+   server (2026-10-15); not yet seen in a client.
 
 **Still open:**
 - How brass upgrades propellers: Aeronautics' own brass propellers (proposed), or a weaker
@@ -306,7 +307,7 @@ uses it.
 
 1. **Titanium ingots and the titanium propeller bearing. Built 2026-10-12** (§4). It unblocks every
    survival playthrough and the starter ship. It is seen in a client at the next client test.
-2. **Install Just Enough Resources**, and check it on a dedicated server.
+2. **Install Just Enough Resources**, and check it on a dedicated server. **Done 2026-10-15.**
 3. **The ledger tool and its check. Built 2026-10-12** (§6). It runs with every build.
 4. **The build-path contract**, finished from §5 and handed to the combat session.
 5. **`ascension-compat-jei`'s pages.**

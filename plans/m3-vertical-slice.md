@@ -33,8 +33,9 @@ it is committed; ask Sanchit before pushing. Details live in the sections below 
 | Background pre-generation (`ascension-compat-chunky`) | **Off by default since 2026-10-10**: a fresh server crashed under it. The Chunky bug, below. |
 | Planets in space drawn as the lit spheres they are in other skies (`ascension_space` looks, `LitSphere`); the Moon in Earth's sky 10° → 8° | **Live 2026-10-11:** "it checks out its cool". |
 | Cataclysm's five Earth bosses held for later planets | `/locate` on a fresh dedicated server 2026-10-11: bosses gone, small structures kept. |
-| Planet 3, the real Nether opened to the sky (ADR-0017, M3.3 below): roofless terrain, the rot and the gold ward, the gate ruin seeking the warped forest, the Monstrosity's key and Forge Record, seven tablets in the voice with glyph signatures, the haze, the Moon at 4,000 | **Headless 2026-10-11:** terrain, the ruin's placement and palette, the key and boss stats, every Nether material. **Not yet seen in a client:** Sanchit wants to see the whole world at once, after its art lands. |
+| Planet 3, the real Nether opened to the sky (ADR-0017, M3.3 below): roofless terrain, the rot and the gold ward, the gate ruin seeking the warped forest, the Monstrosity's key and Forge Record, seven tablets in the voice with glyph signatures, the haze, the Moon at 4,000 | **Headless 2026-10-11:** terrain, the ruin's placement and palette, the key and boss stats, every Nether material. Art merged and refactored 2026-10-11. **Not yet seen in a client:** the one client test of the whole world is next. |
 | The airship road to space (ADR-0015, ADR-0016; its section below): ships cross to space and back on their own, space has no gravity, the on-foot route is closed | **Headless 2026-10-11:** a command-built ship with a chest, Earth → space → Moon → space → Earth on a dedicated server, chest intact; since the refactor pass, an item frame inside the ship travels with it too. **Seen live 2026-10-11** (`live-test-2026-10-11.md`): Sanchit rode a command-built ship from Earth to space and down onto the Moon, its item frame along. Not yet seen with a real Aeronautics ship (none designed yet). |
+| The resource economy (`docs/progression/resource-economy.md`, ADR-0018; its sections below): titanium ingots and a titanium propeller bearing, so a survival ship can leave Earth without the Nether's brass; the resource ledger, checked by every build; ores drop themselves with Silk Touch; the Nether's name on the gate screen; Just Enough Resources in the pack | **Headless 2026-10-12 to 10-15:** the recipe count went from 3,273 to 3,278; the titanium tags resolve; `/loot` mined both ores with and without Silk Touch and got the right drops; JER 1.6.0.17 loads on the dedicated server. **Not yet seen in a client.** |
 
 **Settled:** the keystone recipe (Deep Dark materials, one Warden tendril per gate, nothing from
 the Nether); Planet 3 is the **Nether world** (roofless, netherite, a boss; M3.3 below); Voxy
@@ -61,19 +62,35 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    brass needs a Blaze Burner, which is Nether-only, so a survival player could not cross space at
    all. **Fixed the same day:** a titanium recipe for the plain propeller bearing (below, "The
    airship road to space"). Brass stays the propeller upgrade.
-6. **The resource economy** (2026-10-12): what titanium and helium are for, how the combat items
-   are obtained, loot and JEI, and the brass blocker above.
-   [`docs/progression/resource-economy.md`](../docs/progression/resource-economy.md) §8 has seven
-   decisions.
+6. ~~**The resource economy**~~ **Answered 2026-10-12**
+   ([`resource-economy.md`](../docs/progression/resource-economy.md) §8, ADR-0018):
+   - No world is ever required.
+   - A titanium propeller bearing, with brass as the upgrade.
+   - League-style build paths for the combat items, with one heart per boss.
+   - Cataclysm stays, and JER is added.
 
-**Next: Planet 3's art session, then one client test of the whole world** (Sanchit, 2026-10-11:
-"i want to add all the things needed in this world and see it all at once"). The logic is built
-(M3.3 below); the art contract is [`nether-art-format.md`](../docs/technical/nether-art-format.md)
-and the prompt to paste into a new session is
-[`design/nether/design-session-prompt.md`](../design/nether/design-session-prompt.md). When it is
-merged, logic wires the colony ruins' worldgen from the handed-over piece names, then the client
-test. Sanchit also has the Nether tablets' draft text to read (`tools/archive-lore.py`). Also
-waiting: the orrery hologram, then cats; and a real Aeronautics starter ship (decision 5).
+   Still open: which strong items take which boss's heart (§5).
+
+**Next: one client test of the whole world** (Sanchit, 2026-10-11: "i want to add all the things
+needed in this world and see it all at once"). Since he said that:
+- Planet 3's logic and art are built and merged (M3.3 below).
+- The resource economy added the titanium propeller, the ledger and JER.
+
+**What the test covers:** the live checklist in `docs/technical/nether-art-design.md`, plus:
+- the titanium ingot, and the propeller bearing's titanium recipe in JEI;
+- JER's pages;
+- a save and reload.
+
+Copy the new jars into the instance first, and use a fresh world.
+
+**After it:** the economy's own order (`resource-economy.md` §9): the build-path contract for the
+combat session, the JEI pages, then the helium lamp.
+
+**Also waiting:**
+- Sanchit has the Nether tablets' draft text to read (`tools/archive-lore.py`).
+- The orrery hologram, then cats.
+- A real Aeronautics starter ship (decision 5).
+- The keeper shrine: finished art (`lore-art-design.md` §8) that nothing places yet.
 
 **How the lore art was made, for reuse:** a contract doc ([`lore-art-format.md`](../docs/technical/lore-art-format.md)),
 a prompt for a design session in its own worktree, merged back 2026-10-10 (`888af41`). Its record
@@ -786,8 +803,8 @@ propeller needs brass, and Create only makes brass with a Nether blaze
     raw material, for both ores.
 - **Noticed, not touched:** `keeper_shrine.nbt`, the lore art's shrine (`lore-art-design.md` §8),
   is finished but nothing places it yet.
-- ADR-0008 count: the second increment since the last refactor pass. **The next increment is a
-  refactor pass.**
+- ADR-0008 count: the second increment since the last refactor pass. The pass followed
+  (2026-10-15, below).
 
 **Open:**
 
@@ -902,6 +919,46 @@ follow-ups. Reviewed everything since `adf3aa1`. No new features, one waste fixe
 `compat-sable` 15, `compat-chunky` 5, `combat` 4), the dist check on all thirteen modules, and on a
 dedicated server on the first test seed: the gate's 418 frame cells all as attunement wants them, a
 colony hall matching its template, every structure still found by `/locate`.
+
+## Refactor pass, 2026-10-15 (after titanium and the ledger)
+
+ADR-0008's pass after the titanium propeller and the resource ledger. Reviewed everything since
+`105b006`. Java changed by one item registration only, so the pass was mostly the ledger script and
+the docs. No new features.
+
+**The ledger script.** Five cleanups; the ledger it writes came out the same, byte for byte.
+- **One helper for "append unless already there"**, which seven places each wrote out.
+- **One way to read a gap's excuse.** A missing source accepted `namespace:*` patterns, but a
+  missing use took exact ids only. Both now go through `matches`.
+  - Only an entry that names its item is reported as stale once the gap closes. A
+    `namespace:*` entry excuses a whole module on purpose.
+- **The gate-frame scan moved above the code that reads it.**
+- **The tablet-entry line no longer runs past 120 characters.**
+- **A biome the ledger cannot place is now an error.**
+  - Before, it said "an unknown world". That is how the Moon's ores read on the first run, until
+    its checkerboard biome source was handled.
+  - Now `--check` fails instead, so a new planet's ore cannot slip in unplaced.
+
+**The docs, brought up to date:**
+- The "start here" section above: its "Next" still pointed at the art session; decision 6 still
+  had seven questions open; and there was no row for the economy work.
+- The economy doc's status lines.
+- `CLAUDE.md`'s current state.
+
+**Checked:**
+- The full build, which now runs the ledger check.
+- On a dedicated server:
+  - **Just Enough Resources** 1.6.0.17, which Sanchit added, loads without errors.
+  - The recipe count is unchanged at 3,278.
+
+**Looked at and left:**
+- **The log's one error.** `MenuScreens$ScreenConstructor` loaded on a dedicated server, at mixin
+  time. It is another mod's mixin, not ours, and it was there before JER (the 2026-10-11 logs have
+  it). It is harmless: the server boots and runs.
+- **The ledger's long lines:** other `tools/` scripts run to 136 characters.
+- **The analysis behind `resource-economy.md` Appendix A** (which Create and Aeronautics items brass
+  and the Nether hold back) is a one-off scratch script. It reads the jars from the CurseForge
+  install, so it is not portable enough to commit as-is. Redo it if Create or Aeronautics update.
 
 ## M3.3 — Planet 3: the Nether world
 

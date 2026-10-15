@@ -114,6 +114,12 @@ def walk(node):
             yield from walk(v)
 
 
+def add(lst, x):
+    """Append unless already there: a block built into a structure is found once, not per piece."""
+    if x not in lst:
+        lst.append(x)
+
+
 def pretty(rid):
     """A readable name for an id we have no translation for: minecraft:echo_shard -> Echo Shard."""
     return rid.split(':')[-1].split('/')[-1].replace('_', ' ').title()
@@ -168,6 +174,7 @@ def members(tag, tags=ITEM_TAGS, seen=None):
 
 
 RULES_DATA = load(RULES)
+ERRORS = []
 
 
 def matches(rule_map, item):
@@ -175,6 +182,12 @@ def matches(rule_map, item):
     if item in rule_map:
         return rule_map[item]
     return rule_map.get(item.split(':')[0] + ':*')
+
+
+def fixed(rule, item):
+    """Whether a gap list names this item, so the entry must go once the gap is closed. Only a
+    named entry counts: `namespace:*` excuses a whole module by design and is never stale."""
+    return item in RULES_DATA[rule]
 
 
 # --- places -------------------------------------------------------------------------------
@@ -199,17 +212,20 @@ for _, dim, f in data('dimension'):
                 DIM_OF_BIOME[b] = dim
 
 
-def planet_of_biomes(biomes):
+def planet_of_biomes(biomes, what):
+    """The planets these biomes are on. A biome the ledger cannot place is an error, so a new
+    world's ore never reaches the ledger as "somewhere"."""
     dims = set()
     for b in biomes:
         if b in BIOME_TAG_DIM:
             dims.add(BIOME_TAG_DIM[b])
         elif b in DIM_OF_BIOME:
             dims.add(DIM_OF_BIOME[b])
-    return sorted(PLANET_OF_DIM.get(d, pretty(d)) for d in dims) or ['an unknown world']
+        else:
+            ERRORS.append(f'{what} is placed in biome {b}, which no dimension the ledger reads lists')
+    return sorted(PLANET_OF_DIM.get(d, pretty(d)) for d in dims)
 
 
-ERRORS = []
 FOUND = collections.defaultdict(list)     # block id -> [where it generates]
 
 # Terrain: a planet's default block and everything its surface rules place.
@@ -261,7 +277,7 @@ for pid, (fid, height) in PLACED.items():
     for b in FEATURE_BLOCKS.get(fid, []):
         if b.startswith('minecraft:'):
             continue
-        for planet in planet_of_biomes(FEATURE_BIOMES.get(pid, ())):
+        for planet in planet_of_biomes(FEATURE_BIOMES.get(pid, ()), f'feature {pid}'):
             detail = ', '.join(x for x in (height, f'needs {TOOL_NEED[b]}' if b in TOOL_NEED else '') if x)
             FOUND[b].append(f"{planet}'s rock" + (f', {detail}' if detail else ''))
 
@@ -298,8 +314,7 @@ for _, sid, f in data('worldgen/structure'):
                 palette = t.get('palette') or (t.get('palettes') or [[]])[0]
                 for state in palette:
                     if state['Name'] not in ('minecraft:air', 'minecraft:structure_void', 'minecraft:jigsaw'):
-                        if f'{label}, built into it' not in FOUND[state['Name']]:
-                            FOUND[state['Name']].append(f'{label}, built into it')
+                        add(FOUND[state['Name']], f'{label}, built into it')
 
 # Gate ruin sites: the blocks around a pre-generated gate. The frame itself cannot be broken
 # (PregeneratedGates), so only the site's own blocks count.
@@ -309,8 +324,8 @@ for _, site, f in data('ascension_worlds/gateway_site'):
         ERRORS.append(f'gate site {site} has no name in {os.path.relpath(RULES, ROOT)} ("structures")')
         continue
     for v in load(f).get('key', {}).values():
-        if 'block' in v and f'{label}, built into it' not in FOUND[v['block']]:
-            FOUND[v['block']].append(f'{label}, built into it')
+        if 'block' in v:
+            add(FOUND[v['block']], f'{label}, built into it')
 
 
 # --- recipes --------------------------------------------------------------------------------
@@ -365,8 +380,7 @@ for module, rid, f in data('recipe'):
         for alts in ss:
             for a in alts:
                 for item in (members(a[1:]) if a.startswith('#') else [a]):
-                    if (verb, out, note) not in USED[item]:
-                        USED[item].append((verb, out, note))
+                    add(USED[item], (verb, out, note))
 
 
 # --- loot -----------------------------------------------------------------------------------
@@ -426,7 +440,8 @@ def loot_entries(table, seen=()):
 def entry_items(e, total, rolls, notes, seen):
     notes = notes + conditions_text(e.get('conditions', []))
     for fn in e.get('functions', []):                     # which tablet: an archive entry set on it
-        entry = fn.get('components', {}).get('ascension_worlds:archive_entry') if isinstance(fn.get('components'), dict) else None
+        components = fn.get('components')
+        entry = components.get('ascension_worlds:archive_entry') if isinstance(components, dict) else None
         if isinstance(entry, str):
             notes = notes + [f'tablet: {pretty(entry)}']
     kind = e.get('type')
@@ -459,47 +474,42 @@ for tid, table in sorted(TABLES.items()):
         else:
             ERRORS.append(f'loot table {tid} gives {item} but nothing we ship uses the table')
         for line in lines:
-            if line not in FROM[item]:
-                FROM[item].append(line)
+            add(FROM[item], line)
 
 
 # --- the ledger -----------------------------------------------------------------------------
+
+FRAMES_OF_BLOCK = collections.defaultdict(list)   # block -> gateway frames it can be built into
+for _, frame, f in data('ascension_worlds/gateway_frame'):
+    for v in load(f).get('key', {}).values():
+        for b in (members(v['tag'], BLOCK_TAGS) if 'tag' in v else {v.get('block')}):
+            if b:
+                add(FRAMES_OF_BLOCK[b], frame)
+
 
 def made_lines(item):
     by_verb = collections.defaultdict(list)
     for verb, ss, note in MADE.get(item, []):
         text = ' + '.join(' or '.join(name(a) for a in alts) for alts in ss) or 'nothing'
-        text += f' ({note})' if note else ''
-        if text not in by_verb[verb]:
-            by_verb[verb].append(text)
+        add(by_verb[verb], text + (f' ({note})' if note else ''))
     return [f'{verb}: {"; or ".join(texts)}' for verb, texts in by_verb.items()]
 
 
 def used_lines(item):
     by_verb = collections.defaultdict(list)
     for verb, out, note in USED.get(item, []):
-        text = name(out) + (f' ({note})' if note else '')
-        if text not in by_verb[verb]:
-            by_verb[verb].append(text)
+        add(by_verb[verb], name(out) + (f' ({note})' if note else ''))
     lines = [f'{verb} into {", ".join(texts)}' for verb, texts in by_verb.items()]
     for tag, why in RULES_DATA['tag_uses'].items():
         if item in members(tag):
             lines.append(f'{why} (`#{tag}`)')
-    for frame in BLOCK_TAG_FRAMES.get(item, []):
+    for frame in FRAMES_OF_BLOCK.get(item, []):
         lines.append(f'Builds a gateway frame ({name(frame)})')
     why = matches(RULES_DATA['used_by_code'], item)
     if why:
         lines.append(why)
     return lines
 
-
-BLOCK_TAG_FRAMES = collections.defaultdict(list)
-for _, frame, f in data('ascension_worlds/gateway_frame'):
-    for v in load(f).get('key', {}).values():
-        blocks = members(v['tag'], BLOCK_TAGS) if 'tag' in v else {v.get('block')}
-        for b in blocks:
-            if b and frame not in BLOCK_TAG_FRAMES[b]:
-                BLOCK_TAG_FRAMES[b].append(frame)
 
 GAPS, CREATIVE = [], []                     # (item, what is missing, why)
 for item, info in sorted(ITEMS.items()):
@@ -508,7 +518,7 @@ for item, info in sorted(ITEMS.items()):
     by_design = matches(RULES_DATA['creative_only'], item)
     if not sources and not gap and not by_design:
         ERRORS.append(f'{item} has no source: no recipe, loot or worldgen gives it. Add one, or say why in the rules')
-    elif sources and (item in RULES_DATA['no_source_yet'] or item in RULES_DATA['creative_only']):
+    elif sources and (fixed('no_source_yet', item) or fixed('creative_only', item)):
         ERRORS.append(f'{item} has a source now: remove it from the gap lists in the rules')
     elif not sources:
         (CREATIVE if by_design else GAPS).append((item, 'no source', by_design or gap))
@@ -519,10 +529,10 @@ for item, info in sorted(ITEMS.items()):
     uses = used_lines(item)
     info['uses'] = uses
     if info['material']:
-        excused = RULES_DATA['no_use_yet'].get(item)
+        excused = matches(RULES_DATA['no_use_yet'], item)
         if not uses and not excused:
             ERRORS.append(f'{item} is a material with no use: nothing crafts with it. Add a use, or say why in the rules')
-        elif uses and excused:
+        elif uses and fixed('no_use_yet', item):
             ERRORS.append(f'{item} has a use now: remove it from "no_use_yet" in the rules')
         elif excused:
             GAPS.append((item, 'no use', excused))
