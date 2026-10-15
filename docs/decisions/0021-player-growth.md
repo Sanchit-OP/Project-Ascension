@@ -1,6 +1,7 @@
 # ADR-0021: Player growth comes from milestones, kept as advancements and applied as attribute modifiers
 
-- **Status:** Proposed
+- **Status:** Proposed. Sanchit answered decisions 1, 3 and 4 on 2026-10-15; 2 and 5 follow the
+  recommendation until he says otherwise (`growth.md` §13).
 - **Date:** 2026-10-15
 - **Number:** 0021 assumes the stats session (prompt 1) takes 0019 and the runes session (prompt 2)
   takes 0020, in the order of their prompts. Renumber at merge if that is not how it lands.
@@ -24,10 +25,11 @@ The full design is `docs/progression/growth.md`; the research behind it is
 
 ## Decision
 
-**1. Growth is permanent and comes only from finite sources.** The first kill of each boss and each
-gate lit (milestones), the first visit to each notable place (discoveries), and a skill tree funded
-only by those two. No kill-XP, activity levels, vanilla XP or time played: Minecraft machines farm
-anything repeatable.
+**1. Growth is permanent, comes only from finite sources, and is all skill points.** The first
+kill of each boss and each gate lit (milestones) and the first visit to each notable place
+(discoveries) give skill points, and nothing else. Every stat a player grows is taken in a four-arm
+skill tree. No kill-XP, activity levels, vanilla XP or time played: Minecraft machines farm anything
+repeatable.
 
 **2. Every milestone is a vanilla advancement.** Growth reacts to advancements being earned or
 revoked. What each is worth lives in a datapack registry, `ascension_combat:growth_milestone`, keyed
@@ -44,9 +46,9 @@ to clients.
 `ascension_combat:growth`. They are worked out again from the player's advancements and taken nodes
 on every change, never added up and stored. Attributes are named by id, so growth can raise any
 mod's attribute and skips one that isn't installed. The stat-reading API counts these modifiers as
-**base** (pending the stats session's agreement, through Sanchit).
+**bonus** (Sanchit, 2026-10-15), so every item ratio on bonus stats grows with growth too.
 
-**4. Shared milestones belong to the whole server.** A milestone marked `shared` (bosses and gates)
+**4. Shared milestones belong to the whole server** (Sanchit, 2026-10-15). A milestone marked `shared` (bosses and gates)
 goes to every player when it is earned, and to anyone joining later on their first login. The team
 is the whole server until Ascension has teams, as the gates and the mark already are. Discoveries and
 the tree are personal.
@@ -68,6 +70,10 @@ the tree are personal.
   return to a player at their next login while the team still holds them.
 - **Growth's numbers depend on the stats session's API** for the base and bonus split. Until it
   exists, growth's modifiers are ordinary attribute modifiers and every stat still works.
+- **No HP comes free.** A player who never takes Guard nodes stays at 20 HP; armour and items carry
+  their defence. Sanchit chose this; the first boss fights test it.
+- **Respec** is anywhere out of combat for 20 XP levels (Sanchit, 2026-10-15). It reads combat
+  state through `core`'s `CombatStateRegistry`, which combat already registers.
 
 ## Alternatives rejected
 
@@ -83,3 +89,7 @@ the tree are personal.
   behind, and a missed event would drift forever.
 - **Kill-XP, activity levels, or vanilla XP.** Farmable, or already spent on enchanting (see the
   research, §3).
+- **Milestones that give stats directly** (a heart per boss, as in Zelda). Proposed first; Sanchit
+  chose points only, so that every stat is a choice.
+- **Growth as base stats**, as League's levels are. Sanchit chose bonus, so growth feeds item
+  scaling directly.
