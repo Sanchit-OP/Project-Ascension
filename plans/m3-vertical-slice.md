@@ -76,7 +76,13 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    - How a player gains HP and stats: milestones from bosses and lit gates are proposed.
    - Whether vanilla armour counts again. With combat installed it currently protects nothing.
    - A real rune system.
-   - Who builds the combat side.
+   - Who builds the combat side. **Answered the same day:** three new sessions, from the prompts in
+     [`plans/session-prompts/`](session-prompts/):
+     1. one stat system for every item;
+     2. the rune system, with a professional screen;
+     3. player growth.
+
+     A fourth, for build paths, starts once stats and growth have numbers.
 
 **Next: one client test of the whole world** (Sanchit, 2026-10-11: "i want to add all the things
 needed in this world and see it all at once"). Since he said that:

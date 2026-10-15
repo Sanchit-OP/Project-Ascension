@@ -69,7 +69,14 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
 Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behaviour).
 **`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
 the Moon. **`ascension-combat`** (ADR-0012) is the League-style item/stat/rune system, built in a
-separate parallel session — do not fold its work into this one's without asking. Tier 2 compat
+separate parallel session — do not fold its work into this one's without asking. **Since
+2026-10-15 its next work is split across new sessions** (`plans/session-prompts/`):
+1. one stat system for every item, which owns the stat definitions and the API for reading them;
+2. the rune system, with a professional screen;
+3. player growth;
+4. later, the items' build paths.
+
+Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,
 sable (`docs/technical/architecture.md` has the table).
 
