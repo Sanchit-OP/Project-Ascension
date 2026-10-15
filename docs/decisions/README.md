@@ -45,3 +45,4 @@ forgets it.
 | [0016](0016-mixin-in-ascension-compat-sable.md) | One mixin in `ascension-compat-sable`: ship slots unique across dimensions | Accepted |
 | [0017](0017-planet-3-is-the-nether-opened-to-the-sky.md) | Planet 3 is the real Nether, opened to the sky | Accepted |
 | [0018](0018-no-world-is-required.md) | No world is required; players go where they choose | Accepted |
+| [0021](0021-player-growth.md) | Player growth comes from milestones, kept as advancements and applied as attribute modifiers | Proposed |
