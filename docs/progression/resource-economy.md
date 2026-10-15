@@ -157,6 +157,9 @@ and build our own JEI pages for what it cannot know (§7).
 
 ## 5. The combat items: League-style build paths
 
+**Paused 2026-10-15** (Sanchit): stat growth, armour and runes come first, so build paths have
+something to be balanced against ([`player-power.md`](player-power.md)).
+
 **Decided (Sanchit, 2026-10-12):**
 - League-style build paths.
 - Materials from different places.
