@@ -25,6 +25,7 @@ import com.ascension.combat.internal.rune.vanguard.KillingSurgeEffects;
 import com.ascension.combat.internal.rune.vanguard.MomentumEffects;
 import com.ascension.combat.internal.rune.vanguard.RelentlessStrikesEffects;
 import com.ascension.combat.internal.rune.vanguard.SecondWindEffects;
+import com.ascension.combat.internal.stat.StatSystem;
 import com.ascension.combat.internal.weapons.DarkenBladeEffects;
 import com.ascension.combat.internal.weapons.DariusAxeEffects;
 import com.ascension.combat.internal.weapons.DivineSundererEffects;
@@ -77,6 +78,8 @@ public final class AscensionCombat {
         // is last-write-wins per entity type).
         MobStats.register(modBus);
         CombatMobEffects.register(modBus);
+        // Every item's stats, from data (docs/technical/item-stats.md, ADR-0019).
+        StatSystem.register(modBus, NeoForge.EVENT_BUS);
         modBus.addListener(CombatNetwork::register);
         CombatNetwork.registerLoginSync(NeoForge.EVENT_BUS);
 
@@ -86,6 +89,7 @@ public final class AscensionCombat {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             com.ascension.combat.client.CombatKeybinds.register(modBus);
             com.ascension.combat.client.AbilityCooldownDecorator.register(modBus);
+            com.ascension.combat.client.stat.ConvertedStatTooltips.register(NeoForge.EVENT_BUS);
         }
 
         // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before
