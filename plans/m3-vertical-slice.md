@@ -70,6 +70,13 @@ voice in the wrong order on every tablet, is the way to close the seal. Start at
    - Cataclysm stays, and JER is added.
 
    Still open: which strong items take which boss's heart (§5).
+7. **Player power** (2026-10-15):
+   [`docs/progression/player-power.md`](../docs/progression/player-power.md) §5. Settle these
+   before the build paths:
+   - How a player gains HP and stats: milestones from bosses and lit gates are proposed.
+   - Whether vanilla armour counts again. With combat installed it currently protects nothing.
+   - A real rune system.
+   - Who builds the combat side.
 
 **Next: one client test of the whole world** (Sanchit, 2026-10-11: "i want to add all the things
 needed in this world and see it all at once"). Since he said that:
