@@ -88,6 +88,31 @@ number in this document and in the item catalog below is a placeholder for "this
 is correct" — which is exactly what ADR-0007 rule 10's data-driven requirement is for: retuning a
 value is a JSON edit, not a rebuild.
 
+### Reading stats, and asking for new ones
+
+Added 2026-10-15 by the item-stats session, which owns the stat definitions and the read API. The
+full design is in [`item-stats.md`](item-stats.md); the structural choice is
+[ADR-0019](../decisions/0019-item-stats-are-data.md). **The shape below is fixed now, ahead of the
+build**, so the rune and growth sessions can write against it. It lands in increment 2.
+
+- **The stats** are `com.ascension.combat.api.stat.CombatStats`: `HEALTH`, `ATTACK_DAMAGE`,
+  `ATTACK_SPEED`, `MOVE_SPEED`, `ARMOR`, `MAGIC_RESIST`, `OMNIVAMP`, `LETHALITY`,
+  `ARMOR_PENETRATION` and `MAGIC_PENETRATION`.
+- **Read them** only through `StatReader`: `total`, `base` and `bonus`, plus `breakdown` per
+  source. Never read an attribute directly for gameplay.
+- **Base** is the entity's own value, a held weapon's own damage and speed, growth, and mob data.
+  **Bonus** is everything else: item stats, converted vanilla armour, runes and potions.
+- **Give a stat** with an attribute modifier on `CombatStat#attribute()`. Its id must start with a
+  prefix registered through `StatSources.register(prefix, layer, label)`. Growth registers as
+  `BASE`, runes as `BONUS`. An unregistered modifier counts as bonus and shows as "Other".
+
+**Requested stats.** Another session that needs a stat adds a line here, or asks through Sanchit.
+The stats session adds it to `CombatStats`. Nobody else registers attributes.
+
+| Stat | Asked by | For | Status |
+|---|---|---|---|
+| *(none yet)* | | | |
+
 ## 3a. Mobs in the stat model
 
 Added 2026-09-19. The damage pipeline already treated mobs correctly everywhere &mdash; every
