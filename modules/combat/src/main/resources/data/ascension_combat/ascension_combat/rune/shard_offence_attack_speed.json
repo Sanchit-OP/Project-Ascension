@@ -1,0 +1,21 @@
+{
+  "slot": "shard",
+  "row": 0,
+  "position": 1,
+  "icon": "ascension_combat:shard/as",
+  "effect": "ascension_combat:shard/attack_speed",
+  "values": {
+    "amount": 8
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.shard_text.attack_speed",
+      "parts": [
+        {
+          "value": "amount",
+          "stat": "attack_speed"
+        }
+      ]
+    }
+  ]
+}

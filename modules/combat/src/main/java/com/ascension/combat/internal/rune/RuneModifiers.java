@@ -54,6 +54,7 @@ public final class RuneModifiers {
     /** Brings every rune-given modifier on {@code player} in line with their page and growth. */
     public static void refresh(ServerPlayer player) {
         BloodedEffects.refresh(player);
+        ShardEffects.refresh(player);
     }
 
     private static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
