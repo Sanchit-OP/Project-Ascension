@@ -38,9 +38,15 @@ to clients.
 
 - Bosses and discoveries are advancements with vanilla triggers (`player_killed_entity`,
   `location`): JSON only.
-- `ascension-worlds` awards an advancement per gate when it lights. That is the whole connection:
-  growth never names `worlds`, and `worlds` never names growth.
+- `ascension-worlds` awards `ascension_worlds:gates/<planet>` to every player when a gate lights,
+  and to anyone who joins later. That is the whole connection: growth never names `worlds`, and
+  `worlds` never names growth.
 - Any other mod or datapack can add a milestone with two JSON files.
+- **A milestone's files live in the module that owns the boss, gate or place.** A namespace may add to
+  any datapack registry, so `worlds` carries its gates and the places only it has, and
+  `compat-cataclysm` its four bosses and the Ruined Citadel, each as an advancement and a
+  `growth_milestone` entry. Without `ascension-combat` the milestone folder is never read, so those
+  files are inert and need no condition. Tier 1 modules still never name each other in code.
 
 **3. Growth writes only attribute modifiers**, one per attribute and operation, with ids under
 `ascension_combat:growth/` (`growth/add_value`, `growth/add_multiplied_base`). They are worked out
@@ -70,8 +76,10 @@ the tree are personal.
   reaches every player, and a total can never drift from what earned it. Growth's own files are
   datapack registries, which load at server start (as planets and archive entries do), so a change
   there needs a restart; advancements reload with `/reload`.
-- **The advancements screen gains an Ascension tab**, which doubles as a list of goals. That is a
-  visible change players will see.
+- **The advancements screen gains two tabs**, which double as a list of goals: **Ascension**
+  (`ascension-combat`: the bosses and the vanilla places, and Cataclysm's with it) and **The Gateways**
+  (`ascension-worlds`: the gates, and landing on the Moon and the Nether, the Lunar Archive, the gate
+  ruin). That is a visible change players will see.
 - **`ascension-worlds` changes slightly:** `GateProgress` awards the gate advancements, beside the
   sync it already sends when the network changes.
 - **Revoking an advancement by command removes its growth.** That is correct, and shared ones
@@ -80,6 +88,10 @@ the tree are personal.
   Until it lands, growth's modifiers show as "Other", and every stat still works.
 - **No HP comes free.** A player who never takes Guard nodes stays at 20 HP; armour and items carry
   their defence. Sanchit chose this; the first boss fights test it.
+- **The screen's state is one small packet**, sent at the end of every refresh (login and every
+  change, never per tick), and a client can only ask: Confirm sends the marked nodes, each checked by
+  the same rules as the command. Growth's payloads are registered apart from `CombatNetwork`, with
+  their own version, so the other sessions' network changes do not touch them.
 - **Respec** is anywhere out of combat for 20 XP levels (Sanchit, 2026-10-15). It reads combat
   state through `core`'s `CombatStateRegistry`, which combat already registers.
 
