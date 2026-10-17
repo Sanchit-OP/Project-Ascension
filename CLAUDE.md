@@ -75,7 +75,7 @@ separate parallel session — do not fold its work into this one's without askin
    (**built and merged 2026-10-17**: `docs/technical/item-stats.md`, ADR-0019; read stats through
    `com.ascension.combat.api.stat.StatReader`; Cataclysm extras are still open);
 2. the rune system, with a professional screen;
-3. player growth;
+3. player growth (merged 2026-10-18: `docs/progression/growth.md`, ADR-0021);
 4. later, the items' build paths.
 
 Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
