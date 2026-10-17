@@ -1,0 +1,20 @@
+{
+  "arm": "fury",
+  "name": {
+    "translate": "growth.ascension_combat.node.hunger"
+  },
+  "position": [
+    1.414,
+    -1.414
+  ],
+  "links": [
+    "ascension_combat:web/r1_ne",
+    "ascension_combat:web/r2_n_ne"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:omnivamp",
+      "amount": 0.01
+    }
+  ]
+}

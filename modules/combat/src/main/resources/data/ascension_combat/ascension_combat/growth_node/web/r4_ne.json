@@ -1,0 +1,23 @@
+{
+  "arm": "fury",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.whirlwind"
+  },
+  "position": [
+    2.828,
+    -2.828
+  ],
+  "links": [
+    "ascension_combat:web/r3_ne",
+    "ascension_combat:web/r3_ne_l",
+    "ascension_combat:web/r3_ne_r"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_speed",
+      "amount": 0.18,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

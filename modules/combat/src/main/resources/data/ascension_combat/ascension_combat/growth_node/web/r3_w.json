@@ -1,0 +1,26 @@
+{
+  "arm": "wayfarer",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.trailblazer"
+  },
+  "position": [
+    -3.0,
+    0.0
+  ],
+  "links": [
+    "ascension_combat:web/r2_w",
+    "ascension_combat:web/r3_w_l"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": 0.04,
+      "operation": "add_multiplied_base"
+    },
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "amount": 0.5
+    }
+  ]
+}

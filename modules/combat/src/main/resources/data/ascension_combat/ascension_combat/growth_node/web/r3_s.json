@@ -1,0 +1,25 @@
+{
+  "arm": "guard",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.bastion"
+  },
+  "position": [
+    0.0,
+    3.0
+  ],
+  "links": [
+    "ascension_combat:web/r2_s",
+    "ascension_combat:web/r3_s_l"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:armor",
+      "amount": 8
+    },
+    {
+      "attribute": "ascension_combat:magic_resist",
+      "amount": 8
+    }
+  ]
+}

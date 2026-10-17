@@ -1,0 +1,21 @@
+{
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "ascension_worlds:gateway_key"
+    },
+    "title": {
+      "translate": "advancements.ascension_worlds.gates.root.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_worlds.gates.root.description"
+    },
+    "background": "minecraft:textures/block/smooth_basalt.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  }
+}

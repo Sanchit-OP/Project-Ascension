@@ -1,0 +1,19 @@
+{
+  "arm": "wayfarer",
+  "name": {
+    "translate": "growth.ascension_combat.node.long_arm"
+  },
+  "position": [
+    -2.598,
+    1.5
+  ],
+  "links": [
+    "ascension_combat:web/r3_sw"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:player.block_interaction_range",
+      "amount": 0.5
+    }
+  ]
+}

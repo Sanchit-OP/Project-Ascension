@@ -1,0 +1,21 @@
+{
+  "arm": "wayfarer",
+  "name": {
+    "translate": "growth.ascension_combat.node.soft_landing"
+  },
+  "position": [
+    0.765,
+    1.848
+  ],
+  "links": [
+    "ascension_combat:web/r3_se_r",
+    "ascension_combat:web/r3_s_l",
+    "ascension_combat:web/r2_se"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "amount": 1
+    }
+  ]
+}
