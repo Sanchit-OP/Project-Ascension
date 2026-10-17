@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 /**
  * The stat shards (docs/technical/rune-system.md section 5): small plain stats in three rows,
@@ -48,12 +47,7 @@ public final class ShardEffects {
             RuneDefinition shard = byRow.get(row);
             Optional<CombatStat> chosen = shard == null ? Optional.empty() : statOf(shard);
             for (CombatStat stat : CombatStats.all()) {
-                if (chosen.isPresent() && chosen.get() == stat) {
-                    AttributeModifier modifier = stat.modifier(id, shard.value("amount", 0.0));
-                    RuneModifiers.set(player, stat.attribute(), id, modifier.amount(), modifier.operation());
-                } else {
-                    RuneModifiers.set(player, stat.attribute(), id, 0.0, AttributeModifier.Operation.ADD_VALUE);
-                }
+                RuneModifiers.setStat(player, stat, id, chosen.isPresent() && chosen.get() == stat ? shard.value("amount", 0.0) : 0.0);
             }
         }
     }

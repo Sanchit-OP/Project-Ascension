@@ -120,6 +120,21 @@ public final class RuneScreenshots {
         add(3, () -> screen.devClick(270, 118));
         add(14, () -> shoot("saved-3"));
         add(3, RuneScreenshots::logServerPage);
+        // the three other paths, each as a primary with a secondary: the page, then every rune's card
+        for (PathPage p : PATH_PAGES) {
+            add(2, () -> mc().setScreen(null));
+            add(3, RuneScreenshots::grantCost);
+            add(8, () -> savePathPage(p));
+            add(3, RuneScreenshots::logServerPage);
+            add(20, () -> open(3));
+            add(6, () -> shoot(p.name() + "-page"));
+            int n = 0;
+            for (Point at : cardPoints()) {
+                add(2, () -> screen.devHover(at.x(), at.y()));
+                add(6, shootNumbered(p.name() + "-card", n++));
+            }
+            add(2, () -> screen.devHover(-1000, -1000));
+        }
         add(2, () -> mc().setScreen(null));
         add(30, () -> resizeFor(2));
         add(15, () -> open(2));
@@ -172,6 +187,55 @@ public final class RuneScreenshots {
 
     private static void shoot(String name) {
         pending = name;
+    }
+
+    /** A page to save for the photographs: a primary with its keystone and two minors, a secondary with two, three shards. */
+    private record PathPage(String name, RunePath primary, String keystone, List<String> minors, RunePath secondary,
+            List<String> secondaryMinors) {
+    }
+
+    private static final List<PathPage> PATH_PAGES = List.of(
+            new PathPage("reaver", RunePath.REAVER, "deadeye", List.of("pounce", "trophy_hunter"), RunePath.AETHERWRIGHT,
+                    List.of("clarity", "quickening")),
+            new PathPage("aetherwright", RunePath.AETHERWRIGHT, "starfall", List.of("attunement", "gathering_charge"), RunePath.BULWARK,
+                    List.of("plating", "riposte")),
+            new PathPage("bulwark", RunePath.BULWARK, "brace", List.of("deep_roots", "revitalize"), RunePath.REAVER,
+                    List.of("vanish", "overkill")));
+
+    /** Where every card of a path's dial can be summoned: three keystones, then six minors. */
+    private static List<Point> cardPoints() {
+        List<Point> points = new ArrayList<>();
+        points.add(OrreryLayout.primaryKeystone(0, false, 0));
+        points.add(OrreryLayout.primaryKeystone(1, false, 0));
+        points.add(OrreryLayout.primaryKeystone(0, true, 0));
+        for (int row = 0; row < 2; row++) {
+            for (int place = 0; place < 3; place++) {
+                points.add(OrreryLayout.primaryMinor(row, place, 0));
+            }
+        }
+        return points;
+    }
+
+    private static Runnable shootNumbered(String name, int n) {
+        return () -> shoot(name + "-" + n);
+    }
+
+    private static void savePathPage(PathPage p) {
+        Minecraft mc = Minecraft.getInstance();
+        MinecraftServer server = mc.getSingleplayerServer();
+        if (server == null || mc.player == null) {
+            return;
+        }
+
+        ServerPlayer player = server.getPlayerList().getPlayer(mc.player.getUUID());
+        server.execute(() -> {
+            RunePage page = new RunePage(Optional.of(p.primary()), Optional.of(Runes.id(p.keystone())),
+                    p.minors().stream().map(Runes::id).toList(), Optional.of(p.secondary()),
+                    p.secondaryMinors().stream().map(Runes::id).toList(),
+                    List.of(Runes.id("shard_offence_attack_damage"), Runes.id("shard_flex_magic_resist"), Runes.id("shard_defence_health")));
+            Runes.save(player, page);
+            Runes.sync(player);
+        });
     }
 
     /** Saves a Vanguard page with Cadence, Blooded (seven kinds grown) and Giant Slayer, as a player's Save would. */

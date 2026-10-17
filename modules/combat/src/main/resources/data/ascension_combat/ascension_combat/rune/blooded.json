@@ -7,7 +7,7 @@
   "effect": "ascension_combat:blooded",
   "growth_cap": 12,
   "values": {
-    "omnivamp_per_kind": 0.005
+    "omnivamp_per_kind": 0.5
   },
   "numbers": [
     {
@@ -15,7 +15,6 @@
       "parts": [
         {
           "value": "omnivamp_per_kind",
-          "format": "plus_percent",
           "stat": "omnivamp"
         }
       ]

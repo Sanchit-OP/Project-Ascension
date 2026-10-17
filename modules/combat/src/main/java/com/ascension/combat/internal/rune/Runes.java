@@ -9,6 +9,7 @@ import java.util.Optional;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -36,6 +37,14 @@ public final class Runes {
      */
     public static Optional<RuneDefinition> active(Player player, ResourceLocation effect) {
         return player.getData(CombatAttachments.RUNE_PAGE).active(registry(player), effect);
+    }
+
+    /**
+     * Like {@link #active(Player, ResourceLocation)} for anything that might have dealt the damage:
+     * only a player has a page, so a mob, a trap or nothing at all has no rune.
+     */
+    public static Optional<RuneDefinition> active(Entity entity, ResourceLocation effect) {
+        return entity instanceof Player player ? active(player, effect) : Optional.empty();
     }
 
     /**

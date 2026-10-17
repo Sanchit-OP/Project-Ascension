@@ -124,7 +124,7 @@
   "rune.ascension_combat.momentum.n0": "%s stacks at most",
   "rune.ascension_combat.momentum.n1": "%s of the damage you deal, healed, a stack",
   "rune.ascension_combat.momentum.n2": "%s seconds to chain the next hit",
-  "rune.ascension_combat.blooded.n0": "%s omnivamp for each kind of enemy",
+  "rune.ascension_combat.blooded.n0": "+%s%% omnivamp for each kind of enemy",
   "rune.ascension_combat.relentless_strikes.n0": "%s damage a stack",
   "rune.ascension_combat.relentless_strikes.n1": "%s stacks at most",
   "rune.ascension_combat.relentless_strikes.n2": "Fades after %s seconds",

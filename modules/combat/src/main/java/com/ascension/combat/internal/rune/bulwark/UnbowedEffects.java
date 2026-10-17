@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.rune.bulwark;
 
+import com.ascension.combat.internal.rune.Reentry;
 import com.ascension.combat.internal.rune.RuneDefinition;
 import com.ascension.combat.internal.rune.Runes;
 import java.util.Optional;
@@ -28,8 +29,8 @@ public final class UnbowedEffects {
 
     public static final ResourceLocation ID = Runes.id("unbowed");
 
-    /** True while this rune puts an effect back shorter, so that is not shortened again. The server thread is the only one that adds effects. */
-    private static boolean adjusting;
+    /** Guards an effect this rune puts back shorter from being shortened again. */
+    private static final Reentry ADJUSTING = new Reentry();
 
     private UnbowedEffects() {
     }
@@ -40,7 +41,7 @@ public final class UnbowedEffects {
     }
 
     private static void onEffectAdded(MobEffectEvent.Added event) {
-        if (adjusting || !(event.getEntity() instanceof ServerPlayer player)) {
+        if (ADJUSTING.active() || !(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
 
@@ -58,14 +59,11 @@ public final class UnbowedEffects {
         int shorter = shortened(stored.getDuration(), rune.get().value("effect_reduction", 0.30));
         MobEffectInstance replacement = new MobEffectInstance(stored.getEffect(), shorter, stored.getAmplifier(),
                 stored.isAmbient(), stored.isVisible(), stored.showIcon());
-        adjusting = true;
-        try {
-            // An effect's duration can't be changed in place, so it is taken off and put back shorter.
+        // An effect's duration can't be changed in place, so it is taken off and put back shorter.
+        ADJUSTING.run(() -> {
             player.removeEffect(stored.getEffect());
             player.addEffect(replacement);
-        } finally {
-            adjusting = false;
-        }
+        });
     }
 
     private static void onKnockBack(LivingKnockBackEvent event) {

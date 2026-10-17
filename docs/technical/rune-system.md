@@ -393,7 +393,7 @@ server; anything saved, across a world reload.
 | **R3** | **Refactor pass** (ADR-0008). *Done 2026-10-17.* | |
 | **R4** | **Reaver** and **Aetherwright**. *Built 2026-10-17: all 18 runes load on a dedicated server, the arithmetic and bookkeeping are unit-tested; the effects themselves wait for Sanchit's play.* | Each rune fires. Silent Step walked past a shrieker. |
 | **R5** | **Bulwark** and the stat shards. *Built 2026-10-17 (the shards earlier, with the screen): 45 runes in all load on a dedicated server; the effects wait for Sanchit's play.* | Pack Leader with a wolf; Cat's Eye with creepers. |
-| **R6** | **Refactor pass.** | |
+| **R6** | **Refactor pass.** *Done 2026-10-17: one helper for the four growing runes (`GrowingStat`), one re-entrancy guard (`Reentry`) in place of five hand-rolled flags, `Runes.active` accepts any entity, the shards go through `setStat`, and the hover card's painting left the screen for `RuneCardPainter` (growth's tree can reuse it). No behaviour changed except Blooded's data, now written as a percent like every other number.* | The screen looks the same; the same 45 runes load. |
 | **R7** | **The screen: the orrery** (§10): dials, cards, motion, sound. *Built 2026-10-17 and photographed in a client at GUI scales 2, 3 and 4 (`design/runes/in-game/`); the HUD stack counter is not built yet (it needs the stack counts synced to the client).* | At GUI scales 2, 3, 4. |
 | **R8** | **The art:** every icon, emblem and frame from the generator. *Built 2026-10-17: 181 GUI sprites, `design/runes/kit.png`.* | In the screen, at all three scales. |
 | **R9** | **Unlocks**, once growth's API is merged. | Slots opening as milestones land, on a dedicated server. |
