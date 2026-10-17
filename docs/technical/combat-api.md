@@ -92,8 +92,9 @@ value is a JSON edit, not a rebuild.
 
 Added 2026-10-15 by the item-stats session, which owns the stat definitions and the read API. The
 full design is in [`item-stats.md`](item-stats.md); the structural choice is
-[ADR-0019](../decisions/0019-item-stats-are-data.md). **The shape below is fixed now, ahead of the
-build**, so the rune and growth sessions can write against it. It lands in increment 2.
+[ADR-0019](../decisions/0019-item-stats-are-data.md). **Built 2026-10-16** (increment 2), in
+`com.ascension.combat.api.stat`. `/ascension stats [target]` (permission 2) prints every stat of a
+living entity and where each comes from, from a console too.
 
 - **The stats** are `com.ascension.combat.api.stat.CombatStats`: `HEALTH`, `ATTACK_DAMAGE`,
   `ATTACK_SPEED`, `MOVE_SPEED`, `ARMOR`, `MAGIC_RESIST`, `OMNIVAMP`, `LETHALITY`,
