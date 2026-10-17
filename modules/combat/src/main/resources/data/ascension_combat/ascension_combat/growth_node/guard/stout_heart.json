@@ -1,0 +1,20 @@
+{
+  "arm": "guard",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.stout_heart"
+  },
+  "position": [
+    0,
+    5
+  ],
+  "links": [
+    "ascension_combat:guard/vitality_2"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.max_health",
+      "amount": 4
+    }
+  ]
+}

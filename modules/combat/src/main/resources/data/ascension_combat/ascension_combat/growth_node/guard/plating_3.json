@@ -1,0 +1,19 @@
+{
+  "arm": "guard",
+  "name": {
+    "translate": "growth.ascension_combat.node.plating"
+  },
+  "position": [
+    -1,
+    7
+  ],
+  "links": [
+    "ascension_combat:guard/plating_2"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:armor",
+      "amount": 4
+    }
+  ]
+}

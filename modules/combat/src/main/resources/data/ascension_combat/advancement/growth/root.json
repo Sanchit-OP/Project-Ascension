@@ -1,0 +1,21 @@
+{
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:echo_shard"
+    },
+    "title": {
+      "translate": "advancements.ascension_combat.growth.root.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_combat.growth.root.description"
+    },
+    "background": "minecraft:textures/block/deepslate_tiles.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  }
+}

@@ -13,6 +13,7 @@ import com.ascension.combat.internal.armor.RocketbeltEffects;
 import com.ascension.combat.internal.armor.SterakHarnessEffects;
 import com.ascension.combat.internal.armor.UnendingDespairEffects;
 import com.ascension.combat.internal.armor.ZoniasHourglassEffects;
+import com.ascension.combat.internal.growth.Growth;
 import com.ascension.combat.internal.mechanics.CombatMobEffects;
 import com.ascension.combat.internal.mechanics.CombatStateTracking;
 import com.ascension.combat.internal.mechanics.GrievousWoundsHealing;
@@ -125,6 +126,9 @@ public final class AscensionCombat {
         SecondWindEffects.register(NeoForge.EVENT_BUS);
         KillingSurgeEffects.register(NeoForge.EVENT_BUS);
         MomentumEffects.register(NeoForge.EVENT_BUS);
+
+        // Player growth: skill points from milestones, a four-arm tree (docs/progression/growth.md).
+        Growth.register(modBus, NeoForge.EVENT_BUS);
 
         LOGGER.info("Ascension Combat loaded ({})", container.getModInfo().getVersion());
     }
