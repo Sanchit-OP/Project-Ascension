@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -33,13 +35,18 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * exactly what the server will accept. Choices are local until Save, which sends one
  * {@link SetRunePagePayload}; the server answers saved or refused, and the reason is shown here
  * ({@link #onResult}) without losing the unsaved choices.
+ *
+ * <p>Two columns: the primary path on the left, the secondary path and the shards on the right.
+ * Buttons are as wide as their names and wrap onto a new line when a column is full, so no name is
+ * clipped at any GUI scale.
  */
 public final class RuneScreen extends Screen {
 
-    private static final int BUTTON_W = 66;
     private static final int BUTTON_H = 14;
     private static final int GAP = 2;
     private static final int ROW = BUTTON_H + 4;
+    private static final int MARGIN = 8;
+    private static final int TOP = 28;
 
     private RunePath primary;
     private ResourceLocation keystone;
@@ -49,6 +56,12 @@ public final class RuneScreen extends Screen {
     private final Map<Integer, ResourceLocation> shardRows = new HashMap<>();
 
     private Component status = Component.empty();
+
+    /** Words drawn behind the buttons, collected while the buttons are laid out. */
+    private record Words(Component text, int x, int y, int colour) {
+    }
+
+    private final List<Words> words = new ArrayList<>();
 
     public RuneScreen() {
         super(Component.translatable("screen.ascension_combat.rune_page"));
@@ -93,71 +106,69 @@ public final class RuneScreen extends Screen {
 
     @Override
     protected void init() {
+        words.clear();
         Registry<RuneDefinition> runes = runes();
         if (runes == null) {
             return;
         }
         RunePageRules.OpenSlots open = ClientRunePageCache.open();
-        int left = this.width / 2 - (3 * BUTTON_W + 2 * GAP) - 10;
-        int right = this.width / 2 + 10;
-        int y = 28;
+        int colWidth = this.width / 2 - MARGIN - 4;
+        int left = MARGIN;
+        int right = this.width / 2 + 4;
 
         // --- the primary path
-        row(left, y, List.of(RunePath.values()), path -> pathLabel(path, path == primary), path -> true, path -> {
-            if (path != primary) {
-                primary = path;
-                keystone = null;
-                primaryRows.clear();
-                if (secondary == path) {
-                    secondary = null;
-                    secondaryRows.clear();
-                }
-            }
-        }, path -> null, 4);
-        y += ROW + 4;
-        if (primary != null) {
+        words.add(new Words(Component.translatable("gui.ascension_combat.primary_path"), left, TOP - 10, 0xA0A0A0));
+        int y = flow(left, TOP, colWidth, List.of(RunePath.values()), path -> pathLabel(path, path == primary),
+                path -> true, path -> {
+                    if (path != primary) {
+                        primary = path;
+                        keystone = null;
+                        primaryRows.clear();
+                        if (secondary == path) {
+                            secondary = null;
+                            secondaryRows.clear();
+                        }
+                    }
+                }, path -> null) + 4;
+        if (primary == null) {
+            words.add(new Words(Component.translatable("gui.ascension_combat.choose_primary"), left, y, 0xFFD87A));
+        } else {
+            words.add(new Words(Component.translatable("gui.ascension_combat.keystone"), left, y, 0xA0A0A0));
+            y += 10;
             List<Entry> keys = of(runes, e -> e.rune.slot() == RuneSlot.KEYSTONE && e.rune.path().orElse(null) == primary);
-            row(left, y, keys, e -> runeLabel(e, e.id.equals(keystone)), e -> true,
-                    e -> keystone = e.id.equals(keystone) ? null : e.id, e -> e.tooltip(), 3);
-            y += ROW;
-            for (int r = 0; r < RuneDefinition.MINOR_ROWS; r++) {
-                int rowIndex = r;
-                List<Entry> minors = of(runes, e -> e.rune.slot() == RuneSlot.MINOR
-                        && e.rune.path().orElse(null) == primary && e.rune.row() == rowIndex);
-                row(left, y, minors, e -> runeLabel(e, e.id.equals(primaryRows.get(rowIndex))), e -> true,
-                        e -> toggle(primaryRows, rowIndex, e.id), e -> e.tooltip(), 3);
-                y += ROW;
-            }
+            y = flow(left, y, colWidth, keys, e -> runeLabel(e, e.id.equals(keystone)), e -> true,
+                    e -> keystone = e.id.equals(keystone) ? null : e.id, Entry::tooltip) + 4;
+            y = minors(runes, left, y, colWidth, primary, primaryRows);
         }
 
         // --- the secondary path
-        y = 28;
-        row(right, y, List.of(RunePath.values()), path -> pathLabel(path, path == secondary),
+        words.add(new Words(Component.translatable("gui.ascension_combat.secondary_path"), right, TOP - 10, 0xA0A0A0));
+        y = flow(right, TOP, colWidth, List.of(RunePath.values()), path -> pathLabel(path, path == secondary),
                 path -> open.secondary() && path != primary, path -> {
                     secondary = secondary == path ? null : path;
                     secondaryRows.clear();
-                }, path -> null, 4);
-        y += ROW + 4;
-        if (secondary != null) {
-            for (int r = 0; r < RuneDefinition.MINOR_ROWS; r++) {
-                int rowIndex = r;
-                List<Entry> minors = of(runes, e -> e.rune.slot() == RuneSlot.MINOR
-                        && e.rune.path().orElse(null) == secondary && e.rune.row() == rowIndex);
-                row(right, y, minors, e -> runeLabel(e, e.id.equals(secondaryRows.get(rowIndex))), e -> true,
-                        e -> toggle(secondaryRows, rowIndex, e.id), e -> e.tooltip(), 3);
-                y += ROW;
-            }
+                }, path -> null) + 4;
+        if (!open.secondary()) {
+            words.add(new Words(Component.translatable("gui.ascension_combat.secondary_locked"), right, y, 0xFFD87A));
+            y += 12;
+        } else if (secondary != null) {
+            y = minors(runes, right, y, colWidth, secondary, secondaryRows);
         }
 
         // --- the stat shards
-        y = 28 + 4 * ROW + 12;
+        words.add(new Words(Component.translatable("gui.ascension_combat.rune_shards"), right, y + 4, 0xA0A0A0));
+        y += 14;
+        boolean anyShard = false;
         for (int r = 0; r < RuneDefinition.SHARD_ROWS; r++) {
             int rowIndex = r;
             boolean rowOpen = open.shardRow(rowIndex);
             List<Entry> shards = of(runes, e -> e.rune.slot() == RuneSlot.SHARD && e.rune.row() == rowIndex);
-            row(right, y, shards, e -> runeLabel(e, e.id.equals(shardRows.get(rowIndex))), e -> rowOpen,
-                    e -> toggle(shardRows, rowIndex, e.id), e -> e.tooltip(), 3);
-            y += ROW;
+            anyShard |= !shards.isEmpty();
+            y = flow(right, y, colWidth, shards, e -> runeLabel(e, e.id.equals(shardRows.get(rowIndex))), e -> rowOpen,
+                    e -> toggle(shardRows, rowIndex, e.id), Entry::tooltip);
+        }
+        if (!anyShard) {
+            words.add(new Words(Component.translatable("gui.ascension_combat.no_shards_yet"), right, y, 0x808080));
         }
 
         // --- save and reset
@@ -174,6 +185,20 @@ public final class RuneScreen extends Screen {
             status = Component.empty();
             rebuildWidgets();
         }).bounds(this.width / 2 - 154, bottom, 150, 20).build());
+    }
+
+    /** The two minor rows of one path side; returns the y below them. */
+    private int minors(Registry<RuneDefinition> runes, int x, int y, int width, RunePath path, Map<Integer, ResourceLocation> rows) {
+        words.add(new Words(Component.translatable("gui.ascension_combat.minors"), x, y, 0xA0A0A0));
+        y += 10;
+        for (int r = 0; r < RuneDefinition.MINOR_ROWS; r++) {
+            int rowIndex = r;
+            List<Entry> minors = of(runes, e -> e.rune.slot() == RuneSlot.MINOR
+                    && e.rune.path().orElse(null) == path && e.rune.row() == rowIndex);
+            y = flow(x, y, width, minors, e -> runeLabel(e, e.id.equals(rows.get(rowIndex))), e -> true,
+                    e -> toggle(rows, rowIndex, e.id), Entry::tooltip);
+        }
+        return y;
     }
 
     /** One rune and its id, for a button. */
@@ -196,23 +221,36 @@ public final class RuneScreen extends Screen {
         return out;
     }
 
-    private <T> void row(int x, int y, List<T> items, java.util.function.Function<T, Component> label,
-            Predicate<T> active, java.util.function.Consumer<T> onClick,
-            java.util.function.Function<T, Tooltip> tooltip, int columns) {
-        int width = columns == 4 ? (3 * BUTTON_W + 2 * GAP - 3 * GAP) / 4 : BUTTON_W;
-        for (int i = 0; i < items.size(); i++) {
-            T item = items.get(i);
-            Button button = Button.builder(label.apply(item), b -> {
+    /**
+     * Lays buttons out left to right, each as wide as its name, wrapping at the column's edge.
+     * Returns the y below the last line (the same y when there is nothing to lay out).
+     */
+    private <T> int flow(int x, int y, int width, List<T> items, Function<T, Component> label,
+            Predicate<T> active, Consumer<T> onClick, Function<T, Tooltip> tooltip) {
+        if (items.isEmpty()) {
+            return y;
+        }
+        int cx = x;
+        for (T item : items) {
+            Component text = label.apply(item);
+            int w = this.font.width(text) + 12;
+            if (cx > x && cx + w > x + width) {
+                cx = x;
+                y += ROW;
+            }
+            Button button = Button.builder(text, b -> {
                         onClick.accept(item);
                         status = Component.empty();
                         rebuildWidgets();
                     })
-                    .bounds(x + i * (width + GAP), y, width, BUTTON_H)
+                    .bounds(cx, y, w, BUTTON_H)
                     .tooltip(tooltip.apply(item))
                     .build();
             button.active = active.test(item);
             this.addRenderableWidget(button);
+            cx += w + GAP;
         }
+        return y + ROW;
     }
 
     private static void toggle(Map<Integer, ResourceLocation> rows, int row, ResourceLocation id) {
@@ -248,12 +286,10 @@ public final class RuneScreen extends Screen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
-        int left = this.width / 2 - (3 * BUTTON_W + 2 * GAP) - 10;
-        int right = this.width / 2 + 10;
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
-        graphics.drawString(this.font, Component.translatable("gui.ascension_combat.primary_path"), left, 18, 0xA0A0A0);
-        graphics.drawString(this.font, Component.translatable("gui.ascension_combat.secondary_path"), right, 18, 0xA0A0A0);
-        graphics.drawString(this.font, Component.translatable("gui.ascension_combat.rune_shards"), right, 28 + 4 * ROW + 2, 0xA0A0A0);
+        for (Words w : words) {
+            graphics.drawString(this.font, w.text, w.x, w.y, w.colour);
+        }
         graphics.drawCenteredString(this.font, status, this.width / 2, this.height - 44, 0xFFD87A);
     }
 
