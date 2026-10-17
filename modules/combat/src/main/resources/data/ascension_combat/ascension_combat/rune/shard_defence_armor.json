@@ -1,0 +1,22 @@
+{
+  "slot": "shard",
+  "row": 2,
+  "position": 1,
+  "icon": "ascension_combat:shard/armor",
+  "effect": "ascension_combat:shard/armor",
+  "values": {
+    "amount": 5
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.shard_text.armor",
+      "parts": [
+        {
+          "value": "amount",
+          "format": "plus",
+          "stat": "armor"
+        }
+      ]
+    }
+  ]
+}

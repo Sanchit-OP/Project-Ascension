@@ -1,0 +1,22 @@
+{
+  "slot": "shard",
+  "row": 1,
+  "position": 2,
+  "icon": "ascension_combat:shard/mr",
+  "effect": "ascension_combat:shard/magic_resist",
+  "values": {
+    "amount": 5
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.shard_text.magic_resist",
+      "parts": [
+        {
+          "value": "amount",
+          "format": "plus",
+          "stat": "magic_resist"
+        }
+      ]
+    }
+  ]
+}

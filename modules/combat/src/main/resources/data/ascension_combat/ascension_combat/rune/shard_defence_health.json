@@ -1,0 +1,22 @@
+{
+  "slot": "shard",
+  "row": 2,
+  "position": 0,
+  "icon": "ascension_combat:shard/hp",
+  "effect": "ascension_combat:shard/health",
+  "values": {
+    "amount": 2
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.shard_text.health",
+      "parts": [
+        {
+          "value": "amount",
+          "format": "plus",
+          "stat": "health"
+        }
+      ]
+    }
+  ]
+}
