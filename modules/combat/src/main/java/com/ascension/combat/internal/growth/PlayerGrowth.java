@@ -3,8 +3,10 @@ package com.ascension.combat.internal.growth;
 import com.ascension.combat.AscensionCombat;
 import com.ascension.core.api.CombatStateRegistry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
@@ -111,7 +113,7 @@ public final class PlayerGrowth {
 
     /** Takes one node for the player, if the rules allow it. */
     public static GrowthRules.TakeCheck take(ServerPlayer player, ResourceLocation nodeId) {
-        GrowthRules.TakeCheck check = tryTake(player, nodeId);
+        GrowthRules.TakeCheck check = tryTake(player, nodeId, neighbours(player.server));
         if (check == GrowthRules.TakeCheck.OK) {
             refresh(player, true);
         }
@@ -132,8 +134,9 @@ public final class PlayerGrowth {
     public static TakeFailure takeAll(ServerPlayer player, List<ResourceLocation> nodeIds) {
         TakeFailure first = null;
         boolean tookAny = false;
+        Map<ResourceLocation, Set<ResourceLocation>> neighbours = neighbours(player.server);
         for (ResourceLocation nodeId : nodeIds) {
-            GrowthRules.TakeCheck check = tryTake(player, nodeId);
+            GrowthRules.TakeCheck check = tryTake(player, nodeId, neighbours);
             if (check == GrowthRules.TakeCheck.OK) {
                 tookAny = true;
             } else if (first == null) {
@@ -146,14 +149,23 @@ public final class PlayerGrowth {
         return first;
     }
 
+    /** The web's edges as the data names them, joined both ways: who is next to whom. */
+    private static Map<ResourceLocation, Set<ResourceLocation>> neighbours(MinecraftServer server) {
+        Map<ResourceLocation, List<ResourceLocation>> links = new HashMap<>();
+        nodes(server).entrySet().forEach(entry -> links.put(entry.getKey().location(), entry.getValue().links()));
+        return GrowthRules.neighbours(links);
+    }
+
     /** Checks and records one node; the caller refreshes. */
-    private static GrowthRules.TakeCheck tryTake(ServerPlayer player, ResourceLocation nodeId) {
+    private static GrowthRules.TakeCheck tryTake(ServerPlayer player, ResourceLocation nodeId,
+            Map<ResourceLocation, Set<ResourceLocation>> neighbours) {
         GrowthNode node = nodes(player.server).get(nodeId);
         if (node == null) {
             return GrowthRules.TakeCheck.UNKNOWN;
         }
         GrowthState state = player.getData(GrowthAttachments.GROWTH);
-        GrowthRules.TakeCheck check = GrowthRules.check(nodeId, node.links(), state.taken(), pointsAvailable(player));
+        GrowthRules.TakeCheck check = GrowthRules.check(nodeId, node.start(),
+                neighbours.getOrDefault(nodeId, Set.of()), state.taken(), pointsAvailable(player));
         if (check == GrowthRules.TakeCheck.OK) {
             state.take(nodeId);
         }

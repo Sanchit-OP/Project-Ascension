@@ -1,5 +1,9 @@
 package com.ascension.combat.internal.growth;
 
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -66,15 +70,18 @@ public final class GrowthRules {
     }
 
     /**
-     * Whether {@code node} can be taken: not already taken, touching the centre (no links) or a
-     * taken node it links to, and a point to pay for it.
+     * Whether {@code node} can be taken: not already taken, a start node (touching the centre) or
+     * next to a taken one, and a point to pay for it.
+     *
+     * @param neighbours every node the web joins it to, whichever end named the link
+     *     ({@link #neighbours})
      */
-    public static TakeCheck check(ResourceLocation node, List<ResourceLocation> links, Set<ResourceLocation> taken,
-            int available) {
+    public static TakeCheck check(ResourceLocation node, boolean start, Collection<ResourceLocation> neighbours,
+            Set<ResourceLocation> taken, int available) {
         if (taken.contains(node)) {
             return TakeCheck.ALREADY_TAKEN;
         }
-        if (!links.isEmpty() && links.stream().noneMatch(taken::contains)) {
+        if (!start && neighbours.stream().noneMatch(taken::contains)) {
             return TakeCheck.NOT_CONNECTED;
         }
         if (available < NODE_COST) {
@@ -89,27 +96,49 @@ public final class GrowthRules {
     }
 
     /**
-     * The nodes that can never be taken, given each node's links: a node is reachable if it touches
-     * the centre (no links) or any one of its links is reachable, which is the rule {@link #check}
-     * applies one step at a time. A link to a node that does not exist leads nowhere. A fork of
-     * two nodes that link only to each other is the usual way to get one, and a typo in a link is
-     * the other: neither would show until a player tried to take the node.
+     * Each node's neighbours in the web. A link joins two nodes whichever of them names it, so a
+     * node file only has to name an edge once. A link to a node that does not exist is dropped here;
+     * {@code GrowthDataCheck} reports it.
      */
-    public static Set<ResourceLocation> unreachable(Map<ResourceLocation, List<ResourceLocation>> linksByNode) {
-        Set<ResourceLocation> reachable = new HashSet<>();
-        boolean grew = true;
-        while (grew) {
-            grew = false;
-            for (Map.Entry<ResourceLocation, List<ResourceLocation>> node : linksByNode.entrySet()) {
-                if (!reachable.contains(node.getKey())
-                        && (node.getValue().isEmpty() || node.getValue().stream().anyMatch(reachable::contains))) {
-                    reachable.add(node.getKey());
-                    grew = true;
+    public static Map<ResourceLocation, Set<ResourceLocation>> neighbours(
+            Map<ResourceLocation, List<ResourceLocation>> linksByNode) {
+        Map<ResourceLocation, Set<ResourceLocation>> near = new HashMap<>();
+        linksByNode.keySet().forEach(node -> near.put(node, new LinkedHashSet<>()));
+        for (Map.Entry<ResourceLocation, List<ResourceLocation>> node : linksByNode.entrySet()) {
+            for (ResourceLocation other : node.getValue()) {
+                if (near.containsKey(other)) {
+                    near.get(node.getKey()).add(other);
+                    near.get(other).add(node.getKey());
+                }
+            }
+        }
+        return near;
+    }
+
+    /**
+     * The nodes that can never be taken: those no chain of links joins to a start node. A node is
+     * takeable once any neighbour is taken, so this is a walk outward from the starts. A typo in a
+     * link, or a node named by nothing, would otherwise show only when a player tried to take it.
+     */
+    public static Set<ResourceLocation> unreachable(Set<ResourceLocation> starts,
+            Map<ResourceLocation, List<ResourceLocation>> linksByNode) {
+        Map<ResourceLocation, Set<ResourceLocation>> near = neighbours(linksByNode);
+        Set<ResourceLocation> reached = new HashSet<>();
+        Deque<ResourceLocation> walk = new ArrayDeque<>();
+        for (ResourceLocation start : starts) {
+            if (near.containsKey(start) && reached.add(start)) {
+                walk.add(start);
+            }
+        }
+        while (!walk.isEmpty()) {
+            for (ResourceLocation next : near.get(walk.poll())) {
+                if (reached.add(next)) {
+                    walk.add(next);
                 }
             }
         }
         Set<ResourceLocation> never = new LinkedHashSet<>(linksByNode.keySet());
-        never.removeAll(reachable);
+        never.removeAll(reached);
         return never;
     }
 

@@ -20,44 +20,110 @@ class GrowthRulesTest {
         return ResourceLocation.fromNamespaceAndPath("ascension_combat", path);
     }
 
-    private static final ResourceLocation ROOT = id("guard/vitality_1");
-    private static final ResourceLocation PLATING = id("guard/plating_3");
-    private static final ResourceLocation WARDING = id("guard/warding_3");
-    private static final ResourceLocation BASTION = id("guard/bastion");
+    private static final ResourceLocation A = id("web/a");
+    private static final ResourceLocation B = id("web/b");
+    private static final ResourceLocation C = id("web/c");
+    private static final ResourceLocation D = id("web/d");
     private static final ResourceLocation HEALTH = ResourceLocation.withDefaultNamespace("generic.max_health");
     private static final ResourceLocation SPEED = ResourceLocation.withDefaultNamespace("generic.movement_speed");
 
-    @Test
-    void aNodeTouchingTheCentreNeedsOnlyAPoint() {
-        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(ROOT, List.of(), Set.of(), 1));
-        assertEquals(GrowthRules.TakeCheck.NO_POINTS, GrowthRules.check(ROOT, List.of(), Set.of(), 0));
+    /** A start node a, with b and c beside it, and d beside both of those: a diamond. */
+    private static Map<ResourceLocation, List<ResourceLocation>> diamond() {
+        Map<ResourceLocation, List<ResourceLocation>> links = new LinkedHashMap<>();
+        links.put(A, List.of());
+        links.put(B, List.of(A));
+        links.put(C, List.of(A));
+        links.put(D, List.of(B, C));
+        return links;
     }
 
     @Test
-    void aNodeNeedsSomethingItGrowsFrom() {
-        assertEquals(GrowthRules.TakeCheck.NOT_CONNECTED,
-                GrowthRules.check(BASTION, List.of(PLATING, WARDING), Set.of(ROOT), 5));
+    void aStartNodeNeedsOnlyAPoint() {
+        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(A, true, Set.of(), Set.of(), 1));
+        assertEquals(GrowthRules.TakeCheck.NO_POINTS, GrowthRules.check(A, true, Set.of(), Set.of(), 0));
     }
 
     @Test
-    void eitherSideOfAForkIsEnough() {
-        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(BASTION, List.of(PLATING, WARDING), Set.of(PLATING), 1));
-        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(BASTION, List.of(PLATING, WARDING), Set.of(WARDING), 1));
+    void aNodeNeedsANeighbourTaken() {
+        assertEquals(GrowthRules.TakeCheck.NOT_CONNECTED, GrowthRules.check(D, false, Set.of(B, C), Set.of(A), 5));
+    }
+
+    @Test
+    void anyOneNeighbourIsEnough() {
+        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(D, false, Set.of(B, C), Set.of(B), 1));
+        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(D, false, Set.of(B, C), Set.of(C), 1));
     }
 
     @Test
     void aTakenNodeCannotBeTakenAgain() {
-        assertEquals(GrowthRules.TakeCheck.ALREADY_TAKEN, GrowthRules.check(ROOT, List.of(), Set.of(ROOT), 3));
+        assertEquals(GrowthRules.TakeCheck.ALREADY_TAKEN, GrowthRules.check(A, true, Set.of(), Set.of(A), 3));
     }
 
     @Test
     void beingDisconnectedIsSaidBeforeHavingNoPoints() {
-        assertEquals(GrowthRules.TakeCheck.NOT_CONNECTED, GrowthRules.check(BASTION, List.of(PLATING), Set.of(), 0));
+        assertEquals(GrowthRules.TakeCheck.NOT_CONNECTED, GrowthRules.check(D, false, Set.of(B), Set.of(), 0));
+    }
+
+    @Test
+    void aLinkJoinsBothEndsWhicheverNamesIt() {
+        Map<ResourceLocation, Set<ResourceLocation>> near = GrowthRules.neighbours(diamond());
+        assertEquals(Set.of(B, C), near.get(A), "a never names b or c, but they name a");
+        assertEquals(Set.of(A, D), near.get(B));
+        assertEquals(Set.of(B, C), near.get(D));
+    }
+
+    @Test
+    void aLinkToANodeThatDoesNotExistIsDropped() {
+        Map<ResourceLocation, List<ResourceLocation>> links = new LinkedHashMap<>();
+        links.put(A, List.of(id("web/missing")));
+        assertEquals(Set.of(), GrowthRules.neighbours(links).get(A));
+    }
+
+    @Test
+    void aPlayerCanWalkSidewaysThroughANodeTheOtherSideNamed() {
+        // b names a, not the other way round, and a is taken: b is next to a all the same.
+        Map<ResourceLocation, Set<ResourceLocation>> near = GrowthRules.neighbours(diamond());
+        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(B, false, near.get(B), Set.of(A), 1));
+        assertEquals(GrowthRules.TakeCheck.OK, GrowthRules.check(A, true, near.get(A), Set.of(B), 1));
+    }
+
+    @Test
+    void everythingJoinedToAStartIsReachable() {
+        assertEquals(Set.of(), GrowthRules.unreachable(Set.of(A), diamond()));
+    }
+
+    @Test
+    void aNodeReachableOnlyBecauseAnotherNamesItStillCounts() {
+        Map<ResourceLocation, List<ResourceLocation>> links = new LinkedHashMap<>();
+        links.put(A, List.of(B));   // the start names its neighbour
+        links.put(B, List.of());
+        assertEquals(Set.of(), GrowthRules.unreachable(Set.of(A), links));
+    }
+
+    @Test
+    void nodesJoinedOnlyToEachOtherCanNeverBeTaken() {
+        Map<ResourceLocation, List<ResourceLocation>> links = diamond();
+        links.put(id("web/x"), List.of(id("web/y")));
+        links.put(id("web/y"), List.of(id("web/x")));
+        assertEquals(Set.of(id("web/x"), id("web/y")), GrowthRules.unreachable(Set.of(A), links));
+    }
+
+    @Test
+    void aLinkToANodeThatDoesNotExistLeadsNowhere() {
+        Map<ResourceLocation, List<ResourceLocation>> links = diamond();
+        links.put(id("web/typo"), List.of(id("web/missing")));
+        links.put(id("web/after_typo"), List.of(id("web/typo")));
+        assertEquals(Set.of(id("web/typo"), id("web/after_typo")), GrowthRules.unreachable(Set.of(A), links));
+    }
+
+    @Test
+    void withNoStartNodeNothingCanBeTaken() {
+        assertEquals(Set.of(A, B, C, D), GrowthRules.unreachable(Set.of(), diamond()));
     }
 
     @Test
     void nodesTheDataDroppedCostNothing() {
-        assertEquals(1, GrowthRules.spent(Set.of(ROOT, id("gone")), ROOT::equals));
+        assertEquals(1, GrowthRules.spent(Set.of(A, id("gone")), A::equals));
     }
 
     @Test
@@ -78,34 +144,6 @@ class GrowthRulesTest {
         assertEquals(GrowthRules.RespecCheck.IN_COMBAT, GrowthRules.checkRespec(3, false, true, 30));
         assertEquals(GrowthRules.RespecCheck.NOT_ENOUGH_LEVELS, GrowthRules.checkRespec(3, false, false, 19));
         assertEquals(GrowthRules.RespecCheck.OK, GrowthRules.checkRespec(3, false, false, 20));
-    }
-
-    @Test
-    void aForkOfTwoIsReachableThroughEitherSide() {
-        Map<ResourceLocation, List<ResourceLocation>> tree = new LinkedHashMap<>();
-        tree.put(id("a"), List.of());
-        tree.put(id("left"), List.of(id("a")));
-        tree.put(id("right"), List.of(id("a")));
-        tree.put(id("join"), List.of(id("left"), id("right")));
-        assertEquals(Set.of(), GrowthRules.unreachable(tree));
-    }
-
-    @Test
-    void nodesThatOnlyLinkToEachOtherCanNeverBeTaken() {
-        Map<ResourceLocation, List<ResourceLocation>> tree = new LinkedHashMap<>();
-        tree.put(id("a"), List.of());
-        tree.put(id("x"), List.of(id("y")));
-        tree.put(id("y"), List.of(id("x")));
-        assertEquals(Set.of(id("x"), id("y")), GrowthRules.unreachable(tree));
-    }
-
-    @Test
-    void aLinkToANodeThatDoesNotExistLeadsNowhere() {
-        Map<ResourceLocation, List<ResourceLocation>> tree = new LinkedHashMap<>();
-        tree.put(id("a"), List.of());
-        tree.put(id("typo"), List.of(id("missing")));
-        tree.put(id("after_typo"), List.of(id("typo")));
-        assertEquals(Set.of(id("typo"), id("after_typo")), GrowthRules.unreachable(tree));
     }
 
     @Test

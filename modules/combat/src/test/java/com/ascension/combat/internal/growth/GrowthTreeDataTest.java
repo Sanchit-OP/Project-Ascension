@@ -26,17 +26,19 @@ import org.junit.jupiter.api.Test;
 
 /**
  * The tree's own data files, read as plain JSON from this module's resources: every link lands on a
- * node, every node can be reached, no two nodes of an arm sit on one spot. Catches a typo in a node
- * file at build time rather than in a player's hands. It does not read the numbers: those are
- * Sanchit's to change (growth.md section 8), and a test that pinned them would only get in his way.
- * The server log's {@code GrowthDataCheck} says the same things for packs that add nodes.
+ * node, every node can be reached, no two nodes sit on one spot, and the web really is a web: no dead
+ * ends, a way in to every theme, and the themes joined to one another (growth.md section 5). Catches a
+ * typo in a node file at build time rather than in a player's hands. It does not read the numbers:
+ * those are Sanchit's to change (growth.md section 8), and a test that pinned them would only get in
+ * his way. The server log's {@code GrowthDataCheck} says the same things for packs that add nodes.
  */
 class GrowthTreeDataTest {
 
     private static final String NAMESPACE = "ascension_combat";
+    private static final Set<String> THEMES = Set.of("power", "fury", "guard", "wayfarer");
 
-    /** Every node file: its id, folder (the arm it should name) and parsed JSON. */
-    private record NodeFile(ResourceLocation id, String folder, JsonObject json) {
+    /** Every node file: its id and parsed JSON. */
+    private record NodeFile(ResourceLocation id, JsonObject json) {
 
         List<ResourceLocation> links() {
             List<ResourceLocation> links = new ArrayList<>();
@@ -44,6 +46,14 @@ class GrowthTreeDataTest {
                 json.getAsJsonArray("links").forEach(link -> links.add(ResourceLocation.parse(link.getAsString())));
             }
             return links;
+        }
+
+        boolean start() {
+            return json.has("start") && json.get("start").getAsBoolean();
+        }
+
+        String arm() {
+            return json.get("arm").getAsString();
         }
     }
 
@@ -64,10 +74,22 @@ class GrowthTreeDataTest {
                     JsonElement json = JsonParser.parseReader(reader);
                     NODES.add(new NodeFile(
                             ResourceLocation.fromNamespaceAndPath(NAMESPACE, folder + "/" + name),
-                            folder, json.getAsJsonObject()));
+                            json.getAsJsonObject()));
                 }
             }
         }
+    }
+
+    private static Map<ResourceLocation, List<ResourceLocation>> links() {
+        Map<ResourceLocation, List<ResourceLocation>> links = new LinkedHashMap<>();
+        NODES.forEach(node -> links.put(node.id(), node.links()));
+        return links;
+    }
+
+    private static Map<ResourceLocation, NodeFile> byId() {
+        Map<ResourceLocation, NodeFile> byId = new LinkedHashMap<>();
+        NODES.forEach(node -> byId.put(node.id(), node));
+        return byId;
     }
 
     @Test
@@ -77,8 +99,7 @@ class GrowthTreeDataTest {
 
     @Test
     void everyLinkLandsOnANode() {
-        Set<ResourceLocation> ids = new HashSet<>();
-        NODES.forEach(node -> ids.add(node.id()));
+        Set<ResourceLocation> ids = byId().keySet();
         for (NodeFile node : NODES) {
             for (ResourceLocation link : node.links()) {
                 assertTrue(ids.contains(link), node.id() + " links to " + link + ", which is not a node");
@@ -88,35 +109,59 @@ class GrowthTreeDataTest {
 
     @Test
     void everyNodeCanBeReached() {
-        Map<ResourceLocation, List<ResourceLocation>> links = new LinkedHashMap<>();
-        NODES.forEach(node -> links.put(node.id(), node.links()));
-        assertEquals(Set.of(), GrowthRules.unreachable(links), "nodes no chain of links leads to");
+        Set<ResourceLocation> starts = new HashSet<>();
+        NODES.stream().filter(NodeFile::start).forEach(node -> starts.add(node.id()));
+        assertEquals(Set.of(), GrowthRules.unreachable(starts, links()), "nodes no chain of links joins to a start");
     }
 
     @Test
-    void everyArmHasAWayIn() {
-        Set<String> arms = new HashSet<>();
-        NODES.forEach(node -> arms.add(node.folder()));
-        for (String arm : arms) {
-            assertTrue(NODES.stream().anyMatch(node -> node.folder().equals(arm) && node.links().isEmpty()),
-                    arm + " has no node that touches the centre");
-        }
+    void aPlayerCanStartInAnyTheme() {
+        Set<String> themesWithAStart = new HashSet<>();
+        NODES.stream().filter(NodeFile::start).forEach(node -> themesWithAStart.add(node.arm()));
+        assertEquals(THEMES, themesWithAStart, "a theme has no start node, so it can only be reached through another");
     }
 
     @Test
-    void aNodeSitsInTheFolderOfItsArm() {
+    void thereAreNoDeadEnds() {
+        Map<ResourceLocation, Set<ResourceLocation>> near = GrowthRules.neighbours(links());
         for (NodeFile node : NODES) {
-            assertEquals(node.folder(), node.json().get("arm").getAsString(), node.id() + " names another arm");
+            int neighbours = near.get(node.id()).size() + (node.start() ? 1 : 0);
+            assertTrue(neighbours >= 2, node.id() + " is a dead end: it touches " + neighbours);
         }
     }
 
     @Test
-    void noTwoNodesOfAnArmShareASpot() {
+    void everyThemeIsJoinedToAtLeastTwoOthers() {
+        Map<ResourceLocation, NodeFile> byId = byId();
+        Map<String, Set<String>> joined = new LinkedHashMap<>();
+        THEMES.forEach(theme -> joined.put(theme, new HashSet<>()));
+        for (NodeFile node : NODES) {
+            for (ResourceLocation link : node.links()) {
+                String other = byId.get(link).arm();
+                if (!other.equals(node.arm())) {
+                    joined.get(node.arm()).add(other);
+                    joined.get(other).add(node.arm());
+                }
+            }
+        }
+        joined.forEach((theme, others) ->
+                assertTrue(others.size() >= 2, theme + " touches only " + others + ": the themes are corridors"));
+    }
+
+    @Test
+    void everyNodeHasAKnownTheme() {
+        for (NodeFile node : NODES) {
+            assertTrue(THEMES.contains(node.arm()), node.id() + " has the theme " + node.arm());
+        }
+    }
+
+    @Test
+    void noTwoNodesShareASpot() {
         Set<String> spots = new HashSet<>();
         for (NodeFile node : NODES) {
             var position = node.json().getAsJsonArray("position");
-            String spot = node.folder() + " " + position.get(0).getAsInt() + "," + position.get(1).getAsInt();
-            assertTrue(spots.add(spot), node.id() + " is on the same spot as another node of its arm: " + spot);
+            String spot = "%.2f,%.2f".formatted(position.get(0).getAsDouble(), position.get(1).getAsDouble());
+            assertTrue(spots.add(spot), node.id() + " is on the same spot as another node: " + spot);
         }
     }
 

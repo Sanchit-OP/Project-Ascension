@@ -14,8 +14,10 @@ from three places, all permanent and all finite:
 2. **Gates.** Each gate lit gives every player 2 points.
 3. **Discoveries.** The first time *you* find each notable place, you gain 1 point.
 
-You spend points in a tree with four arms: Power, Fury, Guard and Wayfarer. Even HP is a choice,
-taken in the Guard arm. This is where two players on the same team become different.
+You spend points in a **web** of skill nodes with four themes: Power, Fury, Guard and Wayfarer.
+The themes sit side by side and shade into one another, so a player can drift from one into the next
+rather than commit to a path. Even HP is a choice, taken in Guard's part of the web. This is where
+two players on the same team become different.
 
 Nothing grows from kill counts, time played or vanilla XP, so nothing can be farmed. Growth gives
 **numbers**; runes give **behaviours** (§11).
@@ -25,7 +27,7 @@ Nothing grows from kill counts, time played or vanilla XP, so nothing can be far
 | Boss, first kill | The whole team | 3 | 6 bosses: 18 |
 | Gate lit | The whole team | 2 | 3 gates: 6 |
 | Discovery | You | 1 | 11 places: 11 |
-| **Total by the end of v1** | | | **35 points, for a 55-node tree** |
+| **Total by the end of v1** | | | **35 points, for a 56-node web** |
 
 ## 2. Where it fits
 
@@ -93,69 +95,104 @@ in this dimension" check, so it also counts a player who logs in or respawns the
 
 ## 5. The skill tree
 
+> **Reshaped 2026-10-17.** The first version was four arms, each a corridor you chose and walked
+> down. Sanchit: it should be more entangled, "a player should not feel to go in a direction instead
+> he should be able to go to adjacent areas". It is now a web.
+
 ### Shape
 
-A centre, and four arms going out from it. Each arm is a short trunk of nodes with one fork.
+**Round a centre emblem there are four rings of nodes, like the dials of an orrery.** Every node touches
+its neighbours on its own ring and on the rings either side, so there is never one way to go. A player
+can start almost anywhere, step sideways into the next area for one point, and reach a strong node by
+several routes.
 
-| Arm | Direction | Stats |
+| Theme | Stats | Where |
 |---|---|---|
-| **Power** | Hit harder | Attack Damage, Lethality, Penetration |
-| **Fury** | Hit faster, heal from it | Attack Speed, Omnivamp, Move Speed |
-| **Guard** | Survive | HP, Armor, Magic Resist |
-| **Wayfarer** | Explore other worlds | Move speed, mining speed, safe falls, reach, oxygen |
+| **Power** | Attack Damage, Lethality, Penetration | The top-left corner |
+| **Fury** | Attack Speed, Omnivamp, Move Speed | The top-right corner |
+| **Guard** | HP, Armor, Magic Resist | The bottom-right corner |
+| **Wayfarer** | Move speed, mining speed, reach, safe falls, step height | The bottom-left corner |
+
+Between each pair of themes is a sector that mixes the two, at the top, right, bottom and left
+(Power and Fury, Fury and Guard, Guard and Wayfarer, Wayfarer and Power). Nodes there, and nodes on
+the line between two sectors, take their stat from either side, so the web reads Power, Fury, Guard,
+Wayfarer all the way round and the themes shade into one another. A node's colour is its first stat's
+theme; nothing else depends on it.
 
 Power pairs naturally with Reaver runes, Fury with Vanguard, Guard with Bulwark, but nothing ties
-them: any arm works with any rune page. Wayfarer is Ascension's own: the planets are the game, and
+them: any region works with any rune page. Wayfarer is Ascension's own: the planets are the game, and
 surviving them is a direction worth choosing.
+
+| Ring | Nodes | What is on it |
+|---|---|---|
+| **1** | 8 | **Start nodes**, touching the centre: one for each sector, so a player begins in any theme |
+| **2** | 16 | Eight on the spokes, and eight between them that bridge two sectors |
+| **3** | 24 | A **notable** on each of the eight spokes, and a small node either side of it |
+| **4** | 8 | A **capstone** on each spoke, reached from the notable below it or from either side of it |
+
+Each ring is a closed loop, and the rings are joined by spokes and by the extra links between
+sectors, so most nodes touch three or four others.
 
 ### Rules
 
-- **Every node costs 1 point.** You can take a node if it touches the centre or a node you have.
-- **Two kinds of node:** small (worth 1 unit, §8) and notable (named, worth about 4 units). Each
-  arm has three notables, at its 5th, 10th and last (14th) step; the last is the biggest. The
-  notables are what make going deep feel worth it.
-- **v1: 14 nodes per arm, 56 in all.** With 35 points a fully grown v1 player fills two arms and
-  half of a third, about 60% of the tree. Each new world adds nodes to the arms' ends, as data, so
-  there is always more tree than points.
+- **Every node costs 1 point.** You can take a node if it is a start node, or **next to one you have**.
+  A link works both ways: next to means joined, whichever way the file names it.
+- **Two kinds of node:** small (worth 1 unit, §8), and notable (named, worth about 4 units; the
+  capstones about 6). There are 16 notables: eight on ring 3, three points from the centre by the
+  shortest route, and eight capstones on ring 4, four points out.
+- **v1: 56 nodes.** With 35 points a player takes a little over half the web, about 62%. They choose
+  which half: all of one side, a ring round the whole centre, or a path out to a capstone and back
+  along another. Each new world adds nodes to the outside of the web, as data, so there is always
+  more tree than points.
 - **Respec: anywhere out of combat, for 20 XP levels** (Sanchit, 2026-10-15). All points come back
   to spend again. A respec moves points; it never makes them. Free in creative mode.
 - **The tree never holds procs or on-hit effects.** That is the runes' job (§11).
 
 ### v1 content (placeholders)
 
-| Arm | Small nodes (11) | 5th: notable | 10th: notable | 14th: notable |
-|---|---|---|---|---|
-| **Power** | 7 × +0.25 Attack Damage, 2 × +2 Lethality, 2 × +2% Penetration | **Heavy Hand:** +1 Attack Damage | **Sunder:** +8% Penetration | **Executioner:** +1.5 Attack Damage |
-| **Fury** | 6 × +3% Attack Speed, 3 × +1% Omnivamp, 2 × +2% Move Speed | **Frenzy:** +12% Attack Speed | **Bloodthirst:** +4% Omnivamp | **Whirlwind:** +18% Attack Speed |
-| **Guard** | 5 × +1 HP, 3 × +4 Armor, 3 × +4 Magic Resist | **Stout Heart:** +4 HP | **Bastion:** +8 Armor, +8 Magic Resist | **Unbroken:** +6 HP |
-| **Wayfarer** | 4 × +2% Move Speed, 3 × +15% mining speed, 2 × +1 safe fall distance, 2 × +0.5 block reach | **Deep Lungs:** +5 s of breath | **Sure Foot:** walk up full blocks | **Pioneer:** +6% Move Speed, +2 safe fall distance |
+Small nodes: one stat each, a unit's worth.
 
-**A full arm gives:**
-
-| Arm | Total |
+| Theme | Small nodes |
 |---|---|
-| Power | +4.25 Attack Damage, 4 Lethality, 12% Penetration |
-| Fury | +48% Attack Speed, 7% Omnivamp, 4% Move Speed |
-| Guard | +15 HP, +20 Armor, +20 Magic Resist |
-| Wayfarer | +14% Move Speed, +45% mining speed, +4 safe fall, +1 block reach, +5 s breath, full-block step |
+| **Power** | Might +0.25 Attack Damage, Edge +2 Lethality, Piercing +2% Armor Pen |
+| **Fury** | Tempo +3% Attack Speed, Hunger +1% Omnivamp, Swiftness +2% Move Speed |
+| **Guard** | Vitality +1 HP, Plating +4 Armor, Warding +4 Magic Resist |
+| **Wayfarer** | Pace +2% Move Speed, Delving +15% mining speed, Long Arm +0.5 reach, Soft Landing +1 safe fall |
+
+Notables, round the web (the top is Power and Fury, and so on clockwise):
+
+| Where | Ring 3 notable (3 points out) | Ring 4 capstone (4 points out) |
+|---|---|---|
+| Top (Power and Fury) | **Rampage:** +0.5 Attack Damage, +6% Attack Speed | **Sunder:** +8% Armor Pen, +8% Magic Pen |
+| Top right (Fury) | **Frenzy:** +12% Attack Speed | **Whirlwind:** +18% Attack Speed |
+| Right (Fury and Guard) | **Bloodthirst:** +4% Omnivamp | **Lifeblood:** +3% Omnivamp, +4 HP |
+| Bottom right (Guard) | **Stout Heart:** +4 HP | **Unbroken:** +6 HP |
+| Bottom (Guard and Wayfarer) | **Bastion:** +8 Armor, +8 Magic Resist | **Ironwalk:** +4 Armor, +4 Magic Resist, +3% Move Speed |
+| Bottom left (Wayfarer) | **Sure Foot:** step height to a full block | **Pioneer:** +6% Move Speed, +2 safe fall |
+| Left (Wayfarer and Power) | **Trailblazer:** +4% Move Speed, +0.5 Attack Damage | **Pathbreaker:** +0.75 Attack Damage, +6% Move Speed |
+| Top left (Power) | **Heavy Hand:** +1 Attack Damage | **Executioner:** +1.5 Attack Damage |
+
+**The whole web would give** (all 56 points, which nobody has): +18 HP, +24 Armor, +20 Magic Resist,
++5.5 Attack Damage, 8 Lethality, 10% Armor Pen and 8% Magic Pen, +54% Attack Speed, 10% Omnivamp,
++29% Move Speed, +60% mining speed, +0.5 reach, +4 safe fall and a full-block step. With 35 points a
+player has about 62% of that, which is what makes the choice real.
 
 - **Deep Lungs** needs `ascension-atmosphere` to read a lung-capacity attribute (§11, §13 question
-  7). Until that is decided, the node is left out of the data. **So Wayfarer has 13 nodes, not 14,
-  and the whole tree 55**; its fork opens a step earlier (§5 "As built").
-
-### As built (G2)
-
-The three other arms are data, written the same way as Guard: a trunk of four small nodes, a
-notable at the fifth, a fork of two small nodes each side, a second notable where the fork rejoins,
-three more smalls, and the last notable. Positions are in the arm's own frame (the trunk runs down
-the `x = 0` line away from the centre); the screen turns each arm to its side of the tree.
-
-| Arm | Nodes | Notable differences from the table above |
-|---|---|---|
-| **Power** | `might_1..7`, `edge_1..2`, `piercing_1..2`, `heavy_hand`, `sunder`, `executioner` | The small Penetration nodes give Armor Pen; **Sunder gives 8% Armor Pen and 8% Magic Pen** |
-| **Fury** | `tempo_1..6`, `hunger_1..3`, `swiftness_1..2`, `frenzy`, `bloodthirst`, `whirlwind` | None. Attack Speed is a percent of the base; Omnivamp is a fraction (0.01 is 1%) |
-| **Wayfarer** | `pace_1..4`, `delving_1..3`, `long_arm_1..2`, `soft_landing_1..2`, `sure_foot`, `pioneer` | No Deep Lungs. Mining speed is `block_break_speed`, reach is `block_interaction_range`, Sure Foot is +0.4 `step_height` (0.6 to 1.0) |
+  7). Until that is decided it is not in the data; if Sanchit wants oxygen in the tree it is one more
+  node file on the Wayfarer side.
 - **Sure Foot** is vanilla's step-height attribute raised to one block.
+
+### As built
+
+- Nodes are `data/ascension_combat/ascension_combat/growth_node/web/*.json`, named by ring and
+  direction: `r1_n` is ring 1 at the top, `r2_n_ne` the bridge on ring 2 between the top and top-right
+  sectors, `r3_se_l` the small node counter-clockwise of the bottom-right notable `r3_se`, `r4_se` its capstone.
+- A node file has `"start": true` if it touches the centre, `links` to its neighbours (named once, on
+  either end), and a `position` in ring steps from the centre (`[0, -1]` is one step up).
+- Nothing reads `arm` but the screen, which uses it for colour.
+- The server log says when a node can never be taken, and the build fails if the data has a dead
+  end, a node with no way in, a theme with no start, or themes that are not joined to each other
+  (`GrowthTreeDataTest`).
 
 ## 6. Why none of it can be farmed
 
@@ -202,10 +239,17 @@ sword (7) is about 3.6% more damage.
 
 35 points: about 35 units, plus a little more for each notable reached.
 
-- **Guard and Power filled, 7 points spare:** 35 HP, 20 Armor, 20 Magic Resist, +4.25 Attack
-  Damage, 4 Lethality, 12% Penetration.
-- **Fury and Wayfarer filled:** 20 HP, +48% Attack Speed, 7% Omnivamp, +18% Move Speed, and
-  the explorer's kit.
+The whole web is 56 points and gives the totals in §5, so a player with 35 has about 62% of it. What
+they have depends on where they went:
+
+- **A defender** takes the Guard corner and the sectors beside it, and runs a ring round to Fury for
+  Omnivamp: most of the web's HP, Armor and Magic Resist, plus some healing.
+- **A striker** takes Power and Fury: most of the Attack Damage, Lethality, Penetration and Attack Speed,
+  with little HP.
+- **An explorer** takes Wayfarer and a lean into Guard or Power: the move, mining, reach and fall
+  stats, and a full-block step.
+
+No one has all of it, and the paths cross, so two players with the same points are rarely the same.
 
 ### Base or bonus: neither
 
@@ -266,19 +310,22 @@ A growth file then says what an advancement is worth, in
 }
 ```
 
-And a tree node, in `data/ascension_combat/ascension_combat/growth_node/guard/stout_heart.json`:
+And a tree node, in `data/ascension_combat/ascension_combat/growth_node/web/r3_se.json`:
 
 ```json
 {
   "arm": "guard",
   "kind": "notable",
-  "position": [0, 5],
-  "links": ["ascension_combat:guard/4"],
+  "name": { "translate": "growth.ascension_combat.node.stout_heart" },
+  "position": [2.121, 2.121],
+  "links": ["ascension_combat:web/r2_se", "ascension_combat:web/r3_se_l"],
   "stats": [
     { "attribute": "minecraft:generic.max_health", "amount": 4 }
   ]
 }
 ```
+
+A node touching the centre adds `"start": true`.
 
 - **Stats name any attribute by id**, vanilla's, ours, or another mod's. An attribute that isn't
   installed is skipped, with one log line. So growth can raise oxygen (an `atmosphere` attribute)
@@ -335,9 +382,9 @@ installed is reported, not silently skipped.
 
 **Opened with K** (bound by default, so players find it).
 
-- **The tree in the middle:** the centre emblem, and the four arms going out, each in its own
-  colour. Small nodes are round sockets; notables are larger and framed. Taken nodes glow, nodes you
-  can take pulse softly, the rest are dim. Drag to pan if the tree is bigger than the screen.
+- **The tree in the middle:** the centre emblem, and the web of rings round it, each node in the
+  colour of its theme. Small nodes are round sockets; notables are larger and framed. Taken nodes glow,
+  nodes you can take pulse softly, the rest are dim. Drag to pan if the tree is bigger than the screen.
 - **Hovering a node** shows a card: its name, what it gives in numbers, and whether you can take it.
 - **Taking nodes is two steps:** click to mark, then confirm. Nothing is spent until you confirm,
   and you can unmark before then.
@@ -358,15 +405,17 @@ installed is reported, not silently skipped.
 
 Made by `tools/generate-growth-art.py` from the real node files, so it shows the tree as built. The
 hover card is `design/growth/tree-hover.png`; the fit at GUI scales 2 to 4 is
-`design/growth/tree-fit-gui-scales.png`.
+`design/growth/tree-fit-gui-scales.png`. **The first mockup was four diagonal arms and Sanchit turned it
+down as too narrow; this is the web that replaced it.** It shows a player who started in Guard, walked
+round the first ring into Fury, and has two more nodes marked.
 
-- **A constellation in the rune screen's kit:** the night sky in a brass frame, round sockets, the
-  same buttons and cards. The four arms run **diagonally** away from the centre, so **all 55 nodes
-  fit one screen** with no panning: Power top left, Fury top right, Guard bottom right, Wayfarer
-  bottom left. Longer arms, from future worlds, will need dragging to pan; the layout keeps room for it.
-- **Arm colours** follow the rune paths they pair with: Power red (Reaver), Fury gold (Vanguard),
+- **A web of rings in the rune screen's kit:** the night sky in a brass frame, round sockets, the same
+  buttons and cards. All 56 nodes fit one screen with no panning, with the themes in the four corners
+  (Power top left, Fury top right, Guard bottom right, Wayfarer bottom left). A longer web, from future
+  worlds, will need dragging to pan.
+- **Theme colours** follow the rune paths they pair with: Power red (Reaver), Fury gold (Vanguard),
   Guard blue (Bulwark), Wayfarer green. Each node's icon is its first stat, in the colour the cards use for it
-  (HP green, Armor tan, Magic Resist lavender, Attack Damage orange).
+  (HP green, Armor tan, Magic Resist lavender, Attack Damage orange). Links take the blend of their two ends.
 - **Four states, told apart by more than colour:** *taken* is a bright star in a halo; *can take* is a
   ring of starlight; *marked, not confirmed* has a dashed white ring; *not reachable yet* is a dim ring.
   Notables are larger, with a second ring and an orbit.
@@ -424,7 +473,8 @@ Growth adds no items in v1, so the resource ledger is unchanged.
 1. **Co-op:** bosses and gates go to **the whole team**, including people who join later.
 2. **What a milestone gives:** **skill points only**, about 3 per boss and 2 per gate. No stat is
    given automatically.
-3. **Directions:** **a four-arm skill tree.**
+3. **Directions:** **a skill tree.** First built as four arms; on 2026-10-17 Sanchit said it should be
+   "more entangled", so it is **a web** (§5), where a player can move into any adjacent area.
 4. **Respec:** **anywhere out of combat, for 20 XP levels.**
 5. **Base or bonus:** growth counts as **bonus**. The stats session then settled that there is no
    split at all: growth adds to the one total items scale off, which gives the same result.
@@ -434,8 +484,8 @@ first:
 
 6. **Advancements:** show milestones as **an Ascension tab on the advancements screen, with
    toasts**? Or keep them hidden?
-7. **Oxygen:** should the Wayfarer arm grow your lungs (a small `atmosphere` change), or leave
-   oxygen to gear? Deep Lungs stays out of the data until this is answered.
+7. **Oxygen:** should the Wayfarer side grow your lungs (a small `atmosphere` change), or leave
+   oxygen to gear? Deep Lungs stays out of the data until this is answered (one more node on the Wayfarer side).
 8. **Where the code lives:** **in the combat module, `internal/growth`**, as the session prompt
    said? Or a module of its own (`ascension-progression`, already on the architecture map)?
 9. **The tree's centre:** the mark (the glyphs and the eye), or a neutral emblem? Needed by G5.

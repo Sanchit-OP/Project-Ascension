@@ -1,0 +1,20 @@
+{
+  "arm": "power",
+  "name": {
+    "translate": "growth.ascension_combat.node.might"
+  },
+  "position": [
+    -2.0,
+    0.0
+  ],
+  "links": [
+    "ascension_combat:web/r1_w",
+    "ascension_combat:web/r2_sw_w"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "amount": 0.25
+    }
+  ]
+}

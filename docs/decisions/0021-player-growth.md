@@ -27,8 +27,9 @@ The full design is `docs/progression/growth.md`; the research behind it is
 
 **1. Growth is permanent, comes only from finite sources, and is all skill points.** The first
 kill of each boss and each gate lit (milestones) and the first visit to each notable place
-(discoveries) give skill points, and nothing else. Every stat a player grows is taken in a four-arm
-skill tree. No kill-XP, activity levels, vanilla XP or time played: Minecraft machines farm anything
+(discoveries) give skill points, and nothing else. Every stat a player grows is taken in a
+skill tree, built as a web of four themes in which any node touches its neighbours, so a player moves
+into adjacent areas rather than choosing a path (Sanchit, 2026-10-17). No kill-XP, activity levels, vanilla XP or time played: Minecraft machines farm anything
 repeatable.
 
 **2. Every milestone is a vanilla advancement.** Growth reacts to advancements being earned or
