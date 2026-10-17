@@ -51,17 +51,4 @@ class CadenceStateTest {
         assertFalse(state.hit(ZOMBIE, 30, 3, WINDOW), "the zombie's count was lost");
     }
 
-    @Test
-    void aChargedSwingIsKnownOnlyForItsOwnTargetAndTick() {
-        CadenceState state = new CadenceState();
-        state.markChargedSwing(ZOMBIE, 100);
-        assertTrue(state.wasChargedSwing(ZOMBIE, 100));
-        assertFalse(state.wasChargedSwing(ZOMBIE, 101), "a later tick is another swing");
-        assertFalse(state.wasChargedSwing(SKELETON, 100), "a sweep that hit another enemy is not the charged swing");
-    }
-
-    @Test
-    void anUnmarkedSwingIsNotCharged() {
-        assertFalse(new CadenceState().wasChargedSwing(ZOMBIE, 0));
-    }
 }

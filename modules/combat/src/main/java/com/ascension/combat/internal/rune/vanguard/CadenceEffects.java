@@ -15,7 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 
 /**
  * Vanguard's Cadence keystone (docs/technical/rune-system.md section 4.1): land three fully
@@ -33,30 +32,11 @@ public final class CadenceEffects {
 
     public static final ResourceLocation ID = Runes.id("cadence");
 
-    /** Vanilla's own line between a full swing and a partial one. */
-    private static final float FULL_CHARGE = 0.9f;
-
     private CadenceEffects() {
     }
 
     public static void register(IEventBus bus) {
-        bus.addListener(CadenceEffects::onAttack);
         bus.addListener(CadenceEffects::onIncomingDamage);
-    }
-
-    /**
-     * A melee swing's charge is read here, at the start of the attack, because by the time the
-     * damage event arrives the swing's cooldown has already been reset.
-     */
-    private static void onAttack(AttackEntityEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer attacker) || Runes.active(attacker, ID).isEmpty()) {
-            return;
-        }
-
-        if (attacker.getAttackStrengthScale(0.5f) >= FULL_CHARGE) {
-            attacker.getData(RuneAttachments.CADENCE.get())
-                    .markChargedSwing(event.getTarget().getUUID(), attacker.level().getGameTime());
-        }
     }
 
     private static void onIncomingDamage(LivingIncomingDamageEvent event) {
@@ -72,7 +52,7 @@ public final class CadenceEffects {
         LivingEntity victim = event.getEntity();
         CadenceState state = attacker.getData(RuneAttachments.CADENCE.get());
         long now = level.getGameTime();
-        if (!fullyCharged(event.getSource().getDirectEntity(), attacker, victim, state, now)) {
+        if (!fullyCharged(event.getSource().getDirectEntity(), attacker, victim, now)) {
             return;
         }
 
@@ -90,11 +70,11 @@ public final class CadenceEffects {
                 SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0f, 0.7f);
     }
 
-    private static boolean fullyCharged(Entity direct, ServerPlayer attacker, LivingEntity victim, CadenceState state, long now) {
+    private static boolean fullyCharged(Entity direct, ServerPlayer attacker, LivingEntity victim, long now) {
         if (direct instanceof AbstractArrow arrow) {
             return arrow.isCritArrow();
         }
 
-        return direct == attacker && state.wasChargedSwing(victim.getUUID(), now);
+        return direct == attacker && attacker.getData(RuneAttachments.SWING.get()).charged(victim.getUUID(), now);
     }
 }

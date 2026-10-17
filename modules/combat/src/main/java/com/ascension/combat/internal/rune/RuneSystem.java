@@ -14,6 +14,7 @@ public final class RuneSystem {
 
     /** Game-event listeners; the mod-bus half is {@link RuneRegistries#register} and {@link RuneContent#register}. */
     public static void register(IEventBus gameBus) {
+        SwingTracking.register(gameBus);
         RuneGrowth.register(gameBus);
         RuneModifiers.register(gameBus);
         ExposedDamage.register(gameBus);

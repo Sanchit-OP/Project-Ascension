@@ -36,6 +36,11 @@ public final class RuneAttachments {
             "exposed",
             () -> AttachmentType.builder(ExposedState::new).build());
 
+    /** What the player's last melee swing was (charged, critical), for the damage event after it. */
+    public static final Supplier<AttachmentType<SwingMarks>> SWING = TYPES.register(
+            "swing",
+            () -> AttachmentType.builder(SwingMarks::new).build());
+
     /** Cadence's hit count on one enemy, on the attacker. */
     public static final Supplier<AttachmentType<CadenceState>> CADENCE = TYPES.register(
             "cadence",

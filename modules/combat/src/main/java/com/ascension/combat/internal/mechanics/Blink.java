@@ -37,5 +37,6 @@ public final class Blink {
                 : hit.getLocation().subtract(direction.scale(WALL_BUFFER));
 
         player.teleportTo(target.x, target.y, target.z);
+        Movements.moved(player);
     }
 }
