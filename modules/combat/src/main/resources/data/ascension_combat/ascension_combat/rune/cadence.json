@@ -1,0 +1,13 @@
+{
+  "path": "vanguard",
+  "slot": "keystone",
+  "position": 1,
+  "icon": "ascension_combat:rune/cadence",
+  "effect": "ascension_combat:cadence",
+  "values": {
+    "hits": 3,
+    "window_seconds": 4,
+    "bonus_damage": 3.0,
+    "exposed_seconds": 5
+  }
+}

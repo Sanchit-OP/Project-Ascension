@@ -108,6 +108,16 @@
   "rune.ascension_combat.second_wind.desc": "Regenerate while in combat and below half health.",
   "rune.ascension_combat.killing_surge": "Killing Surge",
   "rune.ascension_combat.killing_surge.desc": "A kill gives a short burst of attack speed.",
+  "rune.ascension_combat.cadence": "Cadence",
+  "rune.ascension_combat.cadence.desc": "Land three fully charged hits on one enemy within 4 seconds. The third hits harder and Exposes the enemy: it takes 10% more damage from everyone for 5 seconds.",
+  "rune.ascension_combat.vein_breaker": "Vein Breaker",
+  "rune.ascension_combat.vein_breaker.desc": "Mine an ore or a log while sneaking and the connected blocks of the same kind break with it, up to 32. Each one wears your tool and costs a little hunger.",
+  "rune.ascension_combat.blooded": "Blooded",
+  "rune.ascension_combat.blooded.desc": "Omnivamp that grows with every new kind of enemy you defeat, up to 12 kinds. Swap it out and it starts again.",
+  "rune.ascension_combat.giant_slayer": "Giant Slayer",
+  "rune.ascension_combat.giant_slayer.desc": "You deal more damage to enemies with more max HP than you: 5% at 10% more, rising to 15% at double.",
+  "gui.ascension_combat.rune_grew": "%s grew: %s of %s kinds",
+  "stat_source.ascension_combat.runes": "Runes",
   "rune.ascension_combat.momentum": "Momentum",
   "rune.ascension_combat.momentum.desc": "Chaining hits quickly builds stacks; each heals you for a share of the damage you deal."
 }

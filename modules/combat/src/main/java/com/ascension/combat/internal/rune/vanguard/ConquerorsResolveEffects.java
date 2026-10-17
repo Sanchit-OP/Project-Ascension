@@ -41,9 +41,9 @@ public final class ConquerorsResolveEffects {
     public static final ResourceLocation ID = Runes.id("conquerors_resolve");
 
     private static final ResourceLocation ATTACK_DAMAGE_MODIFIER_ID =
-            ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "conquerors_resolve_attack_damage");
+            ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "rune/conquerors_resolve_attack_damage");
     private static final ResourceLocation OMNIVAMP_MODIFIER_ID =
-            ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "conquerors_resolve_omnivamp");
+            ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "rune/conquerors_resolve_omnivamp");
 
     private ConquerorsResolveEffects() {
     }

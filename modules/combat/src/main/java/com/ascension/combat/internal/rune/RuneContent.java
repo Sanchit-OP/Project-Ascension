@@ -28,6 +28,7 @@ public final class RuneContent {
 
     public static void register(IEventBus modBus) {
         ITEMS.register(modBus);
+        RuneAttachments.register(modBus);
         modBus.addListener(RuneContent::addToCreativeTabs);
     }
 

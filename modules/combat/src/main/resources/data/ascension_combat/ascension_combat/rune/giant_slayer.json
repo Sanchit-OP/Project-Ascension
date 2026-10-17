@@ -1,0 +1,14 @@
+{
+  "path": "vanguard",
+  "slot": "minor",
+  "row": 1,
+  "position": 2,
+  "icon": "ascension_combat:rune/giant_slayer",
+  "effect": "ascension_combat:giant_slayer",
+  "values": {
+    "min_ratio": 1.1,
+    "min_bonus": 0.05,
+    "full_ratio": 2.0,
+    "max_bonus": 0.15
+  }
+}

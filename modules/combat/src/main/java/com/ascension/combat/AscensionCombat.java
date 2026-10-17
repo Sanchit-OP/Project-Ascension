@@ -21,11 +21,7 @@ import com.ascension.combat.internal.rune.RuneCommands;
 import com.ascension.combat.internal.rune.RuneConfig;
 import com.ascension.combat.internal.rune.RuneContent;
 import com.ascension.combat.internal.rune.RuneRegistries;
-import com.ascension.combat.internal.rune.vanguard.ConquerorsResolveEffects;
-import com.ascension.combat.internal.rune.vanguard.KillingSurgeEffects;
-import com.ascension.combat.internal.rune.vanguard.MomentumEffects;
-import com.ascension.combat.internal.rune.vanguard.RelentlessStrikesEffects;
-import com.ascension.combat.internal.rune.vanguard.SecondWindEffects;
+import com.ascension.combat.internal.rune.RuneSystem;
 import com.ascension.combat.internal.stat.StatSystem;
 import com.ascension.combat.internal.weapons.DarkenBladeEffects;
 import com.ascension.combat.internal.weapons.DariusAxeEffects;
@@ -126,12 +122,8 @@ public final class AscensionCombat {
         SterakHarnessEffects.register(NeoForge.EVENT_BUS);
         TestMagicBladeEffects.register(NeoForge.EVENT_BUS);
 
-        // Vanguard's runes (docs/technical/rune-system.md section 4.1); their numbers are data.
-        ConquerorsResolveEffects.register(NeoForge.EVENT_BUS);
-        RelentlessStrikesEffects.register(NeoForge.EVENT_BUS);
-        SecondWindEffects.register(NeoForge.EVENT_BUS);
-        KillingSurgeEffects.register(NeoForge.EVENT_BUS);
-        MomentumEffects.register(NeoForge.EVENT_BUS);
+        // The runes (docs/technical/rune-system.md); each path's behaviours register inside.
+        RuneSystem.register(NeoForge.EVENT_BUS);
 
         LOGGER.info("Ascension Combat loaded ({})", container.getModInfo().getVersion());
     }

@@ -29,7 +29,7 @@ public final class KillingSurgeEffects {
     public static final ResourceLocation ID = Runes.id("killing_surge");
 
     private static final ResourceLocation ATTACK_SPEED_MODIFIER_ID =
-            ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "killing_surge_attack_speed");
+            ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "rune/killing_surge_attack_speed");
 
     private KillingSurgeEffects() {
     }

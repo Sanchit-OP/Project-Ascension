@@ -66,6 +66,7 @@ public final class Runes {
                 RuneChangeCost.pay(player);
             }
             state.set(proposed);
+            RuneModifiers.refresh(player);
         }
         PacketDistributor.sendToPlayer(player, RunePageResultPayload.SAVED);
         sync(player);

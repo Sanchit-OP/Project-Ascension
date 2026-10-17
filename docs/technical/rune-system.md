@@ -225,7 +225,10 @@ Research §2 lesson 5: a rune you can't feel might as well not exist.
   Starfall's streak, Cadence's third hit, Deadeye's ding, Brace's shockwave ring, Arc's jumps.
 - **Stacks you build** (Conqueror's) show as a small counter beside the hotbar, using the screen's
   art. One HUD element for every rune, not one each.
-- **Exposed** is a mob effect, so it shows the effect's particles on the target.
+- **Exposed** is a timer on the target, not a vanilla mob effect: the Wither and Cataclysm's bosses
+  refuse effects (Grievous Wounds found this first), and Cadence matters most against exactly
+  them. So the rune draws its own particles on the target when it lands. Its strength, 10%, is
+  fixed in `ExposedDamage`; Cadence's data sets how long it lasts.
 
 ## 9. How it's built
 
@@ -243,7 +246,7 @@ way planets are (`AscensionWorlds`' `DataPackRegistryEvent.NewRegistry`):
   "icon": "ascension_combat:rune/cadence",
   "effect": "ascension_combat:cadence",
   "values": { "hits": 3, "window_seconds": 4, "bonus_damage": 3.0,
-              "exposed_seconds": 5, "exposed_amplify": 0.10 }
+              "exposed_seconds": 5 }
 }
 ```
 
@@ -375,7 +378,7 @@ server; anything saved, across a world reload.
 | # | What | Seen working when |
 |---|---|---|
 | **R1** | **The page:** the rune registry and its JSON, the new page shape (keystone choice, rows, shards), validation, the in-combat rule, the cost (Rune Chalk and XP), the result payload. Vanguard moved to data. The old screen made to drive it. | A page saved on a dedicated server survives a reload; a change in combat, or without chalk, is refused with a reason. |
-| **R2** | **Vanguard:** Cadence, Vein Breaker, Blooded (and growth), Giant Slayer. | Each fires, with its effect visible; Blooded's growth survives a reload and resets on a swap. |
+| **R2** | **Vanguard:** Cadence, Vein Breaker, Blooded (and growth), Giant Slayer. *Built 2026-10-17: the nine runes load on a dedicated server and 16 new tests pass; not yet seen in a client (Sanchit will test once the full screen exists).* | Each fires, with its effect visible; Blooded's growth survives a reload and resets on a swap. |
 | **R3** | **Refactor pass** (ADR-0008). | |
 | **R4** | **Reaver** and **Aetherwright**. | Each rune fires. Silent Step walked past a shrieker. |
 | **R5** | **Bulwark** and the stat shards. | Pack Leader with a wolf; Cat's Eye with creepers. |
@@ -385,7 +388,9 @@ server; anything saved, across a world reload.
 | **R9** | **Unlocks**, once growth's API is merged. | Slots opening as milestones land, on a dedicated server. |
 | **R10** | **Refactor pass.** | |
 
-The screen and art (R7–R8) can move before R4 if Sanchit would rather see the new screen first.
+**Re-sequenced 2026-10-17 (Sanchit):** he will not test until the full screen exists, so after R3 the
+screen and art (R7–R8) come next, with Vanguard complete behind them; Reaver, Aetherwright, Bulwark
+and the shards (R4–R6) follow, and each path's runes then appear in a screen that already exists.
 
 ## 13. Decisions
 
