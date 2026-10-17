@@ -21,8 +21,8 @@
   levels**, out of combat. Filling an empty slot is free.
 - **Four runes grow** over the game, to a cap. Swapping one out loses its growth.
 - **Runes are data.** Each rune's numbers are a JSON file the client also receives.
-- **A real screen:** a custom panel, emblems, an icon per rune, hover cards, motion and sound.
-  Mockups first.
+- **A real screen, the orrery:** each path a brass dial on a night sky, keystones round its hub
+  and minors on its rim. Emblems, an icon per rune, hover cards, motion and sound (§10).
 
 ## 2. Where runes fit
 
@@ -41,8 +41,9 @@ stats (speed, mining speed, safe falls, reach). A world keystone does something 
 breaks a vein, silences your steps, sends creepers away.
 
 **Stats** are given and read only through the stats session's API (`item-stats.md` §6): runes add
-attribute modifiers under a prefix registered as **bonus**, and read every stat through
-`StatReader`.
+attribute modifiers under a prefix registered with `StatSources` (`ascension_combat:rune/`, shown
+as "Runes" on the character sheet), and read every stat through `StatReader.value`. There is no
+base/bonus split (Sanchit, 2026-10-15): a rune that scales off Attack Damage reads the total.
 
 ## 3. The page
 
@@ -137,7 +138,7 @@ never by scanning every tick. So the team runes still do something for a solo pl
 
 | Slot | Rune | What it does | Placeholder numbers | Status |
 |---|---|---|---|---|
-| Keystone | **Brace** | Block a hit with a shield, or take a big hit, and you brace: huge Armor and Magic Resist for a moment, then a shockwave that hurts and throws back everything near you. | Big hit: 25% of max HP. +40 Armor and Magic Resist for 2.5 s; shockwave 3 + 10% of bonus Armor, magic, 4 blocks; 12 s cooldown | New |
+| Keystone | **Brace** | Block a hit with a shield, or take a big hit, and you brace: huge Armor and Magic Resist for a moment, then a shockwave that hurts and throws back everything near you. | Big hit: 25% of max HP. +40 Armor and Magic Resist for 2.5 s; shockwave 3 + 10% of your Armor, magic, 4 blocks; 12 s cooldown | New |
 | Keystone | **Pack Leader** | Your tamed wolves, cats and parrots share your defences, hit harder, and heal when you heal. Once every few minutes, a pet that would die is saved at 1 HP and brought to you. | 50% of your Armor and Magic Resist; +3 damage; 25% of your heals; save every 3 minutes | New |
 | World keystone | **Cat's Eye** | **Creepers and phantoms keep away from you**, as they do from cats. (The lore says cats can see the Observers; this lends you that sight.) The price: hard to hunt creepers for gunpowder. | Creepers flee within 6 blocks; phantoms never swoop at you | New |
 | Row 1: *how do you take a hit?* | **Plating** | After a hard hit, the next few hits are softened. | After 4+ damage: next 3 hits within 3 s take 30% less; 12 s cooldown | New |
@@ -284,42 +285,74 @@ Payloads: `SetRunePagePayload` (client → server) carries the whole page. A new
 - A `RunePageChangedEvent` on the NeoForge bus, for other mods.
 - Rune behaviours stay internal in v1. Letting other mods add behaviours is a later API change.
 
-## 10. The screen
+## 10. The screen: the orrery
 
-**What it must do**, whatever look Sanchit chooses from the mockups:
+**Chosen by Sanchit, 2026-10-17.** The first mockups put the page in League's two columns, and he
+turned them down on 2026-10-16: "its kinda exact copy of the layout for the runes". Four other
+layouts followed (a rune pouch like Minecraft's inventory, a loadout round the player, an orrery,
+a sky map of constellations; commit `3773f06`). He chose the orrery. The mockups are in
+`design/runes/`, made by `tools/generate-rune-art.py`.
 
-- **Fit 420 × 240 GUI pixels**, so it works at GUI scales 2 to 4 on a 720p or 1080p screen. Pixel
-  art at one texel per GUI pixel: sharp at every scale.
-- **Show the whole page at once:** the primary path, its keystones (the world keystone set apart)
-  and rows, the secondary path, the shards, the cost, Save and Reset.
-- **The path is the identity:** its colour washes the panel, its emblem heads its column.
-- **Four states** told apart by brightness, not only colour: chosen (full colour, lit ring), open
-  (dim), not allowed by the rules (dimmer), locked by growth (dark, padlock). Growing runes show a
-  growth ring.
-- **Hover cards:** a nine-sliced panel beside the rune, never over it, kept on screen. Name, path,
-  one plain sentence, the numbers coloured by stat, conditions ("in combat", "8 s cooldown"), and
-  for a locked slot, what opens it.
-- **Motion:** a rune brightens and lifts a pixel on hover; a ring draws round it when chosen
-  (150 ms); the path colour crossfades (200 ms); the chosen keystone breathes slowly. Whole-pixel
-  steps only.
-- **Sound** (vanilla sound events, played as UI sounds): a quiet tick on hover, a chime on
-  choosing pitched per path, a heavier one for a keystone, a dull note when refused, and a seal on
-  Save.
+![The orrery](../../design/runes/orrery.png)
+
+### The layout (400 × 224 GUI pixels)
+
+- **The primary path is a brass dial** on the left.
+  - Its **hub** is the path's emblem.
+  - Its **three keystones** sit on an inner ring: the two combat keystones above the hub, and the
+    world keystone below it, in a socket with an orbit round it, so it stands apart.
+  - Its **six minors** sit on the outer ring: row 1 on the left half, row 2 on the right half,
+    each half traced by a faint arc in the path's colour.
+  - **Spokes** of light run from the hub to the chosen keystone and the two chosen minors.
+  - The **four path tabs** sit in the dial's corners. Choosing one turns the dial to that path.
+  - The path's name sits under the dial, and a faint cloud of its colour behind it.
+- **The secondary path is a smaller dial** to the right: hub, six minors, two spokes. Its three
+  tabs sit beside it, with its promise and "one from each half". Before the first milestone it is
+  dark: an empty ring, a padlock in the hub, "Opens at your 1st milestone".
+- **The shards** are three rows of three small moons below it: offence, flex, defence. A locked row
+  shows padlocks.
+- **The keystone box** at the bottom right says what the chosen keystone does, in one sentence.
+- **The title bar** holds Save and Reset, and the cost of this save: a Rune Chalk and 3 levels, or
+  "free" when the save only fills empty slots.
+
+### What it must do
+
+- **Readable at GUI scales 2 to 4:** the panel is 400 × 224 GUI pixels, inside the 426 × 240 a
+  720p screen gives at scale 3 (`design/runes/orrery-fit-gui-scales.png`). Pixel art at one texel
+  per GUI pixel: sharp at every scale.
+- **Four states**, told apart by brightness and the socket, not only colour:
+  - **chosen:** a bright star in a halo;
+  - **open:** a thin ring of starlight, the icon desaturated;
+  - **not allowed:** a ring of dust;
+  - **locked by growth:** a ring of dust with a padlock.
+  Growing runes add a ring that fills as they grow.
+- **Hover cards** (`design/runes/orrery-hover.png`): a nine-sliced panel beside the rune, kept on
+  screen. Name, path and slot, one plain sentence, the numbers coloured by stat, the fine print
+  (conditions, and what a swap would cost), and for a locked slot what opens it.
+- **Motion**, in whole-pixel steps:
+  - choosing a primary path turns the dial a quarter round to it (250 ms, eased);
+  - the spokes draw out from the hub (150 ms);
+  - a socket brightens on hover;
+  - the chosen keystone's halo breathes slowly.
+- **Sound** (vanilla sound events, played as UI sounds): a quiet tick on hover, a chime on choosing
+  pitched per path, a heavier one for a keystone, a dull note when refused, a seal on Save.
 - **Opened with R**, bound by default (growth's tree takes K).
-- **The same game as growth's tree** (`growth.md` §10): the frame, cards, buttons, sockets and sounds
-  are one kit, made by one script, that the growth screen reuses.
 
-**The art**, all from one seeded script, `tools/generate-rune-art.py` (`art-guide.md`):
-- 4 path emblems, 36 rune icons, 9 shard icons, socket frames per slot type and state, the panel,
-  the hover card, buttons, the padlock, the growth ring, the Rune Chalk item.
-- **Shape language per path:** Vanguard heavy and upright (blades, banners); Reaver sharp and
-  leaning (fangs, crescents, slashes); Aetherwright round and orbiting (stars, sparks, spirals);
-  Bulwark broad and closed (shields, walls, rings).
+### The art kit, shared with growth
+
+The night sky in a brass frame, the dial rims, the star sockets, the cards, the buttons and the
+sounds are one kit, made by one script. Growth's skill tree (`growth.md` §10) is to reuse it, so
+the two screens are one game.
+
+- **From `tools/generate-rune-art.py`:** 4 path emblems, 36 rune icons, 6 shard icons, the
+  sockets in each state, the panel, the hover card, buttons, the padlock, the growth ring, and the
+  Rune Chalk item.
+- **Shape language per path:** Vanguard heavy and upright (a banner, a crown); Reaver sharp and
+  leaning (claw marks, a dagger); Aetherwright round and orbiting (a comet, stars, a spiral);
+  Bulwark broad and closed (a shield, a paw, an anvil).
 - **No accidental symbols** (no crosses, letters or faces), and no teal or diamond eye: those are
-  the network's.
-
-**The look** is the mockups' job: three directions, rendered at GUI scales 2, 3 and 4, sent to
-Sanchit. Nothing is built until he picks one.
+  the network's. The review caught a pick that read as a hammer and sickle, a tally that read as a
+  "Y", a boot that read as an "L", and an orb that came out as a diamond; all redrawn.
 
 ## 11. Requested stats
 
@@ -347,7 +380,7 @@ server; anything saved, across a world reload.
 | **R4** | **Reaver** and **Aetherwright**. | Each rune fires. Silent Step walked past a shrieker. |
 | **R5** | **Bulwark** and the stat shards. | Pack Leader with a wolf; Cat's Eye with creepers. |
 | **R6** | **Refactor pass.** | |
-| **R7** | **The screen**, in the look Sanchit chose: panel, cards, motion, sound. The HUD stack counter. | At GUI scales 2, 3, 4. |
+| **R7** | **The screen: the orrery** (§10): dials, cards, motion, sound. The HUD stack counter. | At GUI scales 2, 3, 4. |
 | **R8** | **The art:** every icon, emblem and frame from the generator. | In the screen, at all three scales. |
 | **R9** | **Unlocks**, once growth's API is merged. | Slots opening as milestones land, on a dedicated server. |
 | **R10** | **Refactor pass.** | |
@@ -371,9 +404,12 @@ The screen and art (R7–R8) can move before R4 if Sanchit would rather see the 
    Silent Step; Starfall, Arc, Scholar; Brace, Pack Leader, Cat's Eye. Riposte became a minor.
 7. **Growing runes:** only a few. One per path, growing from new kinds of enemy (§4.5).
 
+**Answered by Sanchit, 2026-10-17:**
+
+8. **The look:** the orrery (§10). League's two columns were turned down on 2026-10-16.
+
 **Still open:**
 
-8. **The look:** which mockup? (Sent separately.)
 9. **Lore:** leave runes lore-neutral for now, with no teal or eye (recommended)? Or are they the
    Observers' gift, or the Sealers' discipline?
 10. **Names:** "Second Wind" is League's exact name; rename it (say, "Grit")? Every other name is

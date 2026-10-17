@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
 """The rune screen's art, and its mockups (docs/technical/rune-system.md section 10).
 
-Owns, for now, only the mockups under design/runes/: four layouts for the rune screen, each drawn
-at one texel per GUI pixel and shown at GUI scale 3, the icon contact sheet, and how the panel fits
-at GUI scales 2 to 4. Once Sanchit picks a layout, the same script writes the real textures under
-assets/ascension_combat/textures/gui/rune/.
+Owns, for now, the mockups under design/runes/: the rune screen as an orrery, drawn at one texel
+per GUI pixel and shown at GUI scale 3; a hover card; every path as primary and a new player's
+locked page; how the panel fits at GUI scales 2 to 4; and every icon in its socket. Next it writes
+the real textures under assets/ascension_combat/textures/gui/rune/.
 
-The four layouts, all showing the same page (Vanguard with Cadence, Bulwark second):
-  pouch    Minecraft's inventory: every rune in a grid, your page a small altar of slots.
-  loadout  your character in the middle, rune slots round the body, the choices in a list.
-  orrery   round dials: keystones round a hub, minors on an outer ring; the secondary a small dial.
-  skymap   all four paths as four constellations in one sky; your page in a sidebar.
-
-Sanchit, 2026-10-16, on the first mockups: "its kinda exact copy of the layout for the runes" --
-League's two columns. These layouts are the answer; the art kit (icons, sockets, panels) stays.
+The layout's history: League's two columns first, which Sanchit turned down on 2026-10-16 ("its
+kinda exact copy of the layout for the runes"); then four others (a rune pouch, a loadout round
+the player, an orrery, a sky map of constellations), in commit 3773f06. He chose the orrery on
+2026-10-17: the primary path a brass dial, keystones round its hub and minors on its outer ring,
+one row to each half; the secondary path a smaller dial of minors only.
 
 Run:  python tools/generate-rune-art.py
 Everything is seeded; re-running reproduces every PNG byte for byte.
@@ -340,10 +337,10 @@ def shade(shape, ramp, outline=True):
         c = ramp[3] if ul and not dr else ramp[1] if dr and not ul else ramp[2]
         if not ul and not dr:
             c = mix(ramp[2], ramp[3], 0.45 - 0.9 * (y / n)) if y < n / 2 else mix(ramp[2], ramp[1], (y / n - 0.5) * 0.9)
-        if (x, y) in groove:
-            c = ramp[1] if ((x - 1, y) in groove or (x, y - 1) in groove) else ramp[0]
         if (x, y) in shine:
             c = ramp[4]
+        if (x, y) in groove:
+            c = ramp[1] if ((x - 1, y) in groove or (x, y - 1) in groove) else ramp[0]
         img.putpixel((x, y), c)
     if outline:
         for y in range(n):
@@ -441,17 +438,15 @@ def k_cadence():
 
 
 def k_vein_breaker():
-    """A pick striking a block of ore, the block cracking: the vein comes with it."""
+    """A pick striking a block of ore, the block splitting: the vein comes with it."""
     s = Shape(20)
-    s.stroke([(1.8, 18.2), (9.0, 11.0)], 1.8)
-    s.poly(taper([(4.6, 7.4), (8.2, 8.6), (11.2, 11.6), (12.4, 15.4)], [0.3, 1.6, 1.6, 0.3]))
-    s.poly([(12.6, 8.6), (19.0, 8.6), (19.0, 15.0), (12.6, 15.0)])
-    s.groove([(13.8, 9.8), (15.4, 11.6), (14.6, 13.8)], 0.7)
-    s.shine([(16.6, 10.4), (17.2, 10.4)], 1.1)
-    s.shine([(16.4, 13.2), (16.8, 13.2)], 1.0)
-    s.poly([(14.0, 2.0), (16.2, 1.2), (17.2, 3.4), (15.2, 4.8)])
-    s.ellipse(18.6, 5.8, 0.9)
-    s.shine([(6.0, 7.8), (8.6, 8.6)], 0.8)
+    s.stroke([(1.8, 18.2), (8.6, 11.4)], 2.0)
+    s.poly(taper([(3.8, 6.0), (7.6, 7.6), (10.4, 10.4), (12.0, 14.2)], [0.3, 1.8, 1.8, 0.3]))
+    s.poly([(12.0, 4.0), (19.2, 4.0), (19.2, 11.2), (12.0, 11.2)])
+    s.cut_stroke([(15.6, 3.4), (14.6, 7.6), (16.2, 11.8)], 0.9)
+    s.shine([(13.4, 5.6), (13.8, 5.6)], 1.1)
+    s.shine([(17.6, 8.6), (18.0, 8.6)], 1.1)
+    s.shine([(5.0, 6.2), (7.6, 7.4)], 0.8)
     return s
 
 
@@ -519,18 +514,17 @@ def k_arc():
 
 
 def k_scholar():
-    """An open book, a bright orb of experience rising from it."""
+    """An open book, its pages lined, a bright orb of experience above it."""
     s = Shape(20)
-    s.poly([(0.8, 8.4), (5.0, 8.0), (9.4, 10.4), (9.4, 18.6), (5.0, 16.4), (0.8, 16.8)])
-    s.poly([(10.6, 10.4), (15.0, 8.0), (19.2, 8.4), (19.2, 16.8), (15.0, 16.4), (10.6, 18.6)])
-    s.groove([(2.4, 11.0), (7.8, 12.6)], 0.7)
-    s.groove([(2.4, 13.6), (7.8, 15.2)], 0.7)
-    s.groove([(12.2, 12.6), (17.6, 11.0)], 0.7)
-    s.groove([(12.2, 15.2), (17.6, 13.6)], 0.7)
-    s.ellipse(15.6, 3.6, 2.8)
-    s.ellipse(11.0, 3.0, 1.1)
-    s.ellipse(12.4, 6.4, 0.8)
-    s.shine([(14.6, 2.8), (15.0, 2.4)], 1.1)
+    s.poly([(0.6, 7.8), (5.2, 7.4), (9.4, 9.6), (9.4, 18.8), (5.2, 16.6), (0.6, 17.0)])
+    s.poly([(10.6, 9.6), (14.8, 7.4), (19.4, 7.8), (19.4, 17.0), (14.8, 16.6), (10.6, 18.8)])
+    s.shine([(2.6, 12.4), (7.6, 13.6)], 4.4)
+    s.shine([(12.4, 13.6), (17.4, 12.4)], 4.4)
+    for dy in (0.0, 2.6, 5.2):
+        s.groove([(2.2, 10.4 + dy), (8.0, 12.0 + dy)], 0.6)
+        s.groove([(12.0, 12.0 + dy), (17.8, 10.4 + dy)], 0.6)
+    s.ellipse(10.0, 3.4, 2.9)
+    s.shine([(9.0, 2.6), (9.4, 2.2)], 1.1)
     return s
 
 
@@ -616,12 +610,12 @@ def m_blooded():
 
 
 def m_relentless_strikes():
-    """A blade swinging again and again: two arcs of its swing behind it."""
+    """A broad blade mid-swing, the arc of its last swing behind it."""
     s = Shape(14)
-    s.poly([(0.4, 10.8), (3.2, 13.6), (11.6, 5.2), (13.4, 0.6), (8.8, 2.4)])
-    s.stroke(arc_pts(1.6, 1.6, 6.8, 6.8, 12, 78, 10), 1.1)
-    s.groove([(2.4, 11.6), (10.6, 3.4)], 0.7)
-    s.shine([(1.6, 10.6), (9.6, 2.6)], 0.7)
+    s.poly([(0.4, 10.0), (4.0, 13.6), (12.0, 5.6), (13.6, 0.4), (8.4, 2.0)])
+    s.stroke(arc_pts(1.0, 1.0, 7.4, 7.4, 8, 82, 8), 1.6)
+    s.groove([(2.6, 11.4), (10.8, 3.2)], 0.7)
+    s.shine([(1.4, 9.8), (9.0, 2.2)], 0.7)
     return s
 
 
@@ -653,11 +647,14 @@ def m_pounce():
 
 
 def m_drop_in():
-    """A spike driven down through an armour plate."""
+    """An armour plate with a hole punched clean through it, cracks running out."""
     s = Shape(14)
-    s.poly([(0.8, 7.0), (13.2, 7.0), (13.2, 10.6), (0.8, 10.6)])
-    s.cut_poly([(5.6, 5.0), (10.6, 5.0), (5.4, 12.6), (3.0, 12.6)])
-    s.poly(taper([(12.6, 0.6), (8.6, 6.2), (4.4, 12.8)], [0.9, 1.3, 0.2]))
+    s.poly([(1.0, 2.4), (13.0, 2.4), (13.0, 9.0), (7.0, 13.2), (1.0, 9.0)])
+    s.cut_ellipse(7.0, 6.6, 2.2)
+    s.groove([(4.8, 5.0), (2.8, 3.4)], 0.7)
+    s.groove([(9.2, 8.4), (11.4, 9.0)], 0.7)
+    s.groove([(7.4, 8.8), (7.0, 11.6)], 0.7)
+    s.shine([(2.2, 3.6), (2.2, 8.0)], 0.7)
     return s
 
 
@@ -903,7 +900,7 @@ def state_ramp(ramp, state):
     if state == 'chosen':
         return ramp
     if state == 'open':
-        return [ramp[0]] + [mix(mix(grey(c), c, 0.35), (20, 22, 28, 255), 0.35) for c in ramp[1:]]
+        return [ramp[0]] + [mix(grey(c), c, 0.55) for c in ramp[1:]]
     if state == 'barred':
         return [ramp[0]] + [mix(grey(c), (20, 22, 28, 255), 0.6) for c in ramp[1:]]
     return [hexc('#0c0d10')] + [mix(grey(c), (12, 13, 16, 255), 0.82) for c in ramp[1:]]
@@ -1066,7 +1063,7 @@ def wrap(s, width):
 
 
 # ---------------------------------------------------------------------------------------------
-# The runes, and the page every mockup shows
+# The runes, and the pages the mockups show
 # ---------------------------------------------------------------------------------------------
 
 RUNES = {
@@ -1076,47 +1073,90 @@ RUNES = {
         'rows': [[('second_wind', 'Second Wind'), ('momentum', 'Momentum'), ('blooded', 'Blooded')],
                  [('relentless_strikes', 'Relentless Strikes'), ('killing_surge', 'Killing Surge'),
                   ('giant_slayer', 'Giant Slayer')]],
-        'row_names': ['Stay in the fight', 'Damage that grows'],
     },
     'reaver': {
         'keystones': [('ambush', 'Ambush'), ('deadeye', 'Deadeye'), ('silent_step', 'Silent Step')],
         'rows': [[('pounce', 'Pounce'), ('drop_in', 'Drop In'), ('vanish', 'Vanish')],
                  [('finishing_blow', 'Finishing Blow'), ('overkill', 'Overkill'),
                   ('trophy_hunter', 'Trophy Hunter')]],
-        'row_names': ['How you open', 'How you finish'],
     },
     'aetherwright': {
         'keystones': [('starfall', 'Starfall'), ('arc', 'Arc'), ('scholar', 'Scholar')],
         'rows': [[('attunement', 'Attunement'), ('unweave', 'Unweave'), ('clarity', 'Clarity')],
                  [('siphon', 'Siphon'), ('quickening', 'Quickening'), ('gathering_charge', 'Gathering Charge')]],
-        'row_names': ['Magic that hits harder', 'Magic that gives back'],
     },
     'bulwark': {
         'keystones': [('brace', 'Brace'), ('pack_leader', 'Pack Leader'), ('cats_eye', "Cat's Eye")],
         'rows': [[('plating', 'Plating'), ('unbowed', 'Unbowed'), ('deep_roots', 'Deep Roots')],
                  [('riposte', 'Riposte'), ('revitalize', 'Revitalize'), ('challenge', 'Challenge')]],
-        'row_names': ['Take a hit', 'Give it back'],
     },
 }
 
 SHARD_ROWS = [('Offence', ['ad', 'as', 'ms']), ('Flex', ['ad', 'armor', 'mr']), ('Defence', ['hp', 'armor', 'mr'])]
-SHARD_SHORT = {'ad': '+1 AD', 'as': '+8% AS', 'ms': '+3% MS', 'armor': '+5 Armor', 'mr': '+5 MR', 'hp': '+2 HP'}
 
-PAGE = {
-    'primary': 'vanguard', 'secondary': 'bulwark',
-    'keystone': 1,                      # Cadence
-    'primary_minors': [2, 2],           # Blooded (growing, 9 of 12), Giant Slayer
-    'secondary_minors': [0, 0],         # Plating, Riposte
-    'shards': [1, 1, None],             # Attack Speed, Armor; the defence row still locked
-    'shards_locked': [False, False, True],
-    'growth': {'blooded': (9, 12)},
-}
-
+# One plain sentence per keystone: what the box under the secondary dial says.
 BLURB = {
     'conquerors_resolve': 'Every second in a fight: more Attack Damage and healing, up to 10 stacks.',
     'cadence': 'Three charged hits on one enemy: the third hits hard and Exposes it.',
     'vein_breaker': 'Sneak and mine: the connected ore or logs break with it.',
+    'ambush': 'Hit an enemy that has not seen you for far more damage.',
+    'deadeye': 'An arrow near the head is a headshot, stronger from afar.',
+    'silent_step': 'You make no vibrations; sneaking, mobs notice you only up close.',
+    'starfall': 'Charged hits and magic call a falling star down on the target.',
+    'arc': 'Every fourth hit throws lightning that jumps between enemies.',
+    'scholar': 'More experience from everything; enchanting costs a level less.',
+    'brace': 'Block or take a big hit: huge defences, then a shockwave.',
+    'pack_leader': 'Your pets share your defences, hit harder, and heal with you.',
+    'cats_eye': 'Creepers and phantoms keep away from you, as they do from cats.',
 }
+
+# The pages the mockups show. `secondary` None: not open yet. `shards` None per row: not chosen;
+# `shards_locked` per row: not open yet.
+PAGES = {
+    'vanguard': {
+        'primary': 'vanguard', 'keystone': 1, 'primary_minors': [2, 2],
+        'secondary': 'bulwark', 'secondary_minors': [0, 0],
+        'shards': [1, 1, None], 'shards_locked': [False, False, True], 'growth': {'blooded': (9, 12)},
+    },
+    'reaver': {
+        'primary': 'reaver', 'keystone': 1, 'primary_minors': [0, 1],
+        'secondary': 'aetherwright', 'secondary_minors': [2, 0],
+        'shards': [0, 0, 0], 'shards_locked': [False, False, False], 'growth': {},
+    },
+    'aetherwright': {
+        'primary': 'aetherwright', 'keystone': 0, 'primary_minors': [0, 2],
+        'secondary': 'vanguard', 'secondary_minors': [1, 2],
+        'shards': [2, 2, 0], 'shards_locked': [False, False, False], 'growth': {'gathering_charge': (4, 12)},
+    },
+    'bulwark': {
+        'primary': 'bulwark', 'keystone': 2, 'primary_minors': [2, 2],
+        'secondary': 'reaver', 'secondary_minors': [0, 0],
+        'shards': [1, 1, 1], 'shards_locked': [False, False, False], 'growth': {'deep_roots': (12, 12)},
+    },
+    'new_player': {
+        'primary': 'reaver', 'keystone': 0, 'primary_minors': [1, 0],
+        'secondary': None, 'secondary_minors': [None, None],
+        'shards': [None, None, None], 'shards_locked': [True, True, True], 'growth': {},
+    },
+}
+PAGE = PAGES['vanguard']
+
+# What the hover card says for the rune the mockup hovers.
+CARDS = {
+    'conquerors_resolve': {
+        'name': "Conqueror's Resolve", 'tag': 'Vanguard keystone',
+        'text': 'Every second in a fight you gain a stack. They clear when the fight ends.',
+        'numbers': [[('+0.5', STAT['ad']), ('Attack Damage a stack', TEXT_BODY)],
+                    [('+1%', STAT['omni']), ('omnivamp a stack', TEXT_BODY)],
+                    [('10', TEXT), ('stacks at most', TEXT_BODY)]],
+        'note': 'Swapping Cadence for it costs 1 Rune Chalk and 3 levels.',
+    },
+}
+
+
+def set_page(name):
+    global PAGE
+    PAGE = PAGES[name]
 
 
 def pr():
@@ -1131,117 +1171,14 @@ def chosen_keystone():
     return RUNES[PAGE['primary']]['keystones'][PAGE['keystone']]
 
 
-def rune_state(path, kind, row, i):
-    """What a rune looks like on this page: chosen, open (could be taken) or barred (not by the
-    rules: a keystone of the secondary path)."""
-    if path == PAGE['primary']:
-        if kind == 'key':
-            return 'chosen' if i == PAGE['keystone'] else 'open'
-        return 'chosen' if i == PAGE['primary_minors'][row] else 'open'
-    if path == PAGE['secondary']:
-        if kind == 'key':
-            return 'barred'
-        return 'chosen' if i == PAGE['secondary_minors'][row] else 'open'
-    return 'open'
-
-
 # ---------------------------------------------------------------------------------------------
-# The art kit: iron (Minecraft-like plates and slots) and sky (night, brass, starlight)
+# The art kit: a night sky in a brass frame; runes as stars
 # ---------------------------------------------------------------------------------------------
 
 PANEL_W, PANEL_H = 400, 224
 
-IRON = [hexc('#0b0c0f'), hexc('#1a1c21'), hexc('#24272d'), hexc('#30343b'), hexc('#454a53'),
-        hexc('#666c77'), hexc('#959ca8')]
 STAR_BRASS = [hexc('#3a3020'), hexc('#7a6840'), hexc('#c8b07a'), hexc('#f0e0b0')]
 SKY = [hexc('#04060c'), hexc('#080c18'), hexc('#0e1426')]
-
-
-def bevel(img, x0, y0, x1, y1, light, dark):
-    hline(img, x0, x1, y0, light)
-    vline(img, x0, y0, y1, light)
-    hline(img, x0, x1, y1 - 1, dark)
-    vline(img, x1 - 1, y0, y1, dark)
-
-
-def iron_panel(rng):
-    img = new(PANEL_W, PANEL_H)
-    rect(img, 0, 0, PANEL_W, PANEL_H, IRON[0])
-    rect(img, 1, 1, PANEL_W - 1, PANEL_H - 1, IRON[2])
-    for y in range(2, PANEL_H - 2):
-        for x in range(2, PANEL_W - 2):
-            n = rng.random()
-            if n < 0.06:
-                put(img, x, y, with_alpha(IRON[3], 120))
-            elif n < 0.09:
-                put(img, x, y, with_alpha(IRON[1], 120))
-    bevel(img, 1, 1, PANEL_W - 1, PANEL_H - 1, IRON[5], IRON[1])
-    bevel(img, 2, 2, PANEL_W - 2, PANEL_H - 2, IRON[4], IRON[1])
-    rect(img, 4, 4, PANEL_W - 4, 18, IRON[1])
-    bevel(img, 4, 4, PANEL_W - 4, 18, IRON[0], IRON[3])
-    for (x, y) in ((6, 6), (PANEL_W - 8, 6), (6, PANEL_H - 8), (PANEL_W - 8, PANEL_H - 8)):
-        put(img, x, y, IRON[6])
-        put(img, x + 1, y, IRON[5])
-        put(img, x, y + 1, IRON[4])
-        put(img, x + 1, y + 1, IRON[1])
-    return img
-
-
-def iron_inset(img, x0, y0, x1, y1, tint=None, strength=0.0):
-    """A recessed plate: shadow on its top-left edge, light on its bottom-right (Minecraft's
-    inventory slots read the same way)."""
-    rect(img, x0, y0, x1, y1, IRON[1])
-    if tint:
-        for yy in range(y0 + 1, y1 - 1):
-            t = 1 - (yy - y0) / (y1 - y0)
-            rect(img, x0 + 1, yy, x1 - 1, yy + 1, with_alpha(tint[1], 110 * strength * t * t + 8))
-    bevel(img, x0, y0, x1, y1, IRON[0], IRON[4])
-
-
-def iron_socket(size, ramp, state, shape='round'):
-    """A metal ring, the rune's glyph inside. Chosen: a lit ring in the path's colour. World
-    keystones get a cut-cornered socket instead of a round one, so they stand apart."""
-    img = new(size, size)
-    r = size / 2
-    outer = disc(r, r, r - 0.2)
-    inner = disc(r, r, r - 2.6)
-    if shape == 'world':
-        def inside(x, y, m):
-            dx, dy = abs(x + 0.5 - r), abs(y + 0.5 - r)
-            return dx <= r - m and dy <= r - m and dx + dy <= r * 1.32 - m
-        outer = {(x, y) for x in range(size) for y in range(size) if inside(x, y, 0.2)}
-        inner = {(x, y) for x in range(size) for y in range(size) if inside(x, y, 2.6)}
-    ring_l, ring_d = (ramp[3], ramp[1]) if state == 'chosen' else (IRON[5], IRON[1])
-    if state in ('locked', 'barred'):
-        ring_l, ring_d = IRON[4], IRON[0]
-    for (x, y) in outer - inner:
-        up = (x + 0.5 - r) + (y + 0.5 - r) < 0
-        put(img, x, y, ring_l if up else ring_d)
-    for (x, y) in inner:
-        d = math.hypot(x + 0.5 - r, y + 0.5 - r) / r
-        base = mix(IRON[0], IRON[2], 0.3 + 0.5 * d)
-        if state == 'chosen':
-            base = mix(base, ramp[1], 0.45 * (1 - d))
-        put(img, x, y, base)
-    for y in range(size):
-        for x in range(size):
-            if (x, y) not in outer and any((x + dx, y + dy) in outer for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                put(img, x, y, IRON[0])
-    return img
-
-
-def iron_slot(size, ramp, state):
-    """A square inventory slot. Chosen ("on your page"): a lit border and a corner pip."""
-    img = new(size, size)
-    rect(img, 0, 0, size, size, IRON[1] if state != 'barred' else mix(IRON[1], IRON[0], 0.5))
-    bevel(img, 0, 0, size, size, IRON[0], IRON[5])
-    if state == 'chosen':
-        rect(img, 1, 1, size - 1, size - 1, with_alpha(ramp[1], 120))
-        bevel(img, 1, 1, size - 1, size - 1, ramp[3], ramp[2])
-        put(img, size - 3, 2, ramp[4])
-        put(img, size - 4, 2, ramp[3])
-        put(img, size - 3, 3, ramp[3])
-    return img
 
 
 def star_panel(rng):
@@ -1303,19 +1240,20 @@ def star_socket(size, ramp, state, shape='round'):
             put(img, x, y, (6, 9, 18, 220))
     if shape == 'world':
         for i in range(0, 360, 3):
-            ox, oy = polar(r, r - 1, 1, i)
-            ox, oy = r + (r + 1.5) * math.cos(math.radians(i)), r + (r * 0.34) * math.sin(math.radians(i)) - 1
-            if math.sin(math.radians(i)) < 0 and abs(ox - r) < r - 2:
+            a = math.radians(i)
+            ox, oy = r + (r + 1.5) * math.cos(a), r + (r * 0.34) * math.sin(a) - 1
+            if math.sin(a) < 0 and abs(ox - r) < r - 2:
                 continue
             put(img, int(ox), int(oy), ramp[3] if state == 'chosen' else (130, 140, 160, 170))
     return img
 
 
-def place_rune(img, kit, rid, ramp, state, x, y, size, world=False, glyph_state=None):
-    """A socket and its glyph, centred in a size x size box at (x, y)."""
-    sock = (iron_socket if kit == 'iron' else star_socket)(size, ramp, state, 'world' if world else 'round')
-    blit(img, sock, x, y)
-    g = glyph(rid, ramp, glyph_state or state)
+def place_rune(img, rid, ramp, state, x, y, size, world=False):
+    """A socket and its glyph, centred in a size x size box at (x, y). A locked socket is empty."""
+    blit(img, star_socket(size, ramp, state, 'world' if world else 'round'), x, y)
+    if state == 'locked':
+        return
+    g = glyph(rid, ramp, state)
     blit(img, g, x + (size - g.width) // 2, y + (size - g.height) // 2)
 
 
@@ -1326,19 +1264,13 @@ def ring_arc(img, cx, cy, rad, frac, colour, back):
         put(img, x, y, colour if a <= frac * 360 else back)
 
 
-def draw_button(img, kit, x, y, w, h, label, primary):
-    if kit == 'iron':
-        top, mid, bot = (IRON[5], IRON[4], IRON[1]) if primary else (IRON[4], IRON[3], IRON[1])
-        rect(img, x, y, x + w, y + h, mid)
-        bevel(img, x, y, x + w, y + h, top, bot)
-        rect(img, x - 1, y - 1, x + w + 1, y, IRON[0])
-    else:
-        rect(img, x, y, x + w, y + h, (10, 14, 28, 255))
-        c = STAR_BRASS[2] if primary else STAR_BRASS[1]
-        hline(img, x, x + w, y, c)
-        hline(img, x, x + w, y + h - 1, c)
-        vline(img, x, y, y + h, c)
-        vline(img, x + w - 1, y, y + h, c)
+def draw_button(img, x, y, w, h, label, primary):
+    rect(img, x, y, x + w, y + h, (10, 14, 28, 255))
+    c = STAR_BRASS[2] if primary else STAR_BRASS[1]
+    hline(img, x, x + w, y, c)
+    hline(img, x, x + w, y + h - 1, c)
+    vline(img, x, y, y + h, c)
+    vline(img, x + w - 1, y, y + h, c)
     draw_text(img, x + (w - text_width(label)) // 2, y + (h - 8) // 2 + 1, label, TEXT if primary else TEXT_BODY)
 
 
@@ -1359,36 +1291,71 @@ def draw_xp_orb(img, x, y):
     put(img, x + 2, y + 2, hexc('#e8ff9c'))
 
 
-def title_bar(img, kit, text='Runes'):
+def title_bar(img, cost=True):
     """The title on the left; Save and Reset on the right, the cost of this save beside them."""
-    draw_text(img, 9, 7, text, STAR_BRASS[3] if kit == 'sky' else TEXT, bold=True)
+    draw_text(img, 9, 7, 'Runes', STAR_BRASS[3], bold=True)
     bx = PANEL_W - 8
     for label, primary in (('Save', True), ('Reset', False)):
         w = text_width(label) + 14
         bx -= w
-        draw_button(img, kit, bx, 5, w, 12, label, primary)
+        draw_button(img, bx, 5, w, 12, label, primary)
         bx -= 4
-    cx = bx - 64
-    draw_chalk(img, cx, 7)
-    draw_text(img, cx + 10, 7, '×1', TEXT_BODY)
-    draw_xp_orb(img, cx + 26, 7)
-    draw_text(img, cx + 36, 7, '3 lv', STAT['xp'])
-
-
-def blurb_box(img, kit, x0, y0, x1, y1):
-    """The chosen keystone, in words."""
-    if kit == 'iron':
-        rect(img, x0, y0, x1, y1, with_alpha(IRON[0], 150))
-        bevel(img, x0, y0, x1, y1, IRON[0], IRON[4])
+    if cost:
+        cx = bx - 64
+        draw_chalk(img, cx, 7)
+        draw_text(img, cx + 10, 7, '×1', TEXT_BODY)
+        draw_xp_orb(img, cx + 26, 7)
+        draw_text(img, cx + 36, 7, '3 lv', STAT['xp'])
     else:
-        hline(img, x0, x1, y0, with_alpha(STAR_BRASS[1], 160))
-        rect(img, x0, y0 + 1, x1, y1, with_alpha((4, 6, 14, 255), 120))
+        draw_text(img, bx - text_width('free') - 4, 7, 'free', TEXT_DIM)
+
+
+def blurb_box(img, x0, y0, x1, y1):
+    """The chosen keystone, in words."""
+    hline(img, x0, x1, y0, with_alpha(STAR_BRASS[1], 160))
+    rect(img, x0, y0 + 1, x1, y1, with_alpha((4, 6, 14, 255), 120))
     rid, name = chosen_keystone()
+    world = PAGE['keystone'] == 2
     draw_text(img, x0 + 5, y0 + 5, name, pr()[4], bold=True)
-    draw_text(img, x0 + 9 + text_width(name, True), y0 + 5, '· keystone', TEXT_FAINT)
+    draw_text(img, x0 + 9 + text_width(name, True), y0 + 5, '· world keystone' if world else '· keystone', TEXT_FAINT)
     for i, ln in enumerate(wrap(BLURB[rid], x1 - x0 - 10)):
         if y0 + 17 + i * 10 + 8 <= y1:
             draw_text(img, x0 + 5, y0 + 17 + i * 10, ln, TEXT_BODY)
+
+
+def draw_card(img, rid, ramp, x, y, w=168):
+    """The hover card: name, tag, a plain sentence, numbers by stat colour, the fine print. A
+    nine-sliced panel in game; drawn whole here."""
+    c = CARDS[rid]
+    body = wrap(c['text'], w - 14)
+    note = wrap(c['note'], w - 14)
+    h = 6 + 10 + 12 + len(body) * 10 + 4 + len(c['numbers']) * 10 + 4 + len(note) * 10 + 4
+    rect(img, x + 2, y + 2, x + w + 2, y + h + 2, (0, 0, 0, 110))
+    rect(img, x, y, x + w, y + h, with_alpha((6, 9, 20, 255), 244))
+    hline(img, x, x + w, y, ramp[3])
+    hline(img, x, x + w, y + h - 1, ramp[1])
+    vline(img, x, y, y + h, ramp[2])
+    vline(img, x + w - 1, y, y + h, ramp[1])
+    for (cx, cy) in ((x, y), (x + w - 1, y), (x, y + h - 1), (x + w - 1, y + h - 1)):
+        put(img, cx, cy, STAR_BRASS[3])
+    yy = y + 6
+    draw_text(img, x + 7, yy, c['name'], TEXT, bold=True)
+    yy += 10
+    draw_text(img, x + 7, yy, c['tag'], ramp[3])
+    yy += 12
+    for ln in body:
+        draw_text(img, x + 7, yy, ln, TEXT_BODY)
+        yy += 10
+    yy += 4
+    for parts in c['numbers']:
+        xx = x + 7
+        for s, col in parts:
+            xx = draw_text(img, xx, yy, s, col) + 1 + SPACE_W
+        yy += 10
+    yy += 4
+    for ln in note:
+        draw_text(img, x + 7, yy, ln, TEXT_DIM)
+        yy += 10
 
 
 def cursor(img, x, y):
@@ -1404,323 +1371,131 @@ def cursor(img, x, y):
 
 
 # ---------------------------------------------------------------------------------------------
-# Layout 1: the rune pouch. Minecraft's inventory: all runes in a grid, your page a small altar.
+# The orrery (Sanchit's pick, 2026-10-17): the primary path a dial, keystones round its hub, minors
+# on its outer ring, one row to each half; the secondary path a smaller dial of minors only.
 # ---------------------------------------------------------------------------------------------
 
-def render_pouch():
-    rng = random.Random(1201)
-    img = iron_panel(rng)
-    title_bar(img, 'iron')
-    p, s = PAGE['primary'], PAGE['secondary']
+KEY_ANGLES = [210, 330, 90]                     # two combat keystones above the hub, the world one below
+PRIMARY_ROWS = [[150, 180, 210], [330, 0, 30]]  # row 1 on the left half of the ring, row 2 the right
+SECONDARY_ROWS = [[140, 180, 220], [320, 0, 40]]
 
-    # --- the altar: your page, as slots in a shape: one keystone, two, two, three shards
-    ax0, ay0, ax1, ay1 = 8, 22, 152, 160
-    iron_inset(img, ax0, ay0, ax1, ay1, pr(), 0.9)
-    draw_text(img, ax0 + 5, ay0 + 4, 'YOUR PAGE', TEXT_DIM)
-    cx = (ax0 + ax1) // 2
-    key = 30
-    kx, ky = cx - key // 2, ay0 + 16
-    m1y = ky + key + 8
-    m2y = m1y + 22 + 16
-    shy = m2y + 22 + 7
-    mx = [cx - 26 - 11, cx + 26 - 11]
-    shx = [cx - 24 - 7, cx - 7, cx + 24 - 7]
-    # carved lines joining the primary part: keystone to its two minors
-    for x in mx:
-        line(img, cx, ky + key // 2, x + 11, m1y + 11, IRON[0])
-        line(img, cx + 1, ky + key // 2, x + 12, m1y + 11, with_alpha(pr()[2], 160))
-    rid, name = chosen_keystone()
-    place_rune(img, 'iron', rid, pr(), 'chosen', kx, ky, key)
-    em = emblem(p, 'chosen', 14)
-    blit(img, em, kx - 20, ky + 8)
-    for r in range(2):
-        rid, name = RUNES[p]['rows'][r][PAGE['primary_minors'][r]]
-        place_rune(img, 'iron', rid, pr(), 'chosen', mx[r], m1y, 22)
-        if rid in PAGE['growth']:
-            n, cap = PAGE['growth'][rid]
-            ring_arc(img, mx[r] + 11, m1y + 11, 13.4, n / cap, pr()[4], with_alpha(pr()[0], 200))
-    # the secondary part, under a rule
-    hline(img, ax0 + 10, ax1 - 10, m2y - 9, IRON[0])
-    hline(img, ax0 + 10, ax1 - 10, m2y - 8, IRON[3])
-    blit(img, emblem(s, 'chosen', 14), cx - 7, m2y - 15)
-    for r in range(2):
-        rid, name = RUNES[s]['rows'][r][PAGE['secondary_minors'][r]]
-        place_rune(img, 'iron', rid, sr(), 'chosen', mx[r], m2y, 22)
-    for r in range(3):
-        st = SHARD_ROWS[r][1][PAGE['shards'][r]] if PAGE['shards'][r] is not None else None
-        locked = PAGE['shards_locked'][r]
-        sock = iron_socket(14, stat_ramp(st) if st else NEUTRAL, 'locked' if locked else 'chosen')
-        blit(img, sock, shx[r], shy)
-        if locked:
-            blit(img, padlock(NEUTRAL), shx[r] + 4, shy + 3)
-        else:
-            blit(img, shard_glyph(st), shx[r] + 3, shy + 3)
-
-    # the held rune's target: the slot it can drop into pulses
-    circle(img, mx[0] + 11, m1y + 11, 15.6, with_alpha(TEXT, 220), 1.0, dash=30)
-
-    blurb_box(img, 'iron', ax0, ay1 + 4, ax1, PANEL_H - 8)
-
-    # --- the pouch: every rune, one row per path
-    px0, py0, px1, py1 = 158, 22, PANEL_W - 8, PANEL_H - 8
-    iron_inset(img, px0, py0, px1, py1)
-    draw_text(img, px0 + 5, py0 + 4, 'RUNE POUCH', TEXT_DIM)
-    draw_text(img, px0 + 70, py0 + 4, 'pick one up, set it on your page', TEXT_FAINT)
-    col_k = [px0 + 28, px0 + 52, px0 + 82]
-    col_a = [px0 + 110, px0 + 129, px0 + 148]
-    col_b = [px0 + 174, px0 + 193, px0 + 212]
-    hy = py0 + 16
-    draw_centred(img, col_k[0] + 37, hy, 'keystones', TEXT_FAINT)
-    draw_centred(img, col_a[1] + 9, hy, 'row 1', TEXT_FAINT)
-    draw_centred(img, col_b[1] + 9, hy, 'row 2', TEXT_FAINT)
-    held = ('vanguard', 0, 1)
-    for i, path in enumerate(PATH_ORDER):
-        ramp = PATHS[path]['ramp']
-        y = py0 + 28 + i * 27
-        blit(img, emblem(path, 'chosen' if path in (p, s) else 'open'), px0 + 4, y + 1)
-        for k, (rid, name) in enumerate(RUNES[path]['keystones']):
-            st = rune_state(path, 'key', 0, k)
-            blit(img, iron_slot(22, ramp, st), col_k[k], y)
-            g = glyph(rid, ramp, 'chosen' if st == 'chosen' else st if st == 'barred' else 'open')
-            blit(img, g, col_k[k] + 1, y + 1)
-        vline(img, col_k[2] - 4, y + 3, y + 19, IRON[0])
-        for r, cols in ((0, col_a), (1, col_b)):
-            for k, (rid, name) in enumerate(RUNES[path]['rows'][r]):
-                st = rune_state(path, 'min', r, k)
-                blit(img, iron_slot(18, ramp, st), cols[k], y + 2)
-                if (path, r, k) == held:
-                    continue
-                blit(img, glyph(rid, ramp, 'chosen' if st == 'chosen' else 'open'), cols[k] + 2, y + 4)
-    # shards
-    sy = py0 + 28 + 4 * 27 + 4
-    draw_text(img, px0 + 5, sy + 4, 'Shards', TEXT_DIM)
-    x = px0 + 44
-    for r, (label, stats) in enumerate(SHARD_ROWS):
-        for k, st in enumerate(stats):
-            locked = PAGE['shards_locked'][r]
-            chosen = PAGE['shards'][r] == k
-            state = 'chosen' if chosen else 'open'
-            blit(img, iron_slot(16, stat_ramp(st), 'barred' if locked else state), x, sy)
-            if locked:
-                blit(img, padlock(NEUTRAL), x + 4, sy + 3)
-            else:
-                blit(img, shard_glyph(st, state), x + 4, sy + 4)
-            x += 18
-        draw_centred(img, x - 28, sy + 19, label, TEXT_FAINT)
-        x += 8
-    draw_text(img, px0 + 5, sy + 32, 'Defence opens at your 4th milestone.', TEXT_FAINT)
-
-    # the rune in hand: Momentum, picked up and on its way to the lit slot
-    hx, hy2 = 120, 76
-    blit(img, glyph('momentum', pr()), hx, hy2)
-    cursor(img, hx + 9, hy2 + 9)
-    return img
+P_CX, P_CY = 98, 122                            # the primary dial
+P_HUB, P_KEY, P_MINOR, P_RIM = 14, 37, 70, 88
+S_CX, S_CY = 248, 76                            # the secondary dial
+S_HUB, S_MINOR, S_RIM = 11, 36, 52
+CORNERS = [(10, 24), (164, 24), (10, 198), (164, 198)]   # the four path tabs, round the primary dial
 
 
-# ---------------------------------------------------------------------------------------------
-# Layout 2: the loadout. You in the middle, rune slots round you, the choices in a list.
-# ---------------------------------------------------------------------------------------------
-
-def figure(img, cx, top):
-    """A plain standing figure in the panel's iron tones: a stand-in for the player's own model,
-    which the game draws here in the player's skin and armour."""
-    parts = [(cx - 12, top, 24, 24), (cx - 12, top + 24, 24, 36), (cx - 24, top + 24, 12, 36),
-             (cx + 12, top + 24, 12, 36), (cx - 12, top + 60, 12, 36), (cx, top + 60, 12, 36)]
-    for (x, y, w, h) in parts:
-        rect(img, x, y, x + w, y + h, IRON[3])
-        vline(img, x, y, y + h, IRON[4])
-        hline(img, x, x + w, y, IRON[4])
-        vline(img, x + w - 1, y, y + h, IRON[2])
-        hline(img, x, x + w, y + h - 1, IRON[2])
-    for (x, y, w, h) in parts:
-        hline(img, x - 1, x + w + 1, y - 1, with_alpha(IRON[0], 200))
-        hline(img, x - 1, x + w + 1, y + h, with_alpha(IRON[0], 200))
-        vline(img, x - 1, y, y + h, with_alpha(IRON[0], 200))
-        vline(img, x + w, y, y + h, with_alpha(IRON[0], 200))
-    for (x, y) in disc(cx, top + 97, 22):
-        if y >= top + 96 and abs(y - top - 97) <= 3:
-            put(img, x, y, with_alpha(IRON[0], 120))
-
-
-def render_loadout():
-    rng = random.Random(1202)
-    img = iron_panel(rng)
-    title_bar(img, 'iron')
-    p, s = PAGE['primary'], PAGE['secondary']
-
-    # --- you, and your page round you
-    lx0, ly0, lx1, ly1 = 8, 22, 206, PANEL_H - 8
-    iron_inset(img, lx0, ly0, lx1, ly1)
-    cx, top = (lx0 + lx1) // 2, 46
-    figure(img, cx, top)
-    # path badges over each side
-    for side, path, x in (('PRIMARY', p, lx0 + 6), ('SECONDARY', s, lx1 - 66)):
-        ramp = PATHS[path]['ramp']
-        draw_text(img, x, ly0 + 4, side, TEXT_DIM)
-        blit(img, emblem(path, 'chosen', 14), x, ly0 + 14)
-        draw_text(img, x + 17, ly0 + 17, PATHS[path]['name'], ramp[3], bold=True)
-    # keystone on the chest, the heart of the build
-    kx, ky = cx - 15, top + 30
-    glow(img, cx, ky + 15, 22, pr()[3], 70)
-    rid, name = chosen_keystone()
-    place_rune(img, 'iron', rid, pr(), 'chosen', kx, ky, 30)
-    circle(img, cx, ky + 15, 17.6, with_alpha(TEXT, 220), 1.0, dash=30)
-    # primary minors by the left hand, secondary by the right
-    for side, path, ramp, picks, sx, hand_x in (
-            ('l', p, pr(), PAGE['primary_minors'], lx0 + 18, cx - 24),
-            ('r', s, sr(), PAGE['secondary_minors'], lx1 - 40, cx + 24)):
-        for r in range(2):
-            y = top + 22 + r * 40
-            rid, name = RUNES[path]['rows'][r][picks[r]]
-            ex = sx + 22 if side == 'l' else sx
-            line(img, ex, y + 11, hand_x, top + 40 + r * 14, with_alpha(ramp[2], 200))
-            place_rune(img, 'iron', rid, ramp, 'chosen', sx, y, 22)
-            if rid in PAGE['growth']:
-                n, cap = PAGE['growth'][rid]
-                ring_arc(img, sx + 11, y + 11, 13.4, n / cap, ramp[4], with_alpha(ramp[0], 200))
-            label = name + (' %d/%d' % PAGE['growth'][rid] if rid in PAGE['growth'] else '')
-            draw_centred(img, sx + 11, y + 24, label, ramp[3])
-    # shards at the feet
-    base = top + 104
-    for r in range(3):
-        x = cx - 31 + r * 24
-        st = SHARD_ROWS[r][1][PAGE['shards'][r]] if PAGE['shards'][r] is not None else None
-        locked = PAGE['shards_locked'][r]
-        blit(img, iron_socket(14, stat_ramp(st) if st else NEUTRAL, 'locked' if locked else 'chosen'), x, base)
-        if locked:
-            blit(img, padlock(NEUTRAL), x + 4, base + 3)
-        else:
-            blit(img, shard_glyph(st), x + 3, base + 3)
-    draw_centred(img, cx, base + 17, 'shards', TEXT_FAINT)
-
-    # --- the list: the choices for the slot you clicked (the keystone)
-    rx0, ry0, rx1, ry1 = 212, 22, PANEL_W - 8, PANEL_H - 8
-    iron_inset(img, rx0, ry0, rx1, ry1, pr(), 0.7)
-    draw_text(img, rx0 + 6, ry0 + 4, 'KEYSTONE', TEXT_DIM)
-    draw_text(img, rx0 + 6 + text_width('KEYSTONE') + 6, ry0 + 4, 'choose one', TEXT_FAINT)
-    for i, path in enumerate(PATH_ORDER):
-        x = rx0 + 6 + i * 24
-        blit(img, iron_socket(22, PATHS[path]['ramp'], 'chosen' if path == p else 'open'), x, ry0 + 15)
-        blit(img, emblem(path, 'chosen' if path == p else 'open', 14), x + 4, ry0 + 19)
-    draw_text(img, rx0 + 104, ry0 + 22, PATHS[p]['promise'], TEXT_BODY)
-    y = ry0 + 44
-    for k, (rid, name) in enumerate(RUNES[p]['keystones']):
-        chosen = k == PAGE['keystone']
-        world = k == 2
-        h = 48
-        if world:
-            hline(img, rx0 + 8, rx1 - 8, y - 3, IRON[0])
-            hline(img, rx0 + 8, rx1 - 8, y - 2, IRON[3])
-            y += 2
-        if chosen:
-            rect(img, rx0 + 3, y, rx1 - 3, y + h - 2, with_alpha(pr()[1], 90))
-            bevel(img, rx0 + 3, y, rx1 - 3, y + h - 2, pr()[3], pr()[1])
-        place_rune(img, 'iron', rid, pr(), 'chosen' if chosen else 'open', rx0 + 8, y + 7, 30, world=world)
-        tx = rx0 + 44
-        draw_text(img, tx, y + 5, name, pr()[4] if chosen else TEXT_BODY, bold=chosen)
-        if world:
-            draw_text(img, tx + text_width(name, chosen) + 5, y + 5, 'world', TEXT_FAINT)
-        for j, ln in enumerate(wrap(BLURB[rid], rx1 - tx - 6)[:3]):
-            draw_text(img, tx, y + 16 + j * 10, ln, TEXT_DIM if not chosen else TEXT_BODY)
-        y += h
-    return img
-
-
-# ---------------------------------------------------------------------------------------------
-# Layout 3: the orrery. Round dials: keystones round a hub, minors on an outer ring.
-# ---------------------------------------------------------------------------------------------
-
-def dial(img, cx, cy, path, hub_r, key_r, minor_r, rim_r, keystones=True, minor_angles=None, key_size=30):
-    """One path as a dial. Returns nothing; draws rings, spokes, sockets."""
-    ramp = PATHS[path]['ramp']
-    primary = path == PAGE['primary']
-    picks = PAGE['primary_minors'] if primary else PAGE['secondary_minors']
-    # the rim, with ticks like an astrolabe's
+def dial_frame(img, cx, cy, rim_r, rows, minor_r, ramp, key_r=0):
+    """The brass of a dial: its rim with ticks, its rows as faint arcs, the keystone ring."""
     circle(img, cx, cy, rim_r, STAR_BRASS[1], 1.6)
     circle(img, cx, cy, rim_r - 3, with_alpha(STAR_BRASS[1], 120))
     for a in range(0, 360, 15):
         x0, y0 = polar(cx, cy, rim_r - 3, a)
         x1, y1 = polar(cx, cy, rim_r - (6 if a % 45 else 8), a)
         line(img, x0, y0, x1, y1, with_alpha(STAR_BRASS[2], 160))
-    # the rows as two faint arcs on the minor ring
-    angles = minor_angles or [[150, 180, 210], [330, 0, 30]]
-    for row in angles:
+    for row in rows:
         a0, a1 = row[0] - 12, row[-1] + 12
-        if a0 > a1:
-            a1 += 360
         circle(img, cx, cy, minor_r + 0.5, with_alpha(ramp[2], 110), 1.0, arc=(a0 % 360, a1 % 360))
-    if keystones:
+    if key_r:
         circle(img, cx, cy, key_r + 0.5, with_alpha(STAR_BRASS[1], 90), 1.0, dash=10)
-    # spokes from the hub to what is chosen
-    targets = []
-    if keystones:
-        ka = [210, 330, 90][PAGE['keystone']]
-        targets.append(polar(cx, cy, key_r, ka))
-    for r in range(2):
-        targets.append(polar(cx, cy, minor_r, angles[r][picks[r]]))
+
+
+def dial_hub(img, cx, cy, hub_r, path, ramp, locked=False):
+    for (x, y) in disc(cx, cy, hub_r):
+        put(img, x, y, mix(SKY[1], ramp[1], 0.45) if not locked else SKY[1])
+    circle(img, cx, cy, hub_r, STAR_BRASS[2] if not locked else STAR_BRASS[1], 1.2)
+    if locked:
+        blit(img, padlock(NEUTRAL), int(cx - 3), int(cy - 4))
+        return
+    em = emblem(path, 'chosen', 20 if hub_r >= 14 else 14)
+    blit(img, em, int(cx - em.width / 2), int(cy - em.height / 2))
+
+
+def spokes(img, cx, cy, targets, ramp):
     for (tx, ty) in targets:
         line(img, cx, cy, tx, ty, with_alpha(ramp[3], 200))
         line(img, cx + 1, cy, tx + 1, ty, with_alpha(ramp[2], 90))
-    # the hub
-    for (x, y) in disc(cx, cy, hub_r):
-        put(img, x, y, mix(SKY[1], ramp[1], 0.45))
-    circle(img, cx, cy, hub_r, STAR_BRASS[2], 1.2)
-    em = emblem(path, 'chosen', 20 if hub_r >= 14 else 14)
-    blit(img, em, int(cx - em.width / 2), int(cy - em.height / 2))
-    # keystones on the inner ring: two for combat above, the world one set below
-    if keystones:
-        for k, (rid, name) in enumerate(RUNES[path]['keystones']):
-            x, y = polar(cx, cy, key_r, [210, 330, 90][k])
-            st = 'chosen' if k == PAGE['keystone'] else 'open'
-            place_rune(img, 'sky', rid, ramp, st, int(x - key_size / 2), int(y - key_size / 2), key_size, world=k == 2)
+
+
+def minor_ring(img, cx, cy, minor_r, rows, path, picks, ramp, locked=False):
     for r in range(2):
-        for k, (rid, name) in enumerate(RUNES[path]['rows'][r]):
-            x, y = polar(cx, cy, minor_r, angles[r][k])
+        for k in range(3):
+            x, y = polar(cx, cy, minor_r, rows[r][k])
+            if locked:
+                place_rune(img, None, NEUTRAL, 'locked', int(x - 11), int(y - 11), 22)
+                continue
+            rid, name = RUNES[path]['rows'][r][k]
             st = 'chosen' if k == picks[r] else 'open'
-            place_rune(img, 'sky', rid, ramp, st, int(x - 11), int(y - 11), 22)
+            place_rune(img, rid, ramp, st, int(x - 11), int(y - 11), 22)
             if st == 'chosen' and rid in PAGE['growth']:
                 n, cap = PAGE['growth'][rid]
                 ring_arc(img, int(x - 11) + 11, int(y - 11) + 11, 13.4, n / cap, ramp[4], with_alpha(ramp[0], 200))
 
 
-def render_orrery():
+def render_orrery(hover=None):
     rng = random.Random(2203)
     img = star_panel(rng)
-    title_bar(img, 'sky')
     p, s = PAGE['primary'], PAGE['secondary']
-    pcx, pcy = 98, 122
-    nebula(img, pcx - 90, pcy - 90, pcx + 90, pcy + 90, pr(), 0.8, random.Random(7))
-    dial(img, pcx, pcy, p, 14, 37, 70, 88)
-    # the four paths sit in the dial's corners; turning to one turns the dial
-    for (path, (x, y)) in zip(PATH_ORDER, ((10, 24), (164, 24), (10, 198), (164, 198))):
-        st = 'chosen' if path == p else 'barred' if path == s else 'open'
-        blit(img, star_socket(22, PATHS[path]['ramp'], 'chosen' if path == p else 'open'), x, y)
-        blit(img, emblem(path, 'chosen' if path == p else 'open', 14), x + 4, y + 4)
-    draw_centred(img, pcx, 210, PATHS[p]['name'].upper(), pr()[3], bold=True)
+    title_bar(img, cost=PAGE is not PAGES['new_player'])
 
-    # the secondary path: a smaller dial, minors only
-    scx, scy = 248, 76
-    nebula(img, scx - 55, scy - 55, scx + 55, scy + 55, sr(), 0.6, random.Random(11))
-    dial(img, scx, scy, s, 11, 0, 36, 52, keystones=False, minor_angles=[[140, 180, 220], [320, 0, 40]])
+    # --- the primary dial
+    nebula(img, P_CX - 90, P_CY - 90, P_CX + 90, P_CY + 90, pr(), 0.8, random.Random(7))
+    dial_frame(img, P_CX, P_CY, P_RIM, PRIMARY_ROWS, P_MINOR, pr(), P_KEY)
+    targets = [polar(P_CX, P_CY, P_KEY, KEY_ANGLES[PAGE['keystone']])]
+    targets += [polar(P_CX, P_CY, P_MINOR, PRIMARY_ROWS[r][PAGE['primary_minors'][r]]) for r in range(2)]
+    spokes(img, P_CX, P_CY, targets, pr())
+    dial_hub(img, P_CX, P_CY, P_HUB, p, pr())
+    for k, (rid, name) in enumerate(RUNES[p]['keystones']):
+        x, y = polar(P_CX, P_CY, P_KEY, KEY_ANGLES[k])
+        place_rune(img, rid, pr(), 'chosen' if k == PAGE['keystone'] else 'open', int(x - 15), int(y - 15), 30,
+                   world=k == 2)
+    minor_ring(img, P_CX, P_CY, P_MINOR, PRIMARY_ROWS, p, PAGE['primary_minors'], pr())
+    # the four paths sit in the dial's corners; choosing one turns the dial to it
+    for path, (x, y) in zip(PATH_ORDER, CORNERS):
+        state = 'chosen' if path == p else 'open'
+        blit(img, star_socket(22, PATHS[path]['ramp'], state), x, y)
+        blit(img, emblem(path, state, 14), x + 4, y + 4)
+    draw_centred(img, P_CX, 210, PATHS[p]['name'].upper(), pr()[3], bold=True)
+
+    # --- the secondary dial: minors only
     tx = 310
     draw_text(img, tx, 26, 'SECONDARY', TEXT_DIM)
-    draw_text(img, tx, 36, PATHS[s]['name'].upper(), sr()[3], bold=True)
     others = [q for q in PATH_ORDER if q != p]
+    if s:
+        nebula(img, S_CX - 55, S_CY - 55, S_CX + 55, S_CY + 55, sr(), 0.6, random.Random(11))
+        dial_frame(img, S_CX, S_CY, S_RIM, SECONDARY_ROWS, S_MINOR, sr())
+        spokes(img, S_CX, S_CY, [polar(S_CX, S_CY, S_MINOR, SECONDARY_ROWS[r][PAGE['secondary_minors'][r]])
+                                 for r in range(2)], sr())
+        dial_hub(img, S_CX, S_CY, S_HUB, s, sr())
+        minor_ring(img, S_CX, S_CY, S_MINOR, SECONDARY_ROWS, s, PAGE['secondary_minors'], sr())
+        draw_text(img, tx, 36, PATHS[s]['name'].upper(), sr()[3], bold=True)
+        lines = wrap(PATHS[s]['promise'], PANEL_W - 8 - tx)
+        for i, ln in enumerate(lines):
+            draw_text(img, tx, 76 + i * 10, ln, TEXT_BODY)
+        y = 76 + len(lines) * 10 + 4
+        draw_text(img, tx, y, 'one from each', TEXT_FAINT)
+        draw_text(img, tx, y + 9, 'half', TEXT_FAINT)
+    else:
+        dial_frame(img, S_CX, S_CY, S_RIM, [], S_MINOR, NEUTRAL)
+        dial_hub(img, S_CX, S_CY, S_HUB, None, NEUTRAL, locked=True)
+        minor_ring(img, S_CX, S_CY, S_MINOR, SECONDARY_ROWS, None, None, NEUTRAL, locked=True)
+        draw_text(img, tx, 36, 'LOCKED', TEXT_FAINT, bold=True)
+        draw_text(img, tx, 78, 'Opens at your', TEXT_DIM)
+        draw_text(img, tx, 88, '1st milestone.', TEXT_DIM)
     for i, path in enumerate(others):
         x, y = tx + i * 24, 50
-        blit(img, star_socket(20, PATHS[path]['ramp'], 'chosen' if path == s else 'open'), x, y)
-        blit(img, emblem(path, 'chosen' if path == s else 'open', 14), x + 3, y + 3)
-    draw_text(img, tx, 78, PATHS[s]['promise'], TEXT_BODY)
-    draw_text(img, tx, 92, 'one from each', TEXT_FAINT)
-    draw_text(img, tx, 101, 'half', TEXT_FAINT)
+        state = 'chosen' if path == s else 'barred' if not s else 'open'
+        blit(img, star_socket(20, PATHS[path]['ramp'], state), x, y)
+        blit(img, emblem(path, state, 14), x + 3, y + 3)
 
-    # shards: three little moons each
+    # --- shards: three little moons in each row
     sy = 134
     draw_text(img, 202, sy, 'SHARDS', TEXT_DIM)
     for r, (label, stats) in enumerate(SHARD_ROWS):
         x0 = 202 + r * 64
+        locked = PAGE['shards_locked'][r]
         for k, st in enumerate(stats):
-            locked = PAGE['shards_locked'][r]
             chosen = PAGE['shards'][r] == k
             state = 'locked' if locked else ('chosen' if chosen else 'open')
             blit(img, star_socket(16, stat_ramp(st), state), x0 + k * 17, sy + 11)
@@ -1730,153 +1505,20 @@ def render_orrery():
                 blit(img, shard_glyph(st, 'chosen' if chosen else 'open'), x0 + k * 17 + 4, sy + 15)
         draw_centred(img, x0 + 25, sy + 29, label, TEXT_FAINT)
 
-    blurb_box(img, 'sky', 198, 176, PANEL_W - 8, PANEL_H - 6)
-    return img
+    blurb_box(img, 198, 176, PANEL_W - 8, PANEL_H - 6)
 
-
-# ---------------------------------------------------------------------------------------------
-# Layout 4: the sky map. Every path a constellation in one sky; your page in a sidebar.
-# ---------------------------------------------------------------------------------------------
-
-# Each path's stars, in its own quarter of the sky (144 x 100): three keystones (k0, k1 and the
-# world one, k2) and two arms of three (a: row 1, b: row 2). The figures echo the emblems: a
-# spear's head and its two tails, a crescent, a comet's tail, a ring round a shield.
-CONSTELLATIONS = {
-    'vanguard': {
-        'origin': (6, 22), 'label': (72, 90, 'c'),
-        'k': [(44, 22), (72, 14), (114, 20)],
-        'a': [(54, 48), (40, 67), (26, 86)], 'b': [(90, 48), (104, 67), (118, 86)],
-        'edges': [('k0', 'k1'), ('k0', 'a0'), ('a0', 'a1'), ('a1', 'a2'), ('k1', 'b0'), ('b0', 'b1'), ('b1', 'b2')],
-        'world_edge': ('k1', 'k2'),
-    },
-    'reaver': {
-        'origin': (150, 22), 'label': (36, 46, 'l'),
-        'k': [(100, 22), (118, 48), (122, 82)],
-        'a': [(74, 12), (48, 12), (24, 26)], 'b': [(76, 86), (50, 86), (24, 72)],
-        'edges': [('k0', 'k1'), ('k0', 'a0'), ('a0', 'a1'), ('a1', 'a2'), ('a2', 'b2'), ('k1', 'b0'), ('b0', 'b1'), ('b1', 'b2')],
-        'world_edge': ('k1', 'k2'),
-    },
-    'aetherwright': {
-        'origin': (6, 122), 'label': (142, 90, 'r'),
-        'k': [(112, 22), (86, 28), (128, 52)],
-        'a': [(64, 36), (42, 46), (20, 52)], 'b': [(78, 60), (58, 76), (34, 84)],
-        'edges': [('k0', 'k1'), ('k1', 'a0'), ('a0', 'a1'), ('a1', 'a2'), ('k1', 'b0'), ('b0', 'b1'), ('b1', 'b2')],
-        'world_edge': ('k0', 'k2'),
-    },
-    'bulwark': {
-        'origin': (150, 122), 'label': (72, 2, 'c'),
-        'k': [(58, 42), (86, 42), (72, 70)],
-        'a': [(36, 20), (18, 50), (36, 80)], 'b': [(108, 20), (126, 50), (108, 80)],
-        'edges': [('k0', 'k1'), ('a0', 'a1'), ('a1', 'a2'), ('a0', 'b0'), ('a2', 'b2'), ('b0', 'b1'), ('b1', 'b2'),
-                  ('k0', 'a1'), ('k1', 'b1')],
-        'world_edge': ('k0', 'k2'),
-    },
-}
-
-
-def render_skymap():
-    rng = random.Random(2204)
-    img = star_panel(rng)
-    title_bar(img, 'sky')
-    p, s = PAGE['primary'], PAGE['secondary']
-    for path, seed in zip(PATH_ORDER, (7, 9, 13, 11)):
-        c = CONSTELLATIONS[path]
-        ox, oy = c['origin']
-        strength = 1.0 if path == p else 0.7 if path == s else 0.35
-        nebula(img, ox, oy, ox + 144, oy + 100, PATHS[path]['ramp'], strength, random.Random(seed), 5)
-    vline(img, 297, 22, PANEL_H - 6, with_alpha(STAR_BRASS[1], 140))
-
-    for path in PATH_ORDER:
-        c = CONSTELLATIONS[path]
-        ramp = PATHS[path]['ramp']
-        ox, oy = c['origin']
-        pos = {'k%d' % i: (ox + x, oy + y) for i, (x, y) in enumerate(c['k'])}
-        pos.update({'a%d' % i: (ox + x, oy + y) for i, (x, y) in enumerate(c['a'])})
-        pos.update({'b%d' % i: (ox + x, oy + y) for i, (x, y) in enumerate(c['b'])})
-        faint = with_alpha(mix(ramp[2], (150, 160, 190, 255), 0.5), 90)
-        for (u, v) in c['edges']:
-            line(img, *pos[u], *pos[v], faint)
-        line(img, *pos[c['world_edge'][0]], *pos[c['world_edge'][1]], faint, dash=2)
-        # the page's own lines, lit
-        if path == p:
-            ka = pos['k%d' % PAGE['keystone']]
-            for r, arm in ((0, 'a'), (1, 'b')):
-                t = pos['%s%d' % (arm, PAGE['primary_minors'][r])]
-                line(img, *ka, *t, with_alpha(ramp[4], 230))
-                line(img, ka[0] + 1, ka[1], t[0] + 1, t[1], with_alpha(ramp[3], 110))
-        if path == s:
-            a = pos['a%d' % PAGE['secondary_minors'][0]]
-            b = pos['b%d' % PAGE['secondary_minors'][1]]
-            line(img, *a, *b, with_alpha(ramp[4], 230))
-            line(img, a[0] + 1, a[1], b[0] + 1, b[1], with_alpha(ramp[3], 110))
-        # the stars
-        for k, (rid, name) in enumerate(RUNES[path]['keystones']):
-            x, y = pos['k%d' % k]
-            st = rune_state(path, 'key', 0, k)
-            place_rune(img, 'sky', rid, ramp, st, x - 13, y - 13, 26, world=k == 2,
-                       glyph_state='barred' if st == 'barred' else None)
-        for r, arm in ((0, 'a'), (1, 'b')):
-            for k, (rid, name) in enumerate(RUNES[path]['rows'][r]):
-                x, y = pos['%s%d' % (arm, k)]
-                st = rune_state(path, 'min', r, k)
-                place_rune(img, 'sky', rid, ramp, st, x - 10, y - 10, 20)
-                if st == 'chosen' and rid in PAGE['growth']:
-                    n, cap = PAGE['growth'][rid]
-                    ring_arc(img, x, y, 12.4, n / cap, ramp[4], with_alpha(ramp[0], 200))
-        lx, ly, align = c['label']
-        name = PATHS[path]['name'].upper()
-        colour = ramp[3] if path in (p, s) else mix(ramp[3], (90, 96, 110, 255), 0.5)
-        w = text_width(name, True)
-        x = ox + lx - (w // 2 if align == 'c' else w if align == 'r' else 0)
-        draw_text(img, x, oy + ly, name, colour, bold=True)
-
-    # the sidebar: your page, in words
-    x0 = 302
-    y = 24
-    draw_text(img, x0, y, 'YOUR PAGE', TEXT_DIM)
-    y += 13
-    blit(img, emblem(p, 'chosen', 14), x0, y)
-    draw_text(img, x0 + 17, y + 3, PATHS[p]['name'], pr()[3], bold=True)
-    y += 18
-    rid, name = chosen_keystone()
-    place_rune(img, 'sky', rid, pr(), 'chosen', x0, y, 26)
-    draw_text(img, x0 + 29, y + 9, name, pr()[4])
-    y += 29
-    for r in range(2):
-        rid, name = RUNES[p]['rows'][r][PAGE['primary_minors'][r]]
-        place_rune(img, 'sky', rid, pr(), 'chosen', x0 + 3, y, 20)
-        label = name + (' %d/%d' % PAGE['growth'][rid] if rid in PAGE['growth'] else '')
-        draw_text(img, x0 + 26, y + 6, label, pr()[3])
-        y += 22
-    y += 4
-    blit(img, emblem(s, 'chosen', 14), x0, y)
-    draw_text(img, x0 + 17, y + 3, PATHS[s]['name'], sr()[3], bold=True)
-    y += 18
-    for r in range(2):
-        rid, name = RUNES[s]['rows'][r][PAGE['secondary_minors'][r]]
-        place_rune(img, 'sky', rid, sr(), 'chosen', x0 + 3, y, 20)
-        draw_text(img, x0 + 26, y + 6, name, sr()[3])
-        y += 22
-    y += 2
-    for r in range(3):
-        st = SHARD_ROWS[r][1][PAGE['shards'][r]] if PAGE['shards'][r] is not None else None
-        locked = PAGE['shards_locked'][r]
-        xx = x0 + r * 30
-        blit(img, star_socket(16, stat_ramp(st) if st else NEUTRAL, 'locked' if locked else 'chosen'), xx, y)
-        if locked:
-            blit(img, padlock(NEUTRAL), xx + 4, y + 3)
-        else:
-            blit(img, shard_glyph(st), xx + 4, y + 4)
+    if hover:
+        rid, k = hover
+        x, y = polar(P_CX, P_CY, P_KEY, KEY_ANGLES[k])
+        circle(img, x, y, 17.4, with_alpha(TEXT, 230), 1.0)
+        cursor(img, int(x + 3), int(y + 3))
+        draw_card(img, rid, pr(), int(x + 18), int(y - 6))
     return img
 
 
 # ---------------------------------------------------------------------------------------------
 # Mockups
 # ---------------------------------------------------------------------------------------------
-
-LAYOUTS = [('1-pouch', render_pouch), ('2-loadout', render_loadout), ('3-orrery', render_orrery),
-           ('4-skymap', render_skymap)]
-
 
 def backdrop(w, h, seed):
     """What sits behind a Minecraft screen: the world, blurred and darkened. Ours is a dusk
@@ -1908,21 +1550,33 @@ def drop_shadow(panel):
 
 
 def icon_sheet():
-    """Every glyph, at 6x on mid-grey: the readability check."""
-    cell, k = 24, 6
-    rows = [('emblems', [emblem(pth) for pth in PATH_ORDER] + [emblem(pth, 'open') for pth in PATH_ORDER])]
+    """Every rune in its real socket on the night sky, chosen above and open below, at 4x: the
+    readability check that matters, since this is where they are seen."""
+    k, cell = 4, 34
+    rows = len(PATH_ORDER) * 2 + 1
+    sheet = new(10 * cell + 80, rows * cell + 10, SKY[1])
+    rng = random.Random(41)
+    for _ in range(300):
+        put(sheet, rng.randrange(sheet.width), rng.randrange(sheet.height), (150, 160, 190, 90))
+    y = 6
     for path in PATH_ORDER:
         ramp = PATHS[path]['ramp']
-        ids = [rid for rid, _ in RUNES[path]['keystones']] + [rid for row in RUNES[path]['rows'] for rid, _ in row]
-        rows.append((path, [glyph(rid, ramp) for rid in ids]))
-    rows.append(('shards', [shard_glyph(st) for st in SHARD_MAPS]))
-    width = max(len(g) for _, g in rows) * cell
-    sheet = new(width + 8, len(rows) * (cell + 10) + 8, hexc('#6c6c70'))
-    for i, (label, glyphs) in enumerate(rows):
-        y = 4 + i * (cell + 10)
-        draw_text(sheet, 4, y, label, TEXT)
-        for j, g in enumerate(glyphs):
-            blit(sheet, g, 4 + j * cell + (cell - g.width) // 2, y + 11 + (cell - 9 - g.height) // 2)
+        ids = [(rid, i < 3, i == 2) for i, (rid, _) in enumerate(RUNES[path]['keystones'])]
+        ids += [(rid, False, False) for row in RUNES[path]['rows'] for rid, _ in row]
+        for state in ('chosen', 'open'):
+            draw_text(sheet, 4, y + 12, path[:5] if state == 'chosen' else '', ramp[3])
+            blit(sheet, emblem(path, state), 40, y + 7)
+            x = 70
+            for rid, key, world in ids:
+                size = 30 if key else 22
+                place_rune(sheet, rid, ramp, state, x + (30 - size) // 2, y + (30 - size) // 2, size, world=world)
+                x += cell
+            y += cell
+    x = 70
+    for st in SHARD_MAPS:
+        blit(sheet, star_socket(16, stat_ramp(st), 'chosen'), x + 7, y + 7)
+        blit(sheet, shard_glyph(st), x + 11, y + 11)
+        x += cell
     return scaled(sheet, k)
 
 
@@ -1944,16 +1598,36 @@ def fit_sheet(panel):
     return out
 
 
+def paths_sheet():
+    """The orrery with each path as primary, and a new player's page: every colour, every icon in
+    place, and the locked states. 2x."""
+    names = ['vanguard', 'reaver', 'aetherwright', 'bulwark', 'new_player']
+    panels = []
+    for n in names:
+        set_page(n)
+        panels.append((n, scaled(drop_shadow(render_orrery()), 2)))
+    set_page('vanguard')
+    w, h = panels[0][1].width, panels[0][1].height
+    sheet = new(w * 2 + 30, (h + 24) * 3 + 10, hexc('#1a1a1e'))
+    for i, (n, pnl) in enumerate(panels):
+        x, y = 10 + (i % 2) * (w + 10), 10 + (i // 2) * (h + 24)
+        draw_text(sheet, x, y, n.replace('_', ' '), TEXT)
+        sheet.alpha_composite(pnl, (x, y + 14))
+    return sheet
+
+
 def main():
     os.makedirs(DESIGN, exist_ok=True)
     for name in os.listdir(DESIGN):
-        if name.startswith('mockup-') and name.endswith('.png'):
+        if name.endswith('.png'):
             os.remove(os.path.join(DESIGN, name))
-    for key, fn in LAYOUTS:
-        panel = drop_shadow(fn())
-        on_screen(panel, 426, 240, 3).save(os.path.join(DESIGN, 'layout-%s.png' % key))
-        if key == '1-pouch':
-            fit_sheet(panel).save(os.path.join(DESIGN, 'fit-gui-scales.png'))
+    set_page('vanguard')
+    panel = drop_shadow(render_orrery())
+    on_screen(panel, 426, 240, 3).save(os.path.join(DESIGN, 'orrery.png'))
+    on_screen(drop_shadow(render_orrery(hover=('conquerors_resolve', 0))), 426, 240, 3).save(
+        os.path.join(DESIGN, 'orrery-hover.png'))
+    fit_sheet(panel).save(os.path.join(DESIGN, 'orrery-fit-gui-scales.png'))
+    paths_sheet().save(os.path.join(DESIGN, 'orrery-every-path.png'))
     icon_sheet().save(os.path.join(DESIGN, 'icons.png'))
     print('wrote', DESIGN)
 
