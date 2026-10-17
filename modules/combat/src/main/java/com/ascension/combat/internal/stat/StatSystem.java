@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.stat;
 
 import com.ascension.combat.api.stat.StatSources;
+import com.ascension.combat.internal.mobs.MobStats;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -23,6 +24,7 @@ public final class StatSystem {
         ItemStatModifiers.register(gameBus);
         WornGear.register(gameBus);
         StatCommands.register(gameBus);
+        MobStats.register(gameBus);
 
         // Vanilla syncs every combat stat's attribute to clients except Attack Damage, so a
         // client read it as a bare hand's 1 whatever was held: the character sheet showed exactly

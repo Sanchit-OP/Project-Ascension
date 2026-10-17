@@ -442,5 +442,10 @@ A refactor pass comes every third increment.
   The League-scaled numbers (§11 question 5) are still Sanchit's to choose, and are a data edit.
 - **Increment 6 is done.** The bare-hand numbers are defined once, leftovers from the move are
   gone, and `StatSources` has tests.
+- **Increment 7 is built** and checked on a dedicated server. Mob stats are data, with tiers as
+  tags. Every vanilla tier, Cataclysm's four bosses, the Harbinger (through `#c:bosses` alone) and a
+  pig all read right. A `/reload` that changes a tier reaches live mobs, and a mob unloaded and
+  reloaded with its chunk gets its stats exactly once. `MobStats` shares the item-beats-tag merge
+  (`SpecificityPicker`); `MobStatTier` and `CataclysmBossStats` are gone.
 
 **The rune and growth sessions can read stats now**, through `StatReader` (§6).

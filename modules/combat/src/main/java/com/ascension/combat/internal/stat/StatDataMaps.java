@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import java.util.Map;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -19,8 +20,8 @@ import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
  * data maps. Every pack's file for one of them sits at the same path,
  * {@code data/ascension_combat/data_maps/<registry>/<name>.json}, and they stack in pack order.
  *
- * <p>Both are synced to clients: tooltips are drawn there, and they ask the same
- * {@code ItemAttributeModifierEvent} the server does.
+ * <p>The item and conversion maps are synced to clients: tooltips are drawn there, and they ask the
+ * same {@code ItemAttributeModifierEvent} the server does. Mob stats are not; see {@link #MOB_STATS}.
  */
 public final class StatDataMaps {
 
@@ -48,6 +49,18 @@ public final class StatDataMaps {
             .merger(DataMapValueMerger.mapMerger())
             .build();
 
+    /**
+     * Stats per mob type or tier tag, {@code data_maps/entity_type/mob_stats.json}: what a mob of
+     * that type gets on top of its own attributes (item-stats.md section 9). The tiers are entity
+     * tags, {@code #ascension_combat:tier/boss} and the rest. Not synced: clients see the result
+     * through the attributes, which are.
+     */
+    public static final AdvancedDataMapType<EntityType<?>, StatMap, ?> MOB_STATS = AdvancedDataMapType
+            .builder(id("mob_stats"), Registries.ENTITY_TYPE, StatMap.CODEC)
+            .merger((DataMapValueMerger<EntityType<?>, StatMap>) (registry, first, firstValue, second, secondValue) ->
+                    StatMap.merge(firstValue, first.right().isPresent(), secondValue, second.right().isPresent()))
+            .build();
+
     private StatDataMaps() {
     }
 
@@ -58,6 +71,7 @@ public final class StatDataMaps {
     private static void onRegisterDataMapTypes(RegisterDataMapTypesEvent event) {
         event.register(ITEM_STATS);
         event.register(STAT_CONVERSIONS);
+        event.register(MOB_STATS);
     }
 
     private static Codec<Map<CombatStat, Double>> conversionCodec() {
