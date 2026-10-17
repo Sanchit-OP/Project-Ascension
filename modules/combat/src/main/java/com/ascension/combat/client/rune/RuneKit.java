@@ -2,8 +2,10 @@ package com.ascension.combat.client.rune;
 
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.api.rune.RunePath;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.EnumMap;
 import java.util.Map;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -59,6 +61,17 @@ public final class RuneKit {
     public static int fade(int argb, double factor) {
         int alpha = (int) Math.round(((argb >>> 24) & 0xFF) * Math.max(0.0, Math.min(1.0, factor)));
         return withAlpha(argb, alpha);
+    }
+
+    /**
+     * Draws a sprite with blending on. Vanilla's text and fills switch blending off again after
+     * every draw, and most of this kit's sprites are translucent (glows, haze, ring edges), so each
+     * sprite turns it on for itself.
+     */
+    public static void blit(GuiGraphics g, ResourceLocation sprite, int x, int y, int width, int height) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        g.blitSprite(sprite, x, y, width, height);
     }
 
     public static ResourceLocation sprite(String name) {

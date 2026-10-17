@@ -1,8 +1,7 @@
 package com.ascension.combat.internal.rune.reaver;
 
 import com.ascension.combat.api.stat.CombatStats;
-import com.ascension.combat.internal.CombatAttachments;
-import com.ascension.combat.internal.rune.RuneModifiers;
+import com.ascension.combat.internal.rune.GrowingStat;
 import com.ascension.combat.internal.rune.Runes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,9 +24,6 @@ public final class TrophyHunterEffects {
     }
 
     public static void refresh(ServerPlayer player) {
-        double lethality = Runes.active(player, ID)
-                .map(rune -> player.getData(CombatAttachments.RUNE_PAGE).growth(ID) * rune.value("lethality_per_kind", 1.0))
-                .orElse(0.0);
-        RuneModifiers.setStat(player, CombatStats.LETHALITY, MODIFIER_ID, lethality);
+        GrowingStat.refresh(player, ID, "lethality_per_kind", 1.0, CombatStats.LETHALITY, MODIFIER_ID);
     }
 }

@@ -3,7 +3,6 @@ package com.ascension.combat.internal.rune.aetherwright;
 import com.ascension.combat.internal.rune.Runes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
 /**
  * Aetherwright's Siphon minor (docs/technical/rune-system.md section 4.3): you heal for part of
@@ -23,8 +22,6 @@ public final class SiphonEffects {
     }
 
     public static void onMagicDealt(LivingEntity attacker, LivingEntity target, float amount) {
-        if (attacker instanceof Player player) {
-            Runes.active(player, ID).ifPresent(rune -> player.heal(amount * (float) rune.value("heal", 0.10)));
-        }
+        Runes.active(attacker, ID).ifPresent(rune -> attacker.heal(amount * (float) rune.value("heal", 0.10)));
     }
 }

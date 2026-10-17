@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.rune.reaver;
 
+import com.ascension.combat.internal.rune.Reentry;
 import com.ascension.combat.internal.rune.RuneDefinition;
 import com.ascension.combat.internal.rune.RuneTargets;
 import com.ascension.combat.internal.rune.Runes;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
  * <p>Read in {@link LivingDamageEvent.Pre}, where the damage is final and the health is still what
  * it was, so "beyond what the kill needed" is plain subtraction. The splash goes only to
  * {@link RuneTargets#isFoe foes}, never a pet or a villager or another player, and it is a normal hit by
- * the player (so armour counts); {@link #splashing} stops it from splashing again in turn.
+ * the player (so armour counts); {@link #SPLASH} stops it from splashing again in turn.
  *
  * <p>Its numbers are the rune's data: {@code radius} (blocks) and {@code max_damage}.
  */
@@ -27,8 +28,8 @@ public final class OverkillEffects {
 
     public static final ResourceLocation ID = Runes.id("overkill");
 
-    /** True while this rune's own splash is landing. The server thread is the only one that deals damage. */
-    private static boolean splashing;
+    /** Guards the splash from splashing in turn. */
+    private static final Reentry SPLASH = new Reentry();
 
     private OverkillEffects() {
     }
@@ -38,7 +39,7 @@ public final class OverkillEffects {
     }
 
     private static void onDamagePre(LivingDamageEvent.Pre event) {
-        if (splashing || !(event.getSource().getEntity() instanceof ServerPlayer attacker)) {
+        if (SPLASH.active() || !(event.getSource().getEntity() instanceof ServerPlayer attacker)) {
             return;
         }
 
@@ -59,14 +60,7 @@ public final class OverkillEffects {
                 .stream()
                 .filter(e -> e != victim)
                 .min(Comparator.comparingDouble(e -> e.distanceToSqr(victim)))
-                .ifPresent(next -> {
-                    splashing = true;
-                    try {
-                        next.hurt(level.damageSources().playerAttack(attacker), splash);
-                    } finally {
-                        splashing = false;
-                    }
-                });
+                .ifPresent(next -> SPLASH.run(() -> next.hurt(level.damageSources().playerAttack(attacker), splash)));
     }
 
     /** The damage that spills over: what the hit did beyond what was left, up to {@code max}; 0 if the hit didn't kill. */

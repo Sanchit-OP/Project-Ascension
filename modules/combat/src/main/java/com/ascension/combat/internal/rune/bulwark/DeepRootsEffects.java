@@ -1,8 +1,7 @@
 package com.ascension.combat.internal.rune.bulwark;
 
 import com.ascension.combat.api.stat.CombatStats;
-import com.ascension.combat.internal.CombatAttachments;
-import com.ascension.combat.internal.rune.RuneModifiers;
+import com.ascension.combat.internal.rune.GrowingStat;
 import com.ascension.combat.internal.rune.Runes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,9 +26,6 @@ public final class DeepRootsEffects {
     }
 
     public static void refresh(ServerPlayer player) {
-        double health = Runes.active(player, ID)
-                .map(rune -> player.getData(CombatAttachments.RUNE_PAGE).growth(ID) * rune.value("health_per_kind", 0.5))
-                .orElse(0.0);
-        RuneModifiers.setStat(player, CombatStats.HEALTH, MODIFIER_ID, health);
+        GrowingStat.refresh(player, ID, "health_per_kind", 0.5, CombatStats.HEALTH, MODIFIER_ID);
     }
 }

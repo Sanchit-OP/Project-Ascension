@@ -3,7 +3,6 @@ package com.ascension.combat.internal.rune.aetherwright;
 import com.ascension.combat.internal.rune.Runes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
 /**
  * Aetherwright's Attunement minor (docs/technical/rune-system.md section 4.3): all your magic
@@ -21,10 +20,6 @@ public final class AttunementEffects {
     }
 
     public static float boost(LivingEntity attacker, LivingEntity target) {
-        if (!(attacker instanceof Player player)) {
-            return 1.0f;
-        }
-
-        return Runes.active(player, ID).map(rune -> 1.0f + (float) rune.value("bonus", 0.12)).orElse(1.0f);
+        return Runes.active(attacker, ID).map(rune -> 1.0f + (float) rune.value("bonus", 0.12)).orElse(1.0f);
     }
 }
