@@ -4,9 +4,7 @@ import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.armor.EdgeOfNightEffects;
-import com.ascension.combat.internal.armor.BootStats;
 import com.ascension.combat.internal.armor.CollectorsPantsEffects;
-import com.ascension.combat.internal.armor.GargoyleStoneplateEffects;
 import com.ascension.combat.internal.armor.GuardianWingEffects;
 import com.ascension.combat.internal.armor.ProteanMaskEffects;
 import com.ascension.combat.internal.armor.RocketbeltEffects;
@@ -18,7 +16,6 @@ import com.ascension.combat.internal.mechanics.CombatStateTracking;
 import com.ascension.combat.internal.mechanics.GrievousWoundsHealing;
 import com.ascension.combat.internal.mechanics.OmnivampHealing;
 import com.ascension.combat.internal.mechanics.PhysicalDamage;
-import com.ascension.combat.internal.mobs.MobStats;
 import com.ascension.combat.internal.net.CombatNetwork;
 import com.ascension.combat.internal.rune.RuneCommands;
 import com.ascension.combat.internal.rune.RuneConfig;
@@ -29,6 +26,7 @@ import com.ascension.combat.internal.rune.vanguard.KillingSurgeEffects;
 import com.ascension.combat.internal.rune.vanguard.MomentumEffects;
 import com.ascension.combat.internal.rune.vanguard.RelentlessStrikesEffects;
 import com.ascension.combat.internal.rune.vanguard.SecondWindEffects;
+import com.ascension.combat.internal.stat.StatSystem;
 import com.ascension.combat.internal.weapons.DarkenBladeEffects;
 import com.ascension.combat.internal.weapons.DariusAxeEffects;
 import com.ascension.combat.internal.weapons.DivineSundererEffects;
@@ -78,11 +76,9 @@ public final class AscensionCombat {
         CombatContent.register(modBus);
         CombatAttachments.register(modBus);
         CombatAttributes.register(modBus);
-        // Overrides CombatAttributes' own blanket Armor/Magic Resist defaults for select mobs --
-        // must register after it (see MobStats' own javadoc: EntityAttributeModificationEvent#add
-        // is last-write-wins per entity type).
-        MobStats.register(modBus);
         CombatMobEffects.register(modBus);
+        // Every item's stats, from data (docs/technical/item-stats.md, ADR-0019).
+        StatSystem.register(modBus, NeoForge.EVENT_BUS);
         modBus.addListener(CombatNetwork::register);
         CombatNetwork.registerLoginSync(NeoForge.EVENT_BUS);
 
@@ -98,6 +94,7 @@ public final class AscensionCombat {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             com.ascension.combat.client.CombatKeybinds.register(modBus);
             com.ascension.combat.client.AbilityCooldownDecorator.register(modBus);
+            com.ascension.combat.client.stat.StatTooltips.register(NeoForge.EVENT_BUS);
         }
 
         // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before
@@ -121,12 +118,10 @@ public final class AscensionCombat {
         CombatStateTracking.register(NeoForge.EVENT_BUS);
         ProteanMaskEffects.register(NeoForge.EVENT_BUS);
         EdgeOfNightEffects.register(NeoForge.EVENT_BUS);
-        GargoyleStoneplateEffects.register(NeoForge.EVENT_BUS);
         GuardianWingEffects.register(NeoForge.EVENT_BUS);
         RocketbeltEffects.register(NeoForge.EVENT_BUS);
         CollectorsPantsEffects.register(NeoForge.EVENT_BUS);
         UnendingDespairEffects.register(NeoForge.EVENT_BUS);
-        BootStats.register(NeoForge.EVENT_BUS);
         ZoniasHourglassEffects.register(NeoForge.EVENT_BUS);
         SterakHarnessEffects.register(NeoForge.EVENT_BUS);
         TestMagicBladeEffects.register(NeoForge.EVENT_BUS);

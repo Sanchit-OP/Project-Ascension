@@ -25,7 +25,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  *
  * <p>The AD conversion is the same "flat modifier recomputed every tick while worn" idiom used
  * throughout this catalog, just derived from the wearer's own max HP instead of a fixed constant,
- * so it can't reuse {@link StatBoots} directly. The shield reuses vanilla absorption.
+ * so it can't be a line of item data as fixed stats are. The shield reuses vanilla absorption.
  *
  * <p><b>Reworked 2026-09-20</b> (Sanchit's own spec, after finding the original "big single hit"
  * trigger too weak to matter): the shield now fires on <em>crossing</em> below 50% max HP, not on

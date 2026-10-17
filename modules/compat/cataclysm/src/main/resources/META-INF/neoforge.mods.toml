@@ -73,9 +73,9 @@ versionRange = "${cataclysm_version_range}"
 ordering = "AFTER"
 side = "BOTH"
 
-# Optional: with ascension-combat present, the two bosses get its Armor/Magic Resist values
-# (CataclysmBossStats). AFTER is load-bearing -- combat gives every living entity both attributes
-# at 0 in the same attribute-modification event, and the last write per entity type wins.
+# Optional: with ascension-combat present, the bosses get its Armor/Magic Resist through the tier
+# tags this jar ships in combat's namespace (data/ascension_combat/tags/entity_type/tier). Data only;
+# without combat the tags are simply unused.
 [[dependencies.${mod_id}]]
 modId = "ascension_combat"
 type = "optional"

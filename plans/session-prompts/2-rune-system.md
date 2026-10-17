@@ -83,9 +83,10 @@ by Sanchit (player name Devil0701). Your job is **the rune system**:
 ## Working beside other sessions
 
 Two other sessions start at the same time.
-- **Stats (prompt 1)** owns the stat definitions and the API for reading stats, including base
-  versus bonus. Read stats only through that API. If a rune needs a new stat, ask for it through
-  Sanchit or its "Requested stats" list in `combat-api.md` §3. Don't add attributes yourself.
+- **Stats (prompt 1)** owns the stat definitions and the API for reading stats
+  (`combat-api.md` §3, `item-stats.md` §6). There is no base/bonus split: read a stat's total
+  through that API (Sanchit, 2026-10-15). If a rune needs a new stat, ask for it through Sanchit
+  or its "Requested stats" list in `combat-api.md` §3. Don't add attributes yourself.
 - **Growth (prompt 3)** designs how players grow, possibly a skill tree. Keep the boundary clear:
   - **runes:** swappable build choices;
   - **growth:** permanent progress;

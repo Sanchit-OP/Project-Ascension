@@ -35,16 +35,13 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * already-computed <em>damage-reduction amount</em> &mdash; a small number for a light hit &mdash;
  * instead of from the target's Armor stat. Reworked again the same day once {@link
  * CombatAttributes#LETHALITY} became a real attribute: this class no longer touches the damage
- * pipeline at all. It just keeps that attribute topped up with a flat contribution while wielded,
- * the same tick-recomputed idiom {@code BootStats} uses; {@link
+ * pipeline at all. Since 2026-10-16 the Lethality is data ({@code item_stats.json}, 20 while held,
+ * raised from 4 on 2026-09-20) and this class is only the blink; {@link
  * com.ascension.combat.internal.mechanics.PhysicalDamage} is the one place that actually reads it
  * against a target's Armor now, which is also what lets it compose correctly with Darius's Axe's
  * shred and with Wizard's Agony's percent penetration on the same hit.
  */
 public final class WraithbladeEffects {
-
-    /** Raised 4.0 -&gt; 20.0 on 2026-09-20 -- see this class's own javadoc. */
-    private static final double FLAT_LETHALITY = 20.0;
 
     private static final double BLINK_DISTANCE = 12.0;
     private static final long SPEED_BOOST_DURATION_TICKS = 60L;
@@ -53,8 +50,6 @@ public final class WraithbladeEffects {
 
     private static final ResourceLocation MOVE_SPEED_MODIFIER_ID = ResourceLocation
             .fromNamespaceAndPath(AscensionCombat.MOD_ID, "wraithblade_move_speed");
-    private static final ResourceLocation LETHALITY_MODIFIER_ID = ResourceLocation
-            .fromNamespaceAndPath(AscensionCombat.MOD_ID, "wraithblade_lethality");
 
     private WraithbladeEffects() {
     }
@@ -91,29 +86,12 @@ public final class WraithbladeEffects {
             return;
         }
 
-        applyLethality(player, player.getMainHandItem().is(CombatContent.WRAITHBLADE.get()));
-
         DurationState state = player.getData(CombatAttachments.WRAITHBLADE_SPEED_BOOST);
         boolean active = state.isActive(player.level().getGameTime());
         if (!active) {
             state.clear();
         }
         applyMoveSpeedModifier(player, active);
-    }
-
-    private static void applyLethality(Player player, boolean wielding) {
-        AttributeInstance lethality = player.getAttribute(CombatAttributes.LETHALITY);
-        if (lethality == null) {
-            return;
-        }
-
-        lethality.removeModifier(LETHALITY_MODIFIER_ID);
-        if (!wielding) {
-            return;
-        }
-
-        lethality.addTransientModifier(new AttributeModifier(
-                LETHALITY_MODIFIER_ID, FLAT_LETHALITY, AttributeModifier.Operation.ADD_VALUE));
     }
 
     private static void applyMoveSpeedModifier(Player player, boolean active) {

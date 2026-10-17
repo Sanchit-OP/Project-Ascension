@@ -1,9 +1,7 @@
 package com.ascension.compat.cataclysm;
 
-import com.ascension.compat.cataclysm.internal.CataclysmBossStats;
 import com.ascension.compat.cataclysm.internal.GuardianAwakening;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
@@ -18,7 +16,9 @@ import org.slf4j.LoggerFactory;
  * placement type) and redirects the Ender Golem/Ender Guardian's loot toward this project's own
  * gateway key. Two mixins (ADR-0013) fix a hardcoded placement height and add a block-swap
  * processor Cataclysm's own JSON has no hook for. {@link GuardianAwakening} spawns the Guardian
- * on the Golem's death, since nothing in Cataclysm's own data or Java spawns it at all.
+ * on the Golem's death, since nothing in Cataclysm's own data or Java spawns it at all. With
+ * {@code ascension-combat} present, tier tags in {@code data/ascension_combat/tags} give the bosses
+ * their Armor and Magic Resist (docs/technical/item-stats.md section 9).
  *
  * <p>This is the first of what {@code plans/m3-vertical-slice.md} expects to be several
  * {@code ascension-compat-<bossmod>} jars, one per third-party mod a planet's boss is sourced
@@ -37,11 +37,6 @@ public final class AscensionCompatCataclysm {
 
     public AscensionCompatCataclysm(IEventBus modBus) {
         GuardianAwakening.register(NeoForge.EVENT_BUS);
-        // Checked before CataclysmBossStats is ever touched: it links against ascension-combat's
-        // api, which is an optional dependency of this jar.
-        if (ModList.get().isLoaded("ascension_combat")) {
-            CataclysmBossStats.register(modBus);
-        }
         LOGGER.info("Ascension Compat: Cataclysm loaded -- Ruined Citadel relocated to the Moon");
     }
 }

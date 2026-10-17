@@ -88,6 +88,33 @@ number in this document and in the item catalog below is a placeholder for "this
 is correct" — which is exactly what ADR-0007 rule 10's data-driven requirement is for: retuning a
 value is a JSON edit, not a rebuild.
 
+### Reading stats, and asking for new ones
+
+Added 2026-10-15 by the item-stats session, which owns the stat definitions and the read API. The
+full design is in [`item-stats.md`](item-stats.md); the structural choice is
+[ADR-0019](../decisions/0019-item-stats-are-data.md). **Built 2026-10-16** (increment 2), in
+`com.ascension.combat.api.stat`. `/ascension stats [target]` (permission 2) prints every stat of a
+living entity and where each comes from, from a console too.
+
+- **The stats** are `com.ascension.combat.api.stat.CombatStats`: `HEALTH`, `ATTACK_DAMAGE`,
+  `ATTACK_SPEED`, `MOVE_SPEED`, `ARMOR`, `MAGIC_RESIST`, `OMNIVAMP`, `LETHALITY`,
+  `ARMOR_PENETRATION` and `MAGIC_PENETRATION`.
+- **Read them** only through `StatReader.value(entity, stat)`, which gives the total, and
+  `breakdown` per source for display. Never read an attribute directly for gameplay.
+- **There is no base/bonus split** (Sanchit, 2026-10-15). An item that scales "off Attack Damage"
+  reads the total. A bare hand is 1, and everything else adds to that.
+- **Give a stat** with an attribute modifier on `CombatStat#attribute()`. Its id must start with a
+  prefix registered through `StatSources.register(prefix, label)`, for example
+  `ascension_combat:growth/` labelled "Growth". An unregistered modifier shows as "Other" on the
+  character sheet.
+
+**Requested stats.** Another session that needs a stat adds a line here, or asks through Sanchit.
+The stats session adds it to `CombatStats`. Nobody else registers attributes.
+
+| Stat | Asked by | For | Status |
+|---|---|---|---|
+| *(none yet)* | | | |
+
 ## 3a. Mobs in the stat model
 
 Added 2026-09-19. The damage pipeline already treated mobs correctly everywhere &mdash; every
@@ -128,6 +155,13 @@ differentiate at all. A full mob rebalance under this stat model, if Sanchit wan
 separate, explicitly requested pass.
 
 All tier values are placeholders (section 3): Sanchit tunes by playing, not by spec.
+
+**Data since 2026-10-16** ([`item-stats.md`](item-stats.md) section 9). The tiers are entity tags,
+`#ascension_combat:tier/swarm` to `tier/boss`, and the numbers are
+`data_maps/entity_type/mob_stats.json`, applied as one unsaved modifier per stat when a mob enters
+a world. Any mod's boss in NeoForge's `#c:bosses` is a boss here with no line of ours. Cataclysm's
+four bosses join their tiers through tag files in `ascension-compat-cataclysm`, which no longer has
+any Java for it.
 
 ## 3b. Seeing the stats — two new Tier 2 compat jars
 

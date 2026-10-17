@@ -1,0 +1,7 @@
+{
+  "_comment": "What one point of a vanilla attribute is worth in combat's stats, on every item from every mod. Sanchit's rates, 2026-10-15. Each item's total is rounded down. An item whose item_stats entry names a stat skips that stat here. docs/technical/item-stats.md section 5.",
+  "values": {
+    "minecraft:generic.armor": { "armor": 3.5, "magic_resist": 2.5 },
+    "minecraft:generic.armor_toughness": { "health": 2.5 }
+  }
+}
