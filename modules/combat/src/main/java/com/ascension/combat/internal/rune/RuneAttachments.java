@@ -4,6 +4,7 @@ import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
+import com.ascension.combat.internal.rune.reaver.HeadshotMark;
 import com.ascension.combat.internal.rune.vanguard.CadenceState;
 import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
@@ -40,6 +41,21 @@ public final class RuneAttachments {
     public static final Supplier<AttachmentType<SwingMarks>> SWING = TYPES.register(
             "swing",
             () -> AttachmentType.builder(SwingMarks::new).build());
+
+    /** Deadeye's headshot bonus on an arrow in flight: set when it hits an enemy, read by the damage that follows. */
+    public static final Supplier<AttachmentType<HeadshotMark>> HEADSHOT = TYPES.register(
+            "headshot",
+            () -> AttachmentType.builder(HeadshotMark::new).build());
+
+    /** Drop In's window, on the player: until when they cut through armour. */
+    public static final Supplier<AttachmentType<DurationState>> DROP_IN = TYPES.register(
+            "drop_in",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /** Vanish's cooldown, on the player. */
+    public static final Supplier<AttachmentType<DurationState>> VANISH_COOLDOWN = TYPES.register(
+            "vanish_cooldown",
+            () -> AttachmentType.builder(DurationState::new).build());
 
     /** Cadence's hit count on one enemy, on the attacker. */
     public static final Supplier<AttachmentType<CadenceState>> CADENCE = TYPES.register(

@@ -1,0 +1,25 @@
+{
+  "path": "reaver",
+  "slot": "minor",
+  "row": 1,
+  "position": 1,
+  "icon": "ascension_combat:rune/overkill",
+  "effect": "ascension_combat:overkill",
+  "values": {
+    "radius": 4,
+    "max_damage": 6
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.overkill.n0",
+      "parts": [
+        {
+          "value": "max_damage"
+        },
+        {
+          "value": "radius"
+        }
+      ]
+    }
+  ]
+}

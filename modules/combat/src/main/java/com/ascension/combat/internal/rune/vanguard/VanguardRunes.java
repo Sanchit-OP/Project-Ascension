@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.rune.vanguard;
 
+import com.ascension.combat.internal.rune.RuneModifiers;
 import net.neoforged.bus.api.IEventBus;
 
 /**
@@ -18,7 +19,8 @@ public final class VanguardRunes {
         VeinBreakerEffects.register(bus);
         SecondWindEffects.register(bus);
         MomentumEffects.register(bus);
-        // Blooded has no listener: RuneGrowth counts, RuneModifiers applies it.
+        // Blooded has no listener: RuneGrowth counts, and its refresher puts the omnivamp on.
+        RuneModifiers.addRefresher(BloodedEffects::refresh);
         RelentlessStrikesEffects.register(bus);
         KillingSurgeEffects.register(bus);
         GiantSlayerEffects.register(bus);

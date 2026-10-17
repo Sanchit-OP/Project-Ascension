@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.rune;
 
+import com.ascension.combat.internal.rune.reaver.ReaverRunes;
 import com.ascension.combat.internal.rune.vanguard.VanguardRunes;
 import net.neoforged.bus.api.IEventBus;
 
@@ -18,6 +19,8 @@ public final class RuneSystem {
         RuneGrowth.register(gameBus);
         RuneModifiers.register(gameBus);
         ExposedDamage.register(gameBus);
+        RuneModifiers.addRefresher(ShardEffects::refresh);
         VanguardRunes.register(gameBus);
+        ReaverRunes.register(gameBus);
     }
 }

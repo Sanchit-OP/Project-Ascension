@@ -2,6 +2,7 @@ package com.ascension.combat.internal.rune.vanguard;
 
 import com.ascension.combat.internal.rune.RuneAttachments;
 import com.ascension.combat.internal.rune.RuneDefinition;
+import com.ascension.combat.internal.rune.RuneHits;
 import com.ascension.combat.internal.rune.Runes;
 import java.util.Optional;
 import net.minecraft.core.particles.ParticleTypes;
@@ -10,9 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
@@ -52,7 +51,7 @@ public final class CadenceEffects {
         LivingEntity victim = event.getEntity();
         CadenceState state = attacker.getData(RuneAttachments.CADENCE.get());
         long now = level.getGameTime();
-        if (!fullyCharged(event.getSource().getDirectEntity(), attacker, victim, now)) {
+        if (!RuneHits.charged(event.getSource(), attacker, victim, now)) {
             return;
         }
 
@@ -70,11 +69,4 @@ public final class CadenceEffects {
                 SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0f, 0.7f);
     }
 
-    private static boolean fullyCharged(Entity direct, ServerPlayer attacker, LivingEntity victim, long now) {
-        if (direct instanceof AbstractArrow arrow) {
-            return arrow.isCritArrow();
-        }
-
-        return direct == attacker && attacker.getData(RuneAttachments.SWING.get()).charged(victim.getUUID(), now);
-    }
 }
