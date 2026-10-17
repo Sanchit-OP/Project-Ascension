@@ -26,6 +26,7 @@ import com.ascension.combat.internal.rune.RunePage;
 import com.ascension.combat.internal.rune.RunePageRules;
 import com.ascension.combat.internal.rune.RuneRegistries;
 import com.ascension.combat.internal.rune.RuneSlot;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -166,6 +167,11 @@ public final class RuneScreen extends Screen {
         forcedMouse = new double[] {panelX, panelY};
     }
 
+    /** For {@code client.dev.RuneScreenshots} only: a left click at a panel position. */
+    public void devClick(double panelX, double panelY) {
+        mouseClicked(originX + panelX * scale, originY + panelY * scale, 0);
+    }
+
     @Override
     public boolean isPauseScreen() {
         return false;
@@ -227,7 +233,7 @@ public final class RuneScreen extends Screen {
 
         int tab = 0;
         for (RunePath path : paths) {
-            if (path == primary) {
+            if (path == primary || primary == null) {
                 continue;
             }
 
@@ -318,7 +324,7 @@ public final class RuneScreen extends Screen {
         graphics.pose().pushPose();
         graphics.pose().translate(originX, originY, 0);
         graphics.pose().scale((float) scale, (float) scale, 1.0f);
-        graphics.blitSprite(RuneKit.sprite("panel"), 0, 0, PANEL_W, PANEL_H);
+        blit(graphics, RuneKit.sprite("panel"), 0, 0, PANEL_W, PANEL_H);
         drawTitleBar(graphics, lx, ly);
         drawPrimary(graphics, nodes, now, turn);
         drawSecondary(graphics, nodes, now);
@@ -363,7 +369,7 @@ public final class RuneScreen extends Screen {
         boolean over = enabled && confirm == null && r.contains(lx, ly);
         String sprite = !enabled ? "button/disabled" : primary ? (over ? "button/primary_hover" : "button/primary")
                 : (over ? "button/hover" : "button/normal");
-        g.blitSprite(RuneKit.sprite(sprite), r.x(), r.y(), r.w(), r.h());
+        blit(g, RuneKit.sprite(sprite), r.x(), r.y(), r.w(), r.h());
         int colour = !enabled ? RuneKit.TEXT_FAINT : primary ? RuneKit.TEXT : RuneKit.TEXT_BODY;
         g.drawString(this.font, label, r.x() + (r.w() - this.font.width(label)) / 2, r.y() + 2, colour, true);
     }
@@ -388,7 +394,7 @@ public final class RuneScreen extends Screen {
         g.pose().popPose();
         g.drawString(this.font, "×" + ClientRunePageCache.chalk(), cx + 10, 7,
                 creative || haveChalk >= ClientRunePageCache.chalk() ? RuneKit.TEXT_BODY : RuneKit.BAD, true);
-        g.blitSprite(RuneKit.sprite("icon/xp_orb"), cx + 26, 7, 8, 8);
+        blit(g, RuneKit.sprite("icon/xp_orb"), cx + 26, 7, 8, 8);
         g.drawString(this.font, Component.translatable("gui.ascension_combat.levels_short", ClientRunePageCache.levels()),
                 cx + 36, 7, creative || haveLevels >= ClientRunePageCache.levels() ? RuneKit.XP : RuneKit.BAD, true);
     }
@@ -396,18 +402,18 @@ public final class RuneScreen extends Screen {
     private void drawPrimary(GuiGraphics g, List<Node> nodes, long now, double turn) {
         RunePath primary = edit.primary().orElse(null);
         if (primary != null) {
-            g.blitSprite(RuneKit.sprite("nebula/" + primary.getSerializedName()), P_CX - 90, P_CY - 90, 180, 180);
+            blit(g, RuneKit.sprite("nebula/" + primary.getSerializedName()), P_CX - 90, P_CY - 90, 180, 180);
         }
 
         g.pose().pushPose();
         g.pose().translate(P_CX, P_CY, 0);
         g.pose().mulPose(Axis.ZP.rotationDegrees((float) turn));
-        g.blitSprite(RuneKit.dial(primary, true), -90, -90, 180, 180);
+        blit(g, RuneKit.dial(primary, true), -90, -90, 180, 180);
         g.pose().popPose();
 
         float arrival = turn == 0.0 ? 1.0f : (float) (0.25 + 0.75 * (1.0 - Math.abs(turn) / 90.0));
         drawSpokes(g, nodes, now, P_CX, P_CY, true, primary);
-        g.blitSprite(RuneKit.sprite(primary == null ? "hub/none" : "hub/" + primary.getSerializedName()),
+        blit(g, RuneKit.sprite(primary == null ? "hub/none" : "hub/" + primary.getSerializedName()),
                 P_CX - 14, P_CY - 14, 28, 28);
         g.setColor(1.0f, 1.0f, 1.0f, arrival);
         for (Node node : nodes) {
@@ -437,15 +443,13 @@ public final class RuneScreen extends Screen {
         g.drawString(this.font, Component.translatable("gui.ascension_combat.secondary_path_label"), tx, 26, RuneKit.TEXT_DIM, true);
 
         if (unlocked && secondary != null) {
-            g.blitSprite(RuneKit.sprite("nebula/" + secondary.getSerializedName() + "_small"), S_CX - 55, S_CY - 55, 110, 110);
-            g.blitSprite(RuneKit.dial(secondary, false), S_CX - 54, S_CY - 54, 108, 108);
+            blit(g, RuneKit.sprite("nebula/" + secondary.getSerializedName() + "_small"), S_CX - 55, S_CY - 55, 110, 110);
+            blit(g, RuneKit.dial(secondary, false), S_CX - 54, S_CY - 54, 108, 108);
             drawSpokes(g, nodes, now, S_CX, S_CY, false, secondary);
-            g.blitSprite(RuneKit.sprite("hub/" + secondary.getSerializedName() + "_small"), S_CX - 11, S_CY - 11, 22, 22);
+            blit(g, RuneKit.sprite("hub/" + secondary.getSerializedName() + "_small"), S_CX - 11, S_CY - 11, 22, 22);
         } else {
-            g.blitSprite(RuneKit.sprite("dial/secondary_locked"), S_CX - 54, S_CY - 54, 108, 108);
-            if (!unlocked) {
-                g.blitSprite(RuneKit.sprite("hub/locked"), S_CX - 11, S_CY - 11, 22, 22);
-            }
+            blit(g, RuneKit.sprite("dial/secondary_locked"), S_CX - 54, S_CY - 54, 108, 108);
+            blit(g, RuneKit.sprite(unlocked ? "hub/none_small" : "hub/locked"), S_CX - 11, S_CY - 11, 22, 22);
         }
         for (Node node : nodes) {
             if (node.kind() == Kind.MINOR && !node.primarySide() || node.kind() == Kind.SECONDARY_TAB) {
@@ -465,8 +469,9 @@ public final class RuneScreen extends Screen {
             paragraph(g, Component.translatable("gui.ascension_combat.one_from_each_half"), tx, y + 4, PANEL_W - 8 - tx,
                     RuneKit.TEXT_FAINT, 150);
         } else {
-            paragraph(g, Component.translatable("gui.ascension_combat.choose_secondary"), tx, 78, PANEL_W - 8 - tx,
-                    RuneKit.TEXT_DIM, 120);
+            paragraph(g, Component.translatable(edit.primary().isPresent()
+                    ? "gui.ascension_combat.choose_secondary" : "gui.ascension_combat.choose_primary_first"),
+                    tx, 78, PANEL_W - 8 - tx, RuneKit.TEXT_DIM, 120);
         }
     }
 
@@ -512,6 +517,17 @@ public final class RuneScreen extends Screen {
         String blurb = RuneCards.nameKey(keystone.get()) + ".blurb";
         paragraph(g, Component.translatable(I18n.exists(blurb) ? blurb : RuneCards.nameKey(keystone.get()) + ".desc"),
                 x, BLURB_Y0 + 17, width, RuneKit.TEXT_BODY, BLURB_Y1);
+    }
+
+    /**
+     * Draws a sprite with blending on. Vanilla's text and fills switch blending off again after
+     * every draw, and most of this kit's sprites are translucent (glows, haze, ring edges), so each
+     * sprite turns it on for itself.
+     */
+    private static void blit(GuiGraphics g, ResourceLocation sprite, int x, int y, int width, int height) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        g.blitSprite(sprite, x, y, width, height);
     }
 
     private int paragraph(GuiGraphics g, Component text, int x, int y, int width, int colour, int maxY) {
@@ -561,42 +577,42 @@ public final class RuneScreen extends Screen {
         switch (node.kind()) {
             case PRIMARY_TAB, SECONDARY_TAB -> {
                 boolean barred = node.state() == State.BARRED;
-                g.blitSprite(barred ? RuneKit.sprite("socket/minor_locked") : RuneKit.minorSocket(node.path(), node.chosen()),
+                blit(g, barred ? RuneKit.sprite("socket/minor_locked") : RuneKit.minorSocket(node.path(), node.chosen()),
                         x, y, size, size);
                 String emblem = node.chosen() ? "chosen" : barred ? "barred" : "open";
-                g.blitSprite(RuneKit.tabEmblem(node.path(), emblem), x + 4, y + 4, 14, 14);
+                blit(g, RuneKit.tabEmblem(node.path(), emblem), x + 4, y + 4, 14, 14);
             }
             case KEYSTONE -> {
                 if (node.chosen()) {
                     double breath = 0.45 + 0.25 * Math.sin(now / 700.0 * Math.PI);
                     int colour = RuneKit.ramp(node.path(), 3);
                     g.setColor(((colour >> 16) & 0xFF) / 255f, ((colour >> 8) & 0xFF) / 255f, (colour & 0xFF) / 255f, (float) breath);
-                    g.blitSprite(RuneKit.sprite("socket/halo_key"), node.cx() - 19, node.cy() - 19, 38, 38);
+                    blit(g, RuneKit.sprite("socket/halo_key"), node.cx() - 19, node.cy() - 19, 38, 38);
                     g.setColor(1f, 1f, 1f, 1f);
                 }
-                g.blitSprite(RuneKit.keystoneSocket(node.path(), node.rune().world(), node.chosen()), x, y, size, size);
-                g.blitSprite(RuneKit.glyph(node.rune().icon(), node.chosen()), node.cx() - 10, node.cy() - 10, 20, 20);
+                blit(g, RuneKit.keystoneSocket(node.path(), node.rune().world(), node.chosen()), x, y, size, size);
+                blit(g, RuneKit.glyph(node.rune().icon(), node.chosen()), node.cx() - 10, node.cy() - 10, 20, 20);
             }
             case MINOR -> {
                 if (node.state() == State.LOCKED) {
-                    g.blitSprite(RuneKit.sprite("socket/minor_locked"), x, y, size, size);
+                    blit(g, RuneKit.sprite("socket/minor_locked"), x, y, size, size);
                     return;
                 }
-                g.blitSprite(RuneKit.minorSocket(node.path(), node.chosen()), x, y, size, size);
-                g.blitSprite(RuneKit.glyph(node.rune().icon(), node.chosen()), node.cx() - 7, node.cy() - 7, 14, 14);
+                blit(g, RuneKit.minorSocket(node.path(), node.chosen()), x, y, size, size);
+                blit(g, RuneKit.glyph(node.rune().icon(), node.chosen()), node.cx() - 7, node.cy() - 7, 14, 14);
                 if (node.chosen() && node.rune().grows()) {
                     drawGrowthRing(g, node);
                 }
             }
             case SHARD -> {
                 if (node.state() == State.LOCKED) {
-                    g.blitSprite(RuneKit.sprite("socket/shard_locked"), x, y, size, size);
-                    g.blitSprite(RuneKit.sprite("icon/padlock"), x + 4, y + 3, 7, 9);
+                    blit(g, RuneKit.sprite("socket/shard_locked"), x, y, size, size);
+                    blit(g, RuneKit.sprite("icon/padlock"), x + 4, y + 3, 7, 9);
                     return;
                 }
                 String stat = node.rune().icon().getPath().substring(node.rune().icon().getPath().lastIndexOf('/') + 1);
-                g.blitSprite(RuneKit.shardSocket(stat, node.chosen()), x, y, size, size);
-                g.blitSprite(RuneKit.shardGlyph(stat, node.chosen()), x + 4, y + 4, 8, 8);
+                blit(g, RuneKit.shardSocket(stat, node.chosen()), x, y, size, size);
+                blit(g, RuneKit.shardGlyph(stat, node.chosen()), x + 4, y + 4, 8, 8);
             }
         }
     }
@@ -621,7 +637,7 @@ public final class RuneScreen extends Screen {
             default -> "socket/hover_minor";
         };
         int size = node.size() + 6;
-        g.blitSprite(RuneKit.sprite(name), node.cx() - size / 2, node.cy() - size / 2, size, size);
+        blit(g, RuneKit.sprite(name), node.cx() - size / 2, node.cy() - size / 2, size, size);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -677,7 +693,7 @@ public final class RuneScreen extends Screen {
         g.pose().pushPose();
         g.pose().translate(0, 0, 400);
         g.fill(x + 2, y + 2, x + CARD_W + 2, y + h + 2, 0x6E000000);
-        g.blitSprite(RuneKit.card(path), x, y, CARD_W, h);
+        blit(g, RuneKit.card(path), x, y, CARD_W, h);
         int yy = y + 6;
         g.drawString(this.font, title.copy().withStyle(ChatFormatting.BOLD), x + 7, yy, RuneKit.TEXT, true);
         yy += 10;
@@ -707,7 +723,7 @@ public final class RuneScreen extends Screen {
         int h = 14 + lines.size() * 10 + 8 + 14 + 8;
         int x = (PANEL_W - w) / 2;
         int y = (PANEL_H - h) / 2;
-        g.blitSprite(RuneKit.card(edit.primary().orElse(null)), x, y, w, h);
+        blit(g, RuneKit.card(edit.primary().orElse(null)), x, y, w, h);
         int yy = y + 8;
         for (FormattedCharSequence line : lines) {
             g.drawString(this.font, line, x + 8, yy, RuneKit.TEXT_BODY, true);
