@@ -1,7 +1,9 @@
 package com.ascension.combat.internal.rune;
 
 import com.ascension.combat.AscensionCombat;
+import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.combat.internal.mechanics.DurationState;
+import com.ascension.combat.internal.mechanics.StackingChargeState;
 import com.ascension.combat.internal.rune.vanguard.CadenceState;
 import java.util.function.Supplier;
 import net.neoforged.bus.api.IEventBus;
@@ -38,6 +40,34 @@ public final class RuneAttachments {
     public static final Supplier<AttachmentType<CadenceState>> CADENCE = TYPES.register(
             "cadence",
             () -> AttachmentType.builder(CadenceState::new).build());
+
+    /**
+     * Conqueror's Resolve's stack, one a second in combat, on the player (the mechanic Protean
+     * Mask's {@code CombatStackState} was built for; this is its second consumer).
+     */
+    public static final Supplier<AttachmentType<CombatStackState>> CONQUERORS_RESOLVE = TYPES.register(
+            "conquerors_resolve_state",
+            () -> AttachmentType.builder(CombatStackState::new).build());
+
+    /** Relentless Strikes' hit stack, on the player: builds per hit, fades if the next doesn't come in time. */
+    public static final Supplier<AttachmentType<StackingChargeState>> RELENTLESS_STRIKES = TYPES.register(
+            "relentless_strikes_stacks",
+            () -> AttachmentType.builder(StackingChargeState::new).build());
+
+    /** Momentum's chained-hit stack, on the player: the same shape as Relentless Strikes, scaling a heal. */
+    public static final Supplier<AttachmentType<StackingChargeState>> MOMENTUM = TYPES.register(
+            "momentum_stacks",
+            () -> AttachmentType.builder(StackingChargeState::new).build());
+
+    /** Second Wind's gap between heals, on the player: a {@link DurationState} used as a cooldown gate. */
+    public static final Supplier<AttachmentType<DurationState>> SECOND_WIND_COOLDOWN = TYPES.register(
+            "second_wind_cooldown",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /** Killing Surge's attack-speed window after a kill, on the player. */
+    public static final Supplier<AttachmentType<DurationState>> KILLING_SURGE_BURST = TYPES.register(
+            "killing_surge_burst",
+            () -> AttachmentType.builder(DurationState::new).build());
 
     private RuneAttachments() {
     }

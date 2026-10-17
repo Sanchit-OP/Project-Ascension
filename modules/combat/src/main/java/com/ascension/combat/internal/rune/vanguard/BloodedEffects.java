@@ -2,12 +2,10 @@ package com.ascension.combat.internal.rune.vanguard;
 
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatAttributes;
-import com.ascension.combat.internal.rune.RuneDefinition;
+import com.ascension.combat.internal.rune.RuneModifiers;
 import com.ascension.combat.internal.rune.Runes;
-import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 /**
@@ -36,22 +34,9 @@ public final class BloodedEffects {
 
     /** Sets the player's Blooded omnivamp to what their page and its growth say: none if it isn't on the page. */
     public static void refresh(ServerPlayer player) {
-        AttributeInstance omnivamp = player.getAttribute(CombatAttributes.OMNIVAMP);
-        if (omnivamp == null) {
-            return;
-        }
-
-        omnivamp.removeModifier(MODIFIER_ID);
-        Optional<RuneDefinition> rune = Runes.active(player, ID);
-        if (rune.isEmpty()) {
-            return;
-        }
-
-        int kinds = player.getData(CombatAttachments.RUNE_PAGE).growth(ID);
-        double amount = kinds * rune.get().value("omnivamp_per_kind", 0.005);
-        if (amount > 0.0) {
-            omnivamp.addTransientModifier(
-                    new AttributeModifier(MODIFIER_ID, amount, AttributeModifier.Operation.ADD_VALUE));
-        }
+        double amount = Runes.active(player, ID)
+                .map(rune -> player.getData(CombatAttachments.RUNE_PAGE).growth(ID) * rune.value("omnivamp_per_kind", 0.005))
+                .orElse(0.0);
+        RuneModifiers.set(player, CombatAttributes.OMNIVAMP, MODIFIER_ID, amount, AttributeModifier.Operation.ADD_VALUE);
     }
 }

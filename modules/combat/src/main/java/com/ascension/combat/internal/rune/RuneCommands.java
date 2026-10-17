@@ -4,6 +4,8 @@ import com.ascension.combat.internal.CombatAttachments;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -30,7 +32,7 @@ public final class RuneCommands {
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.literal("list").executes(ctx -> list(ctx.getSource())))
                         .then(Commands.literal("show")
-                                .executes(ctx -> show(ctx.getSource(), java.util.List.of(ctx.getSource().getPlayerOrException())))
+                                .executes(ctx -> show(ctx.getSource(), List.of(ctx.getSource().getPlayerOrException())))
                                 .then(Commands.argument("players", EntityArgument.players())
                                         .executes(ctx -> show(ctx.getSource(), EntityArgument.getPlayers(ctx, "players")))))));
     }
@@ -55,7 +57,7 @@ public final class RuneCommands {
     private static int list(CommandSourceStack source) {
         var runes = RuneRegistries.runes(source.registryAccess());
         runes.entrySet().stream()
-                .sorted(java.util.Comparator.comparing(e -> e.getKey().location().toString()))
+                .sorted(Comparator.comparing(e -> e.getKey().location().toString()))
                 .forEach(e -> {
                     RuneDefinition rune = e.getValue();
                     String line = e.getKey().location() + ": "
