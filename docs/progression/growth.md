@@ -352,6 +352,32 @@ installed is reported, not silently skipped.
 - **The same game as the rune screen:** the same frame, palette, card style and sounds. Mockups
   first, from a seeded script as the art guide says, sent to Sanchit before any screen is built.
 
+### The mockup (2026-10-17, waiting for Sanchit)
+
+![The skill tree](../../design/growth/tree.png)
+
+Made by `tools/generate-growth-art.py` from the real node files, so it shows the tree as built. The
+hover card is `design/growth/tree-hover.png`; the fit at GUI scales 2 to 4 is
+`design/growth/tree-fit-gui-scales.png`.
+
+- **A constellation in the rune screen's kit:** the night sky in a brass frame, round sockets, the
+  same buttons and cards. The four arms run **diagonally** away from the centre, so **all 55 nodes
+  fit one screen** with no panning: Power top left, Fury top right, Guard bottom right, Wayfarer
+  bottom left. Longer arms, from future worlds, will need dragging to pan; the layout keeps room for it.
+- **Arm colours** follow the rune paths they pair with: Power red (Reaver), Fury gold (Vanguard),
+  Guard blue (Bulwark), Wayfarer green. Each node's icon is its first stat, in the colour the cards use for it
+  (HP green, Armor tan, Magic Resist lavender, Attack Damage orange).
+- **Four states, told apart by more than colour:** *taken* is a bright star in a halo; *can take* is a
+  ring of starlight; *marked, not confirmed* has a dashed white ring; *not reachable yet* is a dim ring.
+  Notables are larger, with a second ring and an orbit.
+- **The side panel:** points to spend (and what the marked nodes leave), where the points came from, the
+  goals still to find, and your stats.
+- **The centre** is a neutral four-pointed star for now: question 9 (the mark, or neutral).
+- **The icons are placeholders** drawn to read at a glance; polishing them is G5.
+- **The art kit is a copy** of the runes session's helpers (`tools/generate-rune-art.py`, in its
+  worktree), so the two screens match now. When the runes work merges, the copy should become an import
+  of one shared module.
+
 ## 11. Working with the other sessions
 
 **Stats (prompt 1).** Requests, through Sanchit:
@@ -385,7 +411,7 @@ comes last, so the rules underneath are proven first with a debug command.
 | **G1** | The data and the rules: both registries, the player and team attachments, the stat modifiers, an Ascension advancement tab, the Warden and Wither milestones, the Guard arm's nodes, the respec rule, and a command (`/ascension growth`, `take <node>`, `respec`) | Dedicated server: kill the Warden, see the toast and 3 points. Take two Guard HP nodes: 22 HP. A second client joins and has 3 points too. Restart the server: still 22. Die: respawn at 22, full. |
 | **G2** | Every source and every node: the gates (`worlds` awards their advancements), Cataclysm's four bosses (`compat-cataclysm` data), the discoveries, and the other three arms. **Built 2026-10-17**, not yet seen in a client | Each source earned in a client, totals on the command. |
 | **G3** | Refactor pass (ADR-0008) | No new features. |
-| **G4** | The screen, working: the tree, cards, taking and confirming, the side panel, the respec button, the toast | Take nodes from the screen, confirm, see the stats. Reload the world: still taken. |
+| **G4** | The screen, working: the tree, cards, taking and confirming, the side panel, the respec button, the toast. **Waits for Sanchit to approve the mockup (§10)** | Take nodes from the screen, confirm, see the stats. Reload the world: still taken. |
 | **G5** | The screen's art, once Sanchit has approved a mockup | Seen at GUI scales 2, 3 and 4. |
 | **G6** | Refactor pass, and a reading in `performance-log.md` | Heap and tick time before and after. |
 
