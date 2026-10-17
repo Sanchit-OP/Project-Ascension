@@ -6,7 +6,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -82,42 +81,36 @@ final class GrowthCommands {
                 .append(Component.literal("\nPoints: " + earned + " earned, " + spent + " spent, "
                         + (earned - spent) + " to spend").withStyle(ChatFormatting.WHITE));
 
-        text.append(Component.literal("\nMilestones: ").withStyle(ChatFormatting.GRAY));
-        if (milestones.isEmpty()) {
-            text.append(Component.literal("none yet").withStyle(ChatFormatting.DARK_GRAY));
-        }
-        for (int i = 0; i < milestones.size(); i++) {
-            GrowthMilestone milestone = milestones.get(i);
-            var advancement = player.server.getAdvancements().get(milestone.advancement());
-            text.append(i == 0 ? Component.empty() : Component.literal(", "))
-                    .append(PlayerGrowth.title(advancement))
-                    .append(Component.literal(" (+" + milestone.points() + ")"));
-        }
+        List<Component> milestoneLines = milestones.stream()
+                .map(milestone -> (Component) PlayerGrowth.title(player.server.getAdvancements().get(milestone.advancement()))
+                        .copy().append(Component.literal(" (+" + milestone.points() + ")")))
+                .toList();
+        text.append(section("Milestones", milestoneLines, "none yet"));
 
-        text.append(Component.literal("\nTree: ").withStyle(ChatFormatting.GRAY));
-        List<ResourceLocation> taken = player.getData(GrowthAttachments.GROWTH).takenInOrder();
-        if (taken.isEmpty()) {
-            text.append(Component.literal("nothing taken").withStyle(ChatFormatting.DARK_GRAY));
-        }
-        for (int i = 0; i < taken.size(); i++) {
-            GrowthNode node = nodes.get(taken.get(i));
-            text.append(i == 0 ? Component.empty() : Component.literal(", "))
-                    .append(node == null ? Component.literal(taken.get(i).toString()) : node.displayName(taken.get(i)));
-        }
+        List<Component> nodeLines = player.getData(GrowthAttachments.GROWTH).takenInOrder().stream()
+                .map(id -> nodes.get(id) == null ? Component.literal(id.toString()) : nodes.get(id).displayName(id))
+                .toList();
+        text.append(section("Tree", nodeLines, "nothing taken"));
 
-        text.append(Component.literal("\nStats: ").withStyle(ChatFormatting.GRAY));
-        Map<GrowthStat.StatKey, Double> totals = PlayerGrowth.totals(player);
-        if (totals.isEmpty()) {
-            text.append(Component.literal("none").withStyle(ChatFormatting.DARK_GRAY));
-        }
-        int i = 0;
-        for (Map.Entry<GrowthStat.StatKey, Double> total : totals.entrySet()) {
-            text.append(i++ == 0 ? Component.empty() : Component.literal(", "))
-                    .append(statLine(total.getKey(), total.getValue()));
-        }
+        List<Component> statLines = PlayerGrowth.totals(player).entrySet().stream()
+                .map(total -> statLine(total.getKey(), total.getValue()))
+                .toList();
+        text.append(section("Stats", statLines, "none"));
 
         source.sendSuccess(() -> text, false);
         return earned - spent;
+    }
+
+    /** A new line reading {@code Label: a, b, c}, or the {@code none} text in grey when there is nothing to list. */
+    private static Component section(String label, List<Component> items, String none) {
+        MutableComponent line = Component.literal("\n" + label + ": ").withStyle(ChatFormatting.GRAY);
+        if (items.isEmpty()) {
+            return line.append(Component.literal(none).withStyle(ChatFormatting.DARK_GRAY));
+        }
+        for (int i = 0; i < items.size(); i++) {
+            line.append(i == 0 ? Component.empty() : Component.literal(", ")).append(items.get(i));
+        }
+        return line;
     }
 
     private static Component statLine(GrowthStat.StatKey key, double amount) {

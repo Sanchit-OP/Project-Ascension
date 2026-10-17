@@ -1,5 +1,7 @@
 package com.ascension.combat.internal.growth;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +39,9 @@ final class GrowthDataCheck {
         }
 
         var nodes = PlayerGrowth.nodes(server);
+        Map<ResourceLocation, List<ResourceLocation>> links = new LinkedHashMap<>();
         for (Map.Entry<ResourceKey<GrowthNode>, GrowthNode> entry : nodes.entrySet()) {
+            links.put(entry.getKey().location(), entry.getValue().links());
             ResourceLocation id = entry.getKey().location();
             for (ResourceLocation link : entry.getValue().links()) {
                 if (!nodes.containsKey(link)) {
@@ -46,6 +50,9 @@ final class GrowthDataCheck {
             }
             entry.getValue().stats().forEach(stat -> checkAttribute("node", id, stat));
         }
+
+        GrowthRules.unreachable(links).forEach(id ->
+                LOGGER.warn("Growth node {} can never be taken: no chain of links reaches the centre", id));
 
         LOGGER.info("Growth: {} milestones worth {} points, {} tree nodes",
                 PlayerGrowth.milestones(server).size(), points, nodes.size());

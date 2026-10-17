@@ -2,6 +2,7 @@ package com.ascension.combat.internal.growth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,6 +78,34 @@ class GrowthRulesTest {
         assertEquals(GrowthRules.RespecCheck.IN_COMBAT, GrowthRules.checkRespec(3, false, true, 30));
         assertEquals(GrowthRules.RespecCheck.NOT_ENOUGH_LEVELS, GrowthRules.checkRespec(3, false, false, 19));
         assertEquals(GrowthRules.RespecCheck.OK, GrowthRules.checkRespec(3, false, false, 20));
+    }
+
+    @Test
+    void aForkOfTwoIsReachableThroughEitherSide() {
+        Map<ResourceLocation, List<ResourceLocation>> tree = new LinkedHashMap<>();
+        tree.put(id("a"), List.of());
+        tree.put(id("left"), List.of(id("a")));
+        tree.put(id("right"), List.of(id("a")));
+        tree.put(id("join"), List.of(id("left"), id("right")));
+        assertEquals(Set.of(), GrowthRules.unreachable(tree));
+    }
+
+    @Test
+    void nodesThatOnlyLinkToEachOtherCanNeverBeTaken() {
+        Map<ResourceLocation, List<ResourceLocation>> tree = new LinkedHashMap<>();
+        tree.put(id("a"), List.of());
+        tree.put(id("x"), List.of(id("y")));
+        tree.put(id("y"), List.of(id("x")));
+        assertEquals(Set.of(id("x"), id("y")), GrowthRules.unreachable(tree));
+    }
+
+    @Test
+    void aLinkToANodeThatDoesNotExistLeadsNowhere() {
+        Map<ResourceLocation, List<ResourceLocation>> tree = new LinkedHashMap<>();
+        tree.put(id("a"), List.of());
+        tree.put(id("typo"), List.of(id("missing")));
+        tree.put(id("after_typo"), List.of(id("typo")));
+        assertEquals(Set.of(id("typo"), id("after_typo")), GrowthRules.unreachable(tree));
     }
 
     @Test

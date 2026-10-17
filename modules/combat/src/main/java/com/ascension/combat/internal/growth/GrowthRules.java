@@ -1,6 +1,8 @@
 package com.ascension.combat.internal.growth;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +86,31 @@ public final class GrowthRules {
     /** Points spent on the taken nodes the data still defines; a node it dropped costs nothing. */
     public static int spent(Set<ResourceLocation> taken, Predicate<ResourceLocation> exists) {
         return (int) taken.stream().filter(exists).count() * NODE_COST;
+    }
+
+    /**
+     * The nodes that can never be taken, given each node's links: a node is reachable if it touches
+     * the centre (no links) or any one of its links is reachable, which is the rule {@link #check}
+     * applies one step at a time. A link to a node that does not exist leads nowhere. A fork of
+     * two nodes that link only to each other is the usual way to get one, and a typo in a link is
+     * the other: neither would show until a player tried to take the node.
+     */
+    public static Set<ResourceLocation> unreachable(Map<ResourceLocation, List<ResourceLocation>> linksByNode) {
+        Set<ResourceLocation> reachable = new HashSet<>();
+        boolean grew = true;
+        while (grew) {
+            grew = false;
+            for (Map.Entry<ResourceLocation, List<ResourceLocation>> node : linksByNode.entrySet()) {
+                if (!reachable.contains(node.getKey())
+                        && (node.getValue().isEmpty() || node.getValue().stream().anyMatch(reachable::contains))) {
+                    reachable.add(node.getKey());
+                    grew = true;
+                }
+            }
+        }
+        Set<ResourceLocation> never = new LinkedHashSet<>(linksByNode.keySet());
+        never.removeAll(reachable);
+        return never;
     }
 
     /** Adds stats up per attribute and operation, which is how they are applied: one modifier each. */
