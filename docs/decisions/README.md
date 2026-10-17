@@ -45,4 +45,5 @@ forgets it.
 | [0016](0016-mixin-in-ascension-compat-sable.md) | One mixin in `ascension-compat-sable`: ship slots unique across dimensions | Accepted |
 | [0017](0017-planet-3-is-the-nether-opened-to-the-sky.md) | Planet 3 is the real Nether, opened to the sky | Accepted |
 | [0018](0018-no-world-is-required.md) | No world is required; players go where they choose | Accepted |
+| [0019](0019-item-stats-are-data.md) | Item stats are data, for every item from every mod | Accepted |
 | [0020](0020-rune-pages.md) | Rune pages: three keystones, two rows, shards, a cost to change, and runes as data | Accepted |

@@ -1,0 +1,10 @@
+{
+  "_comment": "Stats each mob type gets on top of its own attributes, by tier tag (tags/entity_type/tier/) or by type. A type's own entry beats its tier's, one stat at a time. Armor always outranks Magic Resist within a tier: physical damage is the common case (combat-api.md section 3a). Placeholders Sanchit tunes by playing. docs/technical/item-stats.md section 9.",
+  "values": {
+    "#ascension_combat:tier/swarm": { "armor": 0, "magic_resist": 0 },
+    "#ascension_combat:tier/light": { "armor": 10, "magic_resist": 0 },
+    "#ascension_combat:tier/medium": { "armor": 25, "magic_resist": 10 },
+    "#ascension_combat:tier/heavy": { "armor": 50, "magic_resist": 20 },
+    "#ascension_combat:tier/boss": { "armor": 100, "magic_resist": 40 }
+  }
+}

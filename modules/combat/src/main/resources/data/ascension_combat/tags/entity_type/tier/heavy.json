@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:ravager",
+    "minecraft:elder_guardian",
+    "minecraft:iron_golem"
+  ]
+}

@@ -1,7 +1,9 @@
 package com.ascension.combat.internal;
 
 import com.ascension.combat.AscensionCombat;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -40,15 +42,15 @@ public final class CombatContent {
      * {@link com.ascension.combat.internal.weapons.VeigosBladeEffects}, which checks for this
      * exact item in the attacker's main hand.
      *
-     * <p>Base stats still borrow {@code Tiers.DIAMOND} as a stand-in &mdash; combat-api.md
-     * section 3 is explicit that every number here is a placeholder Sanchit will tune by playing,
-     * not by spec. The item uses a custom cuboid model with a 64x64 teal metal/leather atlas.
+     * <p>Its attack damage and speed are data, in {@code data_maps/item/item_stats.json}, like
+     * every number on the items here (docs/technical/item-stats.md, 2026-10-16); {@code
+     * Tiers.DIAMOND} gives only durability, enchantability and repair. Every number is a
+     * placeholder Sanchit tunes by playing (combat-api.md section 3). The item uses a custom cuboid model with a 64x64 teal metal/leather atlas.
      * Its editable Blockbench source lives in design/weapons/viegos-blade.
      */
     public static final Supplier<Item> VEIGOS_BLADE = ITEMS.register(
             "veigos_blade",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3.0f, -2.4f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Second out the door, and half of the anti-tank family with {@link #VEIGOS_BLADE}
@@ -61,8 +63,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> DARIUS_AXE = ITEMS.register(
             "darius_axe",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 4.0f, -3.0f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Third out the door (combat-api.md section 6). No ability haste in this game, so the
@@ -75,8 +76,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> SPEAR_OF_SHOJIN = ITEMS.register(
             "spear_of_shojin",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3.0f, -2.6f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Fourth out the door, and the first ranged weapon (combat-api.md section 6). A plain
@@ -104,8 +104,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> DIVINE_SUNDERER = ITEMS.register(
             "divine_sunderer",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3.0f, -2.8f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Sixth out the door, and the second weapon to deal magic damage after {@link
@@ -119,8 +118,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> DARKEN_BLADE = ITEMS.register(
             "darken_blade",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3.0f, -2.6f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Seventh out the door, and the third weapon to deal magic damage after
@@ -134,8 +132,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> RAGEFANG = ITEMS.register(
             "ragefang",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 2.0f, -2.0f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Eighth out the door (combat-api.md section 6), and `ORIGINAL` &mdash; no direct League
@@ -151,8 +148,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> ENDLESS_HUNGER = ITEMS.register(
             "endless_hunger",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 6.0f, 0.0f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Ninth out the door (combat-api.md section 6). Passive: flat armor penetration (lethality) on
@@ -167,8 +163,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> WRAITHBLADE = ITEMS.register(
             "wraithblade",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()
-                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 3.0f, -2.4f))));
+            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
 
     /**
      * Tenth out the door, and the second ranged weapon after {@link #MORTAL_REMINDER}
@@ -213,10 +208,8 @@ public final class CombatContent {
      * 4), the first item in the catalog that does &mdash; see
      * {@link com.ascension.combat.internal.mechanics.CombatStateTracking}, stood up alongside this
      * item since it's the first real consumer. Applied by
-     * {@link com.ascension.combat.internal.armor.ProteanMaskEffects}. Its material is {@link
-     * ArmorMaterials#DIAMOND} in every number &mdash; same placeholder reasoning every weapon in
-     * this catalog uses {@link Tiers#DIAMOND} for &mdash; but its own on the body: see {@link
-     * #armor}.
+     * {@link com.ascension.combat.internal.armor.ProteanMaskEffects}. Its material gives no
+     * vanilla armour and is its own on the body: see {@link #armor}.
      */
     public static final Supplier<Item> PROTEAN_MASK = ITEMS.register(
             "protean_mask",
@@ -306,8 +299,8 @@ public final class CombatContent {
 
     /**
      * Nineteenth out the door, and the first of six Boots (combat-api.md section 6): flat magic
-     * resist while worn. Applied by {@link com.ascension.combat.internal.armor.BootStats} as a
-     * {@link com.ascension.combat.internal.armor.StatBoots} rule, same as the next three. Same
+     * resist while worn. Like all six, its one stat is data ({@code item_stats.json}), applied as
+     * the boots go on rather than re-applied every tick, as it was until 2026-10-16. Same
      * placeholder material reasoning as {@link #PROTEAN_MASK}.
      */
     public static final Supplier<Item> MERCURY_TREADS = ITEMS.register(
@@ -332,11 +325,10 @@ public final class CombatContent {
     /**
      * Twenty-third out the door, {@code ORIGINAL}. Armor and magic penetration while worn.
      * Originally split across two files (an armor-only reduction modifier plus a
-     * {@code MagicDamage}-specific special case); since 2026-09-20 it's one plain {@link
-     * com.ascension.combat.internal.armor.BootStats} contribution to {@link
-     * com.ascension.combat.internal.CombatAttributes#PENETRATION_PERCENT}, a single stat now read
-     * centrally by both {@link com.ascension.combat.internal.mechanics.PhysicalDamage} and {@link
-     * com.ascension.combat.internal.mechanics.MagicDamage}.
+     * {@code MagicDamage}-specific special case); since 2026-09-20 two plain stats, Armor and
+     * Magic Penetration, read centrally by {@link
+     * com.ascension.combat.internal.mechanics.PhysicalDamage} and {@link
+     * com.ascension.combat.internal.mechanics.MagicDamage}, and data since 2026-10-16.
      */
     public static final Supplier<Item> WIZARDS_AGONY = ITEMS.register(
             "wizards_agony",
@@ -345,9 +337,7 @@ public final class CombatContent {
     /**
      * Twenty-fourth out the door, and the sixth and last Boots (combat-api.md section 6),
      * {@code ORIGINAL}. Omnivamp while worn, same shape as {@link #ENDLESS_HUNGER}'s own but a
-     * flat contribution rather than a dynamic one. A plain {@link
-     * com.ascension.combat.internal.armor.BootStats} rule since 2026-09-20, once {@link
-     * com.ascension.combat.internal.CombatAttributes#OMNIVAMP} became a real attribute.
+     * flat contribution rather than a dynamic one: one line of data since 2026-10-16.
      */
     public static final Supplier<Item> TASTED_BLOOD = ITEMS.register(
             "tasted_blood",
@@ -402,21 +392,30 @@ public final class CombatContent {
     }
 
     /**
-     * An armor item with its own material: {@link ArmorMaterials#DIAMOND}'s numbers, copied
-     * rather than restated so no stat can drift from where it was, and its own look on the body,
+     * An armor item with its own material and its own look on the body,
      * {@code textures/models/armor/<id>_layer_1.png} (helmets, chestplates, boots) or
      * {@code _layer_2.png} (leggings), drawn by tools/generate-combat-art.py. One material per
      * item because each is its own League item, not one piece of a set. The material registers
      * now, with the class; the item reads it lazily ({@link ArmorItem} memoizes its modifiers),
      * so registry event order doesn't matter.
+     *
+     * <p>No vanilla armour or toughness (2026-10-15): vanilla armour now converts into combat's
+     * stats (docs/technical/item-stats.md section 5), and borrowing diamond's would have handed
+     * every piece here diamond's Armor, Magic Resist and Health on top of its own. Its stats come
+     * from its effects class, and later from data. Enchantability, sound and repair stay
+     * {@link ArmorMaterials#DIAMOND}'s.
      */
     private static Supplier<Item> armor(String id, ArmorItem.Type type) {
         Holder<ArmorMaterial> material = ARMOR_MATERIALS.register(id, () -> {
             ArmorMaterial diamond = ArmorMaterials.DIAMOND.value();
-            return new ArmorMaterial(diamond.defense(), diamond.enchantmentValue(), diamond.equipSound(),
+            Map<ArmorItem.Type, Integer> noDefense = new EnumMap<>(ArmorItem.Type.class);
+            for (ArmorItem.Type each : ArmorItem.Type.values()) {
+                noDefense.put(each, 0);
+            }
+            return new ArmorMaterial(noDefense, diamond.enchantmentValue(), diamond.equipSound(),
                     diamond.repairIngredient(),
                     List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, id))),
-                    diamond.toughness(), diamond.knockbackResistance());
+                    0.0f, 0.0f);
         });
         return () -> new ArmorItem(material, type, new Item.Properties());
     }

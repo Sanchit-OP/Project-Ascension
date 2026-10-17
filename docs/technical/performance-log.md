@@ -107,6 +107,39 @@ Flat across cycles is healthy. Climbing means something is holding a `Level`, `P
 
 ---
 
+## Item stats - the stat system's heap and tick reading
+
+**Date:** 2026-10-17
+**Configuration:** dedicated server, no player online, the dev stack (`runDevServer`), world `stats-test`
+**Method:** `jcmd <pid> GC.class_histogram` (it runs a full GC first, so these are live objects),
+everything under `com.ascension`; average tick from `/tick query`. 300 Zombies with netherite
+armour and a diamond sword were summoned (every stat modifier and the mob-tier stats applied to
+each), then killed. Script: the same shape as the M1.8 reading, no Spark.
+
+| Moment | Our instances | Our bytes | Avg tick |
+|---|---|---|---|
+| idle, no mobs | 6,295 | 195,048 | 2.2 ms |
+| 300 geared mobs | 6,297 | 195,080 | 4.3 ms |
+| mobs killed | 6,299 | 195,112 | 3.0 ms |
+| a second quiet reading | 6,299 | 195,112 | 2.9 ms |
+
+**The stat system holds almost nothing, and what it holds does not grow with mobs.** Its own
+classes are `ItemStats` (19 instances, 1,064 bytes: one per data-map entry), `CombatStat` (10, one
+per stat), `StatMap` (5, one per mob tier). Three hundred geared mobs added 2 instances (32 bytes)
+across all of `com.ascension`, and killing them added 2 more, both of which stay put on the second
+quiet reading. That is the shape ADR-0007 rule 1 asks for: modifiers live on the entities
+themselves, and nothing of ours keeps a mob, player or level.
+
+Almost all of the 6,29x instances are `ascension_worlds` gateway-frame data (5,544 `GatewayFrame$Cell`
+at 177 KB), loaded once and steady; they are not the stat system's.
+
+**Tick time:** 2.2 to 4.3 ms with 300 extra entities in the world, 3.0 once they are gone and
+the forced chunks are released. That is the cost of 300 Zombies existing, not of the stat system:
+it has no per-tick listener (vanilla re-applies item modifiers only when a slot changes, and
+mob stats are applied once on join and again on `/reload`). It has not been measured with players,
+so this is not the two-client reading; the joined-and-left leak cycle (three rejoins) is still to do
+with a client.
+
 ## M2.6 — Dimension transition reading (Earth ↔ Moon round trip)
 
 **Date:** 2026-09-06
