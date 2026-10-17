@@ -1,0 +1,21 @@
+{
+  "arm": "power",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.heavy_hand"
+  },
+  "position": [
+    -2.121,
+    -2.121
+  ],
+  "links": [
+    "ascension_combat:web/r2_nw",
+    "ascension_combat:web/r3_nw_l"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "amount": 1
+    }
+  ]
+}

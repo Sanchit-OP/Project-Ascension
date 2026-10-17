@@ -1,0 +1,31 @@
+{
+  "arm": "guard",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.ironwalk"
+  },
+  "position": [
+    0.0,
+    4.0
+  ],
+  "links": [
+    "ascension_combat:web/r3_s",
+    "ascension_combat:web/r3_s_l",
+    "ascension_combat:web/r3_s_r"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:armor",
+      "amount": 4
+    },
+    {
+      "attribute": "ascension_combat:magic_resist",
+      "amount": 4
+    },
+    {
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": 0.03,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

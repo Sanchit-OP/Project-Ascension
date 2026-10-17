@@ -47,3 +47,4 @@ forgets it.
 | [0018](0018-no-world-is-required.md) | No world is required; players go where they choose | Accepted |
 | [0019](0019-item-stats-are-data.md) | Item stats are data, for every item from every mod | Accepted |
 | [0020](0020-rune-pages.md) | Rune pages: three keystones, two rows, shards, a cost to change, and runes as data | Accepted |
+| [0021](0021-player-growth.md) | Player growth comes from milestones, kept as advancements and applied as attribute modifiers | Accepted |

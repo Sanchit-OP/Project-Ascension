@@ -1,0 +1,27 @@
+{
+  "arm": "wayfarer",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.pioneer"
+  },
+  "position": [
+    -2.828,
+    2.828
+  ],
+  "links": [
+    "ascension_combat:web/r3_sw",
+    "ascension_combat:web/r3_sw_l",
+    "ascension_combat:web/r3_sw_r"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": 0.06,
+      "operation": "add_multiplied_base"
+    },
+    {
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "amount": 2
+    }
+  ]
+}

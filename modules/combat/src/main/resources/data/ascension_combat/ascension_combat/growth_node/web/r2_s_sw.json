@@ -1,0 +1,22 @@
+{
+  "arm": "wayfarer",
+  "name": {
+    "translate": "growth.ascension_combat.node.delving"
+  },
+  "position": [
+    -0.765,
+    1.848
+  ],
+  "links": [
+    "ascension_combat:web/r3_s_r",
+    "ascension_combat:web/r3_sw_l",
+    "ascension_combat:web/r2_s"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:player.block_break_speed",
+      "amount": 0.15,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

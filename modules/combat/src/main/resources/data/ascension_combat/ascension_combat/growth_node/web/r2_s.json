@@ -1,0 +1,21 @@
+{
+  "arm": "wayfarer",
+  "name": {
+    "translate": "growth.ascension_combat.node.pace"
+  },
+  "position": [
+    0.0,
+    2.0
+  ],
+  "links": [
+    "ascension_combat:web/r1_s",
+    "ascension_combat:web/r2_se_s"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": 0.02,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

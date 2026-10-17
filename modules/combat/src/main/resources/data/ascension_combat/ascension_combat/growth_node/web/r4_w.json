@@ -1,0 +1,27 @@
+{
+  "arm": "power",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.pathbreaker"
+  },
+  "position": [
+    -4.0,
+    0.0
+  ],
+  "links": [
+    "ascension_combat:web/r3_w",
+    "ascension_combat:web/r3_w_l",
+    "ascension_combat:web/r3_w_r"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "amount": 0.75
+    },
+    {
+      "attribute": "minecraft:generic.movement_speed",
+      "amount": 0.06,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

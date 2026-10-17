@@ -1,0 +1,26 @@
+{
+  "arm": "fury",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.lifeblood"
+  },
+  "position": [
+    4.0,
+    -0.0
+  ],
+  "links": [
+    "ascension_combat:web/r3_e",
+    "ascension_combat:web/r3_e_l",
+    "ascension_combat:web/r3_e_r"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:omnivamp",
+      "amount": 0.03
+    },
+    {
+      "attribute": "minecraft:generic.max_health",
+      "amount": 4
+    }
+  ]
+}
