@@ -79,8 +79,9 @@ is in `docs/technical/item-stats.md`.
 
 ## Alternatives rejected
 
-- **Per-tick modifiers for every item (today's `StatBoots` pattern).** It costs every player every
-  tick, doesn't show in tooltips, and can't reach other mods' items without a rule per item.
+- **Per-tick modifiers for every item** (the `StatBoots` pattern, which item data replaced on
+  2026-10-16). It costs every player every tick, doesn't show in tooltips, and can't reach other
+  mods' items without a rule per item.
 - **Our own JSON reload listener instead of data maps.** We would have to rebuild what data maps
   give for free: tags, per-entry conditions, removal, and client sync. The only thing we would
   gain is merge order, and one merger class fixes that.

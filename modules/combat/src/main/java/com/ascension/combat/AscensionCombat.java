@@ -5,7 +5,6 @@ import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.armor.EdgeOfNightEffects;
 import com.ascension.combat.internal.armor.CollectorsPantsEffects;
-import com.ascension.combat.internal.armor.GargoyleStoneplateEffects;
 import com.ascension.combat.internal.armor.GuardianWingEffects;
 import com.ascension.combat.internal.armor.ProteanMaskEffects;
 import com.ascension.combat.internal.armor.RocketbeltEffects;

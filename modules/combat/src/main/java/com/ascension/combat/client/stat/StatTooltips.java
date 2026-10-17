@@ -2,6 +2,7 @@ package com.ascension.combat.client.stat;
 
 import com.ascension.combat.api.stat.CombatStat;
 import com.ascension.combat.api.stat.CombatStats;
+import com.ascension.combat.internal.stat.ItemStatModifiers;
 import com.ascension.combat.internal.stat.StatDataMaps;
 import com.ascension.combat.internal.stat.StatText;
 import java.util.ArrayList;
@@ -54,10 +55,6 @@ import org.jetbrains.annotations.Nullable;
  * recomputed per tooltip: no cache.
  */
 public final class StatTooltips {
-
-    /** What a weapon's damage and speed add to when its holder is unknown, as at game start. */
-    private static final double BARE_HAND_DAMAGE = 1.0;
-    private static final double BARE_HAND_SPEED = 4.0;
 
     private record Line(Holder<Attribute> attribute, AttributeModifier modifier) {
     }
@@ -128,9 +125,9 @@ public final class StatTooltips {
                 }
 
                 if (modifier.id().equals(Item.BASE_ATTACK_DAMAGE_ID) && is(line.attribute(), Attributes.ATTACK_DAMAGE)) {
-                    weapon.add(weaponLine(CombatStats.ATTACK_DAMAGE, modifier.amount() + base(player, Attributes.ATTACK_DAMAGE, BARE_HAND_DAMAGE)));
+                    weapon.add(weaponLine(CombatStats.ATTACK_DAMAGE, modifier.amount() + base(player, Attributes.ATTACK_DAMAGE, ItemStatModifiers.BARE_HAND_DAMAGE)));
                 } else if (modifier.id().equals(Item.BASE_ATTACK_SPEED_ID) && is(line.attribute(), Attributes.ATTACK_SPEED)) {
-                    weapon.add(weaponLine(CombatStats.ATTACK_SPEED, modifier.amount() + base(player, Attributes.ATTACK_SPEED, BARE_HAND_SPEED)));
+                    weapon.add(weaponLine(CombatStats.ATTACK_SPEED, modifier.amount() + base(player, Attributes.ATTACK_SPEED, ItemStatModifiers.BARE_HAND_SPEED)));
                 } else if (statFor(line.attribute()) != null) {
                     stats.add(line);
                 } else {
@@ -160,6 +157,7 @@ public final class StatTooltips {
         return Component.literal(StatText.value(stat, value) + " ").append(stat.displayName()).withStyle(ChatFormatting.WHITE);
     }
 
+    /** The holder's own value, or a bare hand's when the holder is unknown, as at game start. */
     private static double base(@Nullable Player player, Holder<Attribute> attribute, double fallback) {
         return player == null ? fallback : player.getAttributeBaseValue(attribute);
     }

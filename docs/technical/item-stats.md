@@ -373,8 +373,8 @@ shows the format, not a proposed number.)
 
 - **No per-tick work.** The item listener runs when a slot changes, a tooltip is drawn, or data
   reloads. Mob stats apply once per mob as it enters a world.
-  - Today eight per-tick listeners re-apply fixed stats: seven boot rules and Gargoyle Stoneplate's
-    passive. They go when our items move to data.
+  - Eight per-tick listeners used to re-apply fixed stats: seven boot rules and Gargoyle
+    Stoneplate's passive. They went in increment 5, with Wraithblade's passive Lethality.
   - Effects that really change every tick stay as they are: Sterak's HP-to-damage conversion,
     Endless Hunger, the Protean Mask's stacks.
 - **No caches and no static collections of entities.** The data lives in NeoForge's registries,
@@ -435,5 +435,12 @@ A refactor pass comes every third increment.
 - **Increment 3 is done.** One text helper (`StatText`) replaces two copies of number formatting.
   Stats got a kind (points, percent or speed), so no screen names stats one by one. Jade reads
   through `StatReader`. The old `api.CombatAttributes` is deprecated.
+- **Increment 4 is built** and waits on the client check: League-style stat lines on every item's
+  tooltip, one colour per stat (`CombatStat#color`), shared with the character sheet.
+- **Increment 5 is built** and checked on a dedicated server. Our items' numbers are data, unchanged
+  in value; the per-tick code that applied them is gone. Their stats now reach mobs that wear them.
+  The League-scaled numbers (§11 question 5) are still Sanchit's to choose, and are a data edit.
+- **Increment 6 is done.** The bare-hand numbers are defined once, leftovers from the move are
+  gone, and `StatSources` has tests.
 
 **The rune and growth sessions can read stats now**, through `StatReader` (§6).

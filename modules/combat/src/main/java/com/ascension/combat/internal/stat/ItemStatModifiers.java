@@ -47,13 +47,13 @@ import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 public final class ItemStatModifiers {
 
     /** The path every modifier this class adds starts with. */
-    public static final String ID_PATH_PREFIX = "item/";
+    private static final String ID_PATH_PREFIX = "item/";
 
-    /** A player's own Attack Damage: what a weapon's tooltip adds to its modifier. */
-    private static final double BARE_HAND_DAMAGE = 1.0;
+    /** A player's own Attack Damage: a weapon's damage, as data and tooltips write it, includes it. */
+    public static final double BARE_HAND_DAMAGE = 1.0;
 
     /** A player's own Attack Speed: a weapon's speed modifier is its speed minus this. */
-    private static final double BARE_HAND_SPEED = 4.0;
+    public static final double BARE_HAND_SPEED = 4.0;
 
     private ItemStatModifiers() {
     }
