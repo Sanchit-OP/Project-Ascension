@@ -1,0 +1,20 @@
+{
+  "arm": "wayfarer",
+  "name": {
+    "translate": "growth.ascension_combat.node.delving"
+  },
+  "position": [
+    -1,
+    5
+  ],
+  "links": [
+    "ascension_combat:wayfarer/pace_2"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:player.block_break_speed",
+      "amount": 0.15,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

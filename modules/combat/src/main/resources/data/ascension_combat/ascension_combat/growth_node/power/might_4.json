@@ -1,0 +1,19 @@
+{
+  "arm": "power",
+  "name": {
+    "translate": "growth.ascension_combat.node.might"
+  },
+  "position": [
+    -1,
+    6
+  ],
+  "links": [
+    "ascension_combat:power/heavy_hand"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "amount": 0.25
+    }
+  ]
+}

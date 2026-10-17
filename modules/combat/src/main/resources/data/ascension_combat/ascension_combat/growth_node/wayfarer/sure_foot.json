@@ -1,0 +1,21 @@
+{
+  "arm": "wayfarer",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.sure_foot"
+  },
+  "position": [
+    0,
+    7
+  ],
+  "links": [
+    "ascension_combat:wayfarer/soft_landing_1",
+    "ascension_combat:wayfarer/pace_3"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.step_height",
+      "amount": 0.4
+    }
+  ]
+}

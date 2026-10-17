@@ -1,0 +1,21 @@
+{
+  "parent": "ascension_worlds:gates/root",
+  "criteria": {
+    "lit": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:netherrack"
+    },
+    "title": {
+      "translate": "advancements.ascension_worlds.gates.the_nether.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_worlds.gates.the_nether.description"
+    },
+    "frame": "goal",
+    "announce_to_chat": false
+  }
+}

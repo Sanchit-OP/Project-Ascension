@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ascension_combat"
+    }
+  ],
+  "parent": "ascension_combat:growth/root",
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "cataclysm:ender_guardian"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:ender_eye"
+    },
+    "title": {
+      "translate": "advancements.ascension_compat_cataclysm.growth.ender_guardian.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_compat_cataclysm.growth.ender_guardian.description"
+    },
+    "frame": "challenge",
+    "announce_to_chat": false
+  }
+}

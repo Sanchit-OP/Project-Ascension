@@ -3,6 +3,8 @@ package com.ascension.worlds.internal;
 import com.ascension.worlds.internal.archive.GateGlyphs;
 import com.ascension.worlds.internal.net.GateProgressPayload;
 import java.util.List;
+import java.util.Set;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
@@ -15,6 +17,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * changes. The carved glyphs are lit to match ({@link GateGlyphs}). Both happen through
  * {@link #networkChanged}, so the hands, the pylon and the network can never disagree.
  * Event-driven; nothing here ticks.
+ *
+ * <p>Each lit gate is also an advancement, given to everyone ({@link GateAdvancements}), so other
+ * mods can read it without depending on this one.
  *
  * <p>The story's reading of the same number is the <em>mark</em> ({@code docs/lore/the-mark.md}):
  * every gate lit adds a glyph to the player's hand, which is the Observers counting the seal's
@@ -66,11 +71,14 @@ public final class GateProgress {
     public static void networkChanged(MinecraftServer server) {
         PacketDistributor.sendToAllPlayers(payload(server));
         GateGlyphs.refresh(server);
+        Set<ResourceLocation> lit = network(server).activePlanets();
+        server.getPlayerList().getPlayers().forEach(player -> GateAdvancements.award(player, lit));
     }
 
     private static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, payload(player.server));
+            GateAdvancements.award(player, network(player.server).activePlanets());
         }
     }
 
