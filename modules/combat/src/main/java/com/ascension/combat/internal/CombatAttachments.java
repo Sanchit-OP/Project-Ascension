@@ -312,61 +312,6 @@ public final class CombatAttachments {
                     .build());
 
     /**
-     * Vanguard's Conqueror's Resolve keystone (see {@code internal.rune.vanguard}): a damage/heal
-     * stack every second in combat, same shape as {@link #PROTEAN_MASK_STATE}, the mechanic's
-     * first consumer.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<CombatStackState>> CONQUERORS_RESOLVE_STATE = TYPES.register(
-            "conquerors_resolve_state",
-            () -> AttachmentType.builder(CombatStackState::new).build());
-
-    /**
-     * Relentless Strikes' (Vanguard minor) hit-stack, attached to the wielder: builds per hit
-     * landed, decays if the next hit doesn't come in time, same shape as {@link #ARMOR_SHRED}.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<StackingChargeState>> RELENTLESS_STRIKES_STACKS = TYPES.register(
-            "relentless_strikes_stacks",
-            () -> AttachmentType.builder(StackingChargeState::new).build());
-
-    /**
-     * Second Wind's (Vanguard minor) per-tick heal cooldown, attached to the wielder &mdash;
-     * reuses {@link DurationState} as a cooldown gate (skip while {@code isActive}, act and reset
-     * when it isn't) rather than a burst window, the same reuse
-     * {@link com.ascension.combat.internal.armor.RocketbeltEffects} makes of it for a delay timer
-     * instead of an active-window.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<DurationState>> SECOND_WIND_COOLDOWN = TYPES.register(
-            "second_wind_cooldown",
-            () -> AttachmentType.builder(DurationState::new).build());
-
-    /**
-     * Killing Surge's (Vanguard minor) post-kill attack-speed window, attached to the wielder,
-     * same shape as {@link #EDGE_OF_NIGHT_BURST}.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<DurationState>> KILLING_SURGE_BURST = TYPES.register(
-            "killing_surge_burst",
-            () -> AttachmentType.builder(DurationState::new).build());
-
-    /**
-     * Momentum's (Vanguard minor) chained-hit stack, attached to the wielder: builds per hit
-     * landed within the window, decays like {@link #RELENTLESS_STRIKES_STACKS}, scales the
-     * omnivamp-shaped heal on each hit while active.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<StackingChargeState>> MOMENTUM_STACKS = TYPES.register(
-            "momentum_stacks",
-            () -> AttachmentType.builder(StackingChargeState::new).build());
-
-    /**
      * Grievous Wounds' real heal-block gate, attached to the target carrying it. Not the vanilla
      * {@code MobEffectInstance} {@link CombatMobEffects#GRIEVOUS_WOUNDS} still applies alongside
      * this for the status icon &mdash; that effect is cosmetic now, because {@code addEffect} is

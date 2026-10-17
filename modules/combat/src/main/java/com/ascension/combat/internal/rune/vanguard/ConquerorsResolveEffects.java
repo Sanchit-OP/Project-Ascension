@@ -1,23 +1,23 @@
 package com.ascension.combat.internal.rune.vanguard;
 
 import com.ascension.combat.AscensionCombat;
-import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.rune.RuneAttachments;
 import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.combat.internal.rune.RuneDefinition;
+import com.ascension.combat.internal.rune.RuneModifiers;
 import com.ascension.combat.internal.rune.Runes;
 import com.ascension.core.api.CombatStateRegistry;
 import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * Vanguard's keystone (docs/technical/combat-api.md section 7): a stack every second in combat,
+ * Vanguard's keystone (docs/technical/rune-system.md section 4.1): a stack every second in combat,
  * ramping bonus attack damage and a slice of lifesteal, capping out rather than bursting and
  * resetting &mdash; a deliberate fork of League's Conqueror, and meant to read as the mechanical
  * opposite of whatever Reaver's own keystone turns out to be once that path exists. Reuses {@link
@@ -64,7 +64,7 @@ public final class ConquerorsResolveEffects {
         }
 
         RuneDefinition values = rune.get();
-        CombatStackState state = player.getData(CombatAttachments.CONQUERORS_RESOLVE_STATE);
+        CombatStackState state = player.getData(RuneAttachments.CONQUERORS_RESOLVE);
         long now = player.level().getGameTime();
         if (state.tryGainStack(now, values.count("max_stacks", 10), values.ticks("stack_seconds", 1.0))) {
             applyModifier(player, state.stacks() * values.value("attack_damage_per_stack", 0.5));
@@ -73,7 +73,7 @@ public final class ConquerorsResolveEffects {
     }
 
     private static void clearStacks(ServerPlayer player) {
-        CombatStackState state = player.getData(CombatAttachments.CONQUERORS_RESOLVE_STATE);
+        CombatStackState state = player.getData(RuneAttachments.CONQUERORS_RESOLVE);
         if (state.stacks() == 0) {
             return;
         }
@@ -84,32 +84,12 @@ public final class ConquerorsResolveEffects {
     }
 
     private static void applyModifier(ServerPlayer player, double amount) {
-        AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        if (attackDamage == null) {
-            return;
-        }
-
-        attackDamage.removeModifier(ATTACK_DAMAGE_MODIFIER_ID);
-        if (amount <= 0) {
-            return;
-        }
-
-        attackDamage.addTransientModifier(new AttributeModifier(
-                ATTACK_DAMAGE_MODIFIER_ID, amount, AttributeModifier.Operation.ADD_VALUE));
+        RuneModifiers.set(player, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_MODIFIER_ID, amount,
+                AttributeModifier.Operation.ADD_VALUE);
     }
 
     private static void applyOmnivamp(ServerPlayer player, double amount) {
-        AttributeInstance omnivamp = player.getAttribute(CombatAttributes.OMNIVAMP);
-        if (omnivamp == null) {
-            return;
-        }
-
-        omnivamp.removeModifier(OMNIVAMP_MODIFIER_ID);
-        if (amount <= 0) {
-            return;
-        }
-
-        omnivamp.addTransientModifier(new AttributeModifier(
-                OMNIVAMP_MODIFIER_ID, amount, AttributeModifier.Operation.ADD_VALUE));
+        RuneModifiers.set(player, CombatAttributes.OMNIVAMP, OMNIVAMP_MODIFIER_ID, amount,
+                AttributeModifier.Operation.ADD_VALUE);
     }
 }

@@ -1,6 +1,6 @@
 package com.ascension.combat.internal.rune.vanguard;
 
-import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.rune.RuneAttachments;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.rune.RuneDefinition;
 import com.ascension.combat.internal.rune.Runes;
@@ -12,7 +12,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * Vanguard's Second Wind minor (docs/technical/combat-api.md section 7): passive regeneration
+ * Vanguard's Second Wind minor (docs/technical/rune-system.md section 4.1): passive regeneration
  * while in combat and below half health &mdash; the path's sustain identity showing up on a minor,
  * not only the keystone.
  *
@@ -53,7 +53,7 @@ public final class SecondWindEffects {
             return;
         }
 
-        DurationState cooldown = player.getData(CombatAttachments.SECOND_WIND_COOLDOWN);
+        DurationState cooldown = player.getData(RuneAttachments.SECOND_WIND_COOLDOWN);
         long now = player.level().getGameTime();
         if (cooldown.isActive(now)) {
             return;

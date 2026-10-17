@@ -1,6 +1,6 @@
 package com.ascension.combat.internal.rune.vanguard;
 
-import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.rune.RuneAttachments;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
 import com.ascension.combat.internal.rune.RuneDefinition;
 import com.ascension.combat.internal.rune.Runes;
@@ -13,7 +13,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 /**
- * Vanguard's Relentless Strikes minor (docs/technical/combat-api.md section 7): every hit builds
+ * Vanguard's Relentless Strikes minor (docs/technical/rune-system.md section 4.1): every hit builds
  * a stack that decays if the next hit doesn't land in time, same shape as Darius's Axe's shred
  * ({@link StackingChargeState}) except the stack lives on the wielder rather than the target, and
  * its payoff is bonus physical damage scaling with the current stack instead of a debuff.
@@ -56,7 +56,7 @@ public final class RelentlessStrikesEffects {
             return;
         }
 
-        StackingChargeState state = attacker.getData(CombatAttachments.RELENTLESS_STRIKES_STACKS);
+        StackingChargeState state = attacker.getData(RuneAttachments.RELENTLESS_STRIKES);
         long now = serverLevel.getGameTime();
         if (state.expiresAtGameTime() <= now) {
             state.clear();

@@ -1,14 +1,14 @@
 package com.ascension.combat.internal.rune.vanguard;
 
 import com.ascension.combat.AscensionCombat;
-import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.rune.RuneAttachments;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.rune.RuneDefinition;
+import com.ascension.combat.internal.rune.RuneModifiers;
 import com.ascension.combat.internal.rune.Runes;
 import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.IEventBus;
@@ -16,7 +16,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * Vanguard's Killing Surge minor (docs/technical/combat-api.md section 7): a kill grants a short
+ * Vanguard's Killing Surge minor (docs/technical/rune-system.md section 4.1): a kill grants a short
  * attack-speed burst. Same burst-window shape as Edge of Night's post-absorb burst ({@link
  * DurationState} set on the triggering event, an {@link AttributeModifier} applied and removed
  * every player tick based on whether the window is still active).
@@ -49,7 +49,7 @@ public final class KillingSurgeEffects {
             return;
         }
 
-        killer.getData(CombatAttachments.KILLING_SURGE_BURST)
+        killer.getData(RuneAttachments.KILLING_SURGE_BURST)
                 .activateUntil(killer.level().getGameTime() + rune.get().ticks("seconds", 3.0));
     }
 
@@ -59,24 +59,14 @@ public final class KillingSurgeEffects {
         }
 
         double bonus = 0.0;
-        if (player.getData(CombatAttachments.KILLING_SURGE_BURST).isActive(player.level().getGameTime())) {
+        if (player.getData(RuneAttachments.KILLING_SURGE_BURST).isActive(player.level().getGameTime())) {
             bonus = Runes.active(player, ID).map(rune -> rune.value("attack_speed", 0.2)).orElse(0.0);
         }
         applyModifier(player, bonus);
     }
 
     private static void applyModifier(ServerPlayer player, double bonus) {
-        AttributeInstance attackSpeed = player.getAttribute(Attributes.ATTACK_SPEED);
-        if (attackSpeed == null) {
-            return;
-        }
-
-        attackSpeed.removeModifier(ATTACK_SPEED_MODIFIER_ID);
-        if (bonus <= 0.0) {
-            return;
-        }
-
-        attackSpeed.addTransientModifier(new AttributeModifier(
-                ATTACK_SPEED_MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        RuneModifiers.set(player, Attributes.ATTACK_SPEED, ATTACK_SPEED_MODIFIER_ID, bonus,
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 }
