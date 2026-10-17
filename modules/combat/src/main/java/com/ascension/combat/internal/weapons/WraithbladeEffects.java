@@ -2,6 +2,7 @@ package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.Blink;
@@ -78,7 +79,7 @@ public final class WraithbladeEffects {
         long now = player.level().getGameTime();
         player.getData(CombatAttachments.WRAITHBLADE_SPEED_BOOST)
                 .activateUntil(now + SPEED_BOOST_DURATION_TICKS);
-        player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(stack.getItem(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {

@@ -33,10 +33,26 @@ public final class Shield {
     private Shield() {
     }
 
-    /** Grants {@code amount} of shield, never lowering whatever the entity already has. */
+    /** Makes the shields an entity is granted stronger or weaker; Revitalize is the first. */
+    @FunctionalInterface
+    public interface Booster {
+        float scale(LivingEntity entity, float amount);
+    }
+
+    private static final java.util.List<Booster> BOOSTERS = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    public static void addBooster(Booster booster) {
+        BOOSTERS.add(booster);
+    }
+
+    /** Grants {@code amount} of shield (after boosters), never lowering whatever the entity already has. */
     public static void grant(LivingEntity entity, float amount) {
         ensureCeiling(entity);
-        entity.setAbsorptionAmount(Math.max(entity.getAbsorptionAmount(), amount));
+        float scaled = amount;
+        for (Booster booster : BOOSTERS) {
+            scaled = booster.scale(entity, scaled);
+        }
+        entity.setAbsorptionAmount(Math.max(entity.getAbsorptionAmount(), scaled));
     }
 
     private static void ensureCeiling(LivingEntity entity) {

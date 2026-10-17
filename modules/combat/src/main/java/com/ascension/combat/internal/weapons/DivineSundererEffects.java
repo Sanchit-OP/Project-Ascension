@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.MagicDamage;
 import net.minecraft.server.level.ServerPlayer;
@@ -67,7 +68,7 @@ public final class DivineSundererEffects {
         }
 
         player.getData(CombatAttachments.DIVINE_SUNDERER_PRIMED).arm();
-        player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(stack.getItem(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }
 
     private static void onIncomingDamage(LivingIncomingDamageEvent event) {

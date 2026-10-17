@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.armor;
 
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.Stasis;
@@ -49,7 +50,7 @@ public final class ZoniasHourglassEffects {
         player.getData(CombatAttachments.ZONIAS_HOURGLASS_STASIS).activateUntil(now + STASIS_DURATION_TICKS);
         Stasis.enter(player);
         Stasis.syncToClient(player, true);
-        player.getCooldowns().addCooldown(CombatContent.ZONIAS_HOURGLASS.get(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(CombatContent.ZONIAS_HOURGLASS.get(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {

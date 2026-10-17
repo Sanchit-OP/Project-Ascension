@@ -4,7 +4,8 @@ import java.util.UUID;
 
 /**
  * Cadence's bookkeeping for one attacker: how many fully charged hits have landed on one enemy
- * inside the window, and which swing was fully charged (docs/technical/rune-system.md section 4.1).
+ * inside the window (docs/technical/rune-system.md section 4.1). Which swing was fully charged is
+ * {@link com.ascension.combat.internal.rune.SwingMarks}.
  *
  * <p>Pure counting, no entity and no world: an enemy is held by its {@link UUID}, and time is a
  * game tick passed in, so the rules are unit-tested ({@code CadenceStateTest}) and nothing here
@@ -12,27 +13,9 @@ import java.util.UUID;
  */
 public final class CadenceState {
 
-    private UUID chargedTarget;
-    private long chargedAt = -1L;
-
     private UUID target;
     private int hits;
     private long windowEnds;
-
-    /**
-     * Notes that this tick's swing at {@code target} was fully charged. A melee swing's charge is
-     * only known at the start of the attack (the damage event comes after the cooldown has reset),
-     * so the attack event records it and the damage event asks {@link #wasChargedSwing}.
-     */
-    public void markChargedSwing(UUID target, long now) {
-        this.chargedTarget = target;
-        this.chargedAt = now;
-    }
-
-    /** Whether the swing that hit {@code target} this tick was the fully charged one marked. */
-    public boolean wasChargedSwing(UUID target, long now) {
-        return chargedAt == now && target.equals(chargedTarget);
-    }
 
     /**
      * Counts a fully charged hit on {@code target}. The window opens with the first hit and all
