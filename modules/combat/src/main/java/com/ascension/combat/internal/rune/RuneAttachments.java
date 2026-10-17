@@ -47,7 +47,7 @@ public final class RuneAttachments {
             "swing",
             () -> AttachmentType.builder(SwingMarks::new).build());
 
-    /** Deadeye's headshot bonus on an arrow in flight: set when it hits an enemy, read by the damage that follows. */
+    /** Deadeye's note on the shooter: which enemy the latest shot hit in the head, and when. */
     public static final Supplier<AttachmentType<HeadshotMark>> HEADSHOT = TYPES.register(
             "headshot",
             () -> AttachmentType.builder(HeadshotMark::new).build());
@@ -55,6 +55,11 @@ public final class RuneAttachments {
     /** Drop In's window, on the player: until when they cut through armour. */
     public static final Supplier<AttachmentType<DurationState>> DROP_IN = TYPES.register(
             "drop_in",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /** Vanish's window, on the player: until when mobs cannot pick them out. */
+    public static final Supplier<AttachmentType<DurationState>> VANISH_WINDOW = TYPES.register(
+            "vanish_window",
             () -> AttachmentType.builder(DurationState::new).build());
 
     /** Vanish's cooldown, on the player. */

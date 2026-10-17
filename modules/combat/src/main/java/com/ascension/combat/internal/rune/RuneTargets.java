@@ -11,7 +11,7 @@ import net.minecraft.world.phys.AABB;
 
 /**
  * Who a rune's area damage may hit (docs/technical/rune-system.md section 4): hostile mobs, and any
- * other mob that is fighting the player, but never another player, a tamed pet, or whatever the
+ * other mob that is hunting the player (a provoked wolf or golem, not a cow that was merely hit), but never another player, a tamed pet, or whatever the
  * player merely stands near. The runes that burst outward (Starfall, Arc, Brace) share this so a
  * villager or a wolf is never collateral.
  *
@@ -25,7 +25,15 @@ public final class RuneTargets {
 
     /** Whether {@code candidate} is fair game for {@code attacker}'s area damage. */
     public static boolean isFoe(LivingEntity attacker, LivingEntity candidate) {
-        if (candidate == attacker || !candidate.isAlive() || candidate instanceof Player) {
+        return candidate.isAlive() && wasFoe(attacker, candidate);
+    }
+
+    /**
+     * Like {@link #isFoe} without asking whether it is still alive, for the moment it dies: a
+     * kill that a rune reacts to must have been an enemy, not a cow.
+     */
+    public static boolean wasFoe(LivingEntity attacker, LivingEntity candidate) {
+        if (candidate == attacker || candidate instanceof Player) {
             return false;
         }
 
@@ -33,8 +41,7 @@ public final class RuneTargets {
             return false;
         }
 
-        return candidate instanceof Enemy
-                || candidate instanceof Mob mob && (mob.getTarget() == attacker || mob.getLastHurtByMob() == attacker);
+        return candidate instanceof Enemy || candidate instanceof Mob mob && mob.getTarget() == attacker;
     }
 
     /** Every foe of {@code attacker} inside {@code box}. */

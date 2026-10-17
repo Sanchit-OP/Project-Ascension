@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 /** The arithmetic inside Reaver's runes (docs/technical/rune-system.md section 4.2). Pure numbers (ADR-0008). */
@@ -16,16 +17,32 @@ class ReaverMathTest {
     }
 
     @Test
-    void aHeadshotIsTheBaseUpToTheStartDistance() {
-        assertEquals(0.5f, DeadeyeEffects.bonus(4.0, 0.5, 0.02, 10.0, 1.0), 1e-6);
-        assertEquals(0.5f, DeadeyeEffects.bonus(10.0, 0.5, 0.02, 10.0, 1.0), 1e-6);
+    void distanceAddsNothingUpToTheStartDistance() {
+        assertEquals(0.0f, DeadeyeEffects.distanceBonus(4.0, 0.02, 10.0, 0.5), 1e-6);
+        assertEquals(0.0f, DeadeyeEffects.distanceBonus(10.0, 0.02, 10.0, 0.5), 1e-6);
     }
 
     @Test
-    void aHeadshotGrowsWithEveryBlockPastTheStartAndStopsAtTheMax() {
-        assertEquals(0.7f, DeadeyeEffects.bonus(20.0, 0.5, 0.02, 10.0, 1.0), 1e-6);
-        assertEquals(1.0f, DeadeyeEffects.bonus(60.0, 0.5, 0.02, 10.0, 1.0), 1e-6);
-        assertEquals(1.0f, DeadeyeEffects.bonus(500.0, 0.5, 0.02, 10.0, 1.0), 1e-6);
+    void distanceGrowsWithEveryBlockPastTheStartAndStopsAtTheMax() {
+        assertEquals(0.2f, DeadeyeEffects.distanceBonus(20.0, 0.02, 10.0, 0.5), 1e-6);
+        assertEquals(0.5f, DeadeyeEffects.distanceBonus(60.0, 0.02, 10.0, 0.5), 1e-6);
+        assertEquals(0.5f, DeadeyeEffects.distanceBonus(500.0, 0.02, 10.0, 0.5), 1e-6);
+    }
+
+    @Test
+    void aHeadshotNoteIsReadOnceAndOnlyForTheEnemyAndTickItWasMadeFor() {
+        UUID zombie = UUID.randomUUID();
+        UUID skeleton = UUID.randomUUID();
+        HeadshotMark mark = new HeadshotMark();
+        assertFalse(mark.consume(zombie, 100L), "nothing was marked yet");
+
+        mark.note(zombie, 100L);
+        assertFalse(mark.consume(skeleton, 100L), "a different enemy");
+        mark.note(zombie, 100L);
+        assertFalse(mark.consume(zombie, 101L), "a later tick");
+        mark.note(zombie, 100L);
+        assertTrue(mark.consume(zombie, 100L));
+        assertFalse(mark.consume(zombie, 100L), "reading it used it up");
     }
 
     @Test
