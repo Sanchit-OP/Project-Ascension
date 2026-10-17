@@ -25,7 +25,7 @@ Nothing grows from kill counts, time played or vanilla XP, so nothing can be far
 | Boss, first kill | The whole team | 3 | 6 bosses: 18 |
 | Gate lit | The whole team | 2 | 3 gates: 6 |
 | Discovery | You | 1 | 11 places: 11 |
-| **Total by the end of v1** | | | **35 points, for a 56-node tree** |
+| **Total by the end of v1** | | | **35 points, for a 55-node tree** |
 
 ## 2. Where it fits
 
@@ -79,8 +79,17 @@ them for themselves. One per *kind* of place, not per copy, so the list is finit
 | **v1 total** | **11 points** |
 
 These use vanilla's own "player is inside this structure" check, which vanilla's structure
-advancements already run. The Ruined Citadel is Cataclysm's, so its discovery loads only when
-Cataclysm does (`ascension-compat-cataclysm`).
+advancements already run. **Each place's advancement lives with whatever owns the place**, so none of
+it needs another mod loaded:
+
+| Where the file lives | Places | Advancements screen |
+|---|---|---|
+| `ascension-combat` | The six vanilla places: Ancient City, Trial Chambers, Woodland Mansion, Ocean Monument, Nether Fortress, Bastion | The **Ascension** tab |
+| `ascension-worlds` | Landing on the Moon, the Lunar Archive, landing on the Nether, the gate ruin | The **Gateways** tab |
+| `ascension-compat-cataclysm` | The Ruined Citadel, and the four bosses | The **Ascension** tab, only with Cataclysm |
+
+Landing on the Moon or the Nether is a "you are
+in this dimension" check, so it also counts a player who logs in or respawns there.
 
 ## 5. The skill tree
 
@@ -131,7 +140,21 @@ surviving them is a direction worth choosing.
 | Wayfarer | +14% Move Speed, +45% mining speed, +4 safe fall, +1 block reach, +5 s breath, full-block step |
 
 - **Deep Lungs** needs `ascension-atmosphere` to read a lung-capacity attribute (§11, §13 question
-  7). Until that is decided, the node is left out of the data.
+  7). Until that is decided, the node is left out of the data. **So Wayfarer has 13 nodes, not 14,
+  and the whole tree 55**; its fork opens a step earlier (§5 "As built").
+
+### As built (G2)
+
+The three other arms are data, written the same way as Guard: a trunk of four small nodes, a
+notable at the fifth, a fork of two small nodes each side, a second notable where the fork rejoins,
+three more smalls, and the last notable. Positions are in the arm's own frame (the trunk runs down
+the `x = 0` line away from the centre); the screen turns each arm to its side of the tree.
+
+| Arm | Nodes | Notable differences from the table above |
+|---|---|---|
+| **Power** | `might_1..7`, `edge_1..2`, `piercing_1..2`, `heavy_hand`, `sunder`, `executioner` | The small Penetration nodes give Armor Pen; **Sunder gives 8% Armor Pen and 8% Magic Pen** |
+| **Fury** | `tempo_1..6`, `hunger_1..3`, `swiftness_1..2`, `frenzy`, `bloodthirst`, `whirlwind` | None. Attack Speed is a percent of the base; Omnivamp is a fraction (0.01 is 1%) |
+| **Wayfarer** | `pace_1..4`, `delving_1..3`, `long_arm_1..2`, `soft_landing_1..2`, `sure_foot`, `pioneer` | No Deep Lungs. Mining speed is `block_break_speed`, reach is `block_interaction_range`, Sure Foot is +0.4 `step_height` (0.6 to 1.0) |
 - **Sure Foot** is vanilla's step-height attribute raised to one block.
 
 ## 6. Why none of it can be farmed
@@ -217,9 +240,20 @@ screen. Other mods and datapacks can add advancements with plain JSON, and any m
 - **Bosses:** an advancement using vanilla's `player_killed_entity` trigger. No code.
 - **Discoveries:** vanilla's `location` trigger with a structure or dimension. No code.
 - **Gates:** `ascension-worlds` awards `ascension_worlds:gates/<planet>` when a gate lights,
-  to every player and to anyone who joins later. A small change in `GateProgress`, which already
-  tells every client when the network changes. This is how a gate reaches growth without either
-  module knowing the other (ADR-0011): the advancement is the shared language.
+  to every player online and to anyone who joins later (`GateAdvancements`, called from
+  `GateProgress`, which already tells every client when the network changes). The path is the
+  planet's dimension path (`overworld`, `moon`, `the_nether`), with its namespace added for a planet
+  from another pack. This is how a gate reaches growth without either module knowing the other
+  (ADR-0011): the advancement is the shared language.
+
+**Where a milestone's files live.** A growth file is a datapack registry entry, and a namespace
+may add to any registry, so **the milestone file lives in the module that owns the boss, gate or
+place**, next to its advancement: `data/<namespace>/ascension_combat/growth_milestone/...`. Without
+`ascension-combat` that folder is never read, so `worlds` and `compat-cataclysm` carry growth
+files that do nothing on their own and need no condition. Only an advancement whose parent is
+Ascension's root needs `neoforge:conditions` (mod loaded: `ascension_combat`), which the Cataclysm
+ones have. A new planet's pack therefore adds its gate, its places and what they are worth, with no
+change to combat.
 
 A growth file then says what an advancement is worth, in
 `data/ascension_combat/ascension_combat/growth_milestone/warden.json`:
@@ -349,7 +383,7 @@ comes last, so the rules underneath are proven first with a debug command.
 | Step | What | How it is checked |
 |---|---|---|
 | **G1** | The data and the rules: both registries, the player and team attachments, the stat modifiers, an Ascension advancement tab, the Warden and Wither milestones, the Guard arm's nodes, the respec rule, and a command (`/ascension growth`, `take <node>`, `respec`) | Dedicated server: kill the Warden, see the toast and 3 points. Take two Guard HP nodes: 22 HP. A second client joins and has 3 points too. Restart the server: still 22. Die: respawn at 22, full. |
-| **G2** | Every source and every node: the gates (`worlds` awards their advancements), Cataclysm's four bosses (`compat-cataclysm` data), the discoveries, and the other three arms | Each source earned in a client, totals on the command. |
+| **G2** | Every source and every node: the gates (`worlds` awards their advancements), Cataclysm's four bosses (`compat-cataclysm` data), the discoveries, and the other three arms. **Built 2026-10-17**, not yet seen in a client | Each source earned in a client, totals on the command. |
 | **G3** | Refactor pass (ADR-0008) | No new features. |
 | **G4** | The screen, working: the tree, cards, taking and confirming, the side panel, the respec button, the toast | Take nodes from the screen, confirm, see the stats. Reload the world: still taken. |
 | **G5** | The screen's art, once Sanchit has approved a mockup | Seen at GUI scales 2, 3 and 4. |

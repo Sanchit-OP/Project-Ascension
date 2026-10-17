@@ -50,6 +50,22 @@
 
   "ascension_worlds.vanilla_portal.dormant": "This portal is dormant. Its world must be reached another way.",
   "ascension_worlds.hazard.rot": "The rot is in the air here. Wear gold.",
+  "advancements.ascension_worlds.gates.root.title": "The Gateways",
+  "advancements.ascension_worlds.gates.root.description": "Light the gateways to other worlds. Everyone on the server gains skill points.",
+  "advancements.ascension_worlds.gates.overworld.title": "Earth's Gate Lit",
+  "advancements.ascension_worlds.gates.overworld.description": "Light the gateway on Earth. Everyone on the server gains skill points.",
+  "advancements.ascension_worlds.gates.moon.title": "The Moon's Gate Lit",
+  "advancements.ascension_worlds.gates.moon.description": "Light the gateway on the Moon. Everyone on the server gains skill points.",
+  "advancements.ascension_worlds.gates.the_nether.title": "The Nether's Gate Lit",
+  "advancements.ascension_worlds.gates.the_nether.description": "Light the gateway in the Nether. Everyone on the server gains skill points.",
+  "advancements.ascension_worlds.discovery.moon.title": "Landing on the Moon",
+  "advancements.ascension_worlds.discovery.moon.description": "Reach the Moon. You gain a skill point, once.",
+  "advancements.ascension_worlds.discovery.lunar_archive.title": "The Lunar Archive",
+  "advancements.ascension_worlds.discovery.lunar_archive.description": "Find the Lunar Archive under the Moon's surface. You gain a skill point, once.",
+  "advancements.ascension_worlds.discovery.nether.title": "Landing on the Nether",
+  "advancements.ascension_worlds.discovery.nether.description": "Reach the Nether. You gain a skill point, once.",
+  "advancements.ascension_worlds.discovery.nether_gate.title": "The Gate Ruin",
+  "advancements.ascension_worlds.discovery.nether_gate.description": "Find the ruined gate in the warped forest. You gain a skill point, once.",
   "ascension_worlds.gateway.unbreakable": "The ancients built this gate to last. It will not break.",
   "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
 }

@@ -1,0 +1,21 @@
+{
+  "arm": "fury",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.bloodthirst"
+  },
+  "position": [
+    0,
+    8
+  ],
+  "links": [
+    "ascension_combat:fury/hunger_2",
+    "ascension_combat:fury/swiftness_2"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:omnivamp",
+      "amount": 0.04
+    }
+  ]
+}

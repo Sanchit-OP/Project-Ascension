@@ -1,0 +1,34 @@
+{
+  "parent": "ascension_combat:growth/root",
+  "criteria": {
+    "found": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "minecraft:mansion"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:totem_of_undying"
+    },
+    "title": {
+      "translate": "advancements.ascension_combat.growth.discovery.woodland_mansion.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_combat.growth.discovery.woodland_mansion.description"
+    },
+    "frame": "goal",
+    "announce_to_chat": false
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "arm": "wayfarer",
+  "name": {
+    "translate": "growth.ascension_combat.node.delving"
+  },
+  "position": [
+    0,
+    8
+  ],
+  "links": [
+    "ascension_combat:wayfarer/sure_foot"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:player.block_break_speed",
+      "amount": 0.15,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

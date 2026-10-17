@@ -1,0 +1,20 @@
+{
+  "arm": "fury",
+  "name": {
+    "translate": "growth.ascension_combat.node.tempo"
+  },
+  "position": [
+    0,
+    4
+  ],
+  "links": [
+    "ascension_combat:fury/hunger_1"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_speed",
+      "amount": 0.03,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}
