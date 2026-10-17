@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """The rune screen's art, and its mockups (docs/technical/rune-system.md section 10).
 
-Owns, for now, the mockups under design/runes/: the rune screen as an orrery, drawn at one texel
-per GUI pixel and shown at GUI scale 3; a hover card; every path as primary and a new player's
-locked page; how the panel fits at GUI scales 2 to 4; and every icon in its socket. Next it writes
-the real textures under assets/ascension_combat/textures/gui/rune/.
+Owns the Rune Chalk item's texture (assets/ascension_combat/textures/item/rune_chalk.png) and the
+mockups under design/runes/: the rune screen as an orrery, drawn at one texel per GUI pixel and
+shown at GUI scale 3; a hover card; every path as primary and a new player's locked page; how the
+panel fits at GUI scales 2 to 4; and every icon in its socket. The screen's own textures, under
+assets/ascension_combat/textures/gui/rune/, come with the orrery's build.
 
 The layout's history: League's two columns first, which Sanchit turned down on 2026-10-16 ("its
 kinda exact copy of the layout for the runes"); then four others (a rune pouch, a loadout round
@@ -1616,8 +1617,44 @@ def paths_sheet():
     return sheet
 
 
+TEXTURES = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'assets', 'ascension_combat', 'textures')
+
+CHALK = [hexc('#4e4460'), hexc('#aca2bc'), hexc('#d8d2e2'), hexc('#f0ecf6'), hexc('#ffffff')]
+AMETHYST = [hexc('#6a3aa8'), hexc('#a070e0')]
+
+
+def rune_chalk():
+    """Rune Chalk, the item: a stick of pale calcite with amethyst ground through it (its recipe),
+    lying diagonally the way Minecraft's sticks and rods lie. 16 x 16."""
+    s = MaskShape([
+        "................",
+        "................",
+        "...........###..",
+        "..........#hh##.",
+        ".........#h####.",
+        "........#h####..",
+        ".......#h####...",
+        "......#h####....",
+        ".....#h####.....",
+        "....#h####......",
+        "...#h####.......",
+        "..#h####........",
+        "..#####.........",
+        "...###..........",
+        "................",
+        "................",
+    ])
+    img = shade(s, CHALK)
+    for (x, y, c) in ((11, 6, 0), (8, 9, 1), (6, 10, 0), (12, 4, 1), (5, 12, 0)):
+        img.putpixel((x, y), AMETHYST[c])
+    return img
+
+
 def main():
     os.makedirs(DESIGN, exist_ok=True)
+    item_dir = os.path.join(TEXTURES, 'item')
+    os.makedirs(item_dir, exist_ok=True)
+    rune_chalk().save(os.path.join(item_dir, 'rune_chalk.png'))
     for name in os.listdir(DESIGN):
         if name.endswith('.png'):
             os.remove(os.path.join(DESIGN, name))

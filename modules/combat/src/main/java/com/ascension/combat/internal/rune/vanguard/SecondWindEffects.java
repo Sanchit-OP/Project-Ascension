@@ -2,8 +2,11 @@ package com.ascension.combat.internal.rune.vanguard;
 
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.DurationState;
-import com.ascension.combat.internal.rune.RuneCatalog;
+import com.ascension.combat.internal.rune.RuneDefinition;
+import com.ascension.combat.internal.rune.Runes;
 import com.ascension.core.api.CombatStateRegistry;
+import java.util.Optional;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -17,14 +20,13 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * skip a heal tick") rather than a burst window &mdash; the same repurposing
  * {@link com.ascension.combat.internal.armor.RocketbeltEffects} makes of it for its landing-burst
  * delay, just read the opposite way (skip-while-active instead of act-while-active).
+ *
+ * <p>Its numbers are the rune's data: {@code heal}, {@code interval_seconds}, {@code below_health}
+ * (a fraction of max HP).
  */
 public final class SecondWindEffects {
 
-    /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final float HEAL_PER_PULSE = 1.0f;
-
-    private static final long HEAL_INTERVAL_TICKS = 20L;
-    private static final float HEALTH_THRESHOLD_PERCENT = 0.5f;
+    public static final ResourceLocation ID = Runes.id("second_wind");
 
     private SecondWindEffects() {
     }
@@ -38,7 +40,8 @@ public final class SecondWindEffects {
             return;
         }
 
-        if (!player.getData(CombatAttachments.RUNE_PAGE).hasMinor(RuneCatalog.VANGUARD_SECOND_WIND.id())) {
+        Optional<RuneDefinition> rune = Runes.active(player, ID);
+        if (rune.isEmpty()) {
             return;
         }
 
@@ -46,7 +49,7 @@ public final class SecondWindEffects {
             return;
         }
 
-        if (player.getHealth() >= player.getMaxHealth() * HEALTH_THRESHOLD_PERCENT) {
+        if (player.getHealth() >= player.getMaxHealth() * rune.get().value("below_health", 0.5)) {
             return;
         }
 
@@ -56,7 +59,7 @@ public final class SecondWindEffects {
             return;
         }
 
-        player.heal(HEAL_PER_PULSE);
-        cooldown.activateUntil(now + HEAL_INTERVAL_TICKS);
+        player.heal((float) rune.get().value("heal", 1.0));
+        cooldown.activateUntil(now + rune.get().ticks("interval_seconds", 1.0));
     }
 }

@@ -94,6 +94,10 @@ No survival source, on purpose. The rules say why.
 **Rocketbelt** · `ascension_combat:rocketbelt`
 - From: *nothing yet*
 
+**Rune Chalk** · `ascension_combat:rune_chalk`
+- From: Crafting: Amethyst Shard + Calcite
+- Used: Spent, with experience levels, by a rune page save that removes or replaces a rune (RuneChangeCost)
+
 **Spear of Shojin** · `ascension_combat:spear_of_shojin`
 - From: *nothing yet*
 

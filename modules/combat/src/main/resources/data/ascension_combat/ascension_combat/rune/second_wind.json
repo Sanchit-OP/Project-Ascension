@@ -1,0 +1,13 @@
+{
+  "path": "vanguard",
+  "slot": "minor",
+  "row": 0,
+  "position": 0,
+  "icon": "ascension_combat:rune/second_wind",
+  "effect": "ascension_combat:second_wind",
+  "values": {
+    "heal": 1.0,
+    "interval_seconds": 1,
+    "below_health": 0.5
+  }
+}
