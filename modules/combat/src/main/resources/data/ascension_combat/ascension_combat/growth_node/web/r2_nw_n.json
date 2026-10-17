@@ -1,0 +1,22 @@
+{
+  "arm": "fury",
+  "name": {
+    "translate": "growth.ascension_combat.node.tempo"
+  },
+  "position": [
+    -0.765,
+    -1.848
+  ],
+  "links": [
+    "ascension_combat:web/r3_nw_r",
+    "ascension_combat:web/r3_n_l",
+    "ascension_combat:web/r2_nw"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_speed",
+      "amount": 0.03,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

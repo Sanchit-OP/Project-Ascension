@@ -1,0 +1,22 @@
+{
+  "arm": "power",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.executioner"
+  },
+  "position": [
+    -2.828,
+    -2.828
+  ],
+  "links": [
+    "ascension_combat:web/r3_nw",
+    "ascension_combat:web/r3_nw_l",
+    "ascension_combat:web/r3_nw_r"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "amount": 1.5
+    }
+  ]
+}

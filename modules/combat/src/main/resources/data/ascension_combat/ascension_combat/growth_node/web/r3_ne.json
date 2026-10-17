@@ -1,0 +1,22 @@
+{
+  "arm": "fury",
+  "kind": "notable",
+  "name": {
+    "translate": "growth.ascension_combat.node.frenzy"
+  },
+  "position": [
+    2.121,
+    -2.121
+  ],
+  "links": [
+    "ascension_combat:web/r2_ne",
+    "ascension_combat:web/r3_ne_l"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.attack_speed",
+      "amount": 0.12,
+      "operation": "add_multiplied_base"
+    }
+  ]
+}

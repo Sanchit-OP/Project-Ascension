@@ -17,18 +17,23 @@ import net.minecraft.util.StringRepresentable;
  * {@code ascension_combat:growth_node} ({@code data/<namespace>/ascension_combat/growth_node/<path>.json}),
  * synced to clients, which will draw the tree from it. A new world's nodes are new files.
  *
- * <p>Every node costs one point. {@link #links} names the nodes it grows from, toward the centre:
- * it can be taken once any one of them is (so a fork can rejoin), and a node with no links touches
- * the centre. See {@link GrowthRules#check}.
+ * <p>The tree is a web, not a set of paths. Every node costs one point, and {@link #links} are the
+ * edges of the web: a link joins two nodes whichever of them names it, and a node can be taken once
+ * any neighbour is taken, or at once if it is a {@link #start} node touching the centre. So a player
+ * can move into any adjacent area. See {@link GrowthRules#check}.
  *
+ * @param arm the theme, which only colours the node: the first stat's
  * @param name shown for the node; small nodes of one kind share a name ("Vitality")
- * @param position where the screen draws it, in node steps from the centre; x right, y down
+ * @param position where the screen draws it, in ring steps from the centre (the first ring is 1 step
+ *     out); x right, y down
+ * @param start true for the nodes that touch the centre, which can be taken with nothing taken yet
  */
 public record GrowthNode(
         Arm arm,
         Kind kind,
         Optional<Component> name,
         Position position,
+        boolean start,
         List<ResourceLocation> links,
         List<GrowthStat> stats) {
 
@@ -41,6 +46,7 @@ public record GrowthNode(
                     Kind.CODEC.optionalFieldOf("kind", Kind.SMALL).forGetter(GrowthNode::kind),
                     ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(GrowthNode::name),
                     Position.CODEC.fieldOf("position").forGetter(GrowthNode::position),
+                    Codec.BOOL.optionalFieldOf("start", false).forGetter(GrowthNode::start),
                     ResourceLocation.CODEC.listOf().optionalFieldOf("links", List.of()).forGetter(GrowthNode::links),
                     GrowthStat.CODEC.listOf().optionalFieldOf("stats", List.of()).forGetter(GrowthNode::stats))
             .apply(instance, GrowthNode::new));
@@ -50,7 +56,7 @@ public record GrowthNode(
         return name.orElseGet(() -> Component.literal(id.toString()));
     }
 
-    /** The four directions a player can grow in (growth.md section 5). */
+    /** The four themes of the web (growth.md section 5): they colour a node, and set no rule. */
     public enum Arm implements StringRepresentable {
         POWER("power"),
         FURY("fury"),
@@ -71,7 +77,7 @@ public record GrowthNode(
         }
     }
 
-    /** Small nodes are one unit of growth; notables, about four, named, at set steps of each arm. */
+    /** Small nodes are one unit of growth; notables, about four, named, on the web's spokes. */
     public enum Kind implements StringRepresentable {
         SMALL("small"),
         NOTABLE("notable");
@@ -90,10 +96,10 @@ public record GrowthNode(
         }
     }
 
-    /** A place on the tree, written {@code [x, y]}. */
-    public record Position(int x, int y) {
+    /** A place on the tree, written {@code [x, y]}: ring steps, so a ring of eight sits at fractions of one. */
+    public record Position(double x, double y) {
 
-        public static final Codec<Position> CODEC = Codec.INT.listOf(2, 2)
+        public static final Codec<Position> CODEC = Codec.DOUBLE.listOf(2, 2)
                 .xmap(xy -> new Position(xy.get(0), xy.get(1)), position -> List.of(position.x, position.y));
     }
 }

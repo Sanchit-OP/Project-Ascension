@@ -1,0 +1,20 @@
+{
+  "arm": "guard",
+  "start": true,
+  "name": {
+    "translate": "growth.ascension_combat.node.vitality"
+  },
+  "position": [
+    0.707,
+    0.707
+  ],
+  "links": [
+    "ascension_combat:web/r1_e"
+  ],
+  "stats": [
+    {
+      "attribute": "minecraft:generic.max_health",
+      "amount": 1
+    }
+  ]
+}

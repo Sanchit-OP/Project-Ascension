@@ -1,0 +1,19 @@
+{
+  "arm": "guard",
+  "name": {
+    "translate": "growth.ascension_combat.node.warding"
+  },
+  "position": [
+    1.5,
+    2.598
+  ],
+  "links": [
+    "ascension_combat:web/r3_se"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:magic_resist",
+      "amount": 4
+    }
+  ]
+}

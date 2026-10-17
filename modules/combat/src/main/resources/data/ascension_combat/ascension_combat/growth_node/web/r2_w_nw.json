@@ -1,0 +1,21 @@
+{
+  "arm": "power",
+  "name": {
+    "translate": "growth.ascension_combat.node.edge"
+  },
+  "position": [
+    -1.848,
+    -0.765
+  ],
+  "links": [
+    "ascension_combat:web/r3_w_r",
+    "ascension_combat:web/r3_nw_l",
+    "ascension_combat:web/r2_w"
+  ],
+  "stats": [
+    {
+      "attribute": "ascension_combat:lethality",
+      "amount": 2
+    }
+  ]
+}

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """The growth tree's mockups (docs/progression/growth.md section 10).
 
-Draws the skill tree as a constellation: the four arms of the real node files
-(modules/combat/.../growth_node), running diagonally away from a centre emblem so the whole tree
-fits one screen. Taken nodes are bright stars in a halo; nodes you can take are rings of starlight;
-a node you have marked but not confirmed has a dashed white ring; the rest are dust. Notables are
+Draws the skill tree as a web of rings, like the rune screen's orrery: the real node files
+(modules/combat/.../growth_node), in four rings round a centre emblem, so the whole tree fits one
+screen. The four themes sit at the corners and a blend of each pair on the sides, so the web reads
+Power, Fury, Guard, Wayfarer all the way round, and any node touches its neighbours in every
+direction. Taken nodes are bright stars in a halo; nodes you can take are rings of starlight; a node
+you have marked but not confirmed has a dashed white ring; the rest are dim rings. Notables are
 larger and framed. A side panel lists points, where they came from, and your stats.
 
 Everything below "The tree" is the rune screen's art kit, copied from tools/generate-rune-art.py in
@@ -481,20 +483,21 @@ def drop_shadow(panel):
 NODE_DIR = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'data', 'ascension_combat',
                         'ascension_combat', 'growth_node')
 
+BRASS_RAMP = [STAR_BRASS[0], STAR_BRASS[1], STAR_BRASS[2], STAR_BRASS[3], STAR_BRASS[3]]
 GREEN = [hexc('#0e2a12'), hexc('#2c6a26'), hexc('#4ea23c'), hexc('#8ad868'), hexc('#dcffc8')]
 
-# Each arm runs diagonally away from the centre, so all 55 nodes fit one screen at once. `dir` is
-# the way the arm grows; the fork's two sides sit either side of it. The node files say where a
-# node is in the arm's own frame (x across, y along), and this turns that into a place on the screen.
+# Four themes, in the colours of the rune paths they pair with. A node takes the colour of its first stat.
 ARMS = {
-    'power': {'name': 'Power', 'ramp': PATHS['reaver']['ramp'], 'dir': (-0.8, -0.6)},
-    'fury': {'name': 'Fury', 'ramp': PATHS['vanguard']['ramp'], 'dir': (0.8, -0.6)},
-    'guard': {'name': 'Guard', 'ramp': PATHS['bulwark']['ramp'], 'dir': (0.8, 0.6)},
-    'wayfarer': {'name': 'Wayfarer', 'ramp': GREEN, 'dir': (-0.8, 0.6)},
+    'power': {'name': 'Power', 'ramp': PATHS['reaver']['ramp']},
+    'fury': {'name': 'Fury', 'ramp': PATHS['vanguard']['ramp']},
+    'guard': {'name': 'Guard', 'ramp': PATHS['bulwark']['ramp']},
+    'wayfarer': {'name': 'Wayfarer', 'ramp': GREEN},
 }
+
+# The web: node files give a place in ring steps from the centre (x right, y down); this scales it to
+# pixels. Ring 4 sits 86 px out, so its capstones just fit the 200 px the panel gives the tree.
+UNIT = 21.5
 CENTRE = (135, 121)
-STEP = 11.4          # along an arm, per step
-SIDE = 11.0          # across an arm, per fork column
 SMALL, NOTABLE = 13, 21
 
 # What a node's first stat looks like: a glyph and a colour (the colours of the rune screen's cards).
@@ -551,27 +554,31 @@ def glyph_img(key, colour, light):
 
 
 def load_nodes():
+    folder = os.path.join(NODE_DIR, 'web')
     nodes = {}
-    for arm in ARMS:
-        folder = os.path.join(NODE_DIR, arm)
-        for file in sorted(os.listdir(folder)):
-            data = json.load(open(os.path.join(folder, file), encoding='utf-8'))
-            nid = '%s/%s' % (arm, file[:-5])
-            stats = data['stats']
-            nodes[nid] = {
-                'id': nid, 'arm': arm, 'notable': data.get('kind') == 'notable',
-                'pos': data['position'], 'links': [l.split(':')[1] for l in data.get('links', [])],
-                'stats': stats, 'key': STAT_OF[stats[0]['attribute']],
-                'name': data['name']['translate'].split('.')[-1].replace('_', ' ').title(),
-            }
+    for file in sorted(os.listdir(folder)):
+        data = json.load(open(os.path.join(folder, file), encoding='utf-8'))
+        nid = 'web/' + file[:-5]
+        stats = data['stats']
+        nodes[nid] = {
+            'id': nid, 'arm': data['arm'], 'notable': data.get('kind') == 'notable',
+            'start': data.get('start', False),
+            'pos': data['position'], 'links': [l.split(':')[1] for l in data.get('links', [])],
+            'stats': stats, 'key': STAT_OF[stats[0]['attribute']],
+            'name': data['name']['translate'].split('.')[-1].replace('_', ' ').title(),
+        }
+    # a link joins two nodes whichever of them names it
+    for node in list(nodes.values()):
+        for link in node['links']:
+            if node['id'] not in nodes[link]['links']:
+                nodes[link].setdefault('also', []).append(node['id'])
+    for node in nodes.values():
+        node['near'] = set(node['links']) | set(node.get('also', []))
     return nodes
 
 
 def node_xy(node):
-    dx, dy = ARMS[node['arm']]['dir']
-    px, py = -dy, dx
-    x, y = node['pos']
-    return CENTRE[0] + dx * y * STEP + px * x * SIDE, CENTRE[1] + dy * y * STEP + py * x * SIDE
+    return CENTRE[0] + node['pos'][0] * UNIT, CENTRE[1] + node['pos'][1] * UNIT
 
 
 def node_state(node, taken, marked):
@@ -579,16 +586,16 @@ def node_state(node, taken, marked):
         return 'chosen'
     if node['id'] in marked:
         return 'marked'
-    if not node['links'] or any(l in taken or l in marked for l in node['links']):
+    if node['start'] or node['near'] & (taken | marked):
         return 'open'
     return 'locked'
 
 
 # What the mockup's player has done: the Warden, the Wither, Earth's gate, an Ancient City and the
-# Moon, so ten points, six spent and two marked but not confirmed.
-SPENT = ['guard/vitality_1', 'guard/plating_1', 'guard/warding_1', 'guard/vitality_2',
-         'power/might_1', 'power/might_2']
-MARKED = ['guard/stout_heart', 'power/edge_1']
+# Moon, so ten points. Six are spent, starting in Guard and walking round the ring into Fury, and two
+# more are marked but not confirmed: Stout Heart, and a step toward Wayfarer.
+SPENT = ['web/r1_se', 'web/r2_se', 'web/r1_e', 'web/r2_e', 'web/r1_ne', 'web/r2_ne']
+MARKED = ['web/r3_se', 'web/r2_se_s']
 EARNED = [("The Warden Falls", 3), ("The Wither Falls", 3), ("Earth's Gate Lit", 2),
           ("An Ancient City", 1), ("Landing on the Moon", 1)]
 TOTAL_V1 = 35
@@ -601,10 +608,11 @@ def arm_cloud(img, cx, cy, ramp, radius=70, strength=34):
             put(img, x, y, with_alpha(ramp[2], strength * (1 - d) ** 2))
 
 
-def draw_link(img, a, b, ramp, state):
+def draw_link(img, a, b, ra, rb, state):
+    ramp = [mix(ra[i], rb[i], 0.5) for i in range(5)]
     if state == 'chosen':
         line(img, a[0], a[1], b[0], b[1], with_alpha(ramp[3], 230))
-    elif state in ('open', 'marked'):
+    elif state == 'open':
         line(img, a[0], a[1], b[0], b[1], with_alpha(ramp[1], 190))
     else:
         line(img, a[0], a[1], b[0], b[1], (70, 78, 96, 90), dash=2)
@@ -746,25 +754,33 @@ def render_tree(hover=None):
     taken, marked = set(SPENT), set(MARKED)
     img = star_panel(random.Random(3107))
     title_bar(img, len(marked))
-    for arm, info in ARMS.items():
-        dx, dy = info['dir']
-        arm_cloud(img, CENTRE[0] + dx * 70, CENTRE[1] + dy * 70, info['ramp'])
-    # links under the sockets
+    for dx, dy, arm in ((-1, -1, 'power'), (1, -1, 'fury'), (1, 1, 'guard'), (-1, 1, 'wayfarer')):
+        arm_cloud(img, CENTRE[0] + dx * 52, CENTRE[1] + dy * 46, ARMS[arm]['ramp'])
+    # the rings' faint guides, under everything
+    for r in (1, 2, 3, 4):
+        circle(img, CENTRE[0], CENTRE[1], r * UNIT, with_alpha(STAR_BRASS[1], 40))
+    # links under the sockets, each drawn once
+    drawn = set()
     for node in nodes.values():
         a = node_xy(node)
-        for link in node['links']:
-            other = nodes[link]
-            both = node_state(node, taken, marked), node_state(other, taken, marked)
-            state = ('chosen' if both[0] == both[1] == 'chosen' else
-                     'locked' if 'locked' in both and 'chosen' not in both else 'open')
-            draw_link(img, a, node_xy(other), ARMS[node['arm']]['ramp'], state)
-        if not node['links']:
-            draw_link(img, a, CENTRE, ARMS[node['arm']]['ramp'],
+        for other_id in node['near']:
+            key = frozenset((node['id'], other_id))
+            if key in drawn:
+                continue
+            drawn.add(key)
+            other = nodes[other_id]
+            states = {node_state(node, taken, marked), node_state(other, taken, marked)}
+            on = {node['id'], other_id} & (taken | marked)
+            state = ('chosen' if {node['id'], other_id} <= taken else
+                     'open' if on else 'locked')
+            draw_link(img, a, node_xy(other), ARMS[node['arm']]['ramp'], ARMS[other['arm']]['ramp'], state)
+        if node['start']:
+            draw_link(img, a, CENTRE, ARMS[node['arm']]['ramp'], BRASS_RAMP,
                       'chosen' if node['id'] in taken else 'open')
     centre_emblem(img)
     for node in nodes.values():
         draw_node(img, node, node_state(node, taken, marked))
-    # the arms' names, in their corners
+    # the themes' names, in the corners their regions fill
     draw_text(img, 8, 23, ARMS['power']['name'].upper(), ARMS['power']['ramp'][3], bold=True)
     fury = ARMS['fury']['name'].upper()
     draw_text(img, 264 - text_width(fury, True), 23, fury, ARMS['fury']['ramp'][3], bold=True)
@@ -779,10 +795,12 @@ def render_tree(hover=None):
         circle(img, x, y, (NOTABLE if node['notable'] else SMALL) / 2 + 2.4, with_alpha(TEXT, 230), 1.0)
         cursor(img, int(x + 3), int(y + 3))
         ramp = ARMS[node['arm']]['ramp']
-        s = node['stats'][0]
-        amount = s['amount'] * (100 if s.get('operation') == 'add_multiplied_base' else 1)
-        numbers = [('+' + fmt(amount) + ('%' if s.get('operation') == 'add_multiplied_base' else '') + ' '
-                    + STAT_NAME[node['key']], STAT[node['key']])]
+        numbers = []
+        for st in node['stats']:
+            key = STAT_OF[st['attribute']]
+            percent = st.get('operation') == 'add_multiplied_base' or key in ('omni', 'pen')
+            numbers.append(('+' + fmt(st['amount'] * (100 if percent else 1)) + ('%' if percent else '') + ' '
+                            + STAT_NAME[key], STAT[key]))
         state = node_state(node, taken, marked)
         note = 'Costs 1 point. You marked it: confirm to spend.' if state == 'marked' else 'Costs 1 point.'
         kind = 'notable' if node['notable'] else 'node'
@@ -816,7 +834,7 @@ def main():
             os.remove(os.path.join(DESIGN, name))
     panel = drop_shadow(render_tree())
     on_screen(panel, 426, 240, 3).save(os.path.join(DESIGN, 'tree.png'))
-    on_screen(drop_shadow(render_tree(hover='guard/stout_heart')), 426, 240, 3).save(
+    on_screen(drop_shadow(render_tree(hover='web/r3_se')), 426, 240, 3).save(
         os.path.join(DESIGN, 'tree-hover.png'))
     fit_sheet(panel).save(os.path.join(DESIGN, 'tree-fit-gui-scales.png'))
     print('wrote', DESIGN)
