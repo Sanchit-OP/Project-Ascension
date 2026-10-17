@@ -1,0 +1,22 @@
+{
+  "path": "aetherwright",
+  "slot": "minor",
+  "row": 1,
+  "position": 1,
+  "icon": "ascension_combat:rune/quickening",
+  "effect": "ascension_combat:quickening",
+  "values": {
+    "haste": 0.2
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.quickening.n0",
+      "parts": [
+        {
+          "value": "haste",
+          "format": "percent"
+        }
+      ]
+    }
+  ]
+}

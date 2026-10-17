@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.rune;
 
+import com.ascension.combat.internal.rune.aetherwright.AetherwrightRunes;
 import com.ascension.combat.internal.rune.reaver.ReaverRunes;
 import com.ascension.combat.internal.rune.vanguard.VanguardRunes;
 import net.neoforged.bus.api.IEventBus;
@@ -22,5 +23,6 @@ public final class RuneSystem {
         RuneModifiers.addRefresher(ShardEffects::refresh);
         VanguardRunes.register(gameBus);
         ReaverRunes.register(gameBus);
+        AetherwrightRunes.register(gameBus);
     }
 }

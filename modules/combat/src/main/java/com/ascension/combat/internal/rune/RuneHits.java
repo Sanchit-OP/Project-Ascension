@@ -2,6 +2,7 @@ package com.ascension.combat.internal.rune;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -37,9 +38,11 @@ public final class RuneHits {
         return direct == attacker && attacker.getData(RuneAttachments.SWING.get()).crit(victim.getUUID(), now);
     }
 
-    /** Whether {@code source} is a hit the attacker landed with their own weapon or arrow (not a proc, not a trap). */
-    public static boolean weaponHit(DamageSource source, Entity attacker) {
-        Entity direct = source.getDirectEntity();
-        return direct == attacker || direct instanceof AbstractArrow;
+    /**
+     * Whether {@code source} is a hit with a weapon or an arrow (a melee swing or a shot), by its
+     * damage type, so a rune's own lightning or falling star, which are magic, never counts as one.
+     */
+    public static boolean weaponHit(DamageSource source) {
+        return source.is(DamageTypes.PLAYER_ATTACK) || source.getDirectEntity() instanceof AbstractArrow;
     }
 }
