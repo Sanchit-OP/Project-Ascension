@@ -5,8 +5,6 @@ import com.ascension.combat.api.stat.CombatStats;
 import com.ascension.combat.api.stat.StatBreakdown;
 import com.ascension.combat.api.stat.StatReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -23,7 +21,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
  * 7). Read-only. It works from a console or RCON, so stats can be checked on a dedicated server with
  * no client, and it is a balancing tool for any mob.
  *
- * <p>Amounts are in each attribute's own units, as {@link StatReader#value} gives them.
+ * <p>Numbers read as the character sheet shows them ({@link StatText}).
  */
 public final class StatCommands {
 
@@ -57,23 +55,19 @@ public final class StatCommands {
                 continue;
             }
 
-            MutableComponent line = Component.literal(stat.name() + " " + number(breakdown.total()) + ": ");
+            MutableComponent line = Component.literal(stat.name() + " " + StatText.value(stat, breakdown.total()) + ": ");
             boolean first = true;
             for (StatBreakdown.Part part : breakdown.parts()) {
                 if (!first) {
                     line.append(", ");
                 }
-                String amount = number(part.amount());
-                line.append(part.source()).append(" " + (first || part.amount() < 0.0 ? amount : "+" + amount));
+                line.append(part.source()).append(" " + (first
+                        ? StatText.value(stat, part.amount())
+                        : StatText.signedValue(stat, part.amount())));
                 first = false;
             }
             source.sendSuccess(() -> line, false);
         }
         return 1;
-    }
-
-    private static String number(double value) {
-        BigDecimal rounded = BigDecimal.valueOf(value).setScale(3, RoundingMode.HALF_UP).stripTrailingZeros();
-        return rounded.scale() < 0 ? rounded.setScale(0).toPlainString() : rounded.toPlainString();
     }
 }

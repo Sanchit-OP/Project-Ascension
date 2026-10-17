@@ -4,8 +4,7 @@ import com.ascension.combat.api.stat.CombatStat;
 import com.ascension.combat.api.stat.CombatStats;
 import com.ascension.combat.api.stat.StatBreakdown;
 import com.ascension.combat.api.stat.StatReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import com.ascension.combat.internal.stat.StatText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -64,8 +63,8 @@ public final class CharacterSheetScreen extends Screen {
             single("gui.ascension_combat.stat_magic_resist", CombatStats.MAGIC_RESIST, false),
             single("gui.ascension_combat.stat_omnivamp", CombatStats.OMNIVAMP, true),
             new Row("gui.ascension_combat.stat_armor_penetration",
-                    player -> format(CombatStats.LETHALITY, StatReader.value(player, CombatStats.LETHALITY))
-                            + " / " + format(CombatStats.ARMOR_PENETRATION, StatReader.value(player, CombatStats.ARMOR_PENETRATION)),
+                    player -> StatText.value(CombatStats.LETHALITY, StatReader.value(player, CombatStats.LETHALITY))
+                            + " / " + StatText.value(CombatStats.ARMOR_PENETRATION, StatReader.value(player, CombatStats.ARMOR_PENETRATION)),
                     List.of(CombatStats.LETHALITY, CombatStats.ARMOR_PENETRATION), false),
             single("gui.ascension_combat.stat_magic_penetration", CombatStats.MAGIC_PENETRATION, false));
 
@@ -74,7 +73,7 @@ public final class CharacterSheetScreen extends Screen {
     }
 
     private static Row single(String labelKey, CombatStat stat, boolean gapBefore) {
-        return new Row(labelKey, player -> format(stat, StatReader.value(player, stat)), List.of(stat), gapBefore);
+        return new Row(labelKey, player -> StatText.value(stat, StatReader.value(player, stat)), List.of(stat), gapBefore);
     }
 
     @Override
@@ -132,40 +131,16 @@ public final class CharacterSheetScreen extends Screen {
 
             StatBreakdown breakdown = StatReader.breakdown(player, stat);
             lines.add(Component.translatable(stat.attribute().value().getDescriptionId())
-                    .append(" " + format(stat, breakdown.total()))
+                    .append(" " + StatText.value(stat, breakdown.total()))
                     .withStyle(ChatFormatting.WHITE));
             boolean first = true;
             for (StatBreakdown.Part part : breakdown.parts()) {
-                String amount = first ? format(stat, part.amount()) : signed(stat, part.amount());
+                String amount = first ? StatText.value(stat, part.amount()) : StatText.signedValue(stat, part.amount());
                 lines.add(Component.literal("  ").append(part.source()).append(": " + amount)
                         .withStyle(ChatFormatting.GRAY));
                 first = false;
             }
         }
         return lines;
-    }
-
-    /** A stat's value as the sheet shows it: percentages for the fraction stats, trimmed decimals otherwise. */
-    private static String format(CombatStat stat, double value) {
-        if (stat == CombatStats.OMNIVAMP || stat == CombatStats.ARMOR_PENETRATION || stat == CombatStats.MAGIC_PENETRATION) {
-            return trimmed(value * 100.0, 1) + "%";
-        }
-        if (stat == CombatStats.ATTACK_SPEED) {
-            return trimmed(value, 2);
-        }
-        if (stat == CombatStats.MOVE_SPEED) {
-            return trimmed(value, 3);
-        }
-        return trimmed(value, 1);
-    }
-
-    private static String signed(CombatStat stat, double value) {
-        String formatted = format(stat, value);
-        return value > 0.0 ? "+" + formatted : formatted;
-    }
-
-    private static String trimmed(double value, int decimals) {
-        BigDecimal rounded = BigDecimal.valueOf(value).setScale(decimals, RoundingMode.HALF_UP).stripTrailingZeros();
-        return rounded.scale() < 0 ? rounded.setScale(0).toPlainString() : rounded.toPlainString();
     }
 }

@@ -1,6 +1,6 @@
 package com.ascension.compat.cataclysm.internal;
 
-import com.ascension.combat.api.CombatAttributes;
+import com.ascension.combat.api.stat.CombatStats;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -55,8 +55,8 @@ public final class CataclysmBossStats {
         // would quietly hand back a pig.
         BuiltInRegistries.ENTITY_TYPE.getOptional(id).ifPresent(type -> {
             EntityType<? extends LivingEntity> living = (EntityType<? extends LivingEntity>) type;
-            event.add(living, CombatAttributes.armor(), armor);
-            event.add(living, CombatAttributes.magicResist(), magicResist);
+            event.add(living, CombatStats.ARMOR.attribute(), armor);
+            event.add(living, CombatStats.MAGIC_RESIST.attribute(), magicResist);
         });
     }
 }

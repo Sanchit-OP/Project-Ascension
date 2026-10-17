@@ -429,5 +429,11 @@ A refactor pass comes every third increment.
 | 8 | **Other mods' extras.** Cataclysm entries in its compat jar | Ignitium armour shows its extras with Cataclysm installed, and nothing logs an error without it |
 | 9 | **Refactor pass** | |
 
-**The rune and growth sessions can start reading stats after increment 2.** The API's shape (§6)
-is fixed now, so they can write against it before then.
+**Progress:**
+- **Increments 1 and 2 are built** and checked on a dedicated server over RCON. They wait on the
+  client check: the sheet, its hover, `/reload`, and health across a relog.
+- **Increment 3 is done.** One text helper (`StatText`) replaces two copies of number formatting.
+  Stats got a kind (points, percent or speed), so no screen names stats one by one. Jade reads
+  through `StatReader`. The old `api.CombatAttributes` is deprecated.
+
+**The rune and growth sessions can read stats now**, through `StatReader` (§6).

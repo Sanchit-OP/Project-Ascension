@@ -17,16 +17,27 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
  *
  * <p>First real consumer: {@code ascension-compat-jade}, which reads both to add Armor/Magic
  * Resist lines to Jade's entity tooltip.
+ *
+ * @deprecated since 2026-10-16. {@link com.ascension.combat.api.stat.CombatStats} names every stat,
+ *     these two included ({@code CombatStats.ARMOR.attribute()}), and
+ *     {@link com.ascension.combat.api.stat.StatReader} is the one way to read one
+ *     (docs/technical/item-stats.md section 6). Kept because the {@code api} package is a semver
+ *     contract (ADR-0003 rule 3); nothing of ours uses it any more.
  */
+@Deprecated
 public final class CombatAttributes {
 
     private CombatAttributes() {
     }
 
+    /** @deprecated Use {@code CombatStats.ARMOR.attribute()}. */
+    @Deprecated
     public static Holder<Attribute> armor() {
         return com.ascension.combat.internal.CombatAttributes.ARMOR;
     }
 
+    /** @deprecated Use {@code CombatStats.MAGIC_RESIST.attribute()}. */
+    @Deprecated
     public static Holder<Attribute> magicResist() {
         return com.ascension.combat.internal.CombatAttributes.MAGIC_RESIST;
     }

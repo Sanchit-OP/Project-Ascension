@@ -10,32 +10,37 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
  * One stat in the combat stat model (docs/technical/item-stats.md section 3): its name in data
  * files, the attribute it lives on, and how a number written in data becomes a modifier.
  *
- * <p>Every stat is written the way a player says it. A flat stat's {@code 15} is fifteen points;
- * a percentage stat's {@code 8} is 8%, which {@link #modifier} turns into the attribute's own
- * {@code 0.08}. Nothing outside this class should know which stats store fractions.
+ * <p>Every stat is written the way a player says it: {@code 15} Armor, {@code 8}% Omnivamp,
+ * {@code 20}% Attack Speed. {@link #modifier} turns that into the attribute's own amount. Nothing
+ * outside this class should know which stats store fractions.
  *
  * <p>The attribute is resolved lazily, so naming a stat (in a codec, say) never touches the
  * attribute registry.
  */
 public final class CombatStat {
 
-    /** How the stat is written and shown. */
-    public enum Format {
-        /** Points: {@code 15} is 15. */
-        FLAT,
-        /** A percentage: {@code 8} is 8%. */
-        PERCENT
+    /** How a stat is written, and how its total reads. */
+    public enum Kind {
+        /** Points: {@code 15} Armor is written 15 and reads 15. */
+        POINTS,
+        /** A share: {@code 8} is 8%, and the total reads as the fraction 0.08. Omnivamp, Penetration. */
+        PERCENT,
+        /**
+         * A speed: a bonus is written as a percentage of the speed ({@code 20} is +20%), and the
+         * total reads as the speed itself, in attacks per second or vanilla's walking units.
+         */
+        SPEED
     }
 
     private final String name;
     private final Supplier<Holder<Attribute>> attribute;
-    private final Format format;
+    private final Kind kind;
     private final AttributeModifier.Operation operation;
 
-    CombatStat(String name, Supplier<Holder<Attribute>> attribute, Format format, AttributeModifier.Operation operation) {
+    CombatStat(String name, Supplier<Holder<Attribute>> attribute, Kind kind, AttributeModifier.Operation operation) {
         this.name = name;
         this.attribute = attribute;
-        this.format = format;
+        this.kind = kind;
         this.operation = operation;
     }
 
@@ -49,8 +54,8 @@ public final class CombatStat {
         return attribute.get();
     }
 
-    public Format format() {
-        return format;
+    public Kind kind() {
+        return kind;
     }
 
     /**
@@ -64,12 +69,12 @@ public final class CombatStat {
 
     /** A written value as the attribute's own modifier amount: {@code 8}% becomes {@code 0.08}. */
     public double toAmount(double written) {
-        return format == Format.PERCENT ? written / 100.0 : written;
+        return kind == Kind.POINTS ? written : written / 100.0;
     }
 
     /** The inverse of {@link #toAmount}. */
     public double toWritten(double amount) {
-        return format == Format.PERCENT ? amount * 100.0 : amount;
+        return kind == Kind.POINTS ? amount : amount * 100.0;
     }
 
     @Override
