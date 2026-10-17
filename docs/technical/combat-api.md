@@ -156,6 +156,13 @@ separate, explicitly requested pass.
 
 All tier values are placeholders (section 3): Sanchit tunes by playing, not by spec.
 
+**Data since 2026-10-16** ([`item-stats.md`](item-stats.md) section 9). The tiers are entity tags,
+`#ascension_combat:tier/swarm` to `tier/boss`, and the numbers are
+`data_maps/entity_type/mob_stats.json`, applied as one unsaved modifier per stat when a mob enters
+a world. Any mod's boss in NeoForge's `#c:bosses` is a boss here with no line of ours. Cataclysm's
+four bosses join their tiers through tag files in `ascension-compat-cataclysm`, which no longer has
+any Java for it.
+
 ## 3b. Seeing the stats — two new Tier 2 compat jars
 
 Added 2026-09-19, alongside the defense curve above, so Armor/Magic Resist are actually visible

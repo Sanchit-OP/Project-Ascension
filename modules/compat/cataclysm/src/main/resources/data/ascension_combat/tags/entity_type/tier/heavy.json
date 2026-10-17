@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "cataclysm:ender_golem",
+      "required": false
+    }
+  ]
+}

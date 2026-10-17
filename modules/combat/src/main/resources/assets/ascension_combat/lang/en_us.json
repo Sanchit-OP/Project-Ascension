@@ -52,6 +52,7 @@
   "stat_source.ascension_combat.base": "Base",
   "stat_source.ascension_combat.effects": "Effects",
   "stat_source.ascension_combat.other": "Other",
+  "stat_source.ascension_combat.mob_type": "Mob type",
   "stat.ascension_combat.health": "Health",
   "stat.ascension_combat.attack_damage": "Attack Damage",
   "stat.ascension_combat.attack_speed": "Attack Speed",

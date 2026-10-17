@@ -16,7 +16,6 @@ import com.ascension.combat.internal.mechanics.CombatStateTracking;
 import com.ascension.combat.internal.mechanics.GrievousWoundsHealing;
 import com.ascension.combat.internal.mechanics.OmnivampHealing;
 import com.ascension.combat.internal.mechanics.PhysicalDamage;
-import com.ascension.combat.internal.mobs.MobStats;
 import com.ascension.combat.internal.net.CombatNetwork;
 import com.ascension.combat.internal.rune.vanguard.ConquerorsResolveEffects;
 import com.ascension.combat.internal.rune.vanguard.KillingSurgeEffects;
@@ -71,10 +70,6 @@ public final class AscensionCombat {
         CombatContent.register(modBus);
         CombatAttachments.register(modBus);
         CombatAttributes.register(modBus);
-        // Overrides CombatAttributes' own blanket Armor/Magic Resist defaults for select mobs --
-        // must register after it (see MobStats' own javadoc: EntityAttributeModificationEvent#add
-        // is last-write-wins per entity type).
-        MobStats.register(modBus);
         CombatMobEffects.register(modBus);
         // Every item's stats, from data (docs/technical/item-stats.md, ADR-0019).
         StatSystem.register(modBus, NeoForge.EVENT_BUS);

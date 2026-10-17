@@ -10,13 +10,10 @@ description =
 // structure_set overrides, a loot table override). The two ADR-0013 mixins name their targets by
 // string (`@Mixin(targets = "...")`), and GuardianAwakening looks the Guardian up by registry id --
 // so a Cataclysm rename fails at mod load, not at compile time.
-dependencies {
-    // Only ascension-combat's public api (CombatAttributes), to give the bosses Armor/Magic Resist.
-    // Optional at runtime: CataclysmBossStats is only ever loaded when ascension_combat is present.
-    implementation(project(":modules:combat"))
-}
-
-evaluationDependsOn(":modules:combat")
+//
+// The bosses' Armor/Magic Resist are data since 2026-10-16: tier tags in ascension-combat's
+// namespace (src/main/resources/data/ascension_combat/tags), so nothing here compiles against
+// ascension-combat either.
 
 @Suppress("UNCHECKED_CAST")
 val modsTomlProperties = project.extra["modsTomlProperties"] as MutableMap<String, String>

@@ -5,7 +5,6 @@ import com.ascension.combat.api.stat.CombatStats;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -31,10 +30,8 @@ import org.jetbrains.annotations.Nullable;
  * <p><b>Merging.</b> Two entries can reach one item: a tag's and the item's own, possibly from
  * different mods' files. NeoForge merges them in load order, so a tag in one jar could overwrite
  * another jar's numbers for its own item. {@link #merge} decides by specificity instead, one field
- * at a time: a field the item's own entry set beats a tag's, whichever loaded first; between equals,
- * the later one wins as in any datapack. A merged value remembers which of its fields came from an
- * item entry ({@link #specificFields}), because NeoForge hands the next merge only the newest
- * entry's source.
+ * at a time ({@link SpecificityPicker}), and a merged value remembers which of its fields came from
+ * an item entry ({@link #specificFields}).
  */
 public final class ItemStats {
 
@@ -121,14 +118,9 @@ public final class ItemStats {
      * value that is already a merge's result, its own record of that wins). See the class javadoc.
      */
     public static ItemStats merge(ItemStats first, boolean firstNamesItem, ItemStats second, boolean secondNamesItem) {
-        Set<String> firstSpecific = first.specificFields != null
-                ? first.specificFields
-                : firstNamesItem ? first.fieldKeys() : Set.of();
-        Set<String> secondSpecific = second.specificFields != null
-                ? second.specificFields
-                : secondNamesItem ? second.fieldKeys() : Set.of();
-        Set<String> mergedSpecific = new HashSet<>();
-        Picker picker = new Picker(firstSpecific, secondSpecific, mergedSpecific);
+        SpecificityPicker<String> picker = new SpecificityPicker<>(
+                first.specificFields, firstNamesItem, first.fieldKeys(),
+                second.specificFields, secondNamesItem, second.fieldKeys());
 
         Map<CombatStat, Double> stats = new LinkedHashMap<>();
         Set<CombatStat> allStats = new LinkedHashSet<>(first.stats.keySet());
@@ -145,20 +137,7 @@ public final class ItemStats {
                 picker.pick(WEAPON_SPEED, first.weaponSpeed, second.weaponSpeed),
                 stats,
                 picker.pick(SLOT, first.slot, second.slot),
-                Collections.unmodifiableSet(mergedSpecific));
-    }
-
-    /** One field's choice: the later value, unless only the earlier one came from an item entry. */
-    private record Picker(Set<String> firstSpecific, Set<String> secondSpecific, Set<String> mergedSpecific) {
-        <V> Optional<V> pick(String key, Optional<V> first, Optional<V> second) {
-            boolean keepFirst = first.isPresent()
-                    && (second.isEmpty() || (firstSpecific.contains(key) && !secondSpecific.contains(key)));
-            Optional<V> chosen = keepFirst ? first : second;
-            if (chosen.isPresent() && (keepFirst ? firstSpecific : secondSpecific).contains(key)) {
-                mergedSpecific.add(key);
-            }
-            return chosen;
-        }
+                picker.recorded());
     }
 
     @Override
