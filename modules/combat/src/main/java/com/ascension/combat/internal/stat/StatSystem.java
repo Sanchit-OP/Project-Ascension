@@ -8,8 +8,9 @@ import net.neoforged.bus.api.IEventBus;
 
 /**
  * Wires up item stats (docs/technical/item-stats.md, ADR-0019): the data maps, the listener that
- * gives every item its stats, and the two fixes for vanilla timing (gear after {@code /reload},
- * health after login). The one call {@code AscensionCombat} makes for all of it.
+ * gives every item its stats, the two fixes for vanilla timing (gear after {@code /reload}, health
+ * after login), {@code /ascension stats}, and what reading a stat on a client needs. The one call
+ * {@code AscensionCombat} makes for all of it.
  */
 public final class StatSystem {
 

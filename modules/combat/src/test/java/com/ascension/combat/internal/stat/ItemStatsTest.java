@@ -113,5 +113,6 @@ class ItemStatsTest {
         assertEquals(0.08, CombatStats.OMNIVAMP.toAmount(8), 1e-12);
         assertEquals(15.0, CombatStats.ARMOR.toAmount(15), 1e-12);
         assertEquals(8.0, CombatStats.OMNIVAMP.toWritten(0.08), 1e-12);
+        assertEquals(0.2, CombatStats.ATTACK_SPEED.toAmount(20), 1e-12, "a speed bonus is a percentage too");
     }
 }
