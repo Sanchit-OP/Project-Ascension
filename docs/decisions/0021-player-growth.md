@@ -1,10 +1,11 @@
 # ADR-0021: Player growth comes from milestones, kept as advancements and applied as attribute modifiers
 
-- **Status:** Proposed. Sanchit answered decisions 1, 3 and 4 on 2026-10-15; 2 and 5 follow the
-  recommendation until he says otherwise (`growth.md` §13).
+- **Status:** Accepted, 2026-10-18, when Sanchit had the work merged. He answered decisions 1 to 5 on
+  2026-10-15 and approved the web tree on 2026-10-17; questions 6 to 10 in `growth.md` §13 are built on
+  the first option until he says otherwise.
 - **Date:** 2026-10-15
-- **Number:** 0021 assumes the stats session (prompt 1) takes 0019 and the runes session (prompt 2)
-  takes 0020, in the order of their prompts. Renumber at merge if that is not how it lands.
+- **Number:** 0021 follows 0019 (item stats) and 0020 (rune pages), which had both merged first, so no
+  renumbering was needed.
 
 ## Context
 
@@ -86,7 +87,8 @@ the tree are personal.
 - **Revoking an advancement by command removes its growth.** That is correct, and shared ones
   return to a player at their next login while the team still holds them.
 - **The "Growth" label on the character sheet depends on the stats session's `StatSources`.**
-  Until it lands, growth's modifiers show as "Other", and every stat still works.
+  It is on `main` now, but growth has not registered its prefix yet (a one-line follow-up), so growth's
+  modifiers show as "Other" until it does. Every stat still works.
 - **No HP comes free.** A player who never takes Guard nodes stays at 20 HP; armour and items carry
   their defence. Sanchit chose this; the first boss fights test it.
 - **The screen's state is one small packet**, sent at the end of every refresh (login and every

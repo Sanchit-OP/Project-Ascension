@@ -4,6 +4,18 @@
 > `growth-research.md`. Structural choices: [ADR-0021](../decisions/0021-player-growth.md).
 > Every number here is a placeholder, as in `combat-api.md` §3: Sanchit balances by playing, and
 > every number lives in a data file.
+>
+> **Status, 2026-10-18: merged to `main` ([ADR-0021](../decisions/0021-player-growth.md)).**
+> **Seen in Sanchit's client on a dedicated server:** the screen (K), marking and confirming nodes,
+> nine points earned just by exploring (Earth's four places, the Nether fortress and bastion, the Lunar
+> Archive, the gate ruin and Cataclysm's Ruined Citadel), a connected path of nine nodes accepted by the
+> server, and the server's live stats matching the tree (Max Health 25, Attack Speed 5.2, Omnivamp 0.1).
+> **Not yet seen:** the tree surviving a server restart, death and respawn, a real respec, boss kills
+> (the Warden, the Wither, Cataclysm's four), a gate lit by hand, a second player and late joiners
+> (the shared milestones). **Not done:** polishing the node icons (G5), the closing refactor pass and
+> performance-log reading (G6), registering the "Growth" label with `StatSources` (now on `main`),
+> and §13 questions 6 to 10, built on the first option. `/ascension growth show` prints some numbers raw
+> (Omnivamp as 0.1, not 10%); the screen formats them properly.
 
 ## 1. In short
 
