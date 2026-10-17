@@ -1,6 +1,7 @@
 # Item stats: one system for every item
 
-> **Design, 2026-10-15. Sanchit answered the four decisions the same day** (§11). Not built yet.
+> **Design, 2026-10-15. Sanchit answered the four decisions the same day** (§11). **Increments 1 to 7 are built**
+> (2026-10-16) and Sanchit saw them working in his client on 2026-10-17; increments 8 and 9 are open (§12).
 > The structural choice is [ADR-0019](../decisions/0019-item-stats-are-data.md).
 >
 > Sanchit, 2026-10-15: *"we cant really only have our items have stats … either it comes from diff
@@ -481,12 +482,14 @@ A refactor pass comes every third increment.
 | 9 | **Refactor pass** | |
 
 **Progress:**
-- **Increments 1 and 2 are built** and checked on a dedicated server over RCON. They wait on the
-  client check: the sheet, its hover, `/reload`, and health across a relog.
+- **Client check, 2026-10-17.** Sanchit joined a dedicated server from his Ascension Dev instance,
+  saw stats on the items and called it working. He did not report the sheet's hover, `/reload` or
+  health across a relog one by one; each of those was checked over RCON on the server.
+- **Increments 1 and 2 are built**, checked on a dedicated server over RCON and seen in the client.
 - **Increment 3 is done.** One text helper (`StatText`) replaces two copies of number formatting.
   Stats got a kind (points, percent or speed), so no screen names stats one by one. Jade reads
   through `StatReader`. The old `api.CombatAttributes` is deprecated.
-- **Increment 4 is built** and waits on the client check: League-style stat lines on every item's
+- **Increment 4 is built** and seen in the client: League-style stat lines on every item's
   tooltip, one colour per stat (`CombatStat#color`), shared with the character sheet.
 - **Increment 5 is built** and checked on a dedicated server. Our items' numbers are data, unchanged
   in value; the per-tick code that applied them is gone. Their stats now reach mobs that wear them.
