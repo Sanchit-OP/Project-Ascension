@@ -342,6 +342,57 @@ file path:
 A mod with no compat jar gets entries with a mod check in our own file, or in a modpack's datapack.
 Tier 1 code never names another mod (ADR-0003).
 
+### What Cataclysm's items give with no data of ours
+
+Measured 2026-10-16 on a dedicated server: each item on a zombie, read with `/ascension stats`.
+These are what each item adds. Weapon damage leaves out a bare hand's 1, so a tooltip shows one
+more. The extras Sanchit picks go on top of these, in `ascension-compat-cataclysm`.
+
+| Item | Slot | Attack Damage | Armor | Magic Resist | Health |
+|---|---|---|---|---|---|
+| ancient_spear | weapon | +8.5 |  |  |  |
+| astrape | weapon | +9.5 |  |  |  |
+| athame | weapon | +4 |  |  |  |
+| black_steel_axe | weapon | +8 |  |  |  |
+| black_steel_sword | weapon | +5 |  |  |  |
+| bloom_stone_pauldrons | chest |  | +31 | +22 | +5 |
+| bone_reptile_chestplate | chest |  | +38 | +27 | +6 |
+| bone_reptile_helmet | head |  | +21 | +15 | +6 |
+| brontes | weapon | +13 |  |  |  |
+| ceraunus | weapon | +15 |  |  |  |
+| coral_bardiche | weapon | +9 |  |  |  |
+| coral_spear | weapon | +5.5 |  |  |  |
+| cursed_bow | weapon |  |  |  |  |
+| cursium_boots | feet |  | +17 | +12 | +10 |
+| cursium_chestplate | chest |  | +35 | +25 | +10 |
+| cursium_helmet | head |  | +17 | +12 | +10 |
+| cursium_leggings | legs |  | +28 | +20 | +10 |
+| gauntlet_of_bulwark | weapon | +10 | +10 | +7 | +7 |
+| gauntlet_of_guard | weapon | +10 | +10 | +7 | +7 |
+| gauntlet_of_maelstrom | weapon | +10 | +10 | +7 | +7 |
+| ignitium_boots | feet |  | +21 | +15 | +10 |
+| ignitium_chestplate | chest |  | +38 | +27 | +10 |
+| ignitium_elytra_chestplate | chest |  | +38 | +27 | +10 |
+| ignitium_helmet | head |  | +21 | +15 | +10 |
+| ignitium_leggings | legs |  | +31 | +22 | +10 |
+| infernal_forge | weapon | +13 |  |  |  |
+| meat_shredder | weapon | +7.5 |  |  |  |
+| monstrous_helm | head |  | +10 | +7 | +7 |
+| soul_render | weapon | +14 |  |  |  |
+| the_annihilator | weapon | +7.5 |  |  |  |
+| the_immolator | weapon | +7.5 |  |  |  |
+| the_incinerator | weapon | +13 |  |  |  |
+| tidal_claws | weapon | +7 |  |  |  |
+| void_forge | weapon | +13 |  |  |  |
+
+- **Ignitium and Cursium carry 4 toughness a piece**, so each piece gives +10 Health, the same as
+  netherite's own line. A full Ignitium set is 111 Armor, 79 Magic Resist and +40 Health, against
+  netherite's 69 / 49 / +40, so the boss armour stays the better set.
+- **The three gauntlets carry vanilla armour in the main hand**, so holding one gives Armor, Magic
+  Resist and Health too.
+- **The Cursed Bow gives nothing**, like every vanilla bow: arrows take the shooter's Attack Damage
+  instead (`PhysicalDamage`).
+
 ## 9. Mobs in the same data
 
 **Sanchit, 2026-10-15: yes.** `MobStats`' hard-coded tiers become data. (The Warden line below
