@@ -642,9 +642,9 @@ def draw_node(img, node, state):
     blit(img, g, int(round(x - 3.5)), int(round(y - 3.5)))
 
 
-def centre_emblem(img):
+def centre_emblem(img, cx=None, cy=None):
     """A neutral four-pointed star in a brass ring: the placeholder for growth.md question 9."""
-    cx, cy = CENTRE
+    cx, cy = (cx, cy) if cx is not None else CENTRE
     glow(img, cx, cy, 15, STAR_BRASS[3], 90)
     circle(img, cx, cy, 8.5, STAR_BRASS[2])
     circle(img, cx, cy, 6.5, with_alpha(STAR_BRASS[1], 200))
@@ -688,7 +688,6 @@ def title_bar(img, marked):
 
 def side_panel(img, nodes, available, marked_n):
     x0 = 272
-    vline(img, x0 - 4, 21, PANEL_H - 4, with_alpha(STAR_BRASS[1], 150))
     draw_text(img, x0, 24, 'POINTS', TEXT_DIM)
     big = str(available)
     draw_text(img, x0, 34, big, TEXT, bold=True)
@@ -752,18 +751,13 @@ def card(img, x, y, w, name, tag, ramp, body, numbers, note, ax=0, ay=0):
 def render_tree(hover=None):
     nodes = load_nodes()
     taken, marked = set(SPENT), set(MARKED)
-    img = star_panel(random.Random(3107))
+    img = static_panel()
     title_bar(img, len(marked))
-    for dx, dy, arm in ((-1, -1, 'power'), (1, -1, 'fury'), (1, 1, 'guard'), (-1, 1, 'wayfarer')):
-        arm_cloud(img, CENTRE[0] + dx * 52, CENTRE[1] + dy * 46, ARMS[arm]['ramp'])
-    # the rings' faint guides, under everything
-    for r in (1, 2, 3, 4):
-        circle(img, CENTRE[0], CENTRE[1], r * UNIT, with_alpha(STAR_BRASS[1], 40))
     # links under the sockets, each drawn once
     drawn = set()
     for node in nodes.values():
         a = node_xy(node)
-        for other_id in node['near']:
+        for other_id in sorted(node['near']):
             key = frozenset((node['id'], other_id))
             if key in drawn:
                 continue
@@ -827,8 +821,78 @@ def fit_sheet(panel):
     return out
 
 
+def static_panel():
+    """What never changes on the screen: the night sky in its brass frame, a faint cloud of each theme's
+    colour, the rings' guides and the line between the tree and the side panel."""
+    img = star_panel(random.Random(3107))
+    for dx, dy, arm in ((-1, -1, 'power'), (1, -1, 'fury'), (1, 1, 'guard'), (-1, 1, 'wayfarer')):
+        arm_cloud(img, CENTRE[0] + dx * 52, CENTRE[1] + dy * 46, ARMS[arm]['ramp'])
+    for r in (1, 2, 3, 4):
+        circle(img, CENTRE[0], CENTRE[1], r * UNIT, with_alpha(STAR_BRASS[1], 40))
+    vline(img, 268, 21, PANEL_H - 4, with_alpha(STAR_BRASS[1], 150))
+    return img
+
+
+# ---------------------------------------------------------------------------------------------
+# The screen's own textures: what GrowthScreen draws with (combat/.../client/GrowthSprites.java
+# mirrors this layout, in pixels)
+# ---------------------------------------------------------------------------------------------
+
+TEXTURES = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'assets', 'ascension_combat',
+                        'textures', 'gui', 'growth')
+THEME_ORDER = ['power', 'fury', 'guard', 'wayfarer']
+GLYPH_ORDER = ['hp', 'armor', 'mr', 'ad', 'leth', 'pen', 'as', 'omni', 'ms', 'dig', 'reach', 'fall', 'step']
+SHEET_W, SHEET_H = 144, 144
+
+
+def socket_sprite(theme, notable, state):
+    size = NOTABLE if notable else SMALL
+    locked = state == 'locked'
+    ramp = NEUTRAL if locked else ARMS[theme]['ramp']
+    img = star_socket(size, ramp, 'open' if locked else state, 'world' if notable else 'round')
+    if notable:                              # framed: a second ring just inside the first
+        circle(img, size / 2, size / 2, size / 2 - 3.2, with_alpha((90, 96, 110, 255) if locked else ramp[3], 150))
+    return img
+
+
+def ring_sprite(size, extra, radius_extra, alpha, dash):
+    """A ring drawn round a socket: dashed white for a marked node, solid for the one under the pointer."""
+    box = size + extra
+    img = new(box, box)
+    circle(img, box / 2, box / 2, size / 2 + radius_extra, with_alpha(TEXT, alpha), 1.0, dash=dash)
+    return img
+
+
+def write_textures():
+    os.makedirs(TEXTURES, exist_ok=True)
+    sheet = new(SHEET_W, SHEET_H)
+    for i, theme in enumerate(THEME_ORDER):
+        y = 21 * i
+        blit(sheet, socket_sprite(theme, False, 'chosen'), 0, y)
+        blit(sheet, socket_sprite(theme, False, 'open'), 13, y)
+        blit(sheet, socket_sprite(theme, True, 'chosen'), 26, y)
+        blit(sheet, socket_sprite(theme, True, 'open'), 47, y)
+    blit(sheet, socket_sprite('guard', False, 'locked'), 0, 84)
+    blit(sheet, socket_sprite('guard', True, 'locked'), 13, 84)
+    blit(sheet, ring_sprite(SMALL, 4, 1.2, 235, 22), 34, 84)
+    blit(sheet, ring_sprite(NOTABLE, 4, 1.2, 235, 22), 51, 84)
+    blit(sheet, ring_sprite(SMALL, 6, 2.4, 230, 0), 76, 84)
+    blit(sheet, ring_sprite(NOTABLE, 6, 2.4, 230, 0), 95, 84)
+    emblem = new(31, 31)
+    centre_emblem(emblem, 15, 15)
+    blit(sheet, emblem, 0, 112)
+    for i, key in enumerate(GLYPH_ORDER):
+        colour = STAT[key]
+        blit(sheet, glyph_img(key, colour, mix(colour, TEXT, 0.55)), 32 + 8 * i, 112)
+        blit(sheet, glyph_img(key, mix(colour, (150, 160, 190, 255), 0.45), mix(colour, TEXT, 0.4)), 32 + 8 * i, 120)
+        blit(sheet, glyph_img(key, (112, 120, 140, 230), (112, 120, 140, 230)), 32 + 8 * i, 128)
+    sheet.save(os.path.join(TEXTURES, 'nodes.png'))
+    static_panel().save(os.path.join(TEXTURES, 'panel.png'))
+
+
 def main():
     os.makedirs(DESIGN, exist_ok=True)
+    write_textures()
     for name in os.listdir(DESIGN):
         if name.endswith('.png'):
             os.remove(os.path.join(DESIGN, name))
