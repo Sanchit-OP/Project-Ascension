@@ -42,11 +42,17 @@ to clients.
   growth never names `worlds`, and `worlds` never names growth.
 - Any other mod or datapack can add a milestone with two JSON files.
 
-**3. Growth writes only attribute modifiers**, one per attribute, all with the id
-`ascension_combat:growth`. They are worked out again from the player's advancements and taken nodes
-on every change, never added up and stored. Attributes are named by id, so growth can raise any
-mod's attribute and skips one that isn't installed. The stat-reading API counts these modifiers as
-**bonus** (Sanchit, 2026-10-15), so every item ratio on bonus stats grows with growth too.
+**3. Growth writes only attribute modifiers**, one per attribute and operation, with ids under
+`ascension_combat:growth/` (`growth/add_value`, `growth/add_multiplied_base`). They are worked out
+again from the player's advancements and taken nodes on every change, never added up and stored.
+They are permanent modifiers, because a player's saved attributes load before their health, so a
+max-HP bonus is in place before a reloaded player's health is read. Attributes are named by id, so
+growth can raise any mod's attribute and skips one that isn't installed.
+
+There is no base/bonus split (the stats session, `item-stats.md` §6, Sanchit 2026-10-15): a stat is
+one total, and items scale off it. Growth adds to that total, so it feeds item scaling directly,
+which is what Sanchit's answer "bonus" asked for. The stats session's `StatSources` labels the
+`ascension_combat:growth/` prefix "Growth" on the character sheet.
 
 **4. Shared milestones belong to the whole server** (Sanchit, 2026-10-15). A milestone marked `shared` (bosses and gates)
 goes to every player when it is earned, and to anyone joining later on their first login. The team
@@ -60,16 +66,18 @@ the tree are personal.
 
 - **Persistence is mostly vanilla's.** Advancements are saved and synced by the game. The only new
   saved state is each player's taken nodes and the server's list of shared milestones.
-- **Balancing is a data edit.** Because totals are worked out rather than stored, changing a number
-  and running `/reload` changes every player's stats, and a total can never drift from what earned it.
+- **Balancing is a data edit.** Because totals are worked out rather than stored, a changed number
+  reaches every player, and a total can never drift from what earned it. Growth's own files are
+  datapack registries, which load at server start (as planets and archive entries do), so a change
+  there needs a restart; advancements reload with `/reload`.
 - **The advancements screen gains an Ascension tab**, which doubles as a list of goals. That is a
   visible change players will see.
 - **`ascension-worlds` changes slightly:** `GateProgress` awards the gate advancements, beside the
   sync it already sends when the network changes.
 - **Revoking an advancement by command removes its growth.** That is correct, and shared ones
   return to a player at their next login while the team still holds them.
-- **Growth's numbers depend on the stats session's API** for the base and bonus split. Until it
-  exists, growth's modifiers are ordinary attribute modifiers and every stat still works.
+- **The "Growth" label on the character sheet depends on the stats session's `StatSources`.**
+  Until it lands, growth's modifiers show as "Other", and every stat still works.
 - **No HP comes free.** A player who never takes Guard nodes stays at 20 HP; armour and items carry
   their defence. Sanchit chose this; the first boss fights test it.
 - **Respec** is anywhere out of combat for 20 XP levels (Sanchit, 2026-10-15). It reads combat
@@ -91,5 +99,5 @@ the tree are personal.
   research, §3).
 - **Milestones that give stats directly** (a heart per boss, as in Zelda). Proposed first; Sanchit
   chose points only, so that every stat is a choice.
-- **Growth as base stats**, as League's levels are. Sanchit chose bonus, so growth feeds item
-  scaling directly.
+- **Growth as base stats**, as League's levels are. Sanchit chose bonus, and the stats session then
+  dropped the split altogether: growth adds to the one total.

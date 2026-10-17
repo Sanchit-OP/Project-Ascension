@@ -184,17 +184,17 @@ sword (7) is about 3.6% more damage.
 - **Fury and Wayfarer filled:** 20 HP, +48% Attack Speed, 7% Omnivamp, +18% Move Speed, and
   the explorer's kit.
 
-### Base or bonus
+### Base or bonus: neither
 
-**Decided (Sanchit, 2026-10-15): growth counts as bonus.** Base is the player's own value
-(vanilla's 20 HP, 1 Attack Damage), which never changes. So every item ratio on "bonus Attack
-Damage" or "bonus HP" grows with both items and growth. That is Sanchit's "these stats will be used
-in the items' scaling as well": every point a player puts into Power also makes their items hit
-harder.
+**There is no base/bonus split** (the stats session, `item-stats.md` §6, Sanchit 2026-10-15). A
+stat is one total, and items scale off the total. Growth adds to that total, so every point a player
+puts into Power also makes their items hit harder. That is what Sanchit's answer "bonus" asked for,
+and his "these stats will be used in the items' scaling as well".
 
 ### For the stats session (through Sanchit)
 
-- **Count `ascension_combat:growth` modifiers as bonus** in the stat-reading API.
+- **Growth's modifiers carry the prefix `ascension_combat:growth/`**, which growth registers with
+  `StatSources` as "Growth" once that API lands (their increment 2).
 - **A legendary item's raw stats ≈ 8 to 10 units**, about the growth from two or three bosses
   (`player-power.md` §3.3). For example +2.5 Attack Damage, or +10 HP, or +40 Armor, before its
   effect.
@@ -263,14 +263,20 @@ And a tree node, in `data/ascension_combat/ascension_combat/growth_node/guard/st
 | Points and stats | Nowhere: worked out from the three above | No |
 
 **Nothing is added up and stored.** Points and stats are worked out again from the player's
-advancements and nodes whenever something changes. A balance change in a data file takes effect
-on the next `/reload` or login, and a total can never drift from what earned it. A node removed
-from the data gives its point back.
+advancements and nodes whenever something changes, so a total can never drift from what earned it,
+and a node removed from the data gives its point back. Growth's own files are datapack registries,
+which load at server start, as planets and archive entries do: a change to one needs a restart.
+Advancements reload with `/reload`. The server log checks the data at every start and reload: a
+milestone naming a missing advancement, a link to a missing node, or an attribute that isn't
+installed is reported, not silently skipped.
 
 ### Applying stats
 
-- **One attribute modifier per stat, all with the id `ascension_combat:growth`.** Worked out again
-  and replaced, never stacked.
+- **One attribute modifier per attribute and operation**, with ids `ascension_combat:growth/add_value`
+  and `ascension_combat:growth/add_multiplied_base` (and `add_multiplied_total`, unused so far).
+  Worked out again and replaced, never stacked.
+- **Permanent modifiers**, saved with the player: their saved attributes load before their health, so
+  max HP from growth is in place before a reloaded player's health is read.
 - **When:** login, respawn, an advancement earned or revoked, nodes taken, a respec, `/reload`.
 - **Gaining max HP heals the difference**, so a new heart arrives full.
 - **On respawn**, the new body gets its modifiers first, then full health.
@@ -315,7 +321,8 @@ from the data gives its point back.
 ## 11. Working with the other sessions
 
 **Stats (prompt 1).** Requests, through Sanchit:
-1. **Count `ascension_combat:growth` modifiers as bonus**, in the stat-reading API (§8, decided).
+1. **Growth registers `ascension_combat:growth/` with `StatSources`** as "Growth" once that API
+   lands. Nothing else is needed: there is no base/bonus split (§8).
 2. **No new combat stats needed.** Growth uses HP, Attack Damage, Attack Speed, Move Speed, Armor,
    Magic Resist, Omnivamp, Lethality and Penetration as they exist. Wayfarer uses vanilla
    attributes (movement speed, block break speed, safe fall distance, step height, block reach).
@@ -341,8 +348,8 @@ comes last, so the rules underneath are proven first with a debug command.
 
 | Step | What | How it is checked |
 |---|---|---|
-| **G1** | The data and the rules: both registries, the player and team attachments, the stat modifiers, an Ascension advancement tab, the Warden and Wither milestones, the Guard arm's nodes, and a debug command (`/ascension growth show`, `take <node>`, `respec`) | Dedicated server: kill the Warden, see the toast and 3 points. Take two Guard HP nodes: 22 HP. A second client joins and has 3 points too. Restart the server: still 22. Die: respawn at 22, full. |
-| **G2** | Every source and every node: the gates (`worlds` awards their advancements), Cataclysm's four bosses (`compat-cataclysm` data), the discoveries, all four arms, and the respec rule (out of combat, 20 levels) | Each source earned in a client, totals on the debug command. A respec refused in combat and without the levels. |
+| **G1** | The data and the rules: both registries, the player and team attachments, the stat modifiers, an Ascension advancement tab, the Warden and Wither milestones, the Guard arm's nodes, the respec rule, and a command (`/ascension growth`, `take <node>`, `respec`) | Dedicated server: kill the Warden, see the toast and 3 points. Take two Guard HP nodes: 22 HP. A second client joins and has 3 points too. Restart the server: still 22. Die: respawn at 22, full. |
+| **G2** | Every source and every node: the gates (`worlds` awards their advancements), Cataclysm's four bosses (`compat-cataclysm` data), the discoveries, and the other three arms | Each source earned in a client, totals on the command. |
 | **G3** | Refactor pass (ADR-0008) | No new features. |
 | **G4** | The screen, working: the tree, cards, taking and confirming, the side panel, the respec button, the toast | Take nodes from the screen, confirm, see the stats. Reload the world: still taken. |
 | **G5** | The screen's art, once Sanchit has approved a mockup | Seen at GUI scales 2, 3 and 4. |
@@ -359,7 +366,8 @@ Growth adds no items in v1, so the resource ledger is unchanged.
    given automatically.
 3. **Directions:** **a four-arm skill tree.**
 4. **Respec:** **anywhere out of combat, for 20 XP levels.**
-5. **Base or bonus:** growth counts as **bonus**.
+5. **Base or bonus:** growth counts as **bonus**. The stats session then settled that there is no
+   split at all: growth adds to the one total items scale off, which gives the same result.
 
 **Still open.** Until Sanchit says otherwise, the build follows the recommendation, which is listed
 first:

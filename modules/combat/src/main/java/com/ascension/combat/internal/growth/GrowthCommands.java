@@ -1,0 +1,202 @@
+package com.ascension.combat.internal.growth;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+
+/**
+ * {@code /ascension growth}: what a player's growth is, and, until the tree screen exists
+ * (growth.md section 12, step G4), how they take nodes and respec. {@code take} and {@code respec}
+ * are the player's own actions under the same rules the screen will use, so they need no
+ * permission; reading another player and the team commands are for operators.
+ *
+ * <pre>
+ * /ascension growth                         your points, milestones, nodes and stats
+ * /ascension growth show &lt;player&gt;           the same for someone else (op)
+ * /ascension growth take &lt;node&gt;             take a node
+ * /ascension growth respec                  reset your tree (out of combat, 20 levels)
+ * /ascension growth reset &lt;player&gt;          reset someone's tree, free (op)
+ * /ascension growth team                    the team's shared milestones (op)
+ * /ascension growth team forget &lt;advancement&gt;  so it can be earned again (op)
+ * </pre>
+ */
+final class GrowthCommands {
+
+    private GrowthCommands() {
+    }
+
+    static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("ascension")
+                .then(Commands.literal("growth")
+                        .executes(ctx -> show(ctx.getSource(), ctx.getSource().getPlayerOrException()))
+                        .then(Commands.literal("show")
+                                .requires(source -> source.hasPermission(2))
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .executes(ctx -> show(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))))
+                        .then(Commands.literal("take")
+                                .then(Commands.argument("node", ResourceLocationArgument.id())
+                                        .suggests(GrowthCommands::suggestNodes)
+                                        .executes(ctx -> take(ctx.getSource(), ResourceLocationArgument.getId(ctx, "node")))))
+                        .then(Commands.literal("respec")
+                                .executes(ctx -> respec(ctx.getSource())))
+                        .then(Commands.literal("reset")
+                                .requires(source -> source.hasPermission(2))
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .executes(ctx -> reset(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))))
+                        .then(Commands.literal("team")
+                                .requires(source -> source.hasPermission(2))
+                                .executes(ctx -> team(ctx.getSource()))
+                                .then(Commands.literal("forget")
+                                        .then(Commands.argument("advancement", ResourceLocationArgument.id())
+                                                .suggests(GrowthCommands::suggestTeamMilestones)
+                                                .executes(ctx -> forget(ctx.getSource(),
+                                                        ResourceLocationArgument.getId(ctx, "advancement"))))))));
+    }
+
+    private static int show(CommandSourceStack source, ServerPlayer player) {
+        int earned = PlayerGrowth.pointsEarned(player);
+        int spent = PlayerGrowth.pointsSpent(player);
+        List<GrowthMilestone> milestones = PlayerGrowth.earnedMilestones(player);
+        var nodes = PlayerGrowth.nodes(player.server);
+
+        MutableComponent text = Component.literal("Growth: ").withStyle(ChatFormatting.GOLD)
+                .append(player.getDisplayName())
+                .append(Component.literal("\nPoints: " + earned + " earned, " + spent + " spent, "
+                        + (earned - spent) + " to spend").withStyle(ChatFormatting.WHITE));
+
+        text.append(Component.literal("\nMilestones: ").withStyle(ChatFormatting.GRAY));
+        if (milestones.isEmpty()) {
+            text.append(Component.literal("none yet").withStyle(ChatFormatting.DARK_GRAY));
+        }
+        for (int i = 0; i < milestones.size(); i++) {
+            GrowthMilestone milestone = milestones.get(i);
+            var advancement = player.server.getAdvancements().get(milestone.advancement());
+            text.append(i == 0 ? Component.empty() : Component.literal(", "))
+                    .append(PlayerGrowth.title(advancement))
+                    .append(Component.literal(" (+" + milestone.points() + ")"));
+        }
+
+        text.append(Component.literal("\nTree: ").withStyle(ChatFormatting.GRAY));
+        List<ResourceLocation> taken = player.getData(GrowthAttachments.GROWTH).takenInOrder();
+        if (taken.isEmpty()) {
+            text.append(Component.literal("nothing taken").withStyle(ChatFormatting.DARK_GRAY));
+        }
+        for (int i = 0; i < taken.size(); i++) {
+            GrowthNode node = nodes.get(taken.get(i));
+            text.append(i == 0 ? Component.empty() : Component.literal(", "))
+                    .append(node == null ? Component.literal(taken.get(i).toString()) : node.displayName(taken.get(i)));
+        }
+
+        text.append(Component.literal("\nStats: ").withStyle(ChatFormatting.GRAY));
+        Map<GrowthStat.StatKey, Double> totals = PlayerGrowth.totals(player);
+        if (totals.isEmpty()) {
+            text.append(Component.literal("none").withStyle(ChatFormatting.DARK_GRAY));
+        }
+        int i = 0;
+        for (Map.Entry<GrowthStat.StatKey, Double> total : totals.entrySet()) {
+            text.append(i++ == 0 ? Component.empty() : Component.literal(", "))
+                    .append(statLine(total.getKey(), total.getValue()));
+        }
+
+        source.sendSuccess(() -> text, false);
+        return earned - spent;
+    }
+
+    private static Component statLine(GrowthStat.StatKey key, double amount) {
+        boolean percent = key.operation() != AttributeModifier.Operation.ADD_VALUE;
+        String number = percent ? format(amount * 100.0) + "%" : format(amount);
+        Attribute attribute = BuiltInRegistries.ATTRIBUTE.get(key.attribute());
+        Component name = attribute == null
+                ? Component.literal(key.attribute().toString())
+                : Component.translatable(attribute.getDescriptionId());
+        return Component.literal((amount >= 0 ? "+" : "") + number + " ").append(name);
+    }
+
+    private static String format(double value) {
+        return value == Math.rint(value) ? Long.toString((long) value) : Double.toString(value);
+    }
+
+    private static int take(CommandSourceStack source, ResourceLocation nodeId) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        GrowthRules.TakeCheck check = PlayerGrowth.take(player, nodeId);
+        GrowthNode node = PlayerGrowth.nodes(player.server).get(nodeId);
+        Component name = node == null ? Component.literal(nodeId.toString()) : node.displayName(nodeId);
+        switch (check) {
+            case OK -> source.sendSuccess(() -> Component.translatable(
+                    "growth.ascension_combat.take.done", name, PlayerGrowth.pointsAvailable(player)), false);
+            case UNKNOWN -> source.sendFailure(Component.translatable("growth.ascension_combat.take.unknown", name));
+            case ALREADY_TAKEN -> source.sendFailure(Component.translatable("growth.ascension_combat.take.taken", name));
+            case NOT_CONNECTED -> source.sendFailure(
+                    Component.translatable("growth.ascension_combat.take.not_connected", name));
+            case NO_POINTS -> source.sendFailure(Component.translatable("growth.ascension_combat.take.no_points"));
+        }
+        return check == GrowthRules.TakeCheck.OK ? 1 : 0;
+    }
+
+    private static int respec(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        GrowthRules.RespecCheck check = PlayerGrowth.respec(player);
+        switch (check) {
+            case OK -> source.sendSuccess(() -> Component.translatable(
+                    "growth.ascension_combat.respec.done", PlayerGrowth.pointsAvailable(player)), false);
+            case NOTHING_TAKEN -> source.sendFailure(Component.translatable("growth.ascension_combat.respec.nothing"));
+            case IN_COMBAT -> source.sendFailure(Component.translatable("growth.ascension_combat.respec.in_combat"));
+            case NOT_ENOUGH_LEVELS -> source.sendFailure(Component.translatable(
+                    "growth.ascension_combat.respec.levels", GrowthRules.RESPEC_LEVELS));
+        }
+        return check == GrowthRules.RespecCheck.OK ? 1 : 0;
+    }
+
+    private static int reset(CommandSourceStack source, ServerPlayer player) {
+        PlayerGrowth.reset(player);
+        source.sendSuccess(() -> Component.literal("Reset ").append(player.getDisplayName())
+                .append("'s skill tree: " + PlayerGrowth.pointsAvailable(player) + " points to spend"), true);
+        return 1;
+    }
+
+    private static int team(CommandSourceStack source) {
+        var earned = PlayerGrowth.team(source.getServer()).earned();
+        source.sendSuccess(() -> Component.literal("Team milestones: "
+                + (earned.isEmpty() ? "none yet" : earned.toString())), false);
+        return earned.size();
+    }
+
+    private static int forget(CommandSourceStack source, ResourceLocation advancement) {
+        boolean had = PlayerGrowth.team(source.getServer()).remove(advancement);
+        if (!had) {
+            source.sendFailure(Component.literal("The team has no milestone " + advancement));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("The team forgot " + advancement
+                + ". Revoke it from players with /advancement to earn it again."), true);
+        return 1;
+    }
+
+    private static CompletableFuture<Suggestions> suggestNodes(CommandContext<CommandSourceStack> ctx,
+            SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggestResource(PlayerGrowth.nodes(ctx.getSource().getServer()).keySet(), builder);
+    }
+
+    private static CompletableFuture<Suggestions> suggestTeamMilestones(CommandContext<CommandSourceStack> ctx,
+            SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggestResource(PlayerGrowth.team(ctx.getSource().getServer()).earned(), builder);
+    }
+}
