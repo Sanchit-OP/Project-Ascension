@@ -10,5 +10,33 @@
     "min_bonus": 0.05,
     "full_ratio": 2.0,
     "max_bonus": 0.15
-  }
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.giant_slayer.n0",
+      "parts": [
+        {
+          "value": "min_bonus",
+          "format": "plus_percent"
+        },
+        {
+          "value": "min_ratio",
+          "format": "over_percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.giant_slayer.n1",
+      "parts": [
+        {
+          "value": "max_bonus",
+          "format": "plus_percent"
+        },
+        {
+          "value": "full_ratio",
+          "format": "over_percent"
+        }
+      ]
+    }
+  ]
 }

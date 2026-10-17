@@ -27,7 +27,7 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
  * mashing the attack button never builds it, waiting for each swing does.
  *
  * <p>Its numbers are the rune's data: {@code hits}, {@code window_seconds}, {@code bonus_damage},
- * {@code exposed_seconds}.
+ * {@code exposed_seconds} and {@code exposed_amplify}.
  */
 public final class CadenceEffects {
 
@@ -82,7 +82,8 @@ public final class CadenceEffects {
         }
 
         event.setAmount(event.getAmount() + (float) values.value("bonus_damage", 3.0));
-        victim.getData(RuneAttachments.EXPOSED.get()).activateUntil(now + values.ticks("exposed_seconds", 5.0));
+        victim.getData(RuneAttachments.EXPOSED.get()).expose(now, now + values.ticks("exposed_seconds", 5.0),
+                (float) values.value("exposed_amplify", 0.10));
         level.sendParticles(ParticleTypes.ENCHANTED_HIT, victim.getX(), victim.getY(0.6), victim.getZ(),
                 16, 0.3, 0.4, 0.3, 0.3);
         level.playSound(null, victim.getX(), victim.getY(), victim.getZ(),

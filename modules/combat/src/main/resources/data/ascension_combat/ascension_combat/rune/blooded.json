@@ -8,5 +8,17 @@
   "growth_cap": 12,
   "values": {
     "omnivamp_per_kind": 0.005
-  }
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.blooded.n0",
+      "parts": [
+        {
+          "value": "omnivamp_per_kind",
+          "format": "plus_percent",
+          "stat": "omnivamp"
+        }
+      ]
+    }
+  ]
 }

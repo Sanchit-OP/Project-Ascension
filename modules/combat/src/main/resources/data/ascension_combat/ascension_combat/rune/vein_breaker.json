@@ -8,5 +8,15 @@
   "values": {
     "max_blocks": 32,
     "exhaustion_per_block": 0.025
-  }
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.vein_breaker.n0",
+      "parts": [
+        {
+          "value": "max_blocks"
+        }
+      ]
+    }
+  ]
 }

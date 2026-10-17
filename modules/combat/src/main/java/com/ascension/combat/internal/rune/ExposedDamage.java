@@ -7,16 +7,13 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 /**
  * The payoff of Exposed ({@link RuneAttachments#EXPOSED}): while it lasts, whatever hits the
- * target hits for {@link #AMPLIFY} more, from anyone, a player, a pet, a trap.
+ * target hits for the exposure's own strength more, from anyone, a player, a pet, a trap.
  *
  * <p>Runs late in the event ({@link EventPriority#LOW}) so it multiplies the damage after the
  * flat bonuses (Relentless Strikes, Cadence's own third hit) have been added: Exposed is "takes
  * more damage", not "takes more of the base".
  */
 public final class ExposedDamage {
-
-    /** The one number Exposed has. Cadence's data sets how long it lasts, not how strong. */
-    public static final float AMPLIFY = 0.10f;
 
     private ExposedDamage() {
     }
@@ -31,8 +28,9 @@ public final class ExposedDamage {
             return;
         }
 
-        if (target.getData(RuneAttachments.EXPOSED.get()).isActive(target.level().getGameTime())) {
-            event.setAmount(event.getAmount() * (1.0f + AMPLIFY));
+        float amplify = target.getData(RuneAttachments.EXPOSED.get()).amplify(target.level().getGameTime());
+        if (amplify > 0.0f) {
+            event.setAmount(event.getAmount() * (1.0f + amplify));
         }
     }
 }

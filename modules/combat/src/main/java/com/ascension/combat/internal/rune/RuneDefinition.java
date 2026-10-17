@@ -1,9 +1,11 @@
 package com.ascension.combat.internal.rune;
 
 import com.ascension.combat.api.rune.RunePath;
+import com.ascension.combat.api.stat.CombatStats;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
@@ -28,10 +30,12 @@ import net.minecraft.resources.ResourceLocation;
  * @param row       a minor's row (0 or 1) or a shard's (0 offence, 1 flex, 2 defence); 0 for keystones
  * @param position  its place in its row or among the keystones, 0 to 2, for the screen
  * @param world     a world keystone: a behaviour for living in Minecraft rather than fighting
- * @param icon      the icon's texture, under {@code textures/gui/rune/}
+ * @param icon      the icon, a GUI sprite: {@code ascension_combat:rune/cadence} is
+ *                  {@code textures/gui/sprites/rune/cadence.png}
  * @param effect    the behaviour that runs it
  * @param values    the behaviour's numbers, by name; times are in seconds
  * @param growthCap for a growing rune (section 4.5), how many kinds of enemy it counts at most
+ * @param numbers   the lines of numbers on its hover card, read from {@code values}
  */
 public record RuneDefinition(
         Optional<RunePath> path,
@@ -42,10 +46,17 @@ public record RuneDefinition(
         ResourceLocation icon,
         ResourceLocation effect,
         Map<String, Double> values,
-        Optional<Integer> growthCap) {
+        Optional<Integer> growthCap,
+        List<RuneNumberLine> numbers) {
 
     public static final int SHARD_ROWS = 3;
     public static final int MINOR_ROWS = 2;
+
+    /** A rune with no hover-card numbers. */
+    public RuneDefinition(Optional<RunePath> path, RuneSlot slot, int row, int position, boolean world,
+            ResourceLocation icon, ResourceLocation effect, Map<String, Double> values, Optional<Integer> growthCap) {
+        this(path, slot, row, position, world, icon, effect, values, growthCap, List.of());
+    }
 
     private static final Codec<RuneDefinition> UNCHECKED = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -58,7 +69,9 @@ public record RuneDefinition(
                     ResourceLocation.CODEC.fieldOf("effect").forGetter(RuneDefinition::effect),
                     Codec.unboundedMap(Codec.STRING, Codec.DOUBLE).optionalFieldOf("values", Map.of())
                             .forGetter(RuneDefinition::values),
-                    Codec.INT.optionalFieldOf("growth_cap").forGetter(RuneDefinition::growthCap))
+                    Codec.INT.optionalFieldOf("growth_cap").forGetter(RuneDefinition::growthCap),
+                    RuneNumberLine.CODEC.listOf().optionalFieldOf("numbers", List.of())
+                            .forGetter(RuneDefinition::numbers))
             .apply(instance, RuneDefinition::new));
 
     /**
@@ -86,6 +99,18 @@ public record RuneDefinition(
         }
         if (rune.growthCap.isPresent() && rune.growthCap.get() <= 0) {
             return DataResult.error(() -> "growth_cap must be positive");
+        }
+        for (RuneNumberLine line : rune.numbers) {
+            for (RuneNumberLine.Part part : line.parts()) {
+                if (!rune.values.containsKey(part.value())) {
+                    return DataResult.error(() -> "numbers line " + line.text() + " reads \"" + part.value()
+                            + "\", which is not one of the rune's values");
+                }
+                if (part.stat().isPresent() && CombatStats.byName(part.stat().get()).isEmpty()) {
+                    return DataResult.error(() -> "numbers line " + line.text() + " names an unknown stat "
+                            + part.stat().get());
+                }
+            }
         }
         return DataResult.success(rune);
     }
