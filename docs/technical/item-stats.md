@@ -253,11 +253,24 @@ public final class StatReader {
     public static StatBreakdown breakdown(LivingEntity entity, CombatStat stat);      // per source
 }
 
+// Where a total comes from: the base value, each worn or held item by name, then each source.
+public record StatBreakdown(double total, List<Part> parts) {
+    public record Part(Component source, double amount) { }
+}
+
 // Names another system's modifiers on the character sheet. Unregistered ones show as "Other".
 public final class StatSources {
     public static void register(ResourceLocation modifierIdPrefix, Component label);
 }
 ```
+
+`value` is in the attribute's own units: points for most stats, attacks per second for Attack
+Speed, vanilla's 0.1 walking speed for Move Speed, and fractions (0.08 = 8%) for Omnivamp and both
+Penetrations. A modifier's written value goes through `CombatStat#modifier`, which knows the
+conversion.
+
+**`/ascension stats [target]`** (permission 2) prints every stat of a living entity with its
+breakdown. It works from a console or RCON, so it checks stats on a dedicated server with no client.
 
 **The contract for the rune and growth sessions:**
 - **Give a stat** by adding an attribute modifier to the stat's attribute (`CombatStat#attribute`).
