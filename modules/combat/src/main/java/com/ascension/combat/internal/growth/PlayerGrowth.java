@@ -111,6 +111,43 @@ public final class PlayerGrowth {
 
     /** Takes one node for the player, if the rules allow it. */
     public static GrowthRules.TakeCheck take(ServerPlayer player, ResourceLocation nodeId) {
+        GrowthRules.TakeCheck check = tryTake(player, nodeId);
+        if (check == GrowthRules.TakeCheck.OK) {
+            refresh(player, true);
+        }
+        return check;
+    }
+
+    /** What stopped one node of a batch, and which node it was. */
+    public record TakeFailure(GrowthRules.TakeCheck check, ResourceLocation node) {
+    }
+
+    /**
+     * Takes nodes in the order given: each is checked against the rules with those before it already
+     * taken, one that fails is skipped, and the player is refreshed once at the end. This is the tree
+     * screen's Confirm, which sends everything marked in one go.
+     *
+     * @return the first failure, or null if every node was taken
+     */
+    public static TakeFailure takeAll(ServerPlayer player, List<ResourceLocation> nodeIds) {
+        TakeFailure first = null;
+        boolean tookAny = false;
+        for (ResourceLocation nodeId : nodeIds) {
+            GrowthRules.TakeCheck check = tryTake(player, nodeId);
+            if (check == GrowthRules.TakeCheck.OK) {
+                tookAny = true;
+            } else if (first == null) {
+                first = new TakeFailure(check, nodeId);
+            }
+        }
+        if (tookAny) {
+            refresh(player, true);
+        }
+        return first;
+    }
+
+    /** Checks and records one node; the caller refreshes. */
+    private static GrowthRules.TakeCheck tryTake(ServerPlayer player, ResourceLocation nodeId) {
         GrowthNode node = nodes(player.server).get(nodeId);
         if (node == null) {
             return GrowthRules.TakeCheck.UNKNOWN;
@@ -119,9 +156,36 @@ public final class PlayerGrowth {
         GrowthRules.TakeCheck check = GrowthRules.check(nodeId, node.links(), state.taken(), pointsAvailable(player));
         if (check == GrowthRules.TakeCheck.OK) {
             state.take(nodeId);
-            refresh(player, true);
         }
         return check;
+    }
+
+    /** A node's name for a message: its display name, or its id if the data has no such node. */
+    public static Component nodeName(MinecraftServer server, ResourceLocation nodeId) {
+        GrowthNode node = nodes(server).get(nodeId);
+        return node == null ? Component.literal(nodeId.toString()) : node.displayName(nodeId);
+    }
+
+    /** Why a node could not be taken, in words the player reads. Not for {@code OK}. */
+    public static Component takeFailure(GrowthRules.TakeCheck check, Component nodeName) {
+        return switch (check) {
+            case UNKNOWN -> Component.translatable("growth.ascension_combat.take.unknown", nodeName);
+            case ALREADY_TAKEN -> Component.translatable("growth.ascension_combat.take.taken", nodeName);
+            case NOT_CONNECTED -> Component.translatable("growth.ascension_combat.take.not_connected", nodeName);
+            case NO_POINTS -> Component.translatable("growth.ascension_combat.take.no_points");
+            case OK -> Component.empty();
+        };
+    }
+
+    /** Why a respec was refused, in words the player reads. Not for {@code OK}. */
+    public static Component respecFailure(GrowthRules.RespecCheck check) {
+        return switch (check) {
+            case NOTHING_TAKEN -> Component.translatable("growth.ascension_combat.respec.nothing");
+            case IN_COMBAT -> Component.translatable("growth.ascension_combat.respec.in_combat");
+            case NOT_ENOUGH_LEVELS -> Component.translatable(
+                    "growth.ascension_combat.respec.levels", GrowthRules.RESPEC_LEVELS);
+            case OK -> Component.empty();
+        };
     }
 
     /** Resets the player's tree, every point back to spend, if the rules allow it and they can pay. */
@@ -187,6 +251,7 @@ public final class PlayerGrowth {
         }
 
         apply(player, totals(earned, state, nodes), healGains);
+        GrowthNetwork.sync(player, earned);
     }
 
     /** What the player's growth adds up to, per attribute and operation. */
