@@ -1,0 +1,41 @@
+{
+  "path": "vanguard",
+  "slot": "minor",
+  "row": 0,
+  "position": 1,
+  "icon": "ascension_combat:rune/momentum",
+  "effect": "ascension_combat:momentum",
+  "values": {
+    "max_stacks": 5,
+    "heal_per_stack": 0.01,
+    "chain_seconds": 2
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.momentum.n0",
+      "parts": [
+        {
+          "value": "max_stacks"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.momentum.n1",
+      "parts": [
+        {
+          "value": "heal_per_stack",
+          "format": "percent",
+          "stat": "omnivamp"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.momentum.n2",
+      "parts": [
+        {
+          "value": "chain_seconds"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "path": "vanguard",
+  "slot": "keystone",
+  "position": 0,
+  "icon": "ascension_combat:rune/conquerors_resolve",
+  "effect": "ascension_combat:conquerors_resolve",
+  "values": {
+    "max_stacks": 10,
+    "stack_seconds": 1,
+    "attack_damage_per_stack": 0.5,
+    "omnivamp_per_stack": 0.01
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.conquerors_resolve.n0",
+      "parts": [
+        {
+          "value": "attack_damage_per_stack",
+          "format": "plus",
+          "stat": "attack_damage"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.conquerors_resolve.n1",
+      "parts": [
+        {
+          "value": "omnivamp_per_stack",
+          "format": "plus_percent",
+          "stat": "omnivamp"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.conquerors_resolve.n2",
+      "parts": [
+        {
+          "value": "max_stacks"
+        }
+      ]
+    }
+  ]
+}

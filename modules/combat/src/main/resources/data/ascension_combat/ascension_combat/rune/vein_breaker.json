@@ -1,0 +1,22 @@
+{
+  "path": "vanguard",
+  "slot": "keystone",
+  "world": true,
+  "position": 2,
+  "icon": "ascension_combat:rune/vein_breaker",
+  "effect": "ascension_combat:vein_breaker",
+  "values": {
+    "max_blocks": 32,
+    "exhaustion_per_block": 0.025
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.vein_breaker.n0",
+      "parts": [
+        {
+          "value": "max_blocks"
+        }
+      ]
+    }
+  ]
+}

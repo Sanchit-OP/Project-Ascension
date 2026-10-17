@@ -1,0 +1,27 @@
+{
+  "path": "reaver",
+  "slot": "minor",
+  "row": 1,
+  "position": 0,
+  "icon": "ascension_combat:rune/finishing_blow",
+  "effect": "ascension_combat:finishing_blow",
+  "values": {
+    "below_health": 0.4,
+    "bonus": 0.12
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.finishing_blow.n0",
+      "parts": [
+        {
+          "value": "bonus",
+          "format": "plus_percent"
+        },
+        {
+          "value": "below_health",
+          "format": "percent"
+        }
+      ]
+    }
+  ]
+}

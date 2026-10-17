@@ -1,0 +1,52 @@
+{
+  "path": "bulwark",
+  "slot": "keystone",
+  "position": 1,
+  "icon": "ascension_combat:rune/pack_leader",
+  "effect": "ascension_combat:pack_leader",
+  "values": {
+    "share": 0.5,
+    "bonus_damage": 3,
+    "heal_share": 0.25,
+    "heal_radius": 32,
+    "save_cooldown_seconds": 180
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.pack_leader.n0",
+      "parts": [
+        {
+          "value": "share",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.pack_leader.n1",
+      "parts": [
+        {
+          "value": "bonus_damage",
+          "format": "plus",
+          "stat": "attack_damage"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.pack_leader.n2",
+      "parts": [
+        {
+          "value": "heal_share",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.pack_leader.n3",
+      "parts": [
+        {
+          "value": "save_cooldown_seconds"
+        }
+      ]
+    }
+  ]
+}

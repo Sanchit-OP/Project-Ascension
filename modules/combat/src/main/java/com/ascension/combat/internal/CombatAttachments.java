@@ -298,71 +298,18 @@ public final class CombatAttachments {
             () -> AttachmentType.builder(ArmedState::new).build());
 
     /**
-     * A player's saved rune page (docs/technical/combat-api.md section 7): primary path (keystone
-     * plus two minors) and secondary path (two minors, no keystone). Attached to the player and,
-     * unlike the fight-local state above, meant to persist &mdash; a rune choice is a build
-     * decision, not combat bookkeeping, so this one attachment is serialized.
+     * A player's saved rune page and its growing runes' growth (docs/technical/rune-system.md
+     * sections 3 and 4.5). Unlike the fight-local state above, meant to persist: a rune choice is a
+     * build decision, not combat bookkeeping, so this one attachment is serialized, and copied on
+     * death so dying doesn't wipe the page. (Before 2026-10-17 it wasn't copied, and every death
+     * silently cleared the player's runes.)
      */
     public static final Supplier<AttachmentType<RunePageState>> RUNE_PAGE = TYPES.register(
             "rune_page",
             () -> AttachmentType.builder(RunePageState::new)
-                    .serialize(RunePageState.CODEC)
+                    .serialize(RunePageState.SAVED_CODEC)
+                    .copyOnDeath()
                     .build());
-
-    /**
-     * Vanguard's Conqueror's Resolve keystone (see {@code internal.rune.vanguard}): a damage/heal
-     * stack every second in combat, same shape as {@link #PROTEAN_MASK_STATE}, the mechanic's
-     * first consumer.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<CombatStackState>> CONQUERORS_RESOLVE_STATE = TYPES.register(
-            "conquerors_resolve_state",
-            () -> AttachmentType.builder(CombatStackState::new).build());
-
-    /**
-     * Relentless Strikes' (Vanguard minor) hit-stack, attached to the wielder: builds per hit
-     * landed, decays if the next hit doesn't come in time, same shape as {@link #ARMOR_SHRED}.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<StackingChargeState>> RELENTLESS_STRIKES_STACKS = TYPES.register(
-            "relentless_strikes_stacks",
-            () -> AttachmentType.builder(StackingChargeState::new).build());
-
-    /**
-     * Second Wind's (Vanguard minor) per-tick heal cooldown, attached to the wielder &mdash;
-     * reuses {@link DurationState} as a cooldown gate (skip while {@code isActive}, act and reset
-     * when it isn't) rather than a burst window, the same reuse
-     * {@link com.ascension.combat.internal.armor.RocketbeltEffects} makes of it for a delay timer
-     * instead of an active-window.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<DurationState>> SECOND_WIND_COOLDOWN = TYPES.register(
-            "second_wind_cooldown",
-            () -> AttachmentType.builder(DurationState::new).build());
-
-    /**
-     * Killing Surge's (Vanguard minor) post-kill attack-speed window, attached to the wielder,
-     * same shape as {@link #EDGE_OF_NIGHT_BURST}.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<DurationState>> KILLING_SURGE_BURST = TYPES.register(
-            "killing_surge_burst",
-            () -> AttachmentType.builder(DurationState::new).build());
-
-    /**
-     * Momentum's (Vanguard minor) chained-hit stack, attached to the wielder: builds per hit
-     * landed within the window, decays like {@link #RELENTLESS_STRIKES_STACKS}, scales the
-     * omnivamp-shaped heal on each hit while active.
-     *
-     * <p>Same non-serialization reasoning as {@link #ARMOR_SHRED}.
-     */
-    public static final Supplier<AttachmentType<StackingChargeState>> MOMENTUM_STACKS = TYPES.register(
-            "momentum_stacks",
-            () -> AttachmentType.builder(StackingChargeState::new).build());
 
     /**
      * Grievous Wounds' real heal-block gate, attached to the target carrying it. Not the vanilla

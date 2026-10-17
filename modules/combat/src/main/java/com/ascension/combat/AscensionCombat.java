@@ -17,11 +17,11 @@ import com.ascension.combat.internal.mechanics.GrievousWoundsHealing;
 import com.ascension.combat.internal.mechanics.OmnivampHealing;
 import com.ascension.combat.internal.mechanics.PhysicalDamage;
 import com.ascension.combat.internal.net.CombatNetwork;
-import com.ascension.combat.internal.rune.vanguard.ConquerorsResolveEffects;
-import com.ascension.combat.internal.rune.vanguard.KillingSurgeEffects;
-import com.ascension.combat.internal.rune.vanguard.MomentumEffects;
-import com.ascension.combat.internal.rune.vanguard.RelentlessStrikesEffects;
-import com.ascension.combat.internal.rune.vanguard.SecondWindEffects;
+import com.ascension.combat.internal.rune.RuneCommands;
+import com.ascension.combat.internal.rune.RuneConfig;
+import com.ascension.combat.internal.rune.RuneContent;
+import com.ascension.combat.internal.rune.RuneRegistries;
+import com.ascension.combat.internal.rune.RuneSystem;
 import com.ascension.combat.internal.stat.StatSystem;
 import com.ascension.combat.internal.weapons.DarkenBladeEffects;
 import com.ascension.combat.internal.weapons.DariusAxeEffects;
@@ -39,8 +39,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +77,12 @@ public final class AscensionCombat {
         StatSystem.register(modBus, NeoForge.EVENT_BUS);
         modBus.addListener(CombatNetwork::register);
         CombatNetwork.registerLoginSync(NeoForge.EVENT_BUS);
+
+        // Runes (docs/technical/rune-system.md): the rune registry, Rune Chalk, settings, command.
+        RuneRegistries.register(modBus);
+        RuneContent.register(modBus);
+        container.registerConfig(ModConfig.Type.SERVER, RuneConfig.SPEC);
+        NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> RuneCommands.register(event.getDispatcher()));
 
         // The one place non-client code names a client class (same isolation AtmosphereNetwork
         // uses for its own client-only handler reference) -- gated so the keybind never loads on
@@ -114,12 +122,8 @@ public final class AscensionCombat {
         SterakHarnessEffects.register(NeoForge.EVENT_BUS);
         TestMagicBladeEffects.register(NeoForge.EVENT_BUS);
 
-        // Vanguard, the first rune path out the door (docs/technical/combat-api.md section 7).
-        ConquerorsResolveEffects.register(NeoForge.EVENT_BUS);
-        RelentlessStrikesEffects.register(NeoForge.EVENT_BUS);
-        SecondWindEffects.register(NeoForge.EVENT_BUS);
-        KillingSurgeEffects.register(NeoForge.EVENT_BUS);
-        MomentumEffects.register(NeoForge.EVENT_BUS);
+        // The runes (docs/technical/rune-system.md); each path's behaviours register inside.
+        RuneSystem.register(NeoForge.EVENT_BUS);
 
         LOGGER.info("Ascension Combat loaded ({})", container.getModInfo().getVersion());
     }

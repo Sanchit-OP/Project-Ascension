@@ -1,0 +1,27 @@
+{
+  "path": "vanguard",
+  "slot": "minor",
+  "row": 1,
+  "position": 1,
+  "icon": "ascension_combat:rune/killing_surge",
+  "effect": "ascension_combat:killing_surge",
+  "values": {
+    "attack_speed": 0.2,
+    "seconds": 3
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.killing_surge.n0",
+      "parts": [
+        {
+          "value": "attack_speed",
+          "format": "plus_percent",
+          "stat": "attack_speed"
+        },
+        {
+          "value": "seconds"
+        }
+      ]
+    }
+  ]
+}

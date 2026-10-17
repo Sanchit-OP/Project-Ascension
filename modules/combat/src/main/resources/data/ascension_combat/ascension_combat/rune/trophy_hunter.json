@@ -1,0 +1,24 @@
+{
+  "path": "reaver",
+  "slot": "minor",
+  "row": 1,
+  "position": 2,
+  "icon": "ascension_combat:rune/trophy_hunter",
+  "effect": "ascension_combat:trophy_hunter",
+  "growth_cap": 12,
+  "values": {
+    "lethality_per_kind": 1
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.trophy_hunter.n0",
+      "parts": [
+        {
+          "value": "lethality_per_kind",
+          "format": "plus",
+          "stat": "lethality"
+        }
+      ]
+    }
+  ]
+}

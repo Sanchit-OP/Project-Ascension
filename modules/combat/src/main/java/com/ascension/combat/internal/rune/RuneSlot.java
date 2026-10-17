@@ -1,12 +1,30 @@
 package com.ascension.combat.internal.rune;
 
+import com.mojang.serialization.Codec;
+import java.util.Locale;
+import net.minecraft.util.StringRepresentable;
+
 /**
- * Where in a path a rune sits (docs/technical/combat-api.md section 7): a path's one
- * {@code KEYSTONE} is granted automatically the instant that path is chosen as primary (see
- * {@link RunePageState}), while its {@code MINOR} runes are picked individually, up to two per
- * side, whether that path is primary or secondary.
+ * Where on a page a rune goes (docs/technical/rune-system.md section 3).
+ *
+ * <ul>
+ *   <li>{@code KEYSTONE}: one of a path's three, the primary path's only. One may be a world
+ *       keystone ({@link RuneDefinition#world()}).</li>
+ *   <li>{@code MINOR}: one of a path's two rows of three; a page takes one per row, on either
+ *       side.</li>
+ *   <li>{@code SHARD}: a stat shard, in one of three rows (offence, flex, defence), belonging to no
+ *       path.</li>
+ * </ul>
  */
-public enum RuneSlot {
+public enum RuneSlot implements StringRepresentable {
     KEYSTONE,
-    MINOR
+    MINOR,
+    SHARD;
+
+    public static final Codec<RuneSlot> CODEC = StringRepresentable.fromEnum(RuneSlot::values);
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
+    }
 }

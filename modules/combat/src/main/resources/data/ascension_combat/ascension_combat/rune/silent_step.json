@@ -1,0 +1,21 @@
+{
+  "path": "reaver",
+  "slot": "keystone",
+  "world": true,
+  "position": 2,
+  "icon": "ascension_combat:rune/silent_step",
+  "effect": "ascension_combat:silent_step",
+  "values": {
+    "notice_distance": 6
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.silent_step.n0",
+      "parts": [
+        {
+          "value": "notice_distance"
+        }
+      ]
+    }
+  ]
+}

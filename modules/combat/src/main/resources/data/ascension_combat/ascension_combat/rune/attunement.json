@@ -1,0 +1,22 @@
+{
+  "path": "aetherwright",
+  "slot": "minor",
+  "row": 0,
+  "position": 0,
+  "icon": "ascension_combat:rune/attunement",
+  "effect": "ascension_combat:attunement",
+  "values": {
+    "bonus": 0.12
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.attunement.n0",
+      "parts": [
+        {
+          "value": "bonus",
+          "format": "plus_percent"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "path": "vanguard",
+  "slot": "keystone",
+  "position": 1,
+  "icon": "ascension_combat:rune/cadence",
+  "effect": "ascension_combat:cadence",
+  "values": {
+    "hits": 3,
+    "window_seconds": 4,
+    "bonus_damage": 3.0,
+    "exposed_seconds": 5,
+    "exposed_amplify": 0.1
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.cadence.n0",
+      "parts": [
+        {
+          "value": "hits"
+        },
+        {
+          "value": "window_seconds"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.cadence.n1",
+      "parts": [
+        {
+          "value": "bonus_damage",
+          "format": "plus",
+          "stat": "attack_damage"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.cadence.n2",
+      "parts": [
+        {
+          "value": "exposed_amplify",
+          "format": "plus_percent"
+        },
+        {
+          "value": "exposed_seconds"
+        }
+      ]
+    }
+  ]
+}

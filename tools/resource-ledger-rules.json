@@ -50,6 +50,7 @@
     "ascension_combat:test_magic_blade": "weapon or armour"
   },
   "used_by_code": {
+    "ascension_combat:rune_chalk": "Spent, with experience levels, by a rune page save that removes or replaces a rune (RuneChangeCost)",
     "ascension_worlds:gateway_key": "Attunes its own planet's gate (GatewayAttunement)",
     "ascension_worlds:warden_tendril": "Wakes Earth's player-built gate, one tendril per gate (GatewayPortalActivation)"
   },

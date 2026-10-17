@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.ArmedState;
 import com.ascension.combat.internal.mechanics.DurationState;
@@ -176,9 +177,10 @@ public final class HeartwoodOfPallasEffects {
             return;
         }
 
-        cooldown.activateUntil(now + CHARGE_COOLDOWN_TICKS);
+        int cooldownTicks = ItemAbilities.cooldown(player, CHARGE_COOLDOWN_TICKS);
+        cooldown.activateUntil(now + cooldownTicks);
         PacketDistributor.sendToPlayer(
-                player, new AbilityCooldownSyncPayload(AbilityKey.HEARTWOOD, now + CHARGE_COOLDOWN_TICKS, CHARGE_COOLDOWN_TICKS));
+                player, new AbilityCooldownSyncPayload(AbilityKey.HEARTWOOD, now + cooldownTicks, cooldownTicks));
         player.getData(CombatAttachments.HEARTWOOD_CHARGE_PENDING).arm();
     }
 

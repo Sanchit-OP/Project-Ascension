@@ -1,0 +1,23 @@
+{
+  "path": "aetherwright",
+  "slot": "minor",
+  "row": 1,
+  "position": 0,
+  "icon": "ascension_combat:rune/siphon",
+  "effect": "ascension_combat:siphon",
+  "values": {
+    "heal": 0.1
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.siphon.n0",
+      "parts": [
+        {
+          "value": "heal",
+          "format": "percent",
+          "stat": "omnivamp"
+        }
+      ]
+    }
+  ]
+}

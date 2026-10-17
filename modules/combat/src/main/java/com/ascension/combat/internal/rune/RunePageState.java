@@ -1,129 +1,198 @@
 package com.ascension.combat.internal.rune;
 
-import com.ascension.combat.api.rune.RunePath;
+import com.ascension.combat.AscensionCombat;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * A player's saved rune page (docs/technical/combat-api.md section 7): a primary path, whose one
- * keystone (see {@link RuneCatalog}) is granted automatically the moment that path is chosen --
- * only one keystone per path exists so far, so there is nothing further to pick there -- plus up
- * to two of that path's minors; and a secondary path contributing up to two of its own minors,
- * with no keystone.
+ * A player's saved rune page (docs/technical/rune-system.md sections 3 and 4.5), and the growth
+ * of its growing runes: for each, the kinds of enemy it has counted.
  *
- * <p>Attached to the player and serialized ({@link #CODEC}): unlike this module's fight-local
- * state (docs/technical/combat-api.md section 5), a rune choice is a build decision meant to
- * survive a logout, the same reasoning {@code PlanetArrivalMemory} in {@code ascension-worlds}
- * gives for serializing itself.
+ * <p>Attached to the player, serialized, and copied on death (see
+ * {@code CombatAttachments#RUNE_PAGE}): a rune choice is a build decision, and growth is kept
+ * through death; only changing the rune resets it.
+ *
+ * <p><b>Pages saved before 2026-10-17</b> load: their four fields keep their names
+ * ({@link RunePage#CODEC}), and their rune ids, written then as {@code vanguard_<name>}, are
+ * renamed to the plain {@code <name>} the data files use. They had no keystone field, because a
+ * path had only one keystone; {@link #fillMissingKeystone} gives them their path's first.
  */
 public final class RunePageState {
 
+    private static final MapCodec<Map<ResourceLocation, List<ResourceLocation>>> GROWTH =
+            Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC.listOf())
+                    .optionalFieldOf("growth", Map.of());
+
     public static final Codec<RunePageState> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    RunePath.CODEC.optionalFieldOf("primary_path")
-                            .forGetter(state -> Optional.ofNullable(state.primaryPath)),
-                    ResourceLocation.CODEC.listOf().fieldOf("primary_minors")
-                            .forGetter(state -> List.copyOf(state.primaryMinors)),
-                    RunePath.CODEC.optionalFieldOf("secondary_path")
-                            .forGetter(state -> Optional.ofNullable(state.secondaryPath)),
-                    ResourceLocation.CODEC.listOf().fieldOf("secondary_minors")
-                            .forGetter(state -> List.copyOf(state.secondaryMinors)))
-            .apply(instance, (primary, primaryMinors, secondary, secondaryMinors) -> new RunePageState(
-                    primary.orElse(null),
-                    new HashSet<>(primaryMinors),
-                    secondary.orElse(null),
-                    new HashSet<>(secondaryMinors))));
+                    RunePage.CODEC.fieldOf("page").forGetter(RunePageState::page),
+                    GROWTH.forGetter(RunePageState::growthForSave))
+            .apply(instance, (page, growth) -> new RunePageState(page, growth, false)));
 
-    private RunePath primaryPath;
-    private RunePath secondaryPath;
-    private final Set<ResourceLocation> primaryMinors;
-    private final Set<ResourceLocation> secondaryMinors;
+    /** Reads either today's shape or the 2026-09-19 one, which had the page's fields at the top. */
+    public static final Codec<RunePageState> SAVED_CODEC = Codec.withAlternative(
+            CODEC, RunePage.CODEC.xmap(page -> new RunePageState(page, Map.of(), true), RunePageState::page));
+
+    private RunePage page;
+    private final Map<ResourceLocation, Set<ResourceLocation>> growth = new HashMap<>();
+
+    /** The page resolved against the registry it was resolved with; see {@link #resolve}. */
+    private Registry<RuneDefinition> resolvedAgainst;
+    private List<RuneDefinition> resolved = List.of();
+
+    /** Set while a page loaded in the 2026-09-19 shape still lacks the keystone it implicitly had. */
+    private boolean legacy;
 
     public RunePageState() {
-        this(null, Set.of(), null, Set.of());
+        this(RunePage.EMPTY, Map.of(), false);
     }
 
-    private RunePageState(
-            RunePath primaryPath,
-            Set<ResourceLocation> primaryMinors,
-            RunePath secondaryPath,
-            Set<ResourceLocation> secondaryMinors) {
-        this.primaryPath = primaryPath;
-        this.primaryMinors = new HashSet<>(primaryMinors);
-        this.secondaryPath = secondaryPath;
-        this.secondaryMinors = new HashSet<>(secondaryMinors);
+    private RunePageState(RunePage page, Map<ResourceLocation, List<ResourceLocation>> growth, boolean legacy) {
+        this.page = legacy ? renameLegacyIds(page) : page;
+        this.legacy = legacy;
+        growth.forEach((rune, kinds) -> this.growth.put(rune, new LinkedHashSet<>(kinds)));
     }
 
-    public RunePath primaryPath() {
-        return primaryPath;
-    }
-
-    public RunePath secondaryPath() {
-        return secondaryPath;
-    }
-
-    public Set<ResourceLocation> primaryMinors() {
-        return Set.copyOf(primaryMinors);
-    }
-
-    public Set<ResourceLocation> secondaryMinors() {
-        return Set.copyOf(secondaryMinors);
-    }
-
-    public boolean hasPrimaryPath(RunePath path) {
-        return primaryPath == path;
-    }
-
-    /** Whether either side of the page has picked the minor rune {@code id}. */
-    public boolean hasMinor(ResourceLocation id) {
-        return primaryMinors.contains(id) || secondaryMinors.contains(id);
+    public RunePage page() {
+        return page;
     }
 
     /**
-     * Replaces the whole page in one step, validated against {@link RuneCatalog} rather than
-     * trusting the client's own selection -- the server-side handler for
-     * {@link com.ascension.combat.internal.net.SetRunePagePayload} calls this and nothing else.
-     * Returns {@code false} and leaves the page unchanged if the requested selection breaks a
-     * rule: no primary path, primary and secondary the same path, more than two minors on
-     * either side, or a minor that doesn't belong to the path it's claimed under.
+     * Replaces the page. Callers have already validated it ({@link RunePageRules}). A rune taken
+     * off the page loses its growth.
      */
-    public boolean trySetPage(
-            RunePath newPrimaryPath,
-            Set<ResourceLocation> newPrimaryMinors,
-            RunePath newSecondaryPath,
-            Set<ResourceLocation> newSecondaryMinors) {
-        if (newPrimaryPath == null || newPrimaryPath == newSecondaryPath) {
-            return false;
-        }
-        if (newPrimaryMinors.size() > 2 || newSecondaryMinors.size() > 2) {
-            return false;
-        }
-        if (newSecondaryPath == null && !newSecondaryMinors.isEmpty()) {
-            return false;
-        }
-        if (!validMinorsFor(newPrimaryPath).containsAll(newPrimaryMinors)) {
-            return false;
-        }
-        if (newSecondaryPath != null && !validMinorsFor(newSecondaryPath).containsAll(newSecondaryMinors)) {
-            return false;
-        }
+    public void set(RunePage newPage) {
+        this.page = newPage;
+        this.growth.keySet().retainAll(newPage.runes());
+        this.resolvedAgainst = null;
+    }
 
-        this.primaryPath = newPrimaryPath;
-        this.primaryMinors.clear();
-        this.primaryMinors.addAll(newPrimaryMinors);
-        this.secondaryPath = newSecondaryPath;
-        this.secondaryMinors.clear();
-        this.secondaryMinors.addAll(newSecondaryMinors);
+    public boolean has(ResourceLocation rune) {
+        return page.runes().contains(rune);
+    }
+
+    /**
+     * The page's runes as definitions, in a fixed order (keystone, minors, shards). Cached per
+     * registry instance: a datapack registry never changes while a server runs, and a new server
+     * means a new instance. Ids the registry no longer holds (a datapack removed the rune) are
+     * skipped, so a removed rune simply does nothing.
+     */
+    public List<RuneDefinition> resolve(Registry<RuneDefinition> runes) {
+        if (resolvedAgainst != runes) {
+            List<RuneDefinition> out = new ArrayList<>();
+            List<ResourceLocation> ids = new ArrayList<>();
+            page.keystone().ifPresent(ids::add);
+            ids.addAll(page.primaryMinors());
+            ids.addAll(page.secondaryMinors());
+            ids.addAll(page.shards());
+            for (ResourceLocation id : ids) {
+                RuneDefinition rune = runes.get(id);
+                if (rune != null) {
+                    out.add(rune);
+                }
+            }
+            resolved = List.copyOf(out);
+            resolvedAgainst = runes;
+        }
+        return resolved;
+    }
+
+    /** The rune on this page that runs {@code effect}, if any. */
+    public Optional<RuneDefinition> active(Registry<RuneDefinition> runes, ResourceLocation effect) {
+        for (RuneDefinition rune : resolve(runes)) {
+            if (rune.effect().equals(effect)) {
+                return Optional.of(rune);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Gives a page saved before keystones were a choice its path's first keystone, which it had
+     * then without picking. A page saved since keeps an empty keystone if the player left it so.
+     *
+     * @return whether the page changed
+     */
+    public boolean fillMissingKeystone(Registry<RuneDefinition> runes) {
+        if (!legacy || page.primary().isEmpty() || page.keystone().isPresent()) {
+            legacy = false;
+            return false;
+        }
+        Optional<ResourceLocation> first = runes.entrySet().stream()
+                .filter(e -> e.getValue().slot() == RuneSlot.KEYSTONE && e.getValue().path().equals(page.primary()))
+                .min(Comparator.comparingInt(e -> e.getValue().position()))
+                .map(e -> e.getKey().location());
+        if (first.isEmpty()) {
+            return false;
+        }
+        set(page.withKeystone(first.get()));
+        legacy = false;
         return true;
     }
 
-    private static Set<ResourceLocation> validMinorsFor(RunePath path) {
-        return RuneCatalog.minorsOf(path).stream().map(RuneDefinition::id).collect(Collectors.toSet());
+    /** How many kinds of enemy a growing rune has counted. */
+    public int growth(ResourceLocation rune) {
+        Set<ResourceLocation> kinds = growth.get(rune);
+        return kinds == null ? 0 : kinds.size();
+    }
+
+    /**
+     * Counts a kind of enemy for a growing rune on the page. A kind already counted counts no
+     * more, which is what keeps a mob farm from filling it.
+     *
+     * @return whether the rune grew
+     */
+    public boolean grow(ResourceLocation rune, ResourceLocation kind, int cap) {
+        if (!has(rune)) {
+            return false;
+        }
+        Set<ResourceLocation> kinds = growth.computeIfAbsent(rune, r -> new LinkedHashSet<>());
+        return kinds.size() < cap && kinds.add(kind);
+    }
+
+    /** Every growing rune's count, for the client. */
+    public Map<ResourceLocation, Integer> growthCounts() {
+        Map<ResourceLocation, Integer> counts = new HashMap<>();
+        growth.forEach((rune, kinds) -> counts.put(rune, kinds.size()));
+        return counts;
+    }
+
+    private Map<ResourceLocation, List<ResourceLocation>> growthForSave() {
+        Map<ResourceLocation, List<ResourceLocation>> out = new HashMap<>();
+        growth.forEach((rune, kinds) -> out.put(rune, List.copyOf(kinds)));
+        return out;
+    }
+
+    // --- pages saved before 2026-10-17 --------------------------------------------------------
+
+    private static final String LEGACY_PREFIX = "vanguard_";
+
+    private static RunePage renameLegacyIds(RunePage saved) {
+        return new RunePage(saved.primary(), saved.keystone(),
+                saved.primaryMinors().stream().map(RunePageState::renameLegacyId).toList(),
+                saved.secondary(),
+                saved.secondaryMinors().stream().map(RunePageState::renameLegacyId).toList(),
+                saved.shards());
+    }
+
+    private static boolean isLegacyId(ResourceLocation id) {
+        return id.getNamespace().equals(AscensionCombat.MOD_ID) && id.getPath().startsWith(LEGACY_PREFIX);
+    }
+
+    private static ResourceLocation renameLegacyId(ResourceLocation id) {
+        return isLegacyId(id)
+                ? ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().substring(LEGACY_PREFIX.length()))
+                : id;
     }
 }
