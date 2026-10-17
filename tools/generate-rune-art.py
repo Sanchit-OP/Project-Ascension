@@ -4,8 +4,9 @@
 Owns the Rune Chalk item's texture (assets/ascension_combat/textures/item/rune_chalk.png) and the
 mockups under design/runes/: the rune screen as an orrery, drawn at one texel per GUI pixel and
 shown at GUI scale 3; a hover card; every path as primary and a new player's locked page; how the
-panel fits at GUI scales 2 to 4; and every icon in its socket. The screen's own textures, under
-assets/ascension_combat/textures/gui/rune/, come with the orrery's build.
+panel fits at GUI scales 2 to 4; and every icon in its socket. It also writes the screen's own
+textures, as GUI sprites under assets/ascension_combat/textures/gui/sprites/ (section "The screen's
+textures" below), and a contact sheet of them, design/runes/kit.png.
 
 The layout's history: League's two columns first, which Sanchit turned down on 2026-10-16 ("its
 kinda exact copy of the layout for the runes"); then four others (a rune pouch, a loadout round
@@ -1095,6 +1096,10 @@ RUNES = {
 
 SHARD_ROWS = [('Offence', ['ad', 'as', 'ms']), ('Flex', ['ad', 'armor', 'mr']), ('Defence', ['hp', 'armor', 'mr'])]
 
+# Which path each rune belongs to.
+RUNE_PATH = {rid: path for path, d in RUNES.items()
+             for rid, _ in d['keystones'] + [rune for row in d['rows'] for rune in row]}
+
 # One plain sentence per keystone: what the box under the secondary dial says.
 BLURB = {
     'conquerors_resolve': 'Every second in a fight: more Attack Damage and healing, up to 10 stacks.',
@@ -1650,11 +1655,220 @@ def rune_chalk():
     return img
 
 
+# ---------------------------------------------------------------------------------------------
+# The screen's textures (R8): GUI sprites, one PNG per piece, the same drawing the mockups use.
+#
+# Minecraft's own sprite system finds them: `ascension_combat:rune/cadence` is
+# textures/gui/sprites/rune/cadence.png, and a `.png.mcmeta` beside a panel makes it a nine-slice.
+# A rune's data file names its sprite in `icon`, so a datapack's new rune brings its own.
+# One texel per GUI pixel; nothing is scaled in game.
+# ---------------------------------------------------------------------------------------------
+
+GUI = os.path.join(TEXTURES, 'gui', 'sprites')
+GUI_OWNED = ['rune', 'path', 'shard', 'socket', 'dial', 'nebula', 'hub', 'card', 'button', 'icon', 'panel.png']
+
+KEY_SOCKET, MINOR_SOCKET, SHARD_SOCKET = 30, 22, 16   # the sockets' sizes: keystone, minor and path tab, shard
+KEY_GLYPH, MINOR_GLYPH, SHARD_GLYPH = 20, 14, 8       # and their glyphs'
+HUB_PRIMARY, HUB_SECONDARY = 28, 22                   # the hubs' sizes
+DIAL_PRIMARY, DIAL_SECONDARY = 180, 108               # the dial frames' sizes
+NEBULA_PRIMARY, NEBULA_SECONDARY = 180, 110
+
+WHITE = (255, 255, 255, 255)
+
+
+def ring_sprite(socket, grow, alpha):
+    """A white ring just outside a socket, for hover: tinted or left white in game."""
+    size = socket + grow * 2
+    img = new(size, size)
+    c = size / 2
+    circle(img, c, c, socket / 2 + 2.4, with_alpha(WHITE, alpha), 1.0)
+    return img
+
+
+def halo_sprite(socket):
+    """A soft white glow round a chosen keystone: drawn tinted in the path's colour, its alpha
+    breathing."""
+    size = socket + 8
+    img = new(size, size)
+    glow(img, size / 2, size / 2, size / 2, WHITE, 190)
+    return img
+
+
+def card_sprite(ramp):
+    """The hover card's frame, a nine-slice: lit along the top, shaded below, brass at the corners."""
+    n = 10
+    img = new(n, n)
+    rect(img, 0, 0, n, n, with_alpha((6, 9, 20, 255), 244))
+    hline(img, 0, n, 0, ramp[3])
+    hline(img, 0, n, n - 1, ramp[1])
+    vline(img, 0, 0, n, ramp[2])
+    vline(img, n - 1, 0, n, ramp[1])
+    for (x, y) in ((0, 0), (n - 1, 0), (0, n - 1), (n - 1, n - 1)):
+        put(img, x, y, STAR_BRASS[3])
+    return img
+
+
+def button_sprite(fill, border):
+    n = 8
+    img = new(n, n)
+    rect(img, 0, 0, n, n, fill)
+    hline(img, 0, n, 0, border)
+    hline(img, 0, n, n - 1, border)
+    vline(img, 0, 0, n, border)
+    vline(img, n - 1, 0, n, border)
+    return img
+
+
+def dial_sprite(size, rim, rows, minor_r, ramp, key_r=0):
+    img = new(size, size)
+    dial_frame(img, size / 2, size / 2, rim, rows, minor_r, ramp, key_r)
+    return img
+
+
+def nebula_sprite(size, centre, seed, ramp, strength):
+    """A path's faint cloud, cropped from where the mockup paints it so it sits the same."""
+    panel = new(PANEL_W, PANEL_H)
+    half = size // 2
+    nebula(panel, centre[0] - half, centre[1] - half, centre[0] + half, centre[1] + half, ramp, strength,
+           random.Random(seed))
+    return panel.crop((centre[0] - half, centre[1] - half, centre[0] + half, centre[1] + half))
+
+
+def hub_sprite(size, path, ramp, locked=False):
+    img = new(size, size)
+    dial_hub(img, size / 2, size / 2, size / 2, path, ramp, locked)
+    return img
+
+
+def sprite_set():
+    """Every sprite the screen draws, as (name, image, mcmeta or None), in a fixed order."""
+    out = []
+
+    def add(name, img, mcmeta=None):
+        out.append((name, img, mcmeta))
+
+    for path in PATH_ORDER:
+        ramp = PATHS[path]['ramp']
+        for state in ('open', 'chosen'):
+            add('socket/%s_key_%s' % (path, state), star_socket(KEY_SOCKET, ramp, state))
+            add('socket/%s_world_%s' % (path, state), star_socket(KEY_SOCKET, ramp, state, 'world'))
+            add('socket/%s_minor_%s' % (path, state), star_socket(MINOR_SOCKET, ramp, state))
+        add('path/%s_small' % path, emblem(path, 'chosen', 14))
+        add('path/%s_small_open' % path, emblem(path, 'open', 14))
+        add('path/%s_small_barred' % path, emblem(path, 'barred', 14))
+        add('hub/%s' % path, hub_sprite(HUB_PRIMARY, path, ramp))
+        add('hub/%s_small' % path, hub_sprite(HUB_SECONDARY, path, ramp))
+        add('dial/primary_%s' % path, dial_sprite(DIAL_PRIMARY, P_RIM, PRIMARY_ROWS, P_MINOR, ramp, P_KEY))
+        add('dial/secondary_%s' % path, dial_sprite(DIAL_SECONDARY, S_RIM, SECONDARY_ROWS, S_MINOR, ramp))
+        i = PATH_ORDER.index(path)
+        add('nebula/%s' % path, nebula_sprite(NEBULA_PRIMARY, (P_CX, P_CY), 7 + i, ramp, 0.8))
+        add('nebula/%s_small' % path, nebula_sprite(NEBULA_SECONDARY, (S_CX, S_CY), 11 + i, ramp, 0.6))
+        add('card/%s' % path, card_sprite(ramp),
+            {'gui': {'scaling': {'type': 'nine_slice', 'width': 10, 'height': 10, 'border': 2}}})
+        for rid, p in RUNE_PATH.items():
+            if p == path:
+                add('rune/%s' % rid, glyph(rid, ramp, 'chosen'))
+                add('rune/%s_open' % rid, glyph(rid, ramp, 'open'))
+
+    add('card/neutral', card_sprite(NEUTRAL),
+        {'gui': {'scaling': {'type': 'nine_slice', 'width': 10, 'height': 10, 'border': 2}}})
+    for stat in SHARD_MAPS:
+        ramp = stat_ramp(stat)
+        add('socket/shard_%s_open' % stat, star_socket(SHARD_SOCKET, ramp, 'open'))
+        add('socket/shard_%s_chosen' % stat, star_socket(SHARD_SOCKET, ramp, 'chosen'))
+        add('shard/%s' % stat, shard_glyph(stat, 'chosen'))
+        add('shard/%s_open' % stat, shard_glyph(stat, 'open'))
+    add('socket/minor_locked', star_socket(MINOR_SOCKET, NEUTRAL, 'locked'))
+    add('socket/key_locked', star_socket(KEY_SOCKET, NEUTRAL, 'locked'))
+    add('socket/shard_locked', star_socket(SHARD_SOCKET, NEUTRAL, 'locked'))
+    add('socket/hover_key', ring_sprite(KEY_SOCKET, 3, 235))
+    add('socket/hover_minor', ring_sprite(MINOR_SOCKET, 3, 235))
+    add('socket/hover_shard', ring_sprite(SHARD_SOCKET, 3, 235))
+    add('socket/halo_key', halo_sprite(KEY_SOCKET))
+    add('dial/secondary_locked', dial_sprite(DIAL_SECONDARY, S_RIM, [], S_MINOR, NEUTRAL))
+    # a player who has chosen no path yet: a plain dial and an empty hub
+    add('dial/primary_none', dial_sprite(DIAL_PRIMARY, P_RIM, [], P_MINOR, NEUTRAL, P_KEY))
+    empty_hub = new(HUB_PRIMARY, HUB_PRIMARY)
+    for (x, y) in disc(HUB_PRIMARY / 2, HUB_PRIMARY / 2, HUB_PRIMARY / 2):
+        put(empty_hub, x, y, SKY[1])
+    circle(empty_hub, HUB_PRIMARY / 2, HUB_PRIMARY / 2, HUB_PRIMARY / 2, STAR_BRASS[1], 1.2)
+    add('hub/none', empty_hub)
+    add('hub/locked', hub_sprite(HUB_SECONDARY, None, NEUTRAL, locked=True))
+    add('icon/padlock', padlock(NEUTRAL))
+    xp = new(8, 8)
+    draw_xp_orb(xp, 0, 0)
+    add('icon/xp_orb', xp)
+    nine = {'gui': {'scaling': {'type': 'nine_slice', 'width': 8, 'height': 8, 'border': 1}}}
+    add('button/normal', button_sprite((10, 14, 28, 255), STAR_BRASS[1]), nine)
+    add('button/hover', button_sprite((24, 30, 52, 255), STAR_BRASS[3]), nine)
+    add('button/primary', button_sprite((10, 14, 28, 255), STAR_BRASS[2]), nine)
+    add('button/primary_hover', button_sprite((28, 34, 56, 255), STAR_BRASS[3]), nine)
+    add('button/disabled', button_sprite((8, 10, 18, 255), TEXT_FAINT), nine)
+    add('panel', star_panel(random.Random(2203)))
+    return out
+
+
+def export_gui():
+    """Writes every sprite under textures/gui/sprites/, replacing what this script wrote before, and
+    returns the set for the contact sheet."""
+    import json
+    import shutil
+    for owned in GUI_OWNED:
+        target = os.path.join(GUI, owned)
+        if os.path.isdir(target):
+            shutil.rmtree(target)
+        elif os.path.isfile(target):
+            os.remove(target)
+            if os.path.isfile(target + '.mcmeta'):
+                os.remove(target + '.mcmeta')
+    sprites = sprite_set()
+    for name, img, mcmeta in sprites:
+        path = os.path.join(GUI, name + '.png')
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        img.save(path)
+        if mcmeta:
+            with open(path + '.mcmeta', 'w', newline='\n') as f:
+                json.dump(mcmeta, f, indent=2)
+                f.write('\n')
+    return sprites
+
+
+def kit_sheet(sprites):
+    """Every sprite, 3x, in groups, on a dark ground, named: the art kit at a glance."""
+    groups = {}
+    for name, img, _ in sprites:
+        if name != 'panel':
+            groups.setdefault(name.split('/')[0], []).append((name, img))
+    k, pad, width = 3, 8, 1400
+    rows, y = [], pad
+    for group in ['rune', 'socket', 'path', 'shard', 'hub', 'icon', 'button', 'card', 'dial', 'nebula']:
+        items = groups.get(group, [])
+        x, line_h, placed = pad, 0, []
+        y += 14
+        for name, img in items:
+            kk = 1 if img.width > 60 else k      # the big dials and clouds at 1x, the small pieces at 3x
+            w, h = img.width * kk, img.height * kk
+            if x + w + pad > width:
+                x, y, line_h = pad, y + line_h + 6, 0
+            placed.append((name, img, x, y, kk))
+            x += w + pad
+            line_h = max(line_h, h)
+        rows.append((group, y - 14 if not placed else placed[0][3] - 14, placed))
+        y += line_h + 10
+    sheet = new(width, y + pad, hexc('#1a1a1e'))
+    for group, gy, placed in rows:
+        draw_text(sheet, pad, gy, group.upper(), TEXT_DIM)
+        for name, img, x, py, kk in placed:
+            sheet.alpha_composite(scaled(img, kk), (x, py))
+    return sheet
+
+
 def main():
     os.makedirs(DESIGN, exist_ok=True)
     item_dir = os.path.join(TEXTURES, 'item')
     os.makedirs(item_dir, exist_ok=True)
     rune_chalk().save(os.path.join(item_dir, 'rune_chalk.png'))
+    sprites = export_gui()
     for name in os.listdir(DESIGN):
         if name.endswith('.png'):
             os.remove(os.path.join(DESIGN, name))
@@ -1666,7 +1880,8 @@ def main():
     fit_sheet(panel).save(os.path.join(DESIGN, 'orrery-fit-gui-scales.png'))
     paths_sheet().save(os.path.join(DESIGN, 'orrery-every-path.png'))
     icon_sheet().save(os.path.join(DESIGN, 'icons.png'))
-    print('wrote', DESIGN)
+    kit_sheet(sprites).save(os.path.join(DESIGN, 'kit.png'))
+    print('wrote', DESIGN, 'and', len(sprites), 'sprites under', GUI)
 
 
 if __name__ == '__main__':
