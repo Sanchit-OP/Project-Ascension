@@ -1,6 +1,9 @@
 package com.ascension.combat.internal.growth;
 
+import com.ascension.combat.client.ClientGrowth;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
@@ -17,6 +20,10 @@ public final class Growth {
     public static void register(IEventBus modBus, IEventBus gameBus) {
         GrowthAttachments.register(modBus);
         modBus.addListener(Growth::onNewDataPackRegistries);
+        modBus.addListener(GrowthNetwork::register);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ClientGrowth.register(gameBus);
+        }
         GrowthEvents.register(gameBus);
         gameBus.addListener((RegisterCommandsEvent event) -> GrowthCommands.register(event.getDispatcher()));
     }

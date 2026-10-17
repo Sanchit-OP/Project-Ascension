@@ -88,7 +88,7 @@ final class GrowthCommands {
         text.append(section("Milestones", milestoneLines, "none yet"));
 
         List<Component> nodeLines = player.getData(GrowthAttachments.GROWTH).takenInOrder().stream()
-                .map(id -> nodes.get(id) == null ? Component.literal(id.toString()) : nodes.get(id).displayName(id))
+                .map(id -> PlayerGrowth.nodeName(player.server, id))
                 .toList();
         text.append(section("Tree", nodeLines, "nothing taken"));
 
@@ -130,32 +130,26 @@ final class GrowthCommands {
     private static int take(CommandSourceStack source, ResourceLocation nodeId) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         GrowthRules.TakeCheck check = PlayerGrowth.take(player, nodeId);
-        GrowthNode node = PlayerGrowth.nodes(player.server).get(nodeId);
-        Component name = node == null ? Component.literal(nodeId.toString()) : node.displayName(nodeId);
-        switch (check) {
-            case OK -> source.sendSuccess(() -> Component.translatable(
+        Component name = PlayerGrowth.nodeName(player.server, nodeId);
+        if (check == GrowthRules.TakeCheck.OK) {
+            source.sendSuccess(() -> Component.translatable(
                     "growth.ascension_combat.take.done", name, PlayerGrowth.pointsAvailable(player)), false);
-            case UNKNOWN -> source.sendFailure(Component.translatable("growth.ascension_combat.take.unknown", name));
-            case ALREADY_TAKEN -> source.sendFailure(Component.translatable("growth.ascension_combat.take.taken", name));
-            case NOT_CONNECTED -> source.sendFailure(
-                    Component.translatable("growth.ascension_combat.take.not_connected", name));
-            case NO_POINTS -> source.sendFailure(Component.translatable("growth.ascension_combat.take.no_points"));
+            return 1;
         }
-        return check == GrowthRules.TakeCheck.OK ? 1 : 0;
+        source.sendFailure(PlayerGrowth.takeFailure(check, name));
+        return 0;
     }
 
     private static int respec(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player = source.getPlayerOrException();
         GrowthRules.RespecCheck check = PlayerGrowth.respec(player);
-        switch (check) {
-            case OK -> source.sendSuccess(() -> Component.translatable(
+        if (check == GrowthRules.RespecCheck.OK) {
+            source.sendSuccess(() -> Component.translatable(
                     "growth.ascension_combat.respec.done", PlayerGrowth.pointsAvailable(player)), false);
-            case NOTHING_TAKEN -> source.sendFailure(Component.translatable("growth.ascension_combat.respec.nothing"));
-            case IN_COMBAT -> source.sendFailure(Component.translatable("growth.ascension_combat.respec.in_combat"));
-            case NOT_ENOUGH_LEVELS -> source.sendFailure(Component.translatable(
-                    "growth.ascension_combat.respec.levels", GrowthRules.RESPEC_LEVELS));
+            return 1;
         }
-        return check == GrowthRules.RespecCheck.OK ? 1 : 0;
+        source.sendFailure(PlayerGrowth.respecFailure(check));
+        return 0;
     }
 
     private static int reset(CommandSourceStack source, ServerPlayer player) {
