@@ -1,0 +1,43 @@
+{
+  "path": "bulwark",
+  "slot": "minor",
+  "row": 0,
+  "position": 0,
+  "icon": "ascension_combat:rune/plating",
+  "effect": "ascension_combat:plating",
+  "values": {
+    "trigger_damage": 4,
+    "hits": 3,
+    "window_seconds": 3,
+    "reduction": 0.3,
+    "cooldown_seconds": 12
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.plating.n0",
+      "parts": [
+        {
+          "value": "trigger_damage"
+        },
+        {
+          "value": "hits"
+        },
+        {
+          "value": "window_seconds"
+        },
+        {
+          "value": "reduction",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.plating.n1",
+      "parts": [
+        {
+          "value": "cooldown_seconds"
+        }
+      ]
+    }
+  ]
+}

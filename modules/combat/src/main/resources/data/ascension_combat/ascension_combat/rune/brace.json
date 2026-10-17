@@ -1,0 +1,66 @@
+{
+  "path": "bulwark",
+  "slot": "keystone",
+  "position": 0,
+  "icon": "ascension_combat:rune/brace",
+  "effect": "ascension_combat:brace",
+  "values": {
+    "big_hit": 0.25,
+    "armor": 40,
+    "magic_resist": 40,
+    "seconds": 2.5,
+    "base_damage": 3,
+    "armor_ratio": 0.1,
+    "radius": 4,
+    "knockback": 1.0,
+    "cooldown_seconds": 12
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.brace.n0",
+      "parts": [
+        {
+          "value": "big_hit",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.brace.n1",
+      "parts": [
+        {
+          "value": "armor",
+          "format": "plus",
+          "stat": "armor"
+        },
+        {
+          "value": "seconds"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.brace.n2",
+      "parts": [
+        {
+          "value": "base_damage"
+        },
+        {
+          "value": "armor_ratio",
+          "format": "percent",
+          "stat": "armor"
+        },
+        {
+          "value": "radius"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.brace.n3",
+      "parts": [
+        {
+          "value": "cooldown_seconds"
+        }
+      ]
+    }
+  ]
+}
