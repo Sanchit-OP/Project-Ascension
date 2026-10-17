@@ -5,6 +5,8 @@ import com.ascension.combat.client.RuneScreen;
 import com.ascension.combat.client.rune.OrreryLayout;
 import com.ascension.combat.client.rune.OrreryLayout.Point;
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.CombatAttributes;
+import com.ascension.combat.internal.rune.RuneContent;
 import com.ascension.combat.internal.rune.RuneModifiers;
 import com.ascension.combat.internal.rune.RunePage;
 import com.ascension.combat.internal.rune.RunePageState;
@@ -17,17 +19,24 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.BackupConfirmScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * A development aid, dormant unless a file named {@code rune-screenshots.txt} sits in the game
- * directory: when it does, and the client is in a world, this opens the rune screen at GUI scales
+ * directory: when it does, this opens the singleplayer world {@code runes-test} from the title
+ * screen, then opens the rune screen at GUI scales
  * 2, 3 and 4 (a new player's empty page, then a real page, with hover cards) and saves a
  * screenshot of each under {@code <game directory>/screenshots/}, then quits the game. It exists so
  * the screen can be seen without a person clicking through it (ADR-0008: nothing is done until it
@@ -48,6 +57,11 @@ public final class RuneScreenshots {
     private static String pending;
     private static int guiScaleBefore;
     private static RuneScreen screen;
+    private static boolean opening;
+    private static int titleTicks;
+
+    /** The singleplayer save the client opens by itself: a world folder named this in the game directory's saves. */
+    private static final String WORLD = "runes-test";
 
     private RuneScreenshots() {
     }
@@ -75,6 +89,7 @@ public final class RuneScreenshots {
             guiScaleBefore = mc.options.guiScale().get();
             mc.options.pauseOnLostFocus = false;
         });
+        add(30, () -> resizeFor(3));
         add(25, () -> open(3));
         add(6, () -> shoot("new-player-3"));
         add(2, () -> mc().setScreen(null));
@@ -85,10 +100,32 @@ public final class RuneScreenshots {
         add(6, () -> shoot("card-keystone-3"));
         add(2, () -> screen.devHover(hoverMinor().x(), hoverMinor().y()));
         add(6, () -> shoot("card-minor-3"));
+        // unsaved choices: Vein Breaker in place of Cadence (a swap, so the cost shows), then the dial turning to Reaver
+        add(2, () -> screen.devHover(-1000, -1000));
+        add(3, () -> screen.devClick(OrreryLayout.primaryKeystone(2, true, 0).x(), OrreryLayout.primaryKeystone(2, true, 0).y()));
+        add(10, () -> shoot("changed-3"));
+        add(3, () -> screen.devClick(OrreryLayout.primaryTab(1).x(), OrreryLayout.primaryTab(1).y()));
+        add(4, () -> shoot("turning-3"));
+        add(14, () -> shoot("reaver-3"));
+        // back to the saved page, then take Blooded off: Save asks before throwing its growth away
+        add(3, () -> screen.devClick(330, 11));
+        add(3, () -> screen.devClick(OrreryLayout.primaryMinor(0, 2, 0).x(), OrreryLayout.primaryMinor(0, 2, 0).y()));
+        add(3, () -> screen.devClick(372, 11));
+        add(6, () -> shoot("confirm-3"));
+        add(3, () -> screen.devClick(270, 118));
+        add(14, () -> shoot("refused-3"));
+        add(3, RuneScreenshots::logServerPage);
+        add(3, RuneScreenshots::grantCost);
+        add(8, () -> screen.devClick(372, 11));
+        add(3, () -> screen.devClick(270, 118));
+        add(14, () -> shoot("saved-3"));
+        add(3, RuneScreenshots::logServerPage);
         add(2, () -> mc().setScreen(null));
+        add(30, () -> resizeFor(2));
         add(15, () -> open(2));
         add(6, () -> shoot("page-2"));
         add(2, () -> mc().setScreen(null));
+        add(40, () -> resizeFor(4));
         add(15, () -> open(4));
         add(6, () -> shoot("page-4"));
         add(2, () -> mc().setScreen(null));
@@ -116,6 +153,15 @@ public final class RuneScreenshots {
         return OrreryLayout.primaryMinor(0, 2, 0);
     }
 
+    /** A window the panel fits at this GUI scale: 400 x 224 GUI pixels is 1200 x 672 at scale 3, 1600 x 896 at 4. */
+    private static void resizeFor(int guiScale) {
+        Minecraft mc = Minecraft.getInstance();
+        mc.options.guiScale().set(guiScale);
+        int width = guiScale >= 4 ? 1640 : 1280;
+        int height = guiScale >= 4 ? 920 : 720;
+        GLFW.glfwSetWindowSize(mc.getWindow().getWindow(), width, height);
+    }
+
     private static void open(int guiScale) {
         Minecraft mc = Minecraft.getInstance();
         mc.options.guiScale().set(guiScale);
@@ -140,7 +186,8 @@ public final class RuneScreenshots {
         server.execute(() -> {
             ResourceLocation blooded = Runes.id("blooded");
             RunePage page = new RunePage(Optional.of(RunePath.VANGUARD), Optional.of(Runes.id("cadence")),
-                    List.of(blooded, Runes.id("giant_slayer")), Optional.empty(), List.of(), List.of());
+                    List.of(blooded, Runes.id("giant_slayer")), Optional.empty(), List.of(),
+                    List.of(Runes.id("shard_offence_attack_speed"), Runes.id("shard_flex_armor")));
             Runes.save(player, page);
             RunePageState state = player.getData(CombatAttachments.RUNE_PAGE);
             for (String kind : List.of("zombie", "skeleton", "spider", "creeper", "witch", "enderman", "slime")) {
@@ -151,9 +198,68 @@ public final class RuneScreenshots {
         });
     }
 
+    /** Gives the singleplayer player one Rune Chalk and five levels, through the server, so a swap can be paid for. */
+    private static void grantCost() {
+        Minecraft mc = Minecraft.getInstance();
+        MinecraftServer server = mc.getSingleplayerServer();
+        if (server == null || mc.player == null) {
+            return;
+        }
+
+        ServerPlayer player = server.getPlayerList().getPlayer(mc.player.getUUID());
+        server.execute(() -> {
+            player.getInventory().add(new ItemStack(RuneContent.RUNE_CHALK.get(), 1));
+            player.giveExperienceLevels(5);
+        });
+    }
+
+    /** Prints what the server holds for the player: the page, the growth, the chalk, the levels, Blooded's omnivamp. */
+    private static void logServerPage() {
+        Minecraft mc = Minecraft.getInstance();
+        MinecraftServer server = mc.getSingleplayerServer();
+        if (server == null || mc.player == null) {
+            return;
+        }
+
+        ServerPlayer player = server.getPlayerList().getPlayer(mc.player.getUUID());
+        server.execute(() -> {
+            RunePageState state = player.getData(CombatAttachments.RUNE_PAGE);
+            System.out.println("[rune-screenshots] SERVER page: keystone=" + state.page().keystone()
+                    + " primaryMinors=" + state.page().primaryMinors() + " shards=" + state.page().shards()
+                    + " growth=" + state.growthCounts()
+                    + " chalk=" + player.getInventory().countItem(RuneContent.RUNE_CHALK.get())
+                    + " levels=" + player.experienceLevel
+                    + " omnivamp=" + player.getAttributeValue(CombatAttributes.OMNIVAMP));
+        });
+    }
+
     private static void onTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.level == null || next >= STEPS.size()) {
+        if (mc.level == null) {
+            // Not in a world yet: once the game has settled on a menu, open the test world once.
+            titleTicks++;
+            if (titleTicks % 100 == 0) {
+                System.out.println("[rune-screenshots] waiting: screen=" + (mc.screen == null ? "none" : mc.screen.getClass().getName())
+                        + " overlay=" + (mc.getOverlay() != null));
+            }
+            if (opening && mc.screen instanceof BackupConfirmScreen backup) {
+                // A world made by the dedicated server asks whether to back up before opening: no.
+                String skip = I18n.get("selectWorld.backupJoinSkipButton");
+                for (var child : backup.children()) {
+                    if (child instanceof Button button && button.getMessage().getString().equals(skip)) {
+                        button.onPress();
+                    }
+                }
+            }
+            if (!opening && mc.getOverlay() == null && mc.screen != null && titleTicks > 100) {
+                opening = true;
+                System.out.println("[rune-screenshots] opening world " + WORLD);
+                mc.createWorldOpenFlows().openWorld(WORLD, () -> mc.setScreen(new TitleScreen()));
+            }
+            return;
+        }
+
+        if (mc.player == null || next >= STEPS.size()) {
             return;
         }
 

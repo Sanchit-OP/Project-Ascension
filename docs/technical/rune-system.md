@@ -227,8 +227,9 @@ Research §2 lesson 5: a rune you can't feel might as well not exist.
   art. One HUD element for every rune, not one each.
 - **Exposed** is a timer on the target, not a vanilla mob effect: the Wither and Cataclysm's bosses
   refuse effects (Grievous Wounds found this first), and Cadence matters most against exactly
-  them. So the rune draws its own particles on the target when it lands. Its strength, 10%, is
-  fixed in `ExposedDamage`; Cadence's data sets how long it lasts.
+  them. So the rune draws its own particles on the target when it lands. Cadence's data sets how
+  strong (`exposed_amplify`, 10%) and how long (`exposed_seconds`); a second Exposed never weakens
+  a stronger one (`ExposedState`).
 
 ## 9. How it's built
 
@@ -255,10 +256,20 @@ way planets are (`AscensionWorlds`' `DataPackRegistryEvent.NewRegistry`):
 - **`values`** are the numbers. The behaviour reads them from the rune; the hover card prints them.
   Retuning is a JSON edit.
 - **Slots:** `"keystone"` (with `"world": true` for a world keystone), `"minor"` with
-  `"row": 0 | 1`, or `"shard"` with `"row": "offence" | "flex" | "defence"`.
-- **Growing runes** add `"growth": { "cap": 12 }`; their values are per kind.
-- **Text** is in the lang file: the name, one plain sentence, and a detail line with the numbers
-  (`%s`), coloured by stat on the card.
+  `"row": 0 | 1`, or `"shard"` with `"row": 0 | 1 | 2` (offence, flex, defence). `"position"` 0 to
+  2 is its place in the row.
+- **Growing runes** add `"growth_cap": 12`; their values are per kind.
+- **`icon`** is a GUI sprite: `ascension_combat:rune/cadence` is
+  `textures/gui/sprites/rune/cadence.png`, with `_open` for the dimmed state; a shard's is
+  `shard/<stat>`. A pack can override any sprite.
+- **`numbers`** are the card's lines of numbers, each read from the rune's own `values`:
+  `{ "text": "<lang key with %s>", "parts": [ { "value": "hits", "format": "plus", "stat": "attack_damage" } ] }`.
+  Formats: `plain`, `plus`, `percent`, `plus_percent`, `over_percent`; `stat` colours the number.
+  A line that names a value the rune lacks, or an unknown stat, fails the file (reported by name).
+- **A shard's effect** names the stat it gives, `ascension_combat:shard/<stat>`, and its `amount`
+  is written as a player says it (8 is +8% Attack Speed): a shard for any stat is a data file.
+- **Text** is in the lang file: the name (`rune.<ns>.<id>`), one plain sentence (`.desc`, no
+  numbers: the card's lines carry them), and for a keystone a one-line `.blurb` for the box.
 
 ### The page
 
@@ -378,19 +389,28 @@ server; anything saved, across a world reload.
 | # | What | Seen working when |
 |---|---|---|
 | **R1** | **The page:** the rune registry and its JSON, the new page shape (keystone choice, rows, shards), validation, the in-combat rule, the cost (Rune Chalk and XP), the result payload. Vanguard moved to data. The old screen made to drive it. | A page saved on a dedicated server survives a reload; a change in combat, or without chalk, is refused with a reason. |
-| **R2** | **Vanguard:** Cadence, Vein Breaker, Blooded (and growth), Giant Slayer. *Built 2026-10-17: the nine runes load on a dedicated server and 16 new tests pass; not yet seen in a client (Sanchit will test once the full screen exists).* | Each fires, with its effect visible; Blooded's growth survives a reload and resets on a swap. |
-| **R3** | **Refactor pass** (ADR-0008). | |
+| **R2** | **Vanguard:** Cadence, Vein Breaker, Blooded (and growth), Giant Slayer. *Built 2026-10-17: the nine runes load on a dedicated server; Blooded's growth and omnivamp, a swap's cost and the reset were seen through the screen's save in a client. Cadence's and Vein Breaker's effects, and growth surviving a restart, still wait for Sanchit's own play.* | Each fires, with its effect visible; Blooded's growth survives a reload and resets on a swap. |
+| **R3** | **Refactor pass** (ADR-0008). *Done 2026-10-17.* | |
 | **R4** | **Reaver** and **Aetherwright**. | Each rune fires. Silent Step walked past a shrieker. |
-| **R5** | **Bulwark** and the stat shards. | Pack Leader with a wolf; Cat's Eye with creepers. |
+| **R5** | **Bulwark** and the stat shards. *The nine shards are built (2026-10-17), pulled forward so the screen is whole; Bulwark's runes remain.* | Pack Leader with a wolf; Cat's Eye with creepers. |
 | **R6** | **Refactor pass.** | |
-| **R7** | **The screen: the orrery** (§10): dials, cards, motion, sound. The HUD stack counter. | At GUI scales 2, 3, 4. |
-| **R8** | **The art:** every icon, emblem and frame from the generator. | In the screen, at all three scales. |
+| **R7** | **The screen: the orrery** (§10): dials, cards, motion, sound. *Built 2026-10-17 and photographed in a client at GUI scales 2, 3 and 4 (`design/runes/in-game/`); the HUD stack counter is not built yet (it needs the stack counts synced to the client).* | At GUI scales 2, 3, 4. |
+| **R8** | **The art:** every icon, emblem and frame from the generator. *Built 2026-10-17: 181 GUI sprites, `design/runes/kit.png`.* | In the screen, at all three scales. |
 | **R9** | **Unlocks**, once growth's API is merged. | Slots opening as milestones land, on a dedicated server. |
 | **R10** | **Refactor pass.** | |
 
 **Re-sequenced 2026-10-17 (Sanchit):** he will not test until the full screen exists, so after R3 the
-screen and art (R7–R8) come next, with Vanguard complete behind them; Reaver, Aetherwright, Bulwark
-and the shards (R4–R6) follow, and each path's runes then appear in a screen that already exists.
+screen and art (R7–R8) came next, with Vanguard complete behind them; Reaver, Aetherwright and
+Bulwark (R4–R6) follow, and each path's runes then appear in a screen that already exists.
+
+### Seeing the screen without clicking
+
+`client/dev/RuneScreenshots` is dormant unless a file named `rune-screenshots.txt` sits in the game
+directory (`run/client/`). With it, the dev client opens the singleplayer world `runes-test` (a copy
+of the dedicated server's, in `run/client/saves/`), opens the screen at GUI scales 2, 3 and 4,
+saves a page through the same code a player's Save uses, clicks through a swap, a refusal and a
+real save, writes screenshots to `run/client/screenshots/`, logs what the server holds, and quits.
+It never moves the mouse. Run it with `./gradlew :modules:compat:chunky:runClient`.
 
 ## 13. Decisions
 

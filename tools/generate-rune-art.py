@@ -1793,6 +1793,11 @@ def sprite_set():
         put(empty_hub, x, y, SKY[1])
     circle(empty_hub, HUB_PRIMARY / 2, HUB_PRIMARY / 2, HUB_PRIMARY / 2, STAR_BRASS[1], 1.2)
     add('hub/none', empty_hub)
+    empty_small = new(HUB_SECONDARY, HUB_SECONDARY)
+    for (x, y) in disc(HUB_SECONDARY / 2, HUB_SECONDARY / 2, HUB_SECONDARY / 2):
+        put(empty_small, x, y, SKY[1])
+    circle(empty_small, HUB_SECONDARY / 2, HUB_SECONDARY / 2, HUB_SECONDARY / 2, STAR_BRASS[1], 1.2)
+    add('hub/none_small', empty_small)
     add('hub/locked', hub_sprite(HUB_SECONDARY, None, NEUTRAL, locked=True))
     add('icon/padlock', padlock(NEUTRAL))
     xp = new(8, 8)
