@@ -4,6 +4,7 @@ import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.armor.GargoyleStoneplateEffects;
 import com.ascension.combat.internal.armor.RocketbeltEffects;
 import com.ascension.combat.internal.armor.ZoniasHourglassEffects;
+import com.ascension.combat.internal.rune.RuneModifiers;
 import com.ascension.combat.internal.rune.RunePageState;
 import com.ascension.combat.internal.rune.Runes;
 import com.ascension.combat.internal.weapons.GaleforceEffects;
@@ -112,6 +113,7 @@ public final class CombatNetwork {
         if (event.getEntity() instanceof ServerPlayer player) {
             RunePageState state = player.getData(CombatAttachments.RUNE_PAGE);
             state.fillMissingKeystone(Runes.registry(player));
+            RuneModifiers.refresh(player);
             Runes.sync(player);
         }
     }
