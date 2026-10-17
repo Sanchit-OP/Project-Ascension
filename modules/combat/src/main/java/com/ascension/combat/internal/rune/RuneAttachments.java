@@ -4,6 +4,8 @@ import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.mechanics.CombatStackState;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
+import com.ascension.combat.internal.rune.aetherwright.ArcState;
+import com.ascension.combat.internal.rune.aetherwright.StarfallState;
 import com.ascension.combat.internal.rune.reaver.HeadshotMark;
 import com.ascension.combat.internal.rune.vanguard.CadenceState;
 import java.util.function.Supplier;
@@ -56,6 +58,16 @@ public final class RuneAttachments {
     public static final Supplier<AttachmentType<DurationState>> VANISH_COOLDOWN = TYPES.register(
             "vanish_cooldown",
             () -> AttachmentType.builder(DurationState::new).build());
+
+    /** Starfall's cooldown and the star in the sky, on the player. */
+    public static final Supplier<AttachmentType<StarfallState>> STARFALL = TYPES.register(
+            "starfall",
+            () -> AttachmentType.builder(StarfallState::new).build());
+
+    /** Arc's hit count and whether the weapon is charged, on the player. */
+    public static final Supplier<AttachmentType<ArcState>> ARC = TYPES.register(
+            "arc",
+            () -> AttachmentType.builder(ArcState::new).build());
 
     /** Cadence's hit count on one enemy, on the attacker. */
     public static final Supplier<AttachmentType<CadenceState>> CADENCE = TYPES.register(

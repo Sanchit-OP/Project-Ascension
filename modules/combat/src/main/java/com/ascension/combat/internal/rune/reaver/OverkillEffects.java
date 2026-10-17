@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.rune.reaver;
 
 import com.ascension.combat.internal.rune.RuneDefinition;
+import com.ascension.combat.internal.rune.RuneTargets;
 import com.ascension.combat.internal.rune.Runes;
 import java.util.Comparator;
 import java.util.Optional;
@@ -8,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Enemy;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
@@ -18,7 +18,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
  *
  * <p>Read in {@link LivingDamageEvent.Pre}, where the damage is final and the health is still what
  * it was, so "beyond what the kill needed" is plain subtraction. The splash goes only to
- * <em>hostile</em> mobs, never a pet or a villager or another player, and it is a normal hit by
+ * {@link RuneTargets#isFoe foes}, never a pet or a villager or another player, and it is a normal hit by
  * the player (so armour counts); {@link #splashing} stops it from splashing again in turn.
  *
  * <p>Its numbers are the rune's data: {@code radius} (blocks) and {@code max_damage}.
@@ -55,9 +55,9 @@ public final class OverkillEffects {
         }
 
         double radius = rune.get().value("radius", 4.0);
-        level.getEntitiesOfClass(LivingEntity.class, victim.getBoundingBox().inflate(radius),
-                        e -> e != victim && e != attacker && e instanceof Enemy && e.isAlive())
+        RuneTargets.foes(level, attacker, victim.getBoundingBox().inflate(radius))
                 .stream()
+                .filter(e -> e != victim)
                 .min(Comparator.comparingDouble(e -> e.distanceToSqr(victim)))
                 .ifPresent(next -> {
                     splashing = true;

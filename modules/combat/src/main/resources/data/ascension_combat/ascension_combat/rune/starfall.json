@@ -1,0 +1,52 @@
+{
+  "path": "aetherwright",
+  "slot": "keystone",
+  "position": 0,
+  "icon": "ascension_combat:rune/starfall",
+  "effect": "ascension_combat:starfall",
+  "values": {
+    "base_damage": 4,
+    "ad_ratio": 0.2,
+    "radius": 2,
+    "delay_seconds": 1,
+    "cooldown_seconds": 10,
+    "magic_hit_reduction_seconds": 1
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.starfall.n0",
+      "parts": [
+        {
+          "value": "base_damage"
+        },
+        {
+          "value": "ad_ratio",
+          "format": "percent",
+          "stat": "attack_damage"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.starfall.n1",
+      "parts": [
+        {
+          "value": "radius"
+        },
+        {
+          "value": "delay_seconds"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.starfall.n2",
+      "parts": [
+        {
+          "value": "cooldown_seconds"
+        },
+        {
+          "value": "magic_hit_reduction_seconds"
+        }
+      ]
+    }
+  ]
+}

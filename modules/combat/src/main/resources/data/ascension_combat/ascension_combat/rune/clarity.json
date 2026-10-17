@@ -1,0 +1,43 @@
+{
+  "path": "aetherwright",
+  "slot": "minor",
+  "row": 0,
+  "position": 2,
+  "icon": "ascension_combat:rune/clarity",
+  "effect": "ascension_combat:clarity",
+  "values": {
+    "above_health": 0.7,
+    "attack_damage": 1,
+    "magic_bonus": 0.08
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.clarity.n0",
+      "parts": [
+        {
+          "value": "above_health",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.clarity.n1",
+      "parts": [
+        {
+          "value": "attack_damage",
+          "format": "plus",
+          "stat": "attack_damage"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.clarity.n2",
+      "parts": [
+        {
+          "value": "magic_bonus",
+          "format": "plus_percent"
+        }
+      ]
+    }
+  ]
+}

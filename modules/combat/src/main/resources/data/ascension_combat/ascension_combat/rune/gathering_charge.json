@@ -1,0 +1,23 @@
+{
+  "path": "aetherwright",
+  "slot": "minor",
+  "row": 1,
+  "position": 2,
+  "icon": "ascension_combat:rune/gathering_charge",
+  "effect": "ascension_combat:gathering_charge",
+  "growth_cap": 12,
+  "values": {
+    "bonus_per_kind": 0.01
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.gathering_charge.n0",
+      "parts": [
+        {
+          "value": "bonus_per_kind",
+          "format": "plus_percent"
+        }
+      ]
+    }
+  ]
+}
