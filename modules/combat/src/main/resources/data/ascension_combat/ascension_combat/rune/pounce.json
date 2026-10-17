@@ -1,0 +1,21 @@
+{
+  "path": "reaver",
+  "slot": "minor",
+  "row": 0,
+  "position": 0,
+  "icon": "ascension_combat:rune/pounce",
+  "effect": "ascension_combat:pounce",
+  "values": {
+    "crit_multiplier": 1.75
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.pounce.n0",
+      "parts": [
+        {
+          "value": "crit_multiplier"
+        }
+      ]
+    }
+  ]
+}

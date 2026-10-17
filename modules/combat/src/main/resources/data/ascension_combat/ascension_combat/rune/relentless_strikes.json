@@ -1,0 +1,41 @@
+{
+  "path": "vanguard",
+  "slot": "minor",
+  "row": 1,
+  "position": 0,
+  "icon": "ascension_combat:rune/relentless_strikes",
+  "effect": "ascension_combat:relentless_strikes",
+  "values": {
+    "max_stacks": 4,
+    "damage_per_stack": 0.75,
+    "decay_seconds": 3
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.relentless_strikes.n0",
+      "parts": [
+        {
+          "value": "damage_per_stack",
+          "format": "plus",
+          "stat": "attack_damage"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.relentless_strikes.n1",
+      "parts": [
+        {
+          "value": "max_stacks"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.relentless_strikes.n2",
+      "parts": [
+        {
+          "value": "decay_seconds"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "path": "aetherwright",
+  "slot": "minor",
+  "row": 0,
+  "position": 1,
+  "icon": "ascension_combat:rune/unweave",
+  "effect": "ascension_combat:unweave",
+  "values": {
+    "penetration": 15
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.unweave.n0",
+      "parts": [
+        {
+          "value": "penetration",
+          "stat": "magic_penetration"
+        }
+      ]
+    }
+  ]
+}

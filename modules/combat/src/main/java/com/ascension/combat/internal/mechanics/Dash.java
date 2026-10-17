@@ -24,5 +24,6 @@ public final class Dash {
         Vec3 look = player.getLookAngle();
         Vec3 direction = new Vec3(look.x, 0.0, look.z).normalize();
         player.knockback(strength, -direction.x, -direction.z);
+        Movements.moved(player);
     }
 }

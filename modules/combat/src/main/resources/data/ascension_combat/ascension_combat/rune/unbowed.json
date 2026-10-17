@@ -1,0 +1,32 @@
+{
+  "path": "bulwark",
+  "slot": "minor",
+  "row": 0,
+  "position": 1,
+  "icon": "ascension_combat:rune/unbowed",
+  "effect": "ascension_combat:unbowed",
+  "values": {
+    "effect_reduction": 0.3,
+    "knockback_reduction": 0.4
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.unbowed.n0",
+      "parts": [
+        {
+          "value": "effect_reduction",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.unbowed.n1",
+      "parts": [
+        {
+          "value": "knockback_reduction",
+          "format": "percent"
+        }
+      ]
+    }
+  ]
+}

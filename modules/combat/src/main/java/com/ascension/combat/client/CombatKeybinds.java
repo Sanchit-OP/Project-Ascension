@@ -51,7 +51,7 @@ public final class CombatKeybinds {
 
     private static final KeyMapping OPEN_RUNE_PAGE = new KeyMapping(
             "key.ascension_combat.open_rune_page",
-            InputConstants.UNKNOWN.getValue(),
+            InputConstants.KEY_R,
             CATEGORY);
 
     private static final KeyMapping OPEN_CHARACTER_SHEET = new KeyMapping(
@@ -62,8 +62,15 @@ public final class CombatKeybinds {
     private CombatKeybinds() {
     }
 
+    /** Whether a key press is the Open Rune Page key, so the rune screen can close on the key that opened it. */
+    public static boolean isOpenRunePageKey(int keyCode, int scanCode) {
+        return OPEN_RUNE_PAGE.matches(keyCode, scanCode);
+    }
+
     public static void register(IEventBus modBus) {
         modBus.addListener(CombatKeybinds::onRegisterKeyMappings);
+        com.ascension.combat.client.dev.RuneScreenshots.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.client.dev.RuneEffectChecks.register(NeoForge.EVENT_BUS);
         NeoForge.EVENT_BUS.addListener(CombatKeybinds::onClientTick);
     }
 

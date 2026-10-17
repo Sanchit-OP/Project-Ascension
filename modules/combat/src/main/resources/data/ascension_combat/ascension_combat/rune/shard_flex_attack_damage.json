@@ -1,0 +1,22 @@
+{
+  "slot": "shard",
+  "row": 1,
+  "position": 0,
+  "icon": "ascension_combat:shard/ad",
+  "effect": "ascension_combat:shard/attack_damage",
+  "values": {
+    "amount": 1
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.shard_text.attack_damage",
+      "parts": [
+        {
+          "value": "amount",
+          "format": "plus",
+          "stat": "attack_damage"
+        }
+      ]
+    }
+  ]
+}

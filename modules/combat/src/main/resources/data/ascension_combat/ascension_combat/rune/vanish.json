@@ -1,0 +1,31 @@
+{
+  "path": "reaver",
+  "slot": "minor",
+  "row": 0,
+  "position": 2,
+  "icon": "ascension_combat:rune/vanish",
+  "effect": "ascension_combat:vanish",
+  "values": {
+    "seconds": 2,
+    "cooldown_seconds": 10,
+    "radius": 16
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.vanish.n0",
+      "parts": [
+        {
+          "value": "seconds"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.vanish.n1",
+      "parts": [
+        {
+          "value": "cooldown_seconds"
+        }
+      ]
+    }
+  ]
+}

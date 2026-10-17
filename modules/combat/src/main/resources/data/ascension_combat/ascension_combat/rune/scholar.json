@@ -1,0 +1,31 @@
+{
+  "path": "aetherwright",
+  "slot": "keystone",
+  "world": true,
+  "position": 2,
+  "icon": "ascension_combat:rune/scholar",
+  "effect": "ascension_combat:scholar",
+  "values": {
+    "xp_bonus": 0.5,
+    "enchant_discount": 1
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.scholar.n0",
+      "parts": [
+        {
+          "value": "xp_bonus",
+          "format": "plus_percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.scholar.n1",
+      "parts": [
+        {
+          "value": "enchant_discount"
+        }
+      ]
+    }
+  ]
+}

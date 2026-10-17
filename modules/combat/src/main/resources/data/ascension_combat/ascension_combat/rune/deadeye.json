@@ -1,0 +1,46 @@
+{
+  "path": "reaver",
+  "slot": "keystone",
+  "position": 1,
+  "icon": "ascension_combat:rune/deadeye",
+  "effect": "ascension_combat:deadeye",
+  "values": {
+    "head_bonus": 0.5,
+    "per_block": 0.02,
+    "start_distance": 10,
+    "max_distance_bonus": 0.5,
+    "head_margin": 0.3
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.deadeye.n0",
+      "parts": [
+        {
+          "value": "head_bonus",
+          "format": "plus_percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.deadeye.n1",
+      "parts": [
+        {
+          "value": "per_block",
+          "format": "plus_percent"
+        },
+        {
+          "value": "start_distance"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.deadeye.n2",
+      "parts": [
+        {
+          "value": "max_distance_bonus",
+          "format": "plus_percent"
+        }
+      ]
+    }
+  ]
+}

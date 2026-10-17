@@ -1,0 +1,21 @@
+{
+  "path": "bulwark",
+  "slot": "minor",
+  "row": 1,
+  "position": 2,
+  "icon": "ascension_combat:rune/challenge",
+  "effect": "ascension_combat:challenge",
+  "values": {
+    "seconds": 4
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.challenge.n0",
+      "parts": [
+        {
+          "value": "seconds"
+        }
+      ]
+    }
+  ]
+}

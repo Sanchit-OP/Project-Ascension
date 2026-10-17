@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.weapons;
 
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.Blink;
 import com.ascension.combat.internal.mechanics.DurationState;
@@ -129,9 +130,10 @@ public final class GaleforceEffects {
         Blink.forward(player, DASH_DISTANCE);
         fireHomingShot(player, level, stack, ammo, target);
 
-        cooldown.activateUntil(now + COOLDOWN_TICKS);
+        int cooldownTicks = ItemAbilities.cooldown(player, COOLDOWN_TICKS);
+        cooldown.activateUntil(now + cooldownTicks);
         PacketDistributor.sendToPlayer(
-                player, new AbilityCooldownSyncPayload(AbilityKey.GALEFORCE, now + COOLDOWN_TICKS, COOLDOWN_TICKS));
+                player, new AbilityCooldownSyncPayload(AbilityKey.GALEFORCE, now + cooldownTicks, cooldownTicks));
     }
 
     private static LivingEntity findTarget(ServerPlayer player, ServerLevel level) {

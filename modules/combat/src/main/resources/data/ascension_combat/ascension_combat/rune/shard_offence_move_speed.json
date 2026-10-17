@@ -1,0 +1,21 @@
+{
+  "slot": "shard",
+  "row": 0,
+  "position": 2,
+  "icon": "ascension_combat:shard/ms",
+  "effect": "ascension_combat:shard/move_speed",
+  "values": {
+    "amount": 3
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.shard_text.move_speed",
+      "parts": [
+        {
+          "value": "amount",
+          "stat": "move_speed"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "path": "vanguard",
+  "slot": "minor",
+  "row": 0,
+  "position": 2,
+  "icon": "ascension_combat:rune/blooded",
+  "effect": "ascension_combat:blooded",
+  "growth_cap": 12,
+  "values": {
+    "omnivamp_per_kind": 0.5
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.blooded.n0",
+      "parts": [
+        {
+          "value": "omnivamp_per_kind",
+          "stat": "omnivamp"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "path": "bulwark",
+  "slot": "minor",
+  "row": 1,
+  "position": 0,
+  "icon": "ascension_combat:rune/riposte",
+  "effect": "ascension_combat:riposte",
+  "values": {
+    "parry_seconds": 0.5,
+    "stun_seconds": 1,
+    "crit_seconds": 2
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.riposte.n0",
+      "parts": [
+        {
+          "value": "parry_seconds"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.riposte.n1",
+      "parts": [
+        {
+          "value": "stun_seconds"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.riposte.n2",
+      "parts": [
+        {
+          "value": "crit_seconds"
+        }
+      ]
+    }
+  ]
+}

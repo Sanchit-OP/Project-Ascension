@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.armor;
 
 import com.ascension.combat.internal.CombatAttachments;
+import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.Blink;
 import com.ascension.combat.internal.mechanics.DurationState;
@@ -63,7 +64,7 @@ public final class RocketbeltEffects {
 
         long now = player.level().getGameTime();
         player.getData(CombatAttachments.ROCKETBELT_BURST).activateUntil(now + BURST_DELAY_TICKS);
-        player.getCooldowns().addCooldown(CombatContent.ROCKETBELT.get(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(CombatContent.ROCKETBELT.get(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {

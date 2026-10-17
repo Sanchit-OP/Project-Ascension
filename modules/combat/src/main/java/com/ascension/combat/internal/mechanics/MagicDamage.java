@@ -26,7 +26,38 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
  */
 public final class MagicDamage {
 
+    /** Makes an attacker's magic damage stronger: Attunement, Clarity and Gathering Charge are boosters. */
+    @FunctionalInterface
+    public interface Booster {
+        float multiplier(LivingEntity attacker, LivingEntity target);
+    }
+
+    /** Told after magic damage lands, with what actually landed: Siphon and Starfall watch it. */
+    @FunctionalInterface
+    public interface Observer {
+        void dealt(LivingEntity attacker, LivingEntity target, float amount);
+    }
+
+    private static final java.util.List<Booster> BOOSTERS = new java.util.concurrent.CopyOnWriteArrayList<>();
+    private static final java.util.List<Observer> OBSERVERS = new java.util.concurrent.CopyOnWriteArrayList<>();
+
     private MagicDamage() {
+    }
+
+    public static void addBooster(Booster booster) {
+        BOOSTERS.add(booster);
+    }
+
+    public static void addObserver(Observer observer) {
+        OBSERVERS.add(observer);
+    }
+
+    private static void notifyDealt(Entity attacker, LivingEntity target, float amount) {
+        if (attacker instanceof LivingEntity livingAttacker && amount > 0.0f) {
+            for (Observer observer : OBSERVERS) {
+                observer.dealt(livingAttacker, target, amount);
+            }
+        }
     }
 
     /**
@@ -40,6 +71,7 @@ public final class MagicDamage {
     public static float apply(LivingDamageEvent.Pre event, float rawAmount) {
         float mitigated = mitigate(rawAmount, event.getEntity(), event.getSource().getEntity());
         event.setNewDamage(event.getNewDamage() + mitigated);
+        notifyDealt(event.getSource().getEntity(), event.getEntity(), mitigated);
         return mitigated;
     }
 
@@ -59,10 +91,21 @@ public final class MagicDamage {
     public static float applyStandalone(LivingEntity target, DamageSource source, float rawAmount) {
         float mitigated = mitigate(rawAmount, target, source.getEntity());
         target.hurt(source, mitigated);
+        notifyDealt(source.getEntity(), target, mitigated);
         return mitigated;
     }
 
     private static float mitigate(float rawAmount, LivingEntity target, Entity attacker) {
+        float boosted = rawAmount;
+        if (attacker instanceof LivingEntity livingAttacker) {
+            for (Booster booster : BOOSTERS) {
+                boosted *= booster.multiplier(livingAttacker, target);
+            }
+        }
+        return mitigateBoosted(boosted, target, attacker);
+    }
+
+    private static float mitigateBoosted(float rawAmount, LivingEntity target, Entity attacker) {
         AttributeInstance magicResist = target.getAttribute(CombatAttributes.MAGIC_RESIST);
         if (magicResist == null) {
             return rawAmount;

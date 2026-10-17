@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.armor;
 
+import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.Shield;
 import net.minecraft.server.level.ServerLevel;
@@ -56,6 +57,6 @@ public final class GargoyleStoneplateEffects {
 
         float shield = Math.min(MAX_SHIELD, nearbyEnemies * SHIELD_PER_NEARBY_ENEMY);
         Shield.grant(player, shield);
-        player.getCooldowns().addCooldown(CombatContent.GARGOYLE_STONEPLATE.get(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(CombatContent.GARGOYLE_STONEPLATE.get(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }
 }
