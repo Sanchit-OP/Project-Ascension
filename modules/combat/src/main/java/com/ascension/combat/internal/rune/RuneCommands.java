@@ -14,8 +14,10 @@ import net.minecraft.server.level.ServerPlayer;
 
 /**
  * {@code /ascension runes show [players]} (permission 2): prints a player's saved rune page and
- * its growth. Works from a console or RCON, so a page's saving, its survival across a restart and
- * across death can be checked on a dedicated server with no client (ADR-0008).
+ * its growth. {@code /ascension runes list}: prints every rune the server loaded, so a bad data
+ * file shows up as a missing line. Both work from a console or RCON, so a page's saving, its
+ * survival across a restart and across death can be checked on a dedicated server with no client
+ * (ADR-0008).
  */
 public final class RuneCommands {
 
@@ -26,6 +28,7 @@ public final class RuneCommands {
         dispatcher.register(Commands.literal("ascension")
                 .then(Commands.literal("runes")
                         .requires(source -> source.hasPermission(2))
+                        .then(Commands.literal("list").executes(ctx -> list(ctx.getSource())))
                         .then(Commands.literal("show")
                                 .executes(ctx -> show(ctx.getSource(), java.util.List.of(ctx.getSource().getPlayerOrException())))
                                 .then(Commands.argument("players", EntityArgument.players())
@@ -47,6 +50,21 @@ public final class RuneCommands {
             source.sendSuccess(() -> Component.literal(line), false);
         }
         return players.size();
+    }
+
+    private static int list(CommandSourceStack source) {
+        var runes = RuneRegistries.runes(source.registryAccess());
+        runes.entrySet().stream()
+                .sorted(java.util.Comparator.comparing(e -> e.getKey().location().toString()))
+                .forEach(e -> {
+                    RuneDefinition rune = e.getValue();
+                    String line = e.getKey().location() + ": "
+                            + rune.path().map(p -> p.getSerializedName()).orElse("shard")
+                            + " " + rune.slot().getSerializedName() + " row " + rune.row()
+                            + (rune.world() ? " (world)" : "") + (rune.grows() ? " (grows)" : "");
+                    source.sendSuccess(() -> Component.literal(line), false);
+                });
+        return runes.size();
     }
 
     private static String ids(Collection<ResourceLocation> ids) {
