@@ -1,0 +1,31 @@
+{
+  "path": "reaver",
+  "slot": "keystone",
+  "position": 0,
+  "icon": "ascension_combat:rune/ambush",
+  "effect": "ascension_combat:ambush",
+  "values": {
+    "bonus": 0.4,
+    "crit_bonus": 0.2
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.ambush.n0",
+      "parts": [
+        {
+          "value": "bonus",
+          "format": "plus_percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.ambush.n1",
+      "parts": [
+        {
+          "value": "crit_bonus",
+          "format": "plus_percent"
+        }
+      ]
+    }
+  ]
+}

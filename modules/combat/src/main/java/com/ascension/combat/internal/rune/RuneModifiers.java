@@ -1,7 +1,7 @@
 package com.ascension.combat.internal.rune;
 
+import com.ascension.combat.api.stat.CombatStat;
 import com.ascension.combat.api.stat.StatSources;
-import com.ascension.combat.internal.rune.vanguard.BloodedEffects;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import java.util.function.Consumer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
@@ -51,10 +52,30 @@ public final class RuneModifiers {
         }
     }
 
+    /**
+     * Like {@link #set}, for a stat of the stat system and a value written the way a player says it
+     * (8 for +8% Attack Speed): the stat knows its own attribute, operation and scale.
+     */
+    public static void setStat(LivingEntity entity, CombatStat stat, ResourceLocation id, double written) {
+        AttributeModifier modifier = stat.modifier(id, written);
+        set(entity, stat.attribute(), id, modifier.amount(), modifier.operation());
+    }
+
+    private static final java.util.List<Consumer<ServerPlayer>> REFRESHERS = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    /**
+     * Adds a rune's way of putting its modifiers on a player. Each rune that gives a stat from its
+     * page or its growth (Blooded, a shard) registers one at startup; holds behaviour, never a player.
+     */
+    public static void addRefresher(Consumer<ServerPlayer> refresher) {
+        REFRESHERS.add(refresher);
+    }
+
     /** Brings every rune-given modifier on {@code player} in line with their page and growth. */
     public static void refresh(ServerPlayer player) {
-        BloodedEffects.refresh(player);
-        ShardEffects.refresh(player);
+        for (Consumer<ServerPlayer> refresher : REFRESHERS) {
+            refresher.accept(player);
+        }
     }
 
     private static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
