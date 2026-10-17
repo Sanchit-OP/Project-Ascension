@@ -1,0 +1,37 @@
+{
+  "path": "bulwark",
+  "slot": "minor",
+  "row": 1,
+  "position": 1,
+  "icon": "ascension_combat:rune/revitalize",
+  "effect": "ascension_combat:revitalize",
+  "values": {
+    "bonus": 0.1,
+    "low_bonus": 0.2,
+    "low_health": 0.4
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.revitalize.n0",
+      "parts": [
+        {
+          "value": "bonus",
+          "format": "plus_percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.revitalize.n1",
+      "parts": [
+        {
+          "value": "low_bonus",
+          "format": "plus_percent"
+        },
+        {
+          "value": "low_health",
+          "format": "percent"
+        }
+      ]
+    }
+  ]
+}

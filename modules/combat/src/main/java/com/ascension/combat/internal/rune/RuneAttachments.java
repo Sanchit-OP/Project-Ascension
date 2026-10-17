@@ -6,6 +6,9 @@ import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
 import com.ascension.combat.internal.rune.aetherwright.ArcState;
 import com.ascension.combat.internal.rune.aetherwright.StarfallState;
+import com.ascension.combat.internal.rune.bulwark.BraceState;
+import com.ascension.combat.internal.rune.bulwark.ChallengeState;
+import com.ascension.combat.internal.rune.bulwark.PlatingState;
 import com.ascension.combat.internal.rune.reaver.HeadshotMark;
 import com.ascension.combat.internal.rune.vanguard.CadenceState;
 import java.util.function.Supplier;
@@ -68,6 +71,31 @@ public final class RuneAttachments {
     public static final Supplier<AttachmentType<ArcState>> ARC = TYPES.register(
             "arc",
             () -> AttachmentType.builder(ArcState::new).build());
+
+    /** Brace's cooldown and the brace under way, on the player. */
+    public static final Supplier<AttachmentType<BraceState>> BRACE = TYPES.register(
+            "brace",
+            () -> AttachmentType.builder(BraceState::new).build());
+
+    /** Plating's window and cooldown, on the player. */
+    public static final Supplier<AttachmentType<PlatingState>> PLATING = TYPES.register(
+            "plating",
+            () -> AttachmentType.builder(PlatingState::new).build());
+
+    /** Pack Leader's cooldown for saving a pet, on its owner. */
+    public static final Supplier<AttachmentType<DurationState>> PACK_SAVE = TYPES.register(
+            "pack_save",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /** Riposte's window for a guaranteed critical hit after a parry, on the player. */
+    public static final Supplier<AttachmentType<DurationState>> RIPOSTE = TYPES.register(
+            "riposte",
+            () -> AttachmentType.builder(DurationState::new).build());
+
+    /** Challenge's mark, on the mob: who it must keep attacking, and until when. */
+    public static final Supplier<AttachmentType<ChallengeState>> CHALLENGED = TYPES.register(
+            "challenged",
+            () -> AttachmentType.builder(ChallengeState::new).build());
 
     /** Cadence's hit count on one enemy, on the attacker. */
     public static final Supplier<AttachmentType<CadenceState>> CADENCE = TYPES.register(

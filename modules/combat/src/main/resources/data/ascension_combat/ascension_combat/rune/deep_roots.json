@@ -1,0 +1,24 @@
+{
+  "path": "bulwark",
+  "slot": "minor",
+  "row": 0,
+  "position": 2,
+  "icon": "ascension_combat:rune/deep_roots",
+  "effect": "ascension_combat:deep_roots",
+  "growth_cap": 12,
+  "values": {
+    "health_per_kind": 0.5
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.deep_roots.n0",
+      "parts": [
+        {
+          "value": "health_per_kind",
+          "format": "plus",
+          "stat": "health"
+        }
+      ]
+    }
+  ]
+}

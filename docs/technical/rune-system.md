@@ -90,28 +90,28 @@ Status: **Built** (exists today), **New**. **Grows** marks the four growing rune
 | Slot | Rune | What it does | Placeholder numbers | Status |
 |---|---|---|---|---|
 | Keystone | **Conqueror's Resolve** | Every second in combat you gain a stack. Each stack gives Attack Damage and omnivamp. Stacks clear when the fight ends. | 10 stacks; +0.5 AD and +1% omnivamp each | Built |
-| Keystone | **Cadence** | Land three **fully charged** hits (melee at full swing, or fully drawn arrows) on one enemy within 4 s. The third deals bonus damage and **Exposes** it: it takes more damage from everyone. | +3 physical; Exposed: +10% damage taken for 5 s | New |
-| World keystone | **Vein Breaker** | Mine an ore or a log **while sneaking**, and the connected blocks of the same kind break with it. Each costs the tool's durability and a little hunger. | Up to 32 blocks | New |
+| Keystone | **Cadence** | Land three **fully charged** hits (melee at full swing, or fully drawn arrows) on one enemy within 4 s. The third deals bonus damage and **Exposes** it: it takes more damage from everyone. | +3 physical; Exposed: +10% damage taken for 5 s | Built |
+| World keystone | **Vein Breaker** | Mine an ore or a log **while sneaking**, and the connected blocks of the same kind break with it. Each costs the tool's durability and a little hunger. | Up to 32 blocks | Built |
 | Row 1: *how do you stay in the fight?* | **Second Wind** | Regenerate while in combat and below half HP. | 1 HP a second | Built |
 | | **Momentum** | Chaining hits quickly builds stacks; each stack heals you for a share of the damage you deal. | 5 stacks, 2 s to chain; 1% per stack | Built |
-| | **Blooded** *(grows)* | Omnivamp that grows with every new kind of enemy you defeat. | +0.5% per kind, up to +6% | New |
+| | **Blooded** *(grows)* | Omnivamp that grows with every new kind of enemy you defeat. | +0.5% per kind, up to +6% | Built |
 | Row 2: *how does your damage grow?* | **Relentless Strikes** | Hits build a stack that fades if you stop. Each stack adds damage to every hit. | 4 stacks, +0.75 physical each, 3 s to fade | Built |
 | | **Killing Surge** | A kill gives a burst of attack speed. | +20% for 3 s | Built |
-| | **Giant Slayer** | More damage to enemies with more max HP than you. Bosses. | +5% at 10% more HP, up to +15% at double | New |
+| | **Giant Slayer** | More damage to enemies with more max HP than you. Bosses. | +5% at 10% more HP, up to +15% at double | Built |
 
 ### 4.2 Reaver: strike first, finish fast
 
 | Slot | Rune | What it does | Placeholder numbers | Status |
 |---|---|---|---|---|
-| Keystone | **Ambush** | Hits on an enemy **that isn't targeting you** deal much more damage, more still if critical. Sneak up on things; weak against bosses, which always see you. | +40%; +20% more on a critical hit | New |
-| Keystone | **Deadeye** | An arrow that lands near the head is a **headshot**: bonus damage, more the farther the shot. A clear "ding". | +50%, then +2% per block past 10, up to +100% | New |
-| World keystone | **Silent Step** | You make **no vibrations**: sculk sensors and shriekers never hear you, so the Warden isn't called. Sneaking, mobs only notice you close up. | Noticed within 6 blocks | New |
-| Row 1: *how do you open?* | **Pounce** | Your critical (falling) hits hit harder. | Crit multiplier 1.5 → 1.75 | New |
-| | **Drop In** | For a few seconds after a dash, blink, ender pearl or a fall of 4+ blocks, you cut through armour. | +10 Lethality, +10% penetration for 4 s | New |
-| | **Vanish** | A kill makes you invisible for a moment, and mobs nearby lose track of you. | 2 s; 10 s cooldown | New |
-| Row 2: *how do you finish?* | **Finishing Blow** | More damage to enemies below 40% HP. | +12% | New |
-| | **Overkill** | Damage beyond what a kill needed splashes onto the nearest enemy. | Within 4 blocks, up to 6 damage | New |
-| | **Trophy Hunter** *(grows)* | Lethality that grows with every new kind of enemy you defeat. | +1 per kind, up to +12 | New |
+| Keystone | **Ambush** | Hits on an enemy **that isn't targeting you** deal much more damage, more still if critical. Sneak up on things; weak against bosses, which always see you. | +40%; +20% more on a critical hit | Built |
+| Keystone | **Deadeye** | An arrow that lands near the head is a **headshot**: bonus damage, more the farther the shot. A clear "ding". | +50%, then +2% per block past 10, up to +100% | Built |
+| World keystone | **Silent Step** | You make **no vibrations**: sculk sensors and shriekers never hear you, so the Warden isn't called. Sneaking, mobs only notice you close up. | Noticed within 6 blocks | Built |
+| Row 1: *how do you open?* | **Pounce** | Your critical (falling) hits hit harder. | Crit multiplier 1.5 → 1.75 | Built |
+| | **Drop In** | For a few seconds after a dash, blink, ender pearl or a fall of 4+ blocks, you cut through armour. | +10 Lethality, +10% penetration for 4 s | Built |
+| | **Vanish** | A kill makes you invisible for a moment, and mobs nearby lose track of you. | 2 s; 10 s cooldown | Built |
+| Row 2: *how do you finish?* | **Finishing Blow** | More damage to enemies below 40% HP. | +12% | Built |
+| | **Overkill** | Damage beyond what a kill needed splashes onto the nearest enemy. | Within 4 blocks, up to 6 damage | Built |
+| | **Trophy Hunter** *(grows)* | Lethality that grows with every new kind of enemy you defeat. | +1 per kind, up to +12 | Built |
 
 ### 4.3 Aetherwright: make the magic do more
 
@@ -121,15 +121,15 @@ their own magic damage**, so the path works with any weapon and grows with the m
 
 | Slot | Rune | What it does | Placeholder numbers | Status |
 |---|---|---|---|---|
-| Keystone | **Starfall** | A fully charged hit, or any magic damage you deal, calls a star down on the target. It lands a second later and hurts everything near it. Magic hits shorten its cooldown. | 4 + 20% of AD, magic, 2-block radius; 10 s cooldown, −1 s per magic hit | New |
-| Keystone | **Arc** | Every fourth hit charges your weapon. The next hit releases lightning that jumps between enemies. Using an item's active fully charges it. | 3 + 15% of AD, magic, up to 3 jumps within 5 blocks | New |
-| World keystone | **Scholar** | More experience from everything, and enchanting costs a level less. (The lore says the Observers are generous with those who enchant.) | +50% XP; enchanting −1 level, never below 1 | New |
-| Row 1: *what makes your magic hit harder?* | **Attunement** | All your magic damage is stronger. | +12% | New |
-| | **Unweave** | Your magic damage ignores part of Magic Resist. | 15% | New |
-| | **Clarity** | While above 70% HP, more Attack Damage and magic damage. | +1 AD, +8% magic | New |
-| Row 2: *what does your magic give back?* | **Siphon** | Heal for part of the magic damage you deal. | 10% | New |
-| | **Quickening** | Items' active abilities recharge faster. | 20% faster | New |
-| | **Gathering Charge** *(grows)* | Magic damage that grows with every new kind of enemy you defeat. | +1% per kind, up to +12% | New |
+| Keystone | **Starfall** | A fully charged hit, or any magic damage you deal, calls a star down on the target. It lands a second later and hurts everything near it. Magic hits shorten its cooldown. | 4 + 20% of AD, magic, 2-block radius; 10 s cooldown, −1 s per magic hit | Built |
+| Keystone | **Arc** | Every fourth hit charges your weapon. The next hit releases lightning that jumps between enemies. Using an item's active fully charges it. | 3 + 15% of AD, magic, up to 3 jumps within 5 blocks | Built |
+| World keystone | **Scholar** | More experience from everything, and enchanting costs a level less. (The lore says the Observers are generous with those who enchant.) | +50% XP; enchanting −1 level, never below 1 | Built |
+| Row 1: *what makes your magic hit harder?* | **Attunement** | All your magic damage is stronger. | +12% | Built |
+| | **Unweave** | Your magic damage ignores part of Magic Resist. | 15% | Built |
+| | **Clarity** | While above 70% HP, more Attack Damage and magic damage. | +1 AD, +8% magic | Built |
+| Row 2: *what does your magic give back?* | **Siphon** | Heal for part of the magic damage you deal. | 10% | Built |
+| | **Quickening** | Items' active abilities recharge faster. | 20% faster | Built |
+| | **Gathering Charge** *(grows)* | Magic damage that grows with every new kind of enemy you defeat. | +1% per kind, up to +12% | Built |
 
 ### 4.4 Bulwark: stand in front
 
@@ -138,15 +138,15 @@ never by scanning every tick. So the team runes still do something for a solo pl
 
 | Slot | Rune | What it does | Placeholder numbers | Status |
 |---|---|---|---|---|
-| Keystone | **Brace** | Block a hit with a shield, or take a big hit, and you brace: huge Armor and Magic Resist for a moment, then a shockwave that hurts and throws back everything near you. | Big hit: 25% of max HP. +40 Armor and Magic Resist for 2.5 s; shockwave 3 + 10% of your Armor, magic, 4 blocks; 12 s cooldown | New |
-| Keystone | **Pack Leader** | Your tamed wolves, cats and parrots share your defences, hit harder, and heal when you heal. Once every few minutes, a pet that would die is saved at 1 HP and brought to you. | 50% of your Armor and Magic Resist; +3 damage; 25% of your heals; save every 3 minutes | New |
-| World keystone | **Cat's Eye** | **Creepers and phantoms keep away from you**, as they do from cats. (The lore says cats can see the Observers; this lends you that sight.) The price: hard to hunt creepers for gunpowder. | Creepers flee within 6 blocks; phantoms never swoop at you | New |
-| Row 1: *how do you take a hit?* | **Plating** | After a hard hit, the next few hits are softened. | After 4+ damage: next 3 hits within 3 s take 30% less; 12 s cooldown | New |
-| | **Unbowed** | Harmful effects on you wear off sooner, and knockback moves you less. | 30% shorter; 40% less knockback | New |
-| | **Deep Roots** *(grows)* | Max HP that grows with every new kind of enemy you defeat. League's Overgrowth, Sanchit's example. | +0.5 HP per kind, up to +6 | New |
-| Row 2: *what does your defence give back?* | **Riposte** | Raise your shield just as a hit lands (a parry): the attacker is stunned and your next hit is a critical. | Within 0.5 s of raising it; stun 1 s; crit within 2 s | New |
-| | **Revitalize** | Heals and shields you give or receive are stronger, more so on someone low. | +10%; +20% below 40% HP | New |
-| | **Challenge** | Mobs you hit keep attacking you instead of your allies, pets or villagers. | 4 s | New |
+| Keystone | **Brace** | Block a hit with a shield, or take a big hit, and you brace: huge Armor and Magic Resist for a moment, then a shockwave that hurts and throws back everything near you. | Big hit: 25% of max HP. +40 Armor and Magic Resist for 2.5 s; shockwave 3 + 10% of your Armor, magic, 4 blocks; 12 s cooldown | Built |
+| Keystone | **Pack Leader** | Your tamed wolves, cats and parrots share your defences, hit harder, and heal when you heal. Once every few minutes, a pet that would die is saved at 1 HP and brought to you. | 50% of your Armor and Magic Resist; +3 damage; 25% of your heals; save every 3 minutes | Built |
+| World keystone | **Cat's Eye** | **Creepers and phantoms keep away from you**, as they do from cats. (The lore says cats can see the Observers; this lends you that sight.) The price: hard to hunt creepers for gunpowder. | Creepers flee within 6 blocks; phantoms never swoop at you | Built |
+| Row 1: *how do you take a hit?* | **Plating** | After a hard hit, the next few hits are softened. | After 4+ damage: next 3 hits within 3 s take 30% less; 12 s cooldown | Built |
+| | **Unbowed** | Harmful effects on you wear off sooner, and knockback moves you less. | 30% shorter; 40% less knockback | Built |
+| | **Deep Roots** *(grows)* | Max HP that grows with every new kind of enemy you defeat. League's Overgrowth, Sanchit's example. | +0.5 HP per kind, up to +6 | Built |
+| Row 2: *what does your defence give back?* | **Riposte** | Raise your shield just as a hit lands (a parry): the attacker is stunned and your next hit is a critical. | Within 0.5 s of raising it; stun 1 s; crit within 2 s | Built |
+| | **Revitalize** | Heals and shields you give or receive are stronger, more so on someone low. | +10%; +20% below 40% HP | Built |
+| | **Challenge** | Mobs you hit keep attacking you instead of your allies, pets or villagers. | 4 s | Built |
 
 **No oxygen keystone** (Sanchit, 2026-10-15: "I don't even know if we want an oxygen type
 keystone"). The Bulwark oxygen tie-in in `combat-api.md` §7 is dropped, and its open question in §9
@@ -389,10 +389,10 @@ server; anything saved, across a world reload.
 | # | What | Seen working when |
 |---|---|---|
 | **R1** | **The page:** the rune registry and its JSON, the new page shape (keystone choice, rows, shards), validation, the in-combat rule, the cost (Rune Chalk and XP), the result payload. Vanguard moved to data. The old screen made to drive it. | A page saved on a dedicated server survives a reload; a change in combat, or without chalk, is refused with a reason. |
-| **R2** | **Vanguard:** Cadence, Vein Breaker, Blooded (and growth), Giant Slayer. *Built 2026-10-17: the nine runes load on a dedicated server; Blooded's growth and omnivamp, a swap's cost and the reset were seen through the screen's save in a client. Cadence's and Vein Breaker's effects, and growth surviving a restart, still wait for Sanchit's own play.* | Each fires, with its effect visible; Blooded's growth survives a reload and resets on a swap. |
+| **R2** | **Vanguard:** Cadence, Vein Breaker, Blooded (and growth), Giant Slayer. *Built 2026-10-17 and tested in play by Sanchit the same day ("all working").* | Each fires, with its effect visible; Blooded's growth survives a reload and resets on a swap. |
 | **R3** | **Refactor pass** (ADR-0008). *Done 2026-10-17.* | |
-| **R4** | **Reaver** and **Aetherwright**. | Each rune fires. Silent Step walked past a shrieker. |
-| **R5** | **Bulwark** and the stat shards. *The nine shards are built (2026-10-17), pulled forward so the screen is whole; Bulwark's runes remain.* | Pack Leader with a wolf; Cat's Eye with creepers. |
+| **R4** | **Reaver** and **Aetherwright**. *Built 2026-10-17: all 18 runes load on a dedicated server, the arithmetic and bookkeeping are unit-tested; the effects themselves wait for Sanchit's play.* | Each rune fires. Silent Step walked past a shrieker. |
+| **R5** | **Bulwark** and the stat shards. *Built 2026-10-17 (the shards earlier, with the screen): 45 runes in all load on a dedicated server; the effects wait for Sanchit's play.* | Pack Leader with a wolf; Cat's Eye with creepers. |
 | **R6** | **Refactor pass.** | |
 | **R7** | **The screen: the orrery** (§10): dials, cards, motion, sound. *Built 2026-10-17 and photographed in a client at GUI scales 2, 3 and 4 (`design/runes/in-game/`); the HUD stack counter is not built yet (it needs the stack counts synced to the client).* | At GUI scales 2, 3, 4. |
 | **R8** | **The art:** every icon, emblem and frame from the generator. *Built 2026-10-17: 181 GUI sprites, `design/runes/kit.png`.* | In the screen, at all three scales. |
@@ -402,6 +402,24 @@ server; anything saved, across a world reload.
 **Re-sequenced 2026-10-17 (Sanchit):** he will not test until the full screen exists, so after R3 the
 screen and art (R7–R8) came next, with Vanguard complete behind them; Reaver, Aetherwright and
 Bulwark (R4–R6) follow, and each path's runes then appear in a screen that already exists.
+
+### How the paths were built (notes for whoever changes them)
+
+- **Shared hooks, not copies.** Magic damage has boosters (Attunement, Clarity, Gathering Charge)
+  and observers (Siphon, Starfall) in `MagicDamage`; shields have boosters (Revitalize) in `Shield`;
+  every item's active asks `ItemAbilities.cooldown` for its cooldown, which is where Quickening's
+  haste and Arc's "using an active charges it" live; `Dash` and `Blink` tell `Movements` (Drop In).
+  Seven items changed by one call each.
+- **Which swing was it?** `SwingMarks` notes, at the start of each melee swing, whether it was fully
+  charged and whether it crit; `RuneHits` answers for a damage event, arrows included.
+- **Who an area rune may hit:** `RuneTargets.isFoe`: hostile mobs and mobs fighting the player,
+  never another player, a tame pet or a villager.
+- **Things bosses refuse** are done without vanilla effects (Exposed is a timer; Riposte's stun is a
+  slow, so bosses are not stunned, and the card says so).
+- **Revitalize** only strengthens what you *receive*; "give" waits for something that heals or
+  shields another player from a source it can tell apart.
+- **Unbowed** shortens a harmful effect by taking it off and putting it back shorter, because
+  vanilla can't change a duration in place; Tenacity (section 11) would replace it.
 
 ### Seeing the screen without clicking
 
