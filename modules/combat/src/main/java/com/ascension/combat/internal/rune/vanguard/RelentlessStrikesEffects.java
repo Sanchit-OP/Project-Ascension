@@ -2,7 +2,10 @@ package com.ascension.combat.internal.rune.vanguard;
 
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
-import com.ascension.combat.internal.rune.RuneCatalog;
+import com.ascension.combat.internal.rune.RuneDefinition;
+import com.ascension.combat.internal.rune.Runes;
+import java.util.Optional;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
@@ -19,14 +22,13 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  * decay: this stack is only ever read again on the wielder's own next hit, and that hit's handler
  * already checks for a lapsed expiry before refreshing, so there's nothing to clean up in the
  * background between hits.
+ *
+ * <p>Its numbers are the rune's data: {@code max_stacks}, {@code damage_per_stack},
+ * {@code decay_seconds}.
  */
 public final class RelentlessStrikesEffects {
 
-    /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final int MAX_STACKS = 4;
-
-    private static final float BONUS_DAMAGE_PER_STACK = 0.75f;
-    private static final long DECAY_TICKS = 60L;
+    public static final ResourceLocation ID = Runes.id("relentless_strikes");
 
     private RelentlessStrikesEffects() {
     }
@@ -45,7 +47,8 @@ public final class RelentlessStrikesEffects {
             return;
         }
 
-        if (!attacker.getData(CombatAttachments.RUNE_PAGE).hasMinor(RuneCatalog.VANGUARD_RELENTLESS_STRIKES.id())) {
+        Optional<RuneDefinition> rune = Runes.active(attacker, ID);
+        if (rune.isEmpty()) {
             return;
         }
 
@@ -58,8 +61,8 @@ public final class RelentlessStrikesEffects {
         if (state.expiresAtGameTime() <= now) {
             state.clear();
         }
-        state.refresh(MAX_STACKS, now + DECAY_TICKS);
+        state.refresh(rune.get().count("max_stacks", 4), now + rune.get().ticks("decay_seconds", 3.0));
 
-        event.setAmount(event.getAmount() + state.stacks() * BONUS_DAMAGE_PER_STACK);
+        event.setAmount(event.getAmount() + state.stacks() * (float) rune.get().value("damage_per_stack", 0.75));
     }
 }

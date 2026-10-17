@@ -1,0 +1,13 @@
+{
+  "path": "vanguard",
+  "slot": "minor",
+  "row": 0,
+  "position": 1,
+  "icon": "ascension_combat:rune/momentum",
+  "effect": "ascension_combat:momentum",
+  "values": {
+    "max_stacks": 5,
+    "heal_per_stack": 0.01,
+    "chain_seconds": 2
+  }
+}

@@ -298,15 +298,17 @@ public final class CombatAttachments {
             () -> AttachmentType.builder(ArmedState::new).build());
 
     /**
-     * A player's saved rune page (docs/technical/combat-api.md section 7): primary path (keystone
-     * plus two minors) and secondary path (two minors, no keystone). Attached to the player and,
-     * unlike the fight-local state above, meant to persist &mdash; a rune choice is a build
-     * decision, not combat bookkeeping, so this one attachment is serialized.
+     * A player's saved rune page and its growing runes' growth (docs/technical/rune-system.md
+     * sections 3 and 4.5). Unlike the fight-local state above, meant to persist: a rune choice is a
+     * build decision, not combat bookkeeping, so this one attachment is serialized, and copied on
+     * death so dying doesn't wipe the page. (Before 2026-10-17 it wasn't copied, and every death
+     * silently cleared the player's runes.)
      */
     public static final Supplier<AttachmentType<RunePageState>> RUNE_PAGE = TYPES.register(
             "rune_page",
             () -> AttachmentType.builder(RunePageState::new)
-                    .serialize(RunePageState.CODEC)
+                    .serialize(RunePageState.SAVED_CODEC)
+                    .copyOnDeath()
                     .build());
 
     /**

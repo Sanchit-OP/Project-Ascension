@@ -2,211 +2,272 @@ package com.ascension.combat.client;
 
 import com.ascension.combat.api.rune.RunePath;
 import com.ascension.combat.internal.net.SetRunePagePayload;
-import com.ascension.combat.internal.rune.RuneCatalog;
 import com.ascension.combat.internal.rune.RuneDefinition;
-import java.util.HashSet;
+import com.ascension.combat.internal.rune.RunePage;
+import com.ascension.combat.internal.rune.RunePageRules;
+import com.ascension.combat.internal.rune.RuneRegistries;
+import com.ascension.combat.internal.rune.RuneSlot;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
- * The rune-page selection screen (docs/technical/combat-api.md section 7) &mdash; this module's
- * first {@code Screen}. Entirely vanilla {@link Button} widgets rather than a custom-textured
- * panel: the same "borrow what already exists rather than block on art" placeholder reasoning
- * every item in {@code CombatContent} uses for its own model, applied to UI instead of an item
- * texture. A stylized panel mockup exists as the actual visual target; this is the functional
- * placeholder, same relationship every item has between its catalog identity and its current
- * borrowed vanilla texture.
+ * The rune page screen, <b>interim</b>: plain vanilla buttons, enough to build and save a page
+ * of the new shape (docs/technical/rune-system.md section 3) and to test the rules in a client.
+ * It is replaced by the orrery (section 10), which Sanchit chose on 2026-10-17; nothing here is
+ * meant to survive that but the flow.
  *
- * <p>Deliberately not 1:1 with League's own rune page layout, per Sanchit &mdash; primary path row,
- * an auto-granted keystone, up to two minors, a secondary path row with its own up-to-two minors,
- * confirm. Same two-tree structure the design doc calls for (section 7), different presentation.
- *
- * <p>Rebuilds its whole widget set on every click ({@link #refresh()}, wrapping the framework's own
- * {@link Screen#rebuildWidgets()}) rather than relabeling individual buttons in place &mdash; simpler
- * code for a menu with under twenty widgets total, and ADR-0007's per-tick performance rules have
- * nothing to say about a screen that only redraws on a player click.
- *
- * <p>All selection state here is local until {@link #onConfirm} sends {@link SetRunePagePayload} &mdash;
- * nothing is saved server-side by merely opening this screen or clicking around in it.
+ * <p>Reads every rune from the synced rune registry, never a list in code, so what it offers is
+ * exactly what the server will accept. Choices are local until Save, which sends one
+ * {@link SetRunePagePayload}; the server answers saved or refused, and the reason is shown here
+ * ({@link #onResult}) without losing the unsaved choices.
  */
 public final class RuneScreen extends Screen {
 
-    private static final int PATH_BUTTON_WIDTH = 100;
-    private static final int MINOR_BUTTON_WIDTH = 124;
-    private static final int BUTTON_HEIGHT = 20;
-    private static final int GAP = 8;
+    private static final int BUTTON_W = 66;
+    private static final int BUTTON_H = 14;
+    private static final int GAP = 2;
+    private static final int ROW = BUTTON_H + 4;
 
-    private static final int Y_PRIMARY_LABEL = 26;
-    private static final int Y_PRIMARY_PATH_ROW = 38;
-    private static final int Y_KEYSTONE_LABEL = 64;
-    private static final int Y_PRIMARY_MINORS_LABEL = 80;
-    private static final int Y_PRIMARY_MINORS_ROW = 92;
-    private static final int Y_SECONDARY_LABEL = 120;
-    private static final int Y_SECONDARY_PATH_ROW = 132;
-    private static final int Y_SECONDARY_MINORS_LABEL = 158;
-    private static final int Y_SECONDARY_MINORS_ROW = 170;
-    private static final int Y_CONFIRM = 200;
+    private RunePath primary;
+    private ResourceLocation keystone;
+    private final Map<Integer, ResourceLocation> primaryRows = new HashMap<>();
+    private RunePath secondary;
+    private final Map<Integer, ResourceLocation> secondaryRows = new HashMap<>();
+    private final Map<Integer, ResourceLocation> shardRows = new HashMap<>();
 
-    private RunePath pendingPrimaryPath;
-    private final Set<ResourceLocation> pendingPrimaryMinors;
-    private RunePath pendingSecondaryPath;
-    private final Set<ResourceLocation> pendingSecondaryMinors;
+    private Component status = Component.empty();
 
     public RuneScreen() {
         super(Component.translatable("screen.ascension_combat.rune_page"));
-        this.pendingPrimaryPath = ClientRunePageCache.primaryPath();
-        this.pendingPrimaryMinors = new HashSet<>(ClientRunePageCache.primaryMinors());
-        this.pendingSecondaryPath = ClientRunePageCache.secondaryPath();
-        this.pendingSecondaryMinors = new HashSet<>(ClientRunePageCache.secondaryMinors());
+        resetToSaved();
+    }
+
+    private void resetToSaved() {
+        RunePage saved = ClientRunePageCache.page();
+        primary = saved.primary().orElse(null);
+        keystone = saved.keystone().orElse(null);
+        secondary = saved.secondary().orElse(null);
+        primaryRows.clear();
+        secondaryRows.clear();
+        shardRows.clear();
+        Registry<RuneDefinition> runes = runes();
+        if (runes == null) {
+            return;
+        }
+        for (ResourceLocation id : saved.primaryMinors()) {
+            put(runes, primaryRows, id);
+        }
+        for (ResourceLocation id : saved.secondaryMinors()) {
+            put(runes, secondaryRows, id);
+        }
+        for (ResourceLocation id : saved.shards()) {
+            put(runes, shardRows, id);
+        }
+    }
+
+    private static void put(Registry<RuneDefinition> runes, Map<Integer, ResourceLocation> rows, ResourceLocation id) {
+        RuneDefinition rune = runes.get(id);
+        if (rune != null) {
+            rows.put(rune.row(), id);
+        }
+    }
+
+    private Registry<RuneDefinition> runes() {
+        return this.minecraft == null || this.minecraft.level == null
+                ? null
+                : this.minecraft.level.registryAccess().registryOrThrow(RuneRegistries.RUNE);
     }
 
     @Override
     protected void init() {
-        int centerX = this.width / 2;
-
-        addRow(centerX, Y_PRIMARY_PATH_ROW, RunePath.values(), PATH_BUTTON_WIDTH, path ->
-                pathLabel(path, path == pendingPrimaryPath, path == pendingSecondaryPath), path -> onPrimaryPathClicked(path));
-
-        if (pendingPrimaryPath != null) {
-            List<RuneDefinition> primaryMinors = RuneCatalog.minorsOf(pendingPrimaryPath);
-            addRow(centerX, Y_PRIMARY_MINORS_ROW, primaryMinors.toArray(new RuneDefinition[0]), MINOR_BUTTON_WIDTH, rune ->
-                    minorLabel(rune, pendingPrimaryMinors.contains(rune.id())), rune -> onMinorClicked(pendingPrimaryMinors, rune.id()));
-        }
-
-        addRow(centerX, Y_SECONDARY_PATH_ROW, RunePath.values(), PATH_BUTTON_WIDTH, path ->
-                pathLabel(path, path == pendingSecondaryPath, path == pendingPrimaryPath), path -> onSecondaryPathClicked(path));
-
-        if (pendingSecondaryPath != null) {
-            List<RuneDefinition> secondaryMinors = RuneCatalog.minorsOf(pendingSecondaryPath);
-            addRow(centerX, Y_SECONDARY_MINORS_ROW, secondaryMinors.toArray(new RuneDefinition[0]), MINOR_BUTTON_WIDTH, rune ->
-                    minorLabel(rune, pendingSecondaryMinors.contains(rune.id())), rune -> onMinorClicked(pendingSecondaryMinors, rune.id()));
-        }
-
-        this.addRenderableWidget(Button.builder(Component.translatable("gui.ascension_combat.confirm"), btn -> onConfirm())
-                .bounds(centerX - 50, Y_CONFIRM, 100, BUTTON_HEIGHT)
-                .build());
-    }
-
-    /** One row of equal-width buttons, centered under {@code centerX}, one item per button. */
-    private <T> void addRow(
-            int centerX,
-            int y,
-            T[] items,
-            int buttonWidth,
-            java.util.function.Function<T, Component> label,
-            java.util.function.Consumer<T> onClick) {
-        if (items.length == 0) {
+        Registry<RuneDefinition> runes = runes();
+        if (runes == null) {
             return;
         }
+        RunePageRules.OpenSlots open = ClientRunePageCache.open();
+        int left = this.width / 2 - (3 * BUTTON_W + 2 * GAP) - 10;
+        int right = this.width / 2 + 10;
+        int y = 28;
 
-        int totalWidth = items.length * buttonWidth + (items.length - 1) * GAP;
-        int startX = centerX - totalWidth / 2;
-        for (int i = 0; i < items.length; i++) {
-            T item = items[i];
-            int x = startX + i * (buttonWidth + GAP);
-            this.addRenderableWidget(Button.builder(label.apply(item), btn -> onClick.accept(item))
-                    .bounds(x, y, buttonWidth, BUTTON_HEIGHT)
-                    .build());
+        // --- the primary path
+        row(left, y, List.of(RunePath.values()), path -> pathLabel(path, path == primary), path -> true, path -> {
+            if (path != primary) {
+                primary = path;
+                keystone = null;
+                primaryRows.clear();
+                if (secondary == path) {
+                    secondary = null;
+                    secondaryRows.clear();
+                }
+            }
+        }, path -> null, 4);
+        y += ROW + 4;
+        if (primary != null) {
+            List<Entry> keys = of(runes, e -> e.rune.slot() == RuneSlot.KEYSTONE && e.rune.path().orElse(null) == primary);
+            row(left, y, keys, e -> runeLabel(e, e.id.equals(keystone)), e -> true,
+                    e -> keystone = e.id.equals(keystone) ? null : e.id, e -> e.tooltip(), 3);
+            y += ROW;
+            for (int r = 0; r < RuneDefinition.MINOR_ROWS; r++) {
+                int rowIndex = r;
+                List<Entry> minors = of(runes, e -> e.rune.slot() == RuneSlot.MINOR
+                        && e.rune.path().orElse(null) == primary && e.rune.row() == rowIndex);
+                row(left, y, minors, e -> runeLabel(e, e.id.equals(primaryRows.get(rowIndex))), e -> true,
+                        e -> toggle(primaryRows, rowIndex, e.id), e -> e.tooltip(), 3);
+                y += ROW;
+            }
+        }
+
+        // --- the secondary path
+        y = 28;
+        row(right, y, List.of(RunePath.values()), path -> pathLabel(path, path == secondary),
+                path -> open.secondary() && path != primary, path -> {
+                    secondary = secondary == path ? null : path;
+                    secondaryRows.clear();
+                }, path -> null, 4);
+        y += ROW + 4;
+        if (secondary != null) {
+            for (int r = 0; r < RuneDefinition.MINOR_ROWS; r++) {
+                int rowIndex = r;
+                List<Entry> minors = of(runes, e -> e.rune.slot() == RuneSlot.MINOR
+                        && e.rune.path().orElse(null) == secondary && e.rune.row() == rowIndex);
+                row(right, y, minors, e -> runeLabel(e, e.id.equals(secondaryRows.get(rowIndex))), e -> true,
+                        e -> toggle(secondaryRows, rowIndex, e.id), e -> e.tooltip(), 3);
+                y += ROW;
+            }
+        }
+
+        // --- the stat shards
+        y = 28 + 4 * ROW + 12;
+        for (int r = 0; r < RuneDefinition.SHARD_ROWS; r++) {
+            int rowIndex = r;
+            boolean rowOpen = open.shardRow(rowIndex);
+            List<Entry> shards = of(runes, e -> e.rune.slot() == RuneSlot.SHARD && e.rune.row() == rowIndex);
+            row(right, y, shards, e -> runeLabel(e, e.id.equals(shardRows.get(rowIndex))), e -> rowOpen,
+                    e -> toggle(shardRows, rowIndex, e.id), e -> e.tooltip(), 3);
+            y += ROW;
+        }
+
+        // --- save and reset
+        int bottom = this.height - 30;
+        RunePage pending = pending();
+        boolean costs = RunePageRules.costsToChange(ClientRunePageCache.page(), pending);
+        Component save = costs
+                ? Component.translatable("gui.ascension_combat.rune_save_cost", ClientRunePageCache.chalk(), ClientRunePageCache.levels())
+                : Component.translatable("gui.ascension_combat.rune_save");
+        this.addRenderableWidget(Button.builder(save, b -> onSave())
+                .bounds(this.width / 2 + 4, bottom, 150, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("gui.ascension_combat.rune_reset"), b -> {
+            resetToSaved();
+            status = Component.empty();
+            rebuildWidgets();
+        }).bounds(this.width / 2 - 154, bottom, 150, 20).build());
+    }
+
+    /** One rune and its id, for a button. */
+    private record Entry(ResourceLocation id, RuneDefinition rune) {
+        Tooltip tooltip() {
+            return Tooltip.create(Component.translatable(nameKey(id)).append("\n")
+                    .append(Component.translatable(nameKey(id) + ".desc")));
         }
     }
 
-    private void onPrimaryPathClicked(RunePath path) {
-        if (path == pendingSecondaryPath || path == pendingPrimaryPath) {
-            return;
+    private static List<Entry> of(Registry<RuneDefinition> runes, Predicate<Entry> keep) {
+        List<Entry> out = new ArrayList<>();
+        for (var e : runes.entrySet()) {
+            Entry entry = new Entry(e.getKey().location(), e.getValue());
+            if (keep.test(entry)) {
+                out.add(entry);
+            }
         }
-        this.pendingPrimaryPath = path;
-        this.pendingPrimaryMinors.clear();
-        refresh();
+        out.sort(Comparator.comparingInt((Entry e) -> e.rune.position()).thenComparing(e -> e.id.toString()));
+        return out;
     }
 
-    private void onSecondaryPathClicked(RunePath path) {
-        if (path == pendingPrimaryPath) {
-            return;
+    private <T> void row(int x, int y, List<T> items, java.util.function.Function<T, Component> label,
+            Predicate<T> active, java.util.function.Consumer<T> onClick,
+            java.util.function.Function<T, Tooltip> tooltip, int columns) {
+        int width = columns == 4 ? (3 * BUTTON_W + 2 * GAP - 3 * GAP) / 4 : BUTTON_W;
+        for (int i = 0; i < items.size(); i++) {
+            T item = items.get(i);
+            Button button = Button.builder(label.apply(item), b -> {
+                        onClick.accept(item);
+                        status = Component.empty();
+                        rebuildWidgets();
+                    })
+                    .bounds(x + i * (width + GAP), y, width, BUTTON_H)
+                    .tooltip(tooltip.apply(item))
+                    .build();
+            button.active = active.test(item);
+            this.addRenderableWidget(button);
         }
-        this.pendingSecondaryPath = pendingSecondaryPath == path ? null : path;
-        this.pendingSecondaryMinors.clear();
-        refresh();
     }
 
-    private void onMinorClicked(Set<ResourceLocation> minors, ResourceLocation id) {
-        if (minors.contains(id)) {
-            minors.remove(id);
-        } else if (minors.size() < 2) {
-            minors.add(id);
+    private static void toggle(Map<Integer, ResourceLocation> rows, int row, ResourceLocation id) {
+        if (id.equals(rows.get(row))) {
+            rows.remove(row);
+        } else {
+            rows.put(row, id);
         }
-        refresh();
     }
 
-    private void onConfirm() {
-        if (pendingPrimaryPath == null) {
-            return;
-        }
-
-        List<ResourceLocation> primaryMinors = List.copyOf(pendingPrimaryMinors);
-        List<ResourceLocation> secondaryMinors = List.copyOf(pendingSecondaryMinors);
-        PacketDistributor.sendToServer(
-                new SetRunePagePayload(pendingPrimaryPath, primaryMinors, pendingSecondaryPath, secondaryMinors));
-        ClientRunePageCache.update(pendingPrimaryPath, pendingPrimaryMinors, pendingSecondaryPath, pendingSecondaryMinors);
-        this.onClose();
+    private RunePage pending() {
+        return new RunePage(
+                Optional.ofNullable(primary),
+                Optional.ofNullable(keystone),
+                List.copyOf(primaryRows.values()),
+                Optional.ofNullable(secondary),
+                List.copyOf(secondaryRows.values()),
+                List.copyOf(shardRows.values()));
     }
 
-    private void refresh() {
-        this.rebuildWidgets();
+    private void onSave() {
+        PacketDistributor.sendToServer(new SetRunePagePayload(pending()));
+    }
+
+    /** The server's answer to a save. */
+    public void onResult(Optional<RunePageRules.Refusal> refusal) {
+        status = refusal
+                .<Component>map(why -> Component.translatable(why.langKey()))
+                .orElse(Component.translatable("gui.ascension_combat.rune_saved"));
+        rebuildWidgets();
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-
-        int centerX = this.width / 2;
-        guiGraphics.drawCenteredString(this.font, this.title, centerX, 10, 0xFFFFFF);
-        guiGraphics.drawCenteredString(
-                this.font, Component.translatable("gui.ascension_combat.primary_path"), centerX, Y_PRIMARY_LABEL, 0xA0A0A0);
-        guiGraphics.drawCenteredString(this.font, keystoneLabel(), centerX, Y_KEYSTONE_LABEL, 0xFFD87A);
-        guiGraphics.drawCenteredString(this.font, minorsLabel(pendingPrimaryPath), centerX, Y_PRIMARY_MINORS_LABEL, 0xA0A0A0);
-        guiGraphics.drawCenteredString(
-                this.font, Component.translatable("gui.ascension_combat.secondary_path"), centerX, Y_SECONDARY_LABEL, 0xA0A0A0);
-        guiGraphics.drawCenteredString(this.font, minorsLabel(pendingSecondaryPath), centerX, Y_SECONDARY_MINORS_LABEL, 0xA0A0A0);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        int left = this.width / 2 - (3 * BUTTON_W + 2 * GAP) - 10;
+        int right = this.width / 2 + 10;
+        graphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        graphics.drawString(this.font, Component.translatable("gui.ascension_combat.primary_path"), left, 18, 0xA0A0A0);
+        graphics.drawString(this.font, Component.translatable("gui.ascension_combat.secondary_path"), right, 18, 0xA0A0A0);
+        graphics.drawString(this.font, Component.translatable("gui.ascension_combat.rune_shards"), right, 28 + 4 * ROW + 2, 0xA0A0A0);
+        graphics.drawCenteredString(this.font, status, this.width / 2, this.height - 44, 0xFFD87A);
     }
 
-    private Component keystoneLabel() {
-        if (pendingPrimaryPath == null) {
-            return Component.translatable("gui.ascension_combat.choose_primary_path");
-        }
-        return RuneCatalog.keystoneOf(pendingPrimaryPath)
-                .<Component>map(rune -> Component.translatable("gui.ascension_combat.keystone", rune.displayName()))
-                .orElse(Component.translatable("gui.ascension_combat.no_runes_yet"));
+    private static String nameKey(ResourceLocation id) {
+        return "rune." + id.getNamespace() + "." + id.getPath();
     }
 
-    private Component minorsLabel(RunePath path) {
-        if (path == null) {
-            return Component.empty();
-        }
-        if (RuneCatalog.minorsOf(path).isEmpty()) {
-            return Component.translatable("gui.ascension_combat.no_runes_yet");
-        }
-        return Component.translatable("gui.ascension_combat.minor_runes");
-    }
-
-    private static Component pathLabel(RunePath path, boolean selected, boolean disabled) {
-        String key = "rune_path.ascension_combat." + path.name().toLowerCase(Locale.ROOT);
-        Component name = Component.translatable(key);
-        if (disabled) {
-            return Component.translatable("gui.ascension_combat.path_taken", name);
-        }
+    private static Component pathLabel(RunePath path, boolean selected) {
+        Component name = Component.translatable("rune_path.ascension_combat." + path.getSerializedName());
         return selected ? Component.translatable("gui.ascension_combat.selected", name) : name;
     }
 
-    private static Component minorLabel(RuneDefinition rune, boolean selected) {
-        return selected
-                ? Component.translatable("gui.ascension_combat.selected", rune.displayName())
-                : rune.displayName();
+    private static Component runeLabel(Entry entry, boolean selected) {
+        Component name = Component.translatable(nameKey(entry.id));
+        return selected ? Component.translatable("gui.ascension_combat.selected", name) : name;
     }
 }
