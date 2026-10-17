@@ -61,6 +61,36 @@ class RuneDataTest {
     }
 
     @Test
+    void aRunesNumbersMustReadItsOwnValues() {
+        assertTrue(rune("""
+                {"path": "vanguard", "slot": "minor", "icon": "a:b", "effect": "a:b", "values": {"hits": 3},
+                 "numbers": [{"text": "x", "parts": [{"value": "hits"}]}]}""").isSuccess());
+        assertTrue(rune("""
+                {"path": "vanguard", "slot": "minor", "icon": "a:b", "effect": "a:b", "values": {"hits": 3},
+                 "numbers": [{"text": "x", "parts": [{"value": "window"}]}]}""").isError(),
+                "a card line can't show a number the rune doesn't have");
+        assertTrue(rune("""
+                {"path": "vanguard", "slot": "minor", "icon": "a:b", "effect": "a:b", "values": {"hits": 3},
+                 "numbers": [{"text": "x", "parts": [{"value": "hits", "stat": "luck"}]}]}""").isError(),
+                "the colour must be a stat the stat system knows");
+    }
+
+    @Test
+    void theShippedVanguardRunesReadTheirOwnFiles() throws Exception {
+        for (String name : List.of("conquerors_resolve", "cadence", "vein_breaker", "second_wind", "momentum",
+                "blooded", "relentless_strikes", "killing_surge", "giant_slayer")) {
+            try (var in = RuneDataTest.class.getResourceAsStream(
+                    "/data/ascension_combat/ascension_combat/rune/" + name + ".json")) {
+                assertTrue(in != null, name + " is shipped");
+                RuneDefinition rune = RuneDefinition.CODEC.parse(JsonOps.INSTANCE,
+                        JsonParser.parseReader(new java.io.InputStreamReader(in))).getOrThrow();
+                assertEquals(Optional.of(RunePath.VANGUARD), rune.path(), name);
+                assertFalse(rune.numbers().isEmpty(), name + " has numbers for its card");
+            }
+        }
+    }
+
+    @Test
     void aShardFileReads() {
         RuneDefinition shard = rune("""
                 {"slot": "shard", "row": 2, "icon": "a:b", "effect": "a:b", "values": {"amount": 2}}""").getOrThrow();

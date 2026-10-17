@@ -32,9 +32,9 @@ public final class RuneAttachments {
      * already found: the Wither and Cataclysm's bosses refuse ordinary effects, and Cadence's
      * payoff matters most against exactly those.
      */
-    public static final Supplier<AttachmentType<DurationState>> EXPOSED = TYPES.register(
+    public static final Supplier<AttachmentType<ExposedState>> EXPOSED = TYPES.register(
             "exposed",
-            () -> AttachmentType.builder(DurationState::new).build());
+            () -> AttachmentType.builder(ExposedState::new).build());
 
     /** Cadence's hit count on one enemy, on the attacker. */
     public static final Supplier<AttachmentType<CadenceState>> CADENCE = TYPES.register(
