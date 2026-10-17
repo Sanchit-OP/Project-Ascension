@@ -2,6 +2,7 @@ package com.ascension.combat.api.stat;
 
 import java.util.function.Supplier;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -36,12 +37,14 @@ public final class CombatStat {
     private final Supplier<Holder<Attribute>> attribute;
     private final Kind kind;
     private final AttributeModifier.Operation operation;
+    private final int color;
 
-    CombatStat(String name, Supplier<Holder<Attribute>> attribute, Kind kind, AttributeModifier.Operation operation) {
+    CombatStat(String name, Supplier<Holder<Attribute>> attribute, Kind kind, AttributeModifier.Operation operation, int color) {
         this.name = name;
         this.attribute = attribute;
         this.kind = kind;
         this.operation = operation;
+        this.color = color;
     }
 
     /** The stat's name in data files: {@code armor}, {@code attack_speed}. */
@@ -56,6 +59,20 @@ public final class CombatStat {
 
     public Kind kind() {
         return kind;
+    }
+
+    /** The stat's name as players read it: "Health", not vanilla's "Max Health". */
+    public Component displayName() {
+        return Component.translatable("stat.ascension_combat." + name);
+    }
+
+    /**
+     * The stat's colour, as RGB: one colour per stat everywhere a stat is shown, so the tooltips,
+     * the character sheet, the rune page and the growth tree read as one game
+     * (docs/technical/item-stats.md section 7).
+     */
+    public int color() {
+        return color;
     }
 
     /**

@@ -89,7 +89,7 @@ public final class AscensionCombat {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             com.ascension.combat.client.CombatKeybinds.register(modBus);
             com.ascension.combat.client.AbilityCooldownDecorator.register(modBus);
-            com.ascension.combat.client.stat.ConvertedStatTooltips.register(NeoForge.EVENT_BUS);
+            com.ascension.combat.client.stat.StatTooltips.register(NeoForge.EVENT_BUS);
         }
 
         // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before

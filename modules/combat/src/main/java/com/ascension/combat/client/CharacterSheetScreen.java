@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -37,7 +38,8 @@ import net.minecraft.world.entity.player.Player;
  * <p><b>Sources, added 2026-10-16</b> (docs/technical/item-stats.md section 7). Every number is read
  * through {@link StatReader}, and hovering a row lists where it comes from: the base value, each
  * worn or held item by name, then growth, runes, effects and anything else. Attack Damage used to
- * read 1 here whatever was held, because vanilla never synced it; it is synced now.
+ * read 1 here whatever was held, because vanilla never synced it; it is synced now. Values are drawn
+ * in their stat's colour, the same as in item tooltips.
  */
 public final class CharacterSheetScreen extends Screen {
 
@@ -106,7 +108,7 @@ public final class CharacterSheetScreen extends Screen {
             }
 
             guiGraphics.drawString(this.font, Component.translatable(row.labelKey()), labelX, y, LABEL_COLOR, false);
-            guiGraphics.drawString(this.font, row.value().apply(player), valueX, y, VALUE_COLOR, false);
+            guiGraphics.drawString(this.font, row.value().apply(player), valueX, y, row.stats().get(0).color(), false);
             if (mouseX >= labelX && mouseX < valueX + 60 && mouseY >= y - 2 && mouseY < y + LINE_HEIGHT - 2) {
                 hovered = row;
             }
@@ -130,9 +132,9 @@ public final class CharacterSheetScreen extends Screen {
             }
 
             StatBreakdown breakdown = StatReader.breakdown(player, stat);
-            lines.add(Component.translatable(stat.attribute().value().getDescriptionId())
+            lines.add(stat.displayName().copy()
                     .append(" " + StatText.value(stat, breakdown.total()))
-                    .withStyle(ChatFormatting.WHITE));
+                    .withStyle(style -> style.withColor(TextColor.fromRgb(stat.color()))));
             boolean first = true;
             for (StatBreakdown.Part part : breakdown.parts()) {
                 String amount = first ? StatText.value(stat, part.amount()) : StatText.signedValue(stat, part.amount());

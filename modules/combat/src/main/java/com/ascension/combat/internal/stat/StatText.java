@@ -3,6 +3,7 @@ package com.ascension.combat.internal.stat;
 import com.ascension.combat.api.stat.CombatStat;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 /**
  * How stats read as text, in one place: the character sheet, {@code /ascension stats}, and later
@@ -39,6 +40,18 @@ public final class StatText {
     public static String written(CombatStat stat, double written) {
         String number = number(written, 1);
         return signed(written, stat.kind() == CombatStat.Kind.POINTS ? number : number + "%");
+    }
+
+    /**
+     * One modifier on a stat, signed, whatever its operation: another mod's item might add Attack
+     * Damage as a percentage, or Move Speed as a flat amount. Flat additions read as {@link #value}
+     * does; anything that multiplies reads as a percentage.
+     */
+    public static String modifier(CombatStat stat, AttributeModifier.Operation operation, double amount) {
+        if (operation == AttributeModifier.Operation.ADD_VALUE) {
+            return signedValue(stat, amount);
+        }
+        return signed(amount, number(amount * 100.0, 1) + "%");
     }
 
     /** {@code value} to at most {@code decimals} places, without trailing zeros. */
