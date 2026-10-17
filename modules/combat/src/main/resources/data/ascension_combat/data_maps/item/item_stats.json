@@ -1,9 +1,27 @@
 {
-  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15.",
+  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. The combat items carry the numbers they had in code until 2026-10-16, unchanged; all are placeholders Sanchit tunes by playing.",
   "values": {
     "minecraft:netherite_helmet": { "stats": { "health": 10 } },
     "minecraft:netherite_chestplate": { "stats": { "health": 10 } },
     "minecraft:netherite_leggings": { "stats": { "health": 10 } },
-    "minecraft:netherite_boots": { "stats": { "health": 10 } }
+    "minecraft:netherite_boots": { "stats": { "health": 10 } },
+
+    "ascension_combat:veigos_blade": { "weapon": { "damage": 7, "speed": 1.6 } },
+    "ascension_combat:darius_axe": { "weapon": { "damage": 8, "speed": 1.0 } },
+    "ascension_combat:spear_of_shojin": { "weapon": { "damage": 7, "speed": 1.4 } },
+    "ascension_combat:divine_sunderer": { "weapon": { "damage": 7, "speed": 1.2 } },
+    "ascension_combat:darken_blade": { "weapon": { "damage": 7, "speed": 1.4 } },
+    "ascension_combat:ragefang": { "weapon": { "damage": 6, "speed": 2.0 } },
+    "ascension_combat:endless_hunger": { "weapon": { "damage": 10, "speed": 4.0 } },
+    "ascension_combat:wraithblade": { "weapon": { "damage": 7, "speed": 1.6 }, "stats": { "lethality": 20 } },
+
+    "ascension_combat:gargoyle_stoneplate": { "stats": { "armor": 2, "magic_resist": 2 } },
+
+    "ascension_combat:mercury_treads": { "stats": { "magic_resist": 15 } },
+    "ascension_combat:ninja_tabi": { "stats": { "armor": 15 } },
+    "ascension_combat:swifty": { "stats": { "move_speed": 15 } },
+    "ascension_combat:berserkers_greaves": { "stats": { "attack_speed": 50 } },
+    "ascension_combat:wizards_agony": { "stats": { "armor_penetration": 10, "magic_penetration": 10 } },
+    "ascension_combat:tasted_blood": { "stats": { "omnivamp": 8 } }
   }
 }
