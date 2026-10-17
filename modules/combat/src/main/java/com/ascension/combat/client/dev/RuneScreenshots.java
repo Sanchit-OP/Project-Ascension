@@ -11,24 +11,16 @@ import com.ascension.combat.internal.rune.RuneModifiers;
 import com.ascension.combat.internal.rune.RunePage;
 import com.ascension.combat.internal.rune.RunePageState;
 import com.ascension.combat.internal.rune.Runes;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.BackupConfirmScreen;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.lwjgl.glfw.GLFW;
@@ -48,33 +40,16 @@ import org.lwjgl.glfw.GLFW;
  */
 public final class RuneScreenshots {
 
-    private record Step(int waitAfter, Runnable action) {
-    }
-
-    private static final List<Step> STEPS = new ArrayList<>();
-    private static int next;
-    private static int wait;
+    private static final DevScript SCRIPT = new DevScript("rune-screenshots");
     private static String pending;
     private static int guiScaleBefore;
     private static RuneScreen screen;
-    private static boolean opening;
-    private static int titleTicks;
-
-    /** The singleplayer save the client opens by itself: a world folder named this in the game directory's saves. */
-    private static final String WORLD = "runes-test";
 
     private RuneScreenshots() {
     }
 
     public static void register(IEventBus gameBus) {
-        Path trigger = FMLPaths.GAMEDIR.get().resolve("rune-screenshots.txt");
-        if (!Files.exists(trigger)) {
-            return;
-        }
-
-        try {
-            Files.deleteIfExists(trigger);
-        } catch (IOException e) {
+        if (!DevScript.armed("rune-screenshots.txt")) {
             return;
         }
 
@@ -153,7 +128,7 @@ public final class RuneScreenshots {
     }
 
     private static void add(int waitAfter, Runnable action) {
-        STEPS.add(new Step(waitAfter, action));
+        SCRIPT.add(waitAfter, action);
     }
 
     private static Minecraft mc() {
@@ -298,43 +273,7 @@ public final class RuneScreenshots {
     }
 
     private static void onTick(ClientTickEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            // Not in a world yet: once the game has settled on a menu, open the test world once.
-            titleTicks++;
-            if (titleTicks % 100 == 0) {
-                System.out.println("[rune-screenshots] waiting: screen=" + (mc.screen == null ? "none" : mc.screen.getClass().getName())
-                        + " overlay=" + (mc.getOverlay() != null));
-            }
-            if (opening && mc.screen instanceof BackupConfirmScreen backup) {
-                // A world made by the dedicated server asks whether to back up before opening: no.
-                String skip = I18n.get("selectWorld.backupJoinSkipButton");
-                for (var child : backup.children()) {
-                    if (child instanceof Button button && button.getMessage().getString().equals(skip)) {
-                        button.onPress();
-                    }
-                }
-            }
-            if (!opening && mc.getOverlay() == null && mc.screen != null && titleTicks > 100) {
-                opening = true;
-                System.out.println("[rune-screenshots] opening world " + WORLD);
-                mc.createWorldOpenFlows().openWorld(WORLD, () -> mc.setScreen(new TitleScreen()));
-            }
-            return;
-        }
-
-        if (mc.player == null || next >= STEPS.size()) {
-            return;
-        }
-
-        if (wait > 0) {
-            wait--;
-            return;
-        }
-
-        Step step = STEPS.get(next++);
-        step.action().run();
-        wait = step.waitAfter();
+        SCRIPT.tick(Minecraft.getInstance());
     }
 
     private static void onScreenRendered(ScreenEvent.Render.Post event) {

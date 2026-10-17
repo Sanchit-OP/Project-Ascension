@@ -101,14 +101,32 @@ Status: **Built** (exists today), **New**. **Grows** marks the four growing rune
 
 ### 4.2 Reaver: strike first, finish fast
 
+**Two fixes after Sanchit's first test (2026-10-18).** *Vanish* did nothing he could see: it gave a
+two-second invisibility with no sign of it, and vanilla invisibility barely stops a mob (it
+still notices you within a few blocks, and a mob that has just dropped its target takes you again
+on its next look). It now also opens a window in which `LivingChangeTargetEvent` is cancelled for
+anything choosing the player, and it only fires for killing an enemy, not a cow. *Deadeye*'s
+"near the head" was vague, and its ding was the very sound vanilla plays for every arrow hit. The
+distance bonus now applies to every ranged hit; the headshot is a separate, plainly announced
+bonus.
+
+**Guns (a guns mod such as TACZ is planned).** Deadeye reads *any projectile* that damages an enemy
+(`RuneHits.ranged`: the damage's direct entity is a `Projectile`), so a gun's bullets get the
+distance bonus with no integration at all. Only the headshot needs the shooting mod: vanilla
+arrows are judged by where they land (eye height, less `head_margin`), but a gun has its own head
+hitbox. A guns compat jar (Tier 2, `ascension-compat-<guns>`) calls
+`com.ascension.combat.api.rune.RangedHits.markHeadshot(shooter, victim)` from the gun mod's "about
+to hurt" event, in the same tick; nothing else is needed. Checked in a client with a projectile
+that skips the arrow's impact (`client/dev/RuneEffectChecks`), not yet with a real gun.
+
 | Slot | Rune | What it does | Placeholder numbers | Status |
 |---|---|---|---|---|
 | Keystone | **Ambush** | Hits on an enemy **that isn't targeting you** deal much more damage, more still if critical. Sneak up on things; weak against bosses, which always see you. | +40%; +20% more on a critical hit | Built |
-| Keystone | **Deadeye** | An arrow that lands near the head is a **headshot**: bonus damage, more the farther the shot. A clear "ding". | +50%, then +2% per block past 10, up to +100% | Built |
+| Keystone | **Deadeye** | **Every ranged hit** deals more damage the farther away the enemy is, and a hit to the **head** deals a lot more on top, with a chime, a flash and "Headshot!" on the action bar. Works with any mod's projectiles (see below). | Distance: +2% per block past 10, up to +50%. Head: +50% | Built; reworked 2026-10-18 after Sanchit's test |
 | World keystone | **Silent Step** | You make **no vibrations**: sculk sensors and shriekers never hear you, so the Warden isn't called. Sneaking, mobs only notice you close up. | Noticed within 6 blocks | Built |
 | Row 1: *how do you open?* | **Pounce** | Your critical (falling) hits hit harder. | Crit multiplier 1.5 → 1.75 | Built |
 | | **Drop In** | For a few seconds after a dash, blink, ender pearl or a fall of 4+ blocks, you cut through armour. | +10 Lethality, +10% penetration for 4 s | Built |
-| | **Vanish** | A kill makes you invisible for a moment, and mobs nearby lose track of you. | 2 s; 10 s cooldown | Built |
+| | **Vanish** | Killing an **enemy** gives you Minecraft's own **Invisibility** (the potion effect, with its icon) and mobs nearby lose track of you; **nothing can pick you out as a target** until it ends. | 2 s; 10 s cooldown | Built; reworked 2026-10-18 after Sanchit's test |
 | Row 2: *how do you finish?* | **Finishing Blow** | More damage to enemies below 40% HP. | +12% | Built |
 | | **Overkill** | Damage beyond what a kill needed splashes onto the nearest enemy. | Within 4 blocks, up to 6 damage | Built |
 | | **Trophy Hunter** *(grows)* | Lethality that grows with every new kind of enemy you defeat. | +1 per kind, up to +12 | Built |
@@ -429,6 +447,22 @@ of the dedicated server's, in `run/client/saves/`), opens the screen at GUI scal
 saves a page through the same code a player's Save uses, clicks through a swap, a refusal and a
 real save, writes screenshots to `run/client/screenshots/`, logs what the server holds, and quits.
 It never moves the mouse. Run it with `./gradlew :modules:compat:chunky:runClient`.
+
+### Watching a rune work without fighting anything
+
+`client/dev/RuneEffectChecks` is the same idea for behaviour: with a `rune-effects.txt` in
+`run/client/` it opens the same world, builds a stone platform in the sky, and plays real fights on
+the real server (zombies hunting the player, a kill through the real damage pipeline, arrows shot
+from 22 and 5 blocks, a gun-like projectile that skips the arrow's impact), printing what happened
+as `[rune-effects]` lines in the log with the game tick of each. Both it and `RuneScreenshots` share
+`client/dev/DevScript`, which opens the world and runs the steps. This is how Vanish (Sanchit's
+2026-10-18 report) was reproduced and then seen fixed: during the 40-tick window every zombie's
+target is "nobody", a tick after it they hunt the player again, a cow's death does nothing, and
+the cooldown ends. Deadeye was measured the same way against a baseline of the same hit without it:
+a body shot at 22 blocks x1.24, a headshot at 23 blocks x1.77, a headshot at 5 blocks x1.50, a gun-like
+projectile x1.24 and, with `RangedHits.markHeadshot`, x1.74. (Those ratios are against the base hit
+with Ambush's +40% taken out; the baseline page carried Ambush.) Zombies can call reinforcements
+when hit, which wander into the check, so the harness spawns them without that.
 
 ## 13. Decisions
 
