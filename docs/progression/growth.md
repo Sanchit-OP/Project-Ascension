@@ -382,6 +382,14 @@ installed is reported, not silently skipped.
 
 **Opened with K** (bound by default, so players find it).
 
+**Built 2026-10-17, from the approved mockup; not yet seen in a client.** `client/GrowthScreen` draws
+the web from the synced `growth_node` registry, with the textures `tools/generate-growth-art.py`
+writes (`textures/gui/growth/panel.png` and `nodes.png`, laid out in `GrowthSprites`). Click marks a
+node and clicking again unmarks it (`GrowthSelection`, the server's own rules run over what is taken plus
+what is marked); Confirm sends the marked nodes in one `GrowthTakePayload`; Respec asks "Sure?" for three
+seconds before it sends. The side panel reads the server's `GrowthSyncPayload` snapshot, so the screen
+never guesses. It is drawn at 400 by 224 and shrunk, never grown, to fit a small window.
+
 - **The tree in the middle:** the centre emblem, and the web of rings round it, each node in the
   colour of its theme. Small nodes are round sockets; notables are larger and framed. Taken nodes glow,
   nodes you can take pulse softly, the rest are dim. Drag to pan if the tree is bigger than the screen.
@@ -399,7 +407,7 @@ installed is reported, not silently skipped.
 - **The same game as the rune screen:** the same frame, palette, card style and sounds. Mockups
   first, from a seeded script as the art guide says, sent to Sanchit before any screen is built.
 
-### The mockup (2026-10-17, waiting for Sanchit)
+### The mockup (2026-10-17, approved by Sanchit)
 
 ![The skill tree](../../design/growth/tree.png)
 
@@ -460,7 +468,7 @@ comes last, so the rules underneath are proven first with a debug command.
 | **G1** | The data and the rules: both registries, the player and team attachments, the stat modifiers, an Ascension advancement tab, the Warden and Wither milestones, the Guard arm's nodes, the respec rule, and a command (`/ascension growth`, `take <node>`, `respec`) | Dedicated server: kill the Warden, see the toast and 3 points. Take two Guard HP nodes: 22 HP. A second client joins and has 3 points too. Restart the server: still 22. Die: respawn at 22, full. |
 | **G2** | Every source and every node: the gates (`worlds` awards their advancements), Cataclysm's four bosses (`compat-cataclysm` data), the discoveries, and the other three arms. **Built 2026-10-17**, not yet seen in a client | Each source earned in a client, totals on the command. |
 | **G3** | Refactor pass (ADR-0008) | No new features. |
-| **G4** | The screen, working: the tree, cards, taking and confirming, the side panel, the respec button, the toast. **Waits for Sanchit to approve the mockup (§10)** | Take nodes from the screen, confirm, see the stats. Reload the world: still taken. |
+| **G4** | The screen, working: the tree, cards, taking and confirming, the side panel, the respec button, the toast. **Mockup approved 2026-10-17; screen built, not yet seen in a client** | Take nodes from the screen, confirm, see the stats. Reload the world: still taken. |
 | **G5** | The screen's art, once Sanchit has approved a mockup | Seen at GUI scales 2, 3 and 4. |
 | **G6** | Refactor pass, and a reading in `performance-log.md` | Heap and tick time before and after. |
 
