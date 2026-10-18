@@ -49,6 +49,36 @@ patch versions above are the latest of each.
 | **Xaero's Minimap** `26.6.0` and **World Map** `1.47.0` | 2.2 MB and 1.4 MB, Modrinth | A game about travelling needs a map; both handle custom dimensions. They draw a minimap on the HUD, so the HUD overhaul must make room. |
 | **Mouse Tweaks** `2.26.1`, **Controlling** `19.0.5` with **Searchables** `1.0.2` | under 100 KB each | Inventory handling; searchable key bindings (we now have R, K, V and an ability key). |
 
+## Shader packs: Complementary Reimagined and Unbound
+
+Sanchit's choice (2026-10-18): bundle both, and leave any others to players. Installed in the
+Ascension Dev instance's `shaderpacks/`, hash-checked against Modrinth:
+
+| Pack | Build | File (size) | Licence |
+|---|---|---|---|
+| **Complementary Shaders: Reimagined** | `r5.9.3` (2026-09-15) | `ComplementaryReimagined_r5.9.3.zip` (553 KB) | Complementary License Agreement 1.7 |
+| **Complementary Shaders: Unbound** | `r5.9.3` (2026-09-15) | `ComplementaryUnbound_r5.9.3.zip` (553 KB) | Complementary Agreement 1.3 |
+
+Reimagined keeps the look of vanilla Minecraft at higher quality; Unbound is the more
+transformed, atmospheric look. Players add any other pack themselves, in Video Settings > Shader Packs.
+
+**Licence rules for bundling in a pack** (read from each pack's `License.txt`):
+- **Credit them visibly** in the pack's description page(s). Reimagined asks for this when it is on by
+  default for new users; Unbound asks for it always.
+- **Do not modify them** (Reimagined: not even a variable).
+- **Add them through Modrinth or CurseForge, never as a file we upload** (Reimagined 1.2d). So the
+  zips are **not committed to this repository** and a distributed pack references them in its
+  Modrinth or CurseForge manifest. The dev instance's copies are only for playing.
+- The pack's author is responsible for any problems it causes in their pack (both licences).
+
+**Checked:** a dev client with Reimagined switched on loads it beside Sodium 0.8.13 and Distant
+Horizons, Iris builds the overworld pipeline, there are no shader compile errors, and the combat
+integration run still passes 55 of 55. Iris warns about uniforms the pack defines for newer Minecraft
+versions (Pale Garden, Sulfur Caves, the End flash), which do not exist in 1.21.1 and are harmless.
+Flywheel (Create's renderer) falls back from `indirect` to `off` while a shader is on, which is
+Flywheel's own choice. **Not yet seen by eye:** the Moon and space under either pack, and Unbound
+at all. Shaders are off in the instance until a player turns one on.
+
 ## Left out on purpose
 
 | Mod | Why |
