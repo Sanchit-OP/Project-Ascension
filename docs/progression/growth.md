@@ -229,9 +229,15 @@ them), vanilla XP levels (spent on enchanting), endless paragon levels (a treadm
 
 **Decided (Sanchit, 2026-10-15): bosses and gates go to the whole team.**
 
-- **Shared: bosses and gates.** When one happens, every player on the server gains its points:
-  those online now, and anyone who joins later, on their first login. "The team" means the whole
-  server until Ascension has teams, the same as the gates and the mark (`GateProgress`).
+- **Shared: bosses and gates.** When one happens, every player on the team gains its points:
+  those online now, and anyone who joins later, on their first login. **Teams (ADR-0023, built
+  2026-10-18, [`teams.md`](teams.md)):** "the team" is whatever `core`'s `TeamRegistry` says, the whole
+  server when no team mod is installed (as before). Each team has its own set of earned milestones
+  (`TeamGrowthState`), a boss's points go to the killer's team, and joining a team makes the player and
+  the team hold the union of their milestones. Gates stay the world's (`ascension-worlds` awards them
+  to everyone). A world saved before teams reads as the whole server's set and every new team starts
+  with a copy of it. Seen: the saved old format loads, and the team events award both ways, with no
+  team mod, in the scripted run. Not yet seen: two real teams.
 - **Personal: discoveries and the tree.** The team shares the points; each player spends theirs
   in their own direction. In a team of three, one can be the tank, one the striker, one the
   explorer.

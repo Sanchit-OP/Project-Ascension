@@ -81,7 +81,7 @@ run/                          dev client/server, gitignored
 
 | Module | Status |
 |---|---|
-| `ascension-core` | Tier 0 stub. Registers nothing yet. |
+| `ascension-core` | Tier 0: contracts only (`WorldEnvironmentRegistry`, `CombatStateRegistry`, the HUD contract, and since 2026-10-18 `TeamRegistry`: who is on which team, single-source, everyone one team by default, [ADR-0023](../decisions/0023-teams-are-ftb-teams-parties.md)). |
 | `ascension-atmosphere` | **v0.1 feature-complete**, verified on a dedicated server through M1.8. Refactor pass M1.9 outstanding. |
 | `ascension-worlds` | **M2 done** (2026-09-06); M3 in progress. Earth + Moon, full orbit/descent/return loop, real Moon terrain, per-planet weather, plus a reusable `fixed_position` structure placement type (2026-09-21) for pinning sourced structures to a planet and `random_spread_keep_clear` (2026-10-10) for keeping scattered ones (craters, wild citadels) clear of several fixed ones at once, the gateway network as data-driven walk-through multiblock frames (2026-10-06, `gateway-frame-format.md`), dormant vanilla Nether/End portals (ADR-0014), sky bodies drawn from client resources (Earth over the Moon, 2026-10-06, `worlds-api.md`), and the Lunar Archive: its lore as a synced datapack registry, `archive_entry`, read from plinths and tablets, and since 2026-10-10 the building itself generating on the Moon (`internal/archive/`, `lunar-archive-format.md`). [`plans/m2-worlds.md`](../../plans/m2-worlds.md), [`plans/m3-vertical-slice.md`](../../plans/m3-vertical-slice.md) |
 | `ascension-gear`, `ascension-progression` | Not started |
