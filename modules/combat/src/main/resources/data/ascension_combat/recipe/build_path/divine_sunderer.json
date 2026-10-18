@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:bf_sword"
+    },
+    {
+      "item": "ascension_combat:caulfields_warhammer"
+    },
+    {
+      "item": "ascension_combat:ignis_heart"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:divine_sunderer",
+    "count": 1
+  }
+}

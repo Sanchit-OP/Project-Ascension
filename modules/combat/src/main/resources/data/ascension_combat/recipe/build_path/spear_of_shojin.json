@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:last_whisper"
+    },
+    {
+      "item": "ascension_combat:hearthbound_axe"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:spear_of_shojin",
+    "count": 1
+  }
+}

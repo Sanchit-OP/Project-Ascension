@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:cloth_armor"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:seekers_armguard",
+    "count": 1
+  }
+}

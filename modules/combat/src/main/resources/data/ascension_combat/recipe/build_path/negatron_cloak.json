@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:null_magic_mantle"
+    },
+    {
+      "item": "ascension_combat:null_magic_mantle"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:negatron_cloak",
+    "count": 1
+  }
+}

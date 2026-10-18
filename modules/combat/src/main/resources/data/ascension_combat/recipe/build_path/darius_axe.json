@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:phage"
+    },
+    {
+      "item": "ascension_combat:caulfields_warhammer"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:darius_axe",
+    "count": 1
+  }
+}

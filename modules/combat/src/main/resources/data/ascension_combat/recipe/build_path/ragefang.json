@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:phage"
+    },
+    {
+      "item": "ascension_combat:pickaxe"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:ragefang",
+    "count": 1
+  }
+}

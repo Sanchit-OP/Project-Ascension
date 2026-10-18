@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:long_sword"
+    },
+    {
+      "item": "ascension_combat:long_sword"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:caulfields_warhammer",
+    "count": 1
+  }
+}

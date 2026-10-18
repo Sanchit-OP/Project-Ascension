@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:chain_vest"
+    },
+    {
+      "item": "ascension_combat:negatron_cloak"
+    },
+    {
+      "item": "ascension_combat:cloth_armor"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:gargoyle_stoneplate",
+    "count": 1
+  }
+}

@@ -35,7 +35,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
  * counts, and the boss heart it needs. JEI already shows each crafting step one at a time; this
  * page adds the whole tree flattened, so a player sees at a glance which worlds an item asks for.
  *
- * <p>Nothing is hard-coded about the items: the page reads the {@code ascension_combat:build/...}
+ * <p>Nothing is hard-coded about the items: the page reads the {@code ascension_combat:build_path/...}
  * crafting recipes, treats an item that another build recipe consumes as a component and anything
  * else as raw, and shows a page for each item no build recipe consumes.
  */
@@ -76,7 +76,7 @@ public final class BuildPathPlugin implements IModPlugin {
         Map<ResourceLocation, CraftingRecipe> build = new LinkedHashMap<>();
         for (RecipeHolder<CraftingRecipe> holder : level.getRecipeManager()
                 .getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING)) {
-            if (holder.id().getNamespace().equals(NAMESPACE) && holder.id().getPath().startsWith("build/")) {
+            if (holder.id().getNamespace().equals(NAMESPACE) && holder.id().getPath().startsWith("build_path/")) {
                 ItemStack result = holder.value().getResultItem(level.registryAccess());
                 build.put(BuiltInRegistries.ITEM.getKey(result.getItem()), holder.value());
             }

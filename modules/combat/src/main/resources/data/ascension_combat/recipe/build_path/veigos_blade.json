@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:pickaxe"
+    },
+    {
+      "item": "ascension_combat:serrated_dirk"
+    },
+    {
+      "item": "ascension_combat:long_sword"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:veigos_blade",
+    "count": 1
+  }
+}

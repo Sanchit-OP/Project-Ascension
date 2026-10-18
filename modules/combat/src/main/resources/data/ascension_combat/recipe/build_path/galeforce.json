@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:noonquiver"
+    },
+    {
+      "item": "ascension_combat:recurve_bow"
+    },
+    {
+      "item": "ascension_combat:kindlegem"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:galeforce",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:long_sword"
+    },
+    {
+      "item": "ascension_combat:long_sword"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:bf_sword",
+    "count": 1
+  }
+}

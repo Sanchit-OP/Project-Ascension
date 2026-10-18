@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:basic_boots"
+    },
+    {
+      "item": "ascension_combat:null_magic_mantle"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:mercury_treads",
+    "count": 1
+  }
+}

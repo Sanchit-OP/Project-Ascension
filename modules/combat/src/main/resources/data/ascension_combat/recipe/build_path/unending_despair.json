@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:giants_belt"
+    },
+    {
+      "item": "ascension_combat:spectres_cowl"
+    },
+    {
+      "item": "ascension_combat:wither_heart"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:unending_despair",
+    "count": 1
+  }
+}

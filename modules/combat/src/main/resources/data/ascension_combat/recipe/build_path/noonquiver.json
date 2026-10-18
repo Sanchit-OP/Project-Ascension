@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:dagger"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:noonquiver",
+    "count": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:basic_boots"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:wizards_agony",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:seekers_armguard"
+    },
+    {
+      "item": "ascension_combat:kindlegem"
+    },
+    {
+      "item": "ascension_combat:netherite_monstrosity_heart"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:zonias_hourglass",
+    "count": 1
+  }
+}

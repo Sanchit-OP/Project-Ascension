@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:recurve_bow"
+    },
+    {
+      "item": "ascension_combat:noonquiver"
+    },
+    {
+      "item": "ascension_combat:spectres_cowl"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:heartwood_of_pallas",
+    "count": 1
+  }
+}

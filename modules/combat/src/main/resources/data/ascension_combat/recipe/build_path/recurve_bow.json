@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:bow"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:recurve_bow",
+    "count": 1
+  }
+}

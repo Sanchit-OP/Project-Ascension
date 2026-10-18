@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:basic_boots"
+    },
+    {
+      "item": "ascension_combat:cloth_armor"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:ninja_tabi",
+    "count": 1
+  }
+}

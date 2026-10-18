@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:spectres_cowl"
+    },
+    {
+      "item": "ascension_combat:chain_vest"
+    },
+    {
+      "item": "ascension_combat:ruby_crystal"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:protean_mask",
+    "count": 1
+  }
+}

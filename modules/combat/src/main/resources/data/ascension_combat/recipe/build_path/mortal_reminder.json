@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:last_whisper"
+    },
+    {
+      "item": "ascension_combat:recurve_bow"
+    },
+    {
+      "item": "ascension_combat:executioners_calling"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:mortal_reminder",
+    "count": 1
+  }
+}

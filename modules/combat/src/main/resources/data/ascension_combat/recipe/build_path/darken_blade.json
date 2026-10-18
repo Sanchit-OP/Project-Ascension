@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:bf_sword"
+    },
+    {
+      "item": "ascension_combat:vampiric_scepter"
+    },
+    {
+      "item": "ascension_combat:pickaxe"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:darken_blade",
+    "count": 1
+  }
+}

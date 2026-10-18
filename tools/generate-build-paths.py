@@ -336,7 +336,8 @@ def lang_entries():
 def main():
     tex = os.path.join(COMBAT, 'assets', 'ascension_combat', 'textures', 'item')
     mdl = os.path.join(COMBAT, 'assets', 'ascension_combat', 'models', 'item')
-    rec = os.path.join(COMBAT, 'data', 'ascension_combat', 'recipe', 'build')
+    # Not a folder called `build`: .gitignore skips those (Gradle's output), and these recipes were once lost that way.
+    rec = os.path.join(COMBAT, 'data', 'ascension_combat', 'recipe', 'build_path')
     os.makedirs(tex, exist_ok=True)
     os.makedirs(mdl, exist_ok=True)
 

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:long_sword"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:executioners_calling",
+    "count": 1
+  }
+}

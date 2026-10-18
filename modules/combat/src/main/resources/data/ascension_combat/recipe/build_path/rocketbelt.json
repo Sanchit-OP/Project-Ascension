@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:giants_belt"
+    },
+    {
+      "item": "ascension_combat:kindlegem"
+    },
+    {
+      "item": "ascension_combat:ruby_crystal"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:rocketbelt",
+    "count": 1
+  }
+}

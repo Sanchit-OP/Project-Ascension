@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:serrated_dirk"
+    },
+    {
+      "item": "ascension_combat:last_whisper"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:wraithblade",
+    "count": 1
+  }
+}

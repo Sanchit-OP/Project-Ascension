@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:basic_boots"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    },
+    {
+      "item": "ascension_combat:dagger"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:berserkers_greaves",
+    "count": 1
+  }
+}

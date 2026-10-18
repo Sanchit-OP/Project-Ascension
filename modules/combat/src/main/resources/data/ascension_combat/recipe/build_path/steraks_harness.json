@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:giants_belt"
+    },
+    {
+      "item": "ascension_combat:vampiric_scepter"
+    },
+    {
+      "item": "ascension_combat:ender_golem_heart"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:steraks_harness",
+    "count": 1
+  }
+}

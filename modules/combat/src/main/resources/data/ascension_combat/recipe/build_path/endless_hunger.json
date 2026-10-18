@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:bf_sword"
+    },
+    {
+      "item": "ascension_combat:giants_belt"
+    },
+    {
+      "item": "ascension_combat:vampiric_scepter"
+    },
+    {
+      "item": "ascension_combat:warden_heart"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:endless_hunger",
+    "count": 1
+  }
+}

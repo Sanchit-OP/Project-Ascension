@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:executioners_calling"
+    },
+    {
+      "item": "ascension_combat:seekers_armguard"
+    },
+    {
+      "item": "ascension_combat:cloth_armor"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:collectors_pants",
+    "count": 1
+  }
+}

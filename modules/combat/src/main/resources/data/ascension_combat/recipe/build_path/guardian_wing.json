@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "ascension_combat:chain_vest"
+    },
+    {
+      "item": "ascension_combat:spectres_cowl"
+    },
+    {
+      "item": "ascension_combat:ender_guardian_heart"
+    }
+  ],
+  "result": {
+    "id": "ascension_combat:guardian_wing",
+    "count": 1
+  }
+}
