@@ -229,11 +229,11 @@ considered and left out; they can return later without changing anything else he
 
 ## 6. Respiration and Aqua Affinity on a planet
 
-- **Respiration** becomes a **lung capacity** gain (a helmet grows the player's own lungs), as the
-  atmosphere rule says: gear grows lungs, and nothing can silently extend a tank.
-- Proposal: +4 seconds of lungs per level (lungs are 20 s), so III is +12 s. A planet's atmosphere
-  still decides whether lungs are used at all, so this cannot trivialise a vacuum: a tank is the way to
-  stay out for minutes.
+- **Respiration is already lung capacity** (found in increment 4): the atmosphere module's
+  `VanillaBreathingGear` gives **10 seconds of lungs per level** (III = +30 s on 20 s), honouring the
+  `waterIntegration` switch, and never touches a tank. Nothing needed building. My first proposal of
+  4 s a level is dropped in favour of what is there; the balancing session may retune it.
+  Seen in a client: lungs 80 units, 200 with Respiration III, 80 again once it is removed.
 - **Aqua Affinity** stays as it is: water is a hazard that already has its own atmosphere.
 - **Feather Falling** needs a check against the Moon's gravity before we decide anything.
 
@@ -289,7 +289,7 @@ I will check what ships with Cataclysm before saying any more.
 | 1 | **Plumbing.** The `Enchantments` stat source and one reworked enchantment (Protection) as data, plus a data-check rule | A Protection IV chestplate shows +12 Armor on the sheet under "Enchantments", and a measured hit matches the curve |
 | 2 | **The other reworks** (Sharpness, Power, Breach) | Sharpness V shows +2.5 Attack Damage under "Enchantments" |
 | 3 | **Refactor pass** | |
-| 4 | **Respiration → lung capacity** | A Respiration III helmet gives 32 s of lungs on the Moon |
+| 4 | **Respiration → lung capacity** (already built in atmosphere; proven here) | Respiration III: lungs 80 → 200 units, seen in a client |
 | 5 | **Our new enchantments** | each shows its stat |
 | 6 | **Refactor pass** | |
 | 7 | **Sources** (loot tables for our new enchantments) | each shows up in structure loot |

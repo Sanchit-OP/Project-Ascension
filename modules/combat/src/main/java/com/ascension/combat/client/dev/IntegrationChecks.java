@@ -24,11 +24,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandSource;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -194,6 +198,17 @@ public final class IntegrationChecks {
         server(20, p -> expectEnchanted(p, CombatStats.ARMOR_PENETRATION, "Breach IV", 0.16));
         server(5, p -> p.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY));
 
+        // ---- Respiration grows lung capacity (the atmosphere module's rule), asked through its own command
+        server(5, p -> {
+            lungsWithoutRespiration = lungCapacity(p);
+            SCRIPT.log("   lung capacity without Respiration: " + lungsWithoutRespiration + " units");
+            enchant(p, p.getItemBySlot(EquipmentSlot.HEAD), Enchantments.RESPIRATION, 3);
+        });
+        server(20, p -> expect("Respiration III adds 30 seconds (120 units) to the lungs",
+                lungCapacity(p) - lungsWithoutRespiration, 120));
+        server(5, p -> p.getItemBySlot(EquipmentSlot.HEAD).remove(DataComponents.ENCHANTMENTS));
+        server(20, p -> expect("taking Respiration off gives the lungs back", lungCapacity(p), lungsWithoutRespiration));
+
         // ---- An admin revoking a milestone closes a slot again, and the client sees it
         server(5, p -> revoke(p, MILESTONES.get(3)));
         client(10, () -> expect("the client sees the last shard row shut again", ClientRunePageCache.open().defence(), false));
@@ -278,6 +293,45 @@ public final class IntegrationChecks {
     }
 
     private static double armorBeforeEnchant;
+    private static int lungsWithoutRespiration;
+
+    /**
+     * The player's lung capacity in units, read from {@code /ascension atmosphere query} so combat names
+     * no atmosphere class (Tier 1 modules never depend on each other, ADR-0011). The line reads
+     * "lungs 80/80   carried ...": the number after the slash.
+     */
+    private static int lungCapacity(ServerPlayer player) {
+        StringBuilder output = new StringBuilder();
+        CommandSource capture = new CommandSource() {
+            @Override
+            public void sendSystemMessage(Component message) {
+                output.append(message.getString()).append('\n');
+            }
+
+            @Override
+            public boolean acceptsSuccess() {
+                return true;
+            }
+
+            @Override
+            public boolean acceptsFailure() {
+                return true;
+            }
+
+            @Override
+            public boolean shouldInformAdmins() {
+                return false;
+            }
+        };
+        player.server.getCommands().performPrefixedCommand(
+                player.createCommandSourceStack().withSource(capture).withPermission(4), "ascension atmosphere query");
+        Matcher lungs = Pattern.compile("lungs \\d+/(\\d+)").matcher(output);
+        if (!lungs.find()) {
+            SCRIPT.log("   no lungs line in: " + output);
+            return -1;
+        }
+        return Integer.parseInt(lungs.group(1));
+    }
 
     /** Enchants a stack in place. Vanilla re-reads worn or held modifiers on the next tick, so read stats a few ticks later. */
     private static void enchant(ServerPlayer player, ItemStack stack, ResourceKey<Enchantment> enchantment, int level) {
