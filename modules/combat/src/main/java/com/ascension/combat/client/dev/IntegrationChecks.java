@@ -288,9 +288,14 @@ public final class IntegrationChecks {
     private static void screensLink() {
         Minecraft mc = Minecraft.getInstance();
         // The dev client's saved options bind these keys elsewhere; check the defaults a new player gets.
+        // The pack moves the sheet's default (pack/config/defaultoptions), so ask the key what it is.
+        int sheetKey = -1;
         for (net.minecraft.client.KeyMapping mapping : mc.options.keyMappings) {
             if (mapping.getName().startsWith("key.ascension_combat.open_")) {
                 mapping.setKey(mapping.getDefaultKey());
+                if (mapping.getName().equals("key.ascension_combat.open_character_sheet")) {
+                    sheetKey = mapping.getDefaultKey().getValue();
+                }
             }
         }
         net.minecraft.client.KeyMapping.resetMapping();
@@ -301,10 +306,10 @@ public final class IntegrationChecks {
         expect("R in the character sheet opens the runes", screenName(mc), "RuneScreen");
         press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_K);
         expect("K in the runes opens the skill tree", screenName(mc), "GrowthScreen");
-        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_V);
-        expect("V in the skill tree opens the character sheet", screenName(mc), "CharacterSheetScreen");
-        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_V);
-        expect("V in the character sheet closes it", screenName(mc), "(none)");
+        press(mc, sheetKey);
+        expect("the sheet's key in the skill tree opens the character sheet", screenName(mc), "CharacterSheetScreen");
+        press(mc, sheetKey);
+        expect("the sheet's key in the character sheet closes it", screenName(mc), "(none)");
         mc.setScreen(new com.ascension.combat.client.RuneScreen());
         press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_R);
         expect("R in the runes closes them", screenName(mc), "(none)");

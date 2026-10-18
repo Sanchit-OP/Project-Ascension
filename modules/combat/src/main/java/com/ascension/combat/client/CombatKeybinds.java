@@ -80,6 +80,7 @@ public final class CombatKeybinds {
         com.ascension.combat.client.dev.RuneEffectChecks.register(NeoForge.EVENT_BUS);
         com.ascension.combat.client.dev.IntegrationChecks.register(NeoForge.EVENT_BUS);
         com.ascension.combat.client.dev.KeybindAudit.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.client.dev.DevChatFilter.register(NeoForge.EVENT_BUS);
         NeoForge.EVENT_BUS.addListener(CombatKeybinds::onClientTick);
     }
 

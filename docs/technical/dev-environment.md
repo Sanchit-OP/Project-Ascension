@@ -165,7 +165,8 @@ leaving it on.
 real server inside it, and prints `PASS` / `FAIL` lines tagged `[integration]`. No one has to click.
 It takes about three minutes a part, and opens a game window.
 
-1. Copy the test world: `run/server/runes-test` to `run/client/saves/runes-test`.
+1. Copy a **fresh** test world: `run/server/runes-test` to `run/client/saves/runes-test` (replace the old
+   copy; a run leaves its changes in the world, and the next part one then fails on the leftovers).
 2. Create an empty file `run/client/integration-checks.txt` (**part one**), then `./gradlew runDevClient`.
    It opens the world by itself, earns milestones, wears netherite, dies and respawns, respecs, takes
    a hit, writes `run/client/integration-state.txt`, and quits (which saves the world).
@@ -173,7 +174,10 @@ It takes about three minutes a part, and opens a game window.
    loaded from disk and compared with the state file.
 4. Read the result with `grep "\[integration\]" <log>`; the last line is `RESULT: N checks, M failures`.
 
-The trigger file is deleted when it is read, so it arms one run. Add a check there whenever two of
+The trigger file is deleted when it is read, so it arms one run. The screen-link check presses the
+character sheet's own default key, not a fixed one, because the pack moves it (`pack/config/defaultoptions`).
+A dev client also hides FTB Library's "Hello from FTB Library!" (`client/dev/DevChatFilter`): the mod
+sends it only in a development environment, so players of the finished pack never see it. Add a check there whenever two of
 the three systems meet somewhere new; a unit test cannot see these (ADR-0008). The checks on 2026-10-18
 found two real faults: discovery advancements that gave every player nine free points, and a respawn
 that healed before gear's Health was back.

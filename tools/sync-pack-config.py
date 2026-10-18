@@ -6,6 +6,10 @@
   python tools/sync-pack-config.py --options PATH  also rewrite the keys in an existing options.txt
                                                    (the game must be closed); a backup is kept
 
+A .toml file in pack/config that already exists in the target is merged, not replaced: only the
+settings the pack file names are set, so the rest of a mod's config (the player's own choices) stays.
+Any other file is copied over.
+
 Why two jobs: the Default Options mod applies pack/config/defaultoptions/keybindings.txt to a fresh
 install and to any key a player has not yet had saved, but never to a key already in their
 options.txt. So a test instance that already has an options.txt needs its saved keys moved too.
@@ -59,16 +63,66 @@ def new_keys():
     return keys
 
 
+def toml_settings(lines):
+    """Yields (line index, table, key, value) for each single-line setting; comments and arrays over several lines are skipped."""
+    table = ''
+    for index, line in enumerate(lines):
+        header = re.match(r'\s*\[([^\]]+)\]\s*$', line)
+        if header:
+            table = header.group(1).strip()
+            continue
+        setting = re.match(r'\s*([A-Za-z0-9_.\-]+)\s*=\s*(.+?)\s*$', line)
+        if setting:
+            yield index, table, setting.group(1), setting.group(2)
+
+
+def merge_toml(source, destination):
+    """Sets, in an existing toml file, just the settings the pack file names; every other line is kept.
+
+    A pack file that holds only a few lines is how the pack decides a few settings of a mod whose
+    config also holds the player's own choices (Distant Horizons). Returns the settings changed.
+    """
+    with open(source, encoding='utf-8', newline='') as handle:
+        wanted = [(table, key, value) for _, table, key, value in toml_settings(handle.read().split('\n'))]
+    with open(destination, encoding='utf-8', newline='') as handle:
+        lines = handle.read().split('\n')
+
+    present = {(table, key): index for index, table, key, _ in toml_settings(lines)}
+    changed = []
+    for table, key, value in wanted:
+        index = present.get((table, key))
+        if index is None:
+            print('  absent %s %s (this build of the mod does not have it, or has not written it yet)' % (table, key))
+            continue
+        old = lines[index]
+        ending = '\r' if old.endswith('\r') else ''
+        indent = old[:len(old) - len(old.lstrip())]
+        new = '%s%s = %s%s' % (indent, key, value, ending)
+        if new != old:
+            lines[index] = new
+            changed.append((table, key))
+    if changed:
+        with open(destination, 'w', encoding='utf-8', newline='') as handle:
+            handle.write('\n'.join(lines))
+    return changed
+
+
 def copy_config(target_root):
-    count = 0
+    copied, merged = 0, 0
     for folder, _, files in os.walk(PACK_CONFIG):
         for name in files:
             source = os.path.join(folder, name)
             destination = os.path.join(target_root, os.path.relpath(source, PACK_CONFIG))
             os.makedirs(os.path.dirname(destination), exist_ok=True)
-            shutil.copyfile(source, destination)
-            count += 1
-    print('copied %d file(s) into %s' % (count, target_root))
+            if name.endswith('.toml') and os.path.exists(destination):
+                changed = merge_toml(source, destination)
+                merged += len(changed)
+                for table, key in changed:
+                    print('  set %s %s in %s' % (table, key, os.path.basename(destination)))
+            else:
+                shutil.copyfile(source, destination)
+                copied += 1
+    print('%s: copied %d file(s), changed %d setting(s) in existing toml files' % (target_root, copied, merged))
 
 
 def rewrite_options(path):

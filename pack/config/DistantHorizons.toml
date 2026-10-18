@@ -1,0 +1,13 @@
+# Only the settings the pack decides. Distant Horizons fills in every other one itself, so a
+# player's own render distance and quality choices are theirs. tools/sync-pack-config.py merges
+# these lines into an existing file instead of replacing it.
+
+[common.logging.warning]
+	# No chat warning when a mod such as Chunky is installed beside it. The pack chose its mods on purpose.
+	showModCompatibilityWarningsOnStartup = false
+
+[common.worldGenerator]
+	# Build far terrain only from chunks that exist (Chunky's, or ones a player has visited). The
+	# default, FEATURES, corrupted already-generated chunks against our own worldgen
+	# (docs/technical/optimisation-stack.md).
+	distantGeneratorMode = "PRE_EXISTING_ONLY"
