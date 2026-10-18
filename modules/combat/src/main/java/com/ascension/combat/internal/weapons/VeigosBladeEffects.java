@@ -28,7 +28,7 @@ public final class VeigosBladeEffects {
      * Bonus damage as a fraction of the target's current HP. Placeholder &mdash; per
      * combat-api.md section 3, nothing here is balanced; Sanchit tunes by playing.
      */
-    private static final float CURRENT_HP_PERCENT = 0.08f;
+    private static final float CURRENT_HP_PERCENT = 0.03f;
 
     private VeigosBladeEffects() {
     }

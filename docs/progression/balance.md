@@ -36,62 +36,112 @@ Percent of the mob's own base value, so a Ravager keeps being a Ravager.
   next reload or rejoin.
 - **Cataclysm's bosses** are in the `boss` tier already, so they scale with no extra line.
 
-## 3. Power by cost
+## 3. Power by cost (redone 2026-10-19: two thirds of the first pass)
 
-**One score, one budget per slot.** Every stat line is worth points, and a weapon's own damage counts as
-damage per second. A legendary must land within 3 points of its slot's budget, so no legendary is stronger
-than another of its slot. Abilities are not scored: they are each item's flavour; the budget is what its
-stats are worth.
+Sanchit: the first pass gave too much; the game should not feel like an overpowered simulator. Defensive
+stats and the Cataclysm armour are now two thirds of what they were, and weapons are tuned by time to kill.
+
+**Weapons are balanced by time to kill, not by points.** A weapon's worth is mostly its ability, which no
+stat sum can say. `tools/time-to-kill.py` simulates every weapon against a standard boss (1000 HP, 150
+Armor, 90 Magic Resist) with its abilities used correctly, reading the numbers from the game's own data.
+
+- **Alone** is the weapon with nothing else worn: what it is worth by itself.
+- **Kit** is the weapon worn with a full set of legendary armour, whose pieces together add about +8 Attack
+  Damage and +8 Lethality. It is what a player late in the game sees.
+
+The spread is narrower than the first try (Sanchit, 2026-10-19: lessen the split), but still real: fastest to
+slowest is 1.7 times (the check allows 1.8). Weapons that carry **utility for a team** are tuned lower: Darius's
+Axe (its shred helps everyone's hits) and Mortal Reminder (anti-heal). Wraithblade is brought back up from the
+bottom. Heartwood of Pallas was lifted through its ability (1.5% of missing health a stack, up from 1%, and a
+no cap), not its stats.
+
+| Tier | Weapon | Alone (s) | Kit (s) | Why it is where it is |
+|---|---|---|---|---|
+| Strong | Spear of Shojin | 71 | 49 | True damage on every third hit |
+| Strong | Veigo's Blade | 76 | 49 | Bonus from the target's current health |
+| Middle | Divine Sunderer | 85 | 60 | Heals you |
+| Middle | Darken Blade | 89 | 61 | Shields you |
+| Middle | Galeforce | 89 | 64 | Dash and homing shot |
+| Middle | Heartwood of Pallas | 84 | 64 | Stacks, then a long-draw execute |
+| Middle | Ragefang | 95 | 53 | Builds attack speed as it hits |
+| Utility | Mortal Reminder | 99 | 62 | Ignores 60% of Armor; **anti-heal for the team** |
+| Utility | Darius's Axe | 110 | 67 | **Shred (up to -60% Armor) for the team** |
+| Utility | Wraithblade | 110 | 66 | The blink and 20 Lethality |
+| Slow alone | Endless Hunger | 119 | 43 | Omnivamp sustains a long fight; speeds up as your Attack Damage grows |
+| *Pair* | Ragefang, one in each hand | 68 | 44 | Both copies count |
+| *Pair* | Endless Hunger, one in each hand | 62 | 30 | Both copies count |
+| | *netherite sword* | 230 | 109 | |
+
+**What uncapped does against a late boss.** On the Wither (6500 HP, 180 Armor, 110 Magic Resist), alone, kit in
+brackets: Veigo's Blade 197 s (143), Divine Sunderer 197 (158), Spear of Shojin 204 (168), Galeforce 280 (208),
+Heartwood 318 (269), Darken Blade 338 (265), Mortal Reminder 679 (422), Ragefang 718 (397), Darius's Axe 764
+(464), Wraithblade 880 (531), Endless Hunger never within 15 minutes alone (344 with the kit; 500 as a pair).
+The Spear's true damage was the worst runaway (88 s) and has been cut to 0.5%, which puts it with Veigo and
+Sunderer. What is left is a split between weapons whose damage is a percent of the boss's health, which
+grow stronger as bosses grow, and weapons that deal flat damage (Darius, Ragefang, Wraithblade, Mortal
+Reminder, Endless Hunger), which take four times as long. Against the Warden the split is mild. Boss Armor and
+Magic Resist do not close it, because they cut flat and percent damage alike.
+
+Cataclysm's weapons, with their real speeds (read from its jar, 2026-10-19), take 160 to 320 seconds alone, so
+every legendary is 1.3 to 5 times faster than the best of them at the standard boss.
+
+### 3a. Dual wield: Ragefang and Endless Hunger
+
+Carry one in each hand and **both count**. The tag `ascension_combat:dual_wield` marks them; for such a weapon
+the item data adds, in the off hand, every stat and its damage as extra Attack Damage, under ids of their own so
+two copies add up instead of one replacing the other. A swing carries both copies' damage; Endless Hunger's
+Omnivamp is 7% a hand, 14% as a pair; its attack-speed bonus follows the Attack Damage, so a pair speeds up.
+
+- **Who swings.** Better Combat swings the hands in turn (both are one-handed weapons in its data). For an
+  off-hand swing it swaps the hands, so each swing already uses the weapon in that hand and its ability.
+- **Speed is not doubled:** a swing is one weapon's speed. A pair is stronger because each swing hits for both.
+- **The cost is two weapons**, which means two builds. Alone each is middling (Ragefang) or slow (Endless Hunger).
+- **Assumed, not seen:** Better Combat's own dual-wield damage and speed multipliers (its server config) are
+  taken as 1.0. If they are not, a pair's time moves with them.
+
+**What changed to get there**
+- **No caps (Sanchit, 2026-10-19).** A percent-of-health proc, Galeforce's missing-health shot and Hunt are all
+  uncapped: a bigger boss takes more from them, and the later bosses carry more Armor and Magic Resist to answer
+  it. To keep them from doing the whole job at the standard boss, the base percents are lower than the originals:
+  Veigo 3% of current health (was 8%), Spear 0.5% true (was 5%; it had to fall furthest, because true damage ignores Armor), Divine Sunderer 2% and 2% (was 4% and 4%), Darken
+  Blade 2.5% (was 5%), each +0.05% per Attack Damage (was +0.1% to +0.2%). Ragefang's attack-speed ramp stops
+  at 2.5 attacks a second (the original code's limit was 5).
+- **Ragefang was the outlier.** Its on-hit magic and attack-speed ramp did most of its work from a 1-damage
+  stub. Now +3% attack speed a hit up to 2.5 attacks a second (it was +5% up to 5), 3 magic damage a hit
+  (+0.1 per Attack Damage), and a base speed of 1.4.
+- **Endless Hunger** gains 1.2% attack speed per Attack Damage (it was 2%), so the kit stops doubling it.
+- **Ragefang is slower alone, stronger as a pair:** its ability does most of its work, so a single copy sits in the middle.
+
+**Armour, boots and off-hand are balanced by points**, one budget per slot: helmet 37, chestplate 57,
+leggings 47, boots 30, off-hand 37 (each two thirds of the first pass). A piece lands within 3 points of it.
 
 | Stat | Points per unit |
 |---|---|
 | Health | 1 |
 | Armor, Magic Resist | 0.5 |
 | Attack Damage | 4 |
-| Weapon damage per second (damage x speed) | 3 |
 | Attack Speed % | 0.8 |
 | Move Speed % | 1.5 |
-| Omnivamp % | 6 |
 | Lethality | 1.2 |
-| Armor or Magic Penetration % | 2 |
 
-| Slot | Budget | Items |
-|---|---|---|
-| Melee weapon | 120 | Veigo's Blade, Darius's Axe, Spear of Shojin, Divine Sunderer, Darken Blade, Ragefang, Endless Hunger, Wraithblade |
-| Bow | 120 | Mortal Reminder, Heartwood of Pallas, Galeforce |
-| Helmet | 55 | Protean Mask, Edge of Night |
-| Chestplate | 85 | Gargoyle Stoneplate, Guardian's Wing |
-| Leggings | 70 | Rocketbelt, Collector's Pants, Unending Despair |
-| Boots | 45 | the six boots |
-| Off-hand | 55 | Zonia's Hourglass, Sterak's Harness |
+Omnivamp and Penetration are not scored: they are set by hand. Ninja Tabi and Mercury Treads sit at 24 on
+purpose (Sanchit: too strong); Wizard's Agony and Tasted Blood are exactly their identity stat.
 
-- **Every melee weapon is 20 damage per second** before its stats and ability (damage times speed), whatever
-  its speed: a slow axe hits hard, a fast blade hits often. Endless Hunger's speed is 4.0 at 5 damage, and
-  its ability then adds attack speed from its Attack Damage.
-- **Each item leans on its own stats.** Veigo's Blade is Attack Speed and Armor Penetration, Darius's Axe is
-  Health and Attack Damage, Wizard's Agony is both penetrations, Tasted Blood is Omnivamp. Equal power,
-  different shape.
-- **A full set is about 255 points** (helmet, chest, legs, boots, off-hand 55 or so on top), against 99 for
-  netherite and 135 for Ignitium. If that is too tanky in play, the slot budgets are the one place to turn it
-  down, and the check keeps everything in line.
+**Rules (Sanchit, 2026-10-19), enforced by the check:**
+- A melee weapon's damage and speed are **one figure each**, in `weapon`; no separate +Attack Damage or
+  +Attack Speed line.
+- **Bows carry damage only** (and Galeforce a little Move Speed): no Health, no Attack Speed.
+- **Armor and Magic Penetration only on Wizard's Agony** (12% each).
+- **Omnivamp on five items only:** Veigo's Blade 4%, Endless Hunger 7%, Spear of Shojin 3%, Divine Sunderer 3%,
+  Tasted Blood 8%.
 
 ### Other mods' gear
 
-Cataclysm's gear is set by what it costs, in `ascension-compat-cataclysm`'s own `item_stats.json` (each entry
-carries a `cataclysm` mod check). Items in one band sit at one power, and no band reaches a legendary:
-
-| Band | Share of its slot | Items | How |
-|---|---|---|---|
-| Boss weapons, epic | 60% (72 points) | Ceraunus, Soul Render, Infernal Forge, Void Forge, the Incinerator, Brontes | Armor Penetration 2% to 5% on top of their own damage |
-| Boss armour, epic | 55% | the Ignitium and Cursium sets (helmet, chestplate, leggings) | Health lifted so each set sits at one share (boots already at 54% to 62%) |
-| Mid weapons, rare | 38% (46 points) | Astrape, Ancient Spear, Meat Shredder, the Annihilator, the Immolator, Tidal Claws, Coral Bardiche | Armor Penetration 1% to 6% |
-| Left as made | 28% to 53% | Gauntlet of Guard, Monstrous Helm, Bone Reptile gear, the black steel and coral tools | |
-| Vanilla | 32% to 40% | netherite sword 32%, netherite chestplate 40% | |
-
-A legendary is therefore 1.65 times the best boss item of its slot, and 2.5 to 3 times netherite. The check
-holds a ceiling of 65% for every Cataclysm item and prints the table (`python tools/check-balance.py`).
-Other mods' gear follows the same rule when its compat jar arrives: measure it, place it in a band, write the
-difference. Create's tools and the like are not combat gear and are left alone.
+Cataclysm's armour is two thirds of what the mod gave it, with boss sets lifted in Health to sit near 55% of
+their slots (its own `item_stats.json`, each entry with a `cataclysm` mod check; the check holds a ceiling of
+70%). **Its weapons are not touched yet:** a weapon's damage can only be replaced together with its attack
+speed, and Cataclysm's speeds have never been measured. Measuring them is the next step; then the boss
+weapons go to the same two thirds.
 
 ## 4. Scaling the abilities
 
@@ -100,11 +150,11 @@ through `StatReader`, never from an attribute directly. Every coefficient is in 
 
 | Ability | Base | Gains |
 |---|---|---|
-| Veigo's Blade, Wither | 8% of current health | +0.2% per Attack Damage |
-| Darken Blade, burst | 5% of max health, 6 shield | +0.1% and +0.5 shield per Attack Damage |
-| Divine Sunderer | 4% physical + 4% magic of max health | +0.1% each per Attack Damage |
-| Spear of Shojin | 5% of max health, true | +0.1% per Attack Damage |
-| Ragefang, Rage | 5 magic per hit | +0.2 per Attack Damage |
+| Veigo's Blade, Wither | 3% of current health | +0.05% per Attack Damage |
+| Darken Blade, burst | 2.5% of max health, 6 shield | +0.05% and +0.5 shield per Attack Damage |
+| Divine Sunderer | 2% physical + 2% magic of max health | +0.05% each per Attack Damage |
+| Spear of Shojin | 0.5% of max health, true | +0.0125% per Attack Damage |
+| Ragefang, Rage | 3 magic per hit | +0.1 per Attack Damage |
 | Heartwood of Pallas | 3 magic per hit | +0.15 per Attack Damage |
 | Galeforce | 20% of missing health | +0.5% per Attack Damage |
 | Rocketbelt | 6 burst damage | +0.5 per Attack Damage |
@@ -119,10 +169,31 @@ scaled proc grows by half again or doubles.
 
 Tooltips state each base number and what it scales with.
 
-## 5. Still open
+## 5. Bosses by progression (Sanchit approved these, 2026-10-19)
+
+Each later boss has more of everything, written per boss. These are the **Normal** numbers; Easy is 15% less
+health and 15 points less damage, Hard is 25% more health and 20 points more. Armor and Magic Resist do not
+change with difficulty. Attack Damage is a percent on the boss's own, so x1.2 is +20%.
+
+| Boss | HP (Easy / Normal / Hard) | Armor | Magic Resist | Damage (Easy / Normal / Hard) | Kit time to kill, Normal (s) |
+|---|---|---|---|---|---|
+| The Warden | 1275 / 1500 / 1875 | 80 | 40 | -15% / 0 / +20% | 43 to 80 |
+| The Ender Golem | 2125 / 2500 / 3125 | 100 | 50 | +5% / +20% / +40% | 81 to 140 |
+| The Ender Guardian | 2720 / 3200 / 4000 | 120 | 60 | +25% / +40% / +60% | 120 to 188 |
+| The Netherite Monstrosity | 3570 / 4200 / 5250 | 140 | 80 | +45% / +60% / +80% | 179 to 270 |
+| Ignis | 4420 / 5200 / 6500 | 160 | 90 | +65% / +80% / +100% | 255 to 385 |
+| The Wither | 5525 / 6500 / 8125 | 180 | 110 | +85% / +100% / +120% | 365 to 553 |
+
+Written into `mob_stats` (Armor, Magic Resist) and `mob_difficulty` (`health_total` and the damage percent, per
+difficulty); the four Cataclysm bosses live in `ascension-compat-cataclysm`'s own files. `health_total` sets
+the boss's maximum health to that number whatever its own base is. The Wither's damage percent has no effect: it
+has no Attack Damage attribute, its skulls do fixed damage. Times use the same weapons and kit as section 3,
+with no growth points or runes. A later world's boss goes below the Wither.
+
+## 6. Still open
 
 - Seen in a client and on a dedicated server: difficulty applying on spawn and `/reload`, a legendary's stats
   on its tooltip and the character sheet, and one fight per scaled ability.
-- Whether a full legendary set is too strong (section 3), and whether Hard's +75% boss health is enough.
+- Measure Cataclysm's weapon attack speeds, then bring its weapons to two thirds.
+- Write the boss list (section 5) into `mob_stats` and `mob_difficulty` once Sanchit has edited it.
 - A rune and growth pass against these numbers: the runes and the 35 growth points add to every total.
-- Cataclysm weapons' attack speed was not measured; the check assumes 1.6. Measure it when the dev server next runs.

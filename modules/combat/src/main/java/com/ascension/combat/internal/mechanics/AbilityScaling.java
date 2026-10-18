@@ -19,19 +19,19 @@ import org.jetbrains.annotations.Nullable;
 public final class AbilityScaling {
 
     /** Veigo's Blade: extra share of the target's current health per point of Attack Damage (0.2%). */
-    public static final float VEIGO_CURRENT_HP_PER_AD = 0.002f;
+    public static final float VEIGO_CURRENT_HP_PER_AD = 0.0005f;
     /** Darken Blade: extra share of the target's max health per Attack Damage (0.1%), and shield per point. */
-    public static final float DARKEN_MAX_HP_PER_AD = 0.001f;
+    public static final float DARKEN_MAX_HP_PER_AD = 0.0005f;
     public static final float DARKEN_SHIELD_PER_AD = 0.5f;
     /** Divine Sunderer: extra share of max health per Attack Damage, for each of its two halves (0.1%). */
-    public static final float SUNDERER_MAX_HP_PER_AD = 0.001f;
+    public static final float SUNDERER_MAX_HP_PER_AD = 0.0005f;
     /** Spear of Shojin: extra share of max health, as true damage, per Attack Damage (0.1%). */
-    public static final float SHOJIN_MAX_HP_PER_AD = 0.001f;
+    public static final float SHOJIN_MAX_HP_PER_AD = 0.000125f;
     /** Galeforce: extra share of the target's missing health per Attack Damage (0.5%). */
     public static final float GALEFORCE_MISSING_HP_PER_AD = 0.005f;
     /** Heartwood of Pallas and Ragefang: extra flat magic damage per Attack Damage on each hit. */
     public static final float HEARTWOOD_ON_HIT_PER_AD = 0.15f;
-    public static final float RAGEFANG_ON_HIT_PER_AD = 0.2f;
+    public static final float RAGEFANG_ON_HIT_PER_AD = 0.1f;
     /** Rocketbelt: extra burst damage per Attack Damage. */
     public static final float ROCKETBELT_BURST_PER_AD = 0.5f;
     /** Unending Despair: extra pulse damage per point of Health (10%). */

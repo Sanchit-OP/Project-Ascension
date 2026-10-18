@@ -1,10 +1,34 @@
 {
-  "_comment": "Hard: tougher mobs, on top of vanilla's own hard-mode damage. Percent of a mob's own base value, by tier. docs/progression/balance.md section 2. Placeholders Sanchit tunes by playing.",
+  "_comment": "Hard: tougher mobs, on top of vanilla's own hard-mode damage. Percent of a mob's own base value, by tier. docs/progression/balance.md section 2. Placeholders Sanchit tunes by playing. The six bosses carry their own totals in `types` (docs/progression/balance.md section 5): easy is 15% less health and 15 points less damage than normal, hard 25% more health and 20 points more.",
   "tiers": {
-    "swarm": { "health_percent": 20 },
-    "light": { "health_percent": 30, "attack_damage_percent": 10 },
-    "medium": { "health_percent": 40, "attack_damage_percent": 15 },
-    "heavy": { "health_percent": 50, "attack_damage_percent": 20 },
-    "boss": { "health_percent": 75, "attack_damage_percent": 25 }
+    "swarm": {
+      "health_percent": 20
+    },
+    "light": {
+      "health_percent": 30,
+      "attack_damage_percent": 10
+    },
+    "medium": {
+      "health_percent": 40,
+      "attack_damage_percent": 15
+    },
+    "heavy": {
+      "health_percent": 50,
+      "attack_damage_percent": 20
+    },
+    "boss": {
+      "health_percent": 75,
+      "attack_damage_percent": 25
+    }
+  },
+  "types": {
+    "minecraft:warden": {
+      "health_total": 1875,
+      "attack_damage_percent": 20
+    },
+    "minecraft:wither": {
+      "health_total": 8125,
+      "attack_damage_percent": 120
+    }
   }
 }

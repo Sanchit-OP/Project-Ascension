@@ -1,127 +1,6 @@
 {
-  "_comment": "Cataclysm's gear by what it costs: its power is set here, not left to what the mod gave it (docs/progression/balance.md section 3). Boss weapons are lifted to about 60% of a legendary weapon's budget (72 points), mid weapons to about 38% (46), boss armour to about 55%; everything else stays as Cataclysm made it. A stat named here replaces the conversion for that stat, so the armour entries write the whole Health. tools/check-balance.py reads this file and fails the build if any item passes 65%.",
+  "_comment": "Cataclysm's armour at two thirds of what the mod gave it, with boss sets lifted in Health to sit near 55% of their slots (docs/progression/balance.md section 3). A stat named here replaces the conversion for that stat, so each entry writes the whole Armor, Magic Resist and Health. Its weapons are not touched yet: their attack speed has never been measured, and a weapon's damage can only be replaced together with its speed. tools/check-balance.py reads this file.",
   "values": {
-    "cataclysm:soul_render": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 2
-      }
-    },
-    "cataclysm:infernal_forge": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 5
-      }
-    },
-    "cataclysm:void_forge": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 5
-      }
-    },
-    "cataclysm:the_incinerator": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 5
-      }
-    },
-    "cataclysm:brontes": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 5
-      }
-    },
-    "cataclysm:ancient_spear": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 3
-      }
-    },
-    "cataclysm:meat_shredder": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 5
-      }
-    },
-    "cataclysm:the_annihilator": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 5
-      }
-    },
-    "cataclysm:the_immolator": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 5
-      }
-    },
-    "cataclysm:tidal_claws": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 6
-      }
-    },
-    "cataclysm:coral_bardiche": {
-      "neoforge:conditions": [
-        {
-          "type": "neoforge:mod_loaded",
-          "modid": "cataclysm"
-        }
-      ],
-      "stats": {
-        "armor_penetration": 1
-      }
-    },
     "cataclysm:ignitium_helmet": {
       "neoforge:conditions": [
         {
@@ -130,7 +9,9 @@
         }
       ],
       "stats": {
-        "health": 12
+        "armor": 14,
+        "magic_resist": 10,
+        "health": 8
       }
     },
     "cataclysm:ignitium_chestplate": {
@@ -141,7 +22,9 @@
         }
       ],
       "stats": {
-        "health": 15
+        "armor": 25,
+        "magic_resist": 18,
+        "health": 10
       }
     },
     "cataclysm:ignitium_leggings": {
@@ -152,7 +35,35 @@
         }
       ],
       "stats": {
-        "health": 12
+        "armor": 21,
+        "magic_resist": 15,
+        "health": 8
+      }
+    },
+    "cataclysm:ignitium_boots": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor": 14,
+        "magic_resist": 10,
+        "health": 7
+      }
+    },
+    "cataclysm:ignitium_elytra_chestplate": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor": 25,
+        "magic_resist": 18,
+        "health": 10
       }
     },
     "cataclysm:cursium_helmet": {
@@ -163,7 +74,9 @@
         }
       ],
       "stats": {
-        "health": 16
+        "armor": 11,
+        "magic_resist": 8,
+        "health": 11
       }
     },
     "cataclysm:cursium_chestplate": {
@@ -174,7 +87,9 @@
         }
       ],
       "stats": {
-        "health": 17
+        "armor": 23,
+        "magic_resist": 17,
+        "health": 11
       }
     },
     "cataclysm:cursium_leggings": {
@@ -185,7 +100,74 @@
         }
       ],
       "stats": {
-        "health": 15
+        "armor": 19,
+        "magic_resist": 13,
+        "health": 10
+      }
+    },
+    "cataclysm:cursium_boots": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor": 11,
+        "magic_resist": 8,
+        "health": 7
+      }
+    },
+    "cataclysm:bone_reptile_helmet": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor": 14,
+        "magic_resist": 10,
+        "health": 4
+      }
+    },
+    "cataclysm:bone_reptile_chestplate": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor": 25,
+        "magic_resist": 18,
+        "health": 4
+      }
+    },
+    "cataclysm:bloom_stone_pauldrons": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor": 21,
+        "magic_resist": 15,
+        "health": 3
+      }
+    },
+    "cataclysm:monstrous_helm": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor": 7,
+        "magic_resist": 5,
+        "health": 5
       }
     }
   }

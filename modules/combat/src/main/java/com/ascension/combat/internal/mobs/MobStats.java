@@ -112,8 +112,23 @@ public final class MobStats {
             return;
         }
         DifficultyScaling.Scale scale = DifficultyScaling.INSTANCE.scaleFor(living.getType(), living.level().getDifficulty());
-        setPercent(living, Attributes.MAX_HEALTH, "difficulty_health", scale.healthPercent());
+        if (scale.hasHealthTotal()) {
+            setTotalHealth(living, scale.healthTotal());
+        } else {
+            setPercent(living, Attributes.MAX_HEALTH, "difficulty_health", scale.healthPercent());
+        }
         setPercent(living, Attributes.ATTACK_DAMAGE, "difficulty_attack_damage", scale.attackDamagePercent());
+    }
+
+    /** Makes the mob's maximum health exactly {@code total}, whatever its own base is. */
+    private static void setTotalHealth(LivingEntity living, double total) {
+        AttributeInstance instance = living.getAttribute(Attributes.MAX_HEALTH);
+        if (instance == null) {
+            return;
+        }
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, ID_PATH_PREFIX + "difficulty_health");
+        instance.addOrUpdateTransientModifier(
+                new AttributeModifier(id, total - instance.getBaseValue(), AttributeModifier.Operation.ADD_VALUE));
     }
 
     private static void setPercent(LivingEntity living, Holder<Attribute> attribute, String name, double percent) {

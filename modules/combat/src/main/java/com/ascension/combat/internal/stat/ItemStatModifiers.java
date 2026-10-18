@@ -55,6 +55,10 @@ public final class ItemStatModifiers {
     /** A player's own Attack Speed: a weapon's speed modifier is its speed minus this. */
     public static final double BARE_HAND_SPEED = 4.0;
 
+    /** Weapons that count in both hands: a pair adds up. */
+    private static final net.minecraft.tags.TagKey<Item> DUAL_WIELD = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ITEM, ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "dual_wield"));
+
     private ItemStatModifiers() {
     }
 
@@ -133,6 +137,34 @@ public final class ItemStatModifiers {
                 event.replaceModifier(stat.attribute(), stat.modifier(id(slot, stat), written), slot);
             }
         });
+        if (slot == EquipmentSlotGroup.MAINHAND && stack.is(DUAL_WIELD)) {
+            addOffHandCopy(event, data);
+        }
+    }
+
+    /**
+     * A dual-wield weapon (tag {@code ascension_combat:dual_wield}) counts in the off hand as well:
+     * every stat, and its damage as extra Attack Damage, under ids of their own so that two copies
+     * add up instead of one replacing the other (docs/progression/balance.md section 3a). Its speed
+     * is not repeated: a swing is one weapon's speed. Better Combat swaps the hands for an off-hand
+     * swing, so each swing already uses the weapon in that hand; these modifiers are what carry the
+     * other copy's stats and damage into it.
+     */
+    private static void addOffHandCopy(ItemAttributeModifierEvent event, ItemStats data) {
+        EquipmentSlotGroup off = EquipmentSlotGroup.OFFHAND;
+        data.weaponDamage().ifPresent(damage -> event.replaceModifier(Attributes.ATTACK_DAMAGE,
+                new AttributeModifier(offHandId("weapon_damage"), damage - BARE_HAND_DAMAGE, AttributeModifier.Operation.ADD_VALUE),
+                off));
+        data.stats().forEach((stat, written) -> {
+            if (written != 0.0) {
+                event.replaceModifier(stat.attribute(), stat.modifier(id(off, stat), written), off);
+            }
+        });
+    }
+
+    private static ResourceLocation offHandId(String name) {
+        return ResourceLocation.fromNamespaceAndPath(
+                AscensionCombat.MOD_ID, ID_PATH_PREFIX + EquipmentSlotGroup.OFFHAND.getSerializedName() + "/" + name);
     }
 
     /** The item's armour slot if it has one, otherwise the main hand. */
