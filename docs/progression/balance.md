@@ -77,17 +77,21 @@ stats are worth.
 
 ### Other mods' gear
 
-Their power is what the mod gave them (measured in `item-stats.md` section 8), and the check holds a ceiling:
-**no Cataclysm item may reach 65% of its slot's budget**, so every legendary stays well clear. Today:
+Cataclysm's gear is set by what it costs, in `ascension-compat-cataclysm`'s own `item_stats.json` (each entry
+carries a `cataclysm` mod check). Items in one band sit at one power, and no band reaches a legendary:
 
-| Band | Share of its slot | Examples |
-|---|---|---|
-| Boss gear, epic | 45% to 62% | Ignitium and Cursium sets, Ceraunus (60%), Soul Render (56%), the Forges, Gauntlet of Guard |
-| Mid gear, rare | 28% to 38% | Astrape, Ancient Spear, Monstrous Helm |
-| Vanilla | 32% to 40% | Netherite chestplate 40%, netherite sword 32% |
+| Band | Share of its slot | Items | How |
+|---|---|---|---|
+| Boss weapons, epic | 60% (72 points) | Ceraunus, Soul Render, Infernal Forge, Void Forge, the Incinerator, Brontes | Armor Penetration 2% to 5% on top of their own damage |
+| Boss armour, epic | 55% | the Ignitium and Cursium sets (helmet, chestplate, leggings) | Health lifted so each set sits at one share (boots already at 54% to 62%) |
+| Mid weapons, rare | 38% (46 points) | Astrape, Ancient Spear, Meat Shredder, the Annihilator, the Immolator, Tidal Claws, Coral Bardiche | Armor Penetration 1% to 6% |
+| Left as made | 28% to 53% | Gauntlet of Guard, Monstrous Helm, Bone Reptile gear, the black steel and coral tools | |
+| Vanilla | 32% to 40% | netherite sword 32%, netherite chestplate 40% | |
 
-A legendary is therefore at least 1.6 times the best boss item of its slot, and 2.5 to 3 times netherite.
-Cataclysm items do not need extras to fit the bands. If one is ever added above the ceiling, the check names it.
+A legendary is therefore 1.65 times the best boss item of its slot, and 2.5 to 3 times netherite. The check
+holds a ceiling of 65% for every Cataclysm item and prints the table (`python tools/check-balance.py`).
+Other mods' gear follows the same rule when its compat jar arrives: measure it, place it in a band, write the
+difference. Create's tools and the like are not combat gear and are left alone.
 
 ## 4. Scaling the abilities
 
@@ -121,5 +125,4 @@ Tooltips state each base number and what it scales with.
   on its tooltip and the character sheet, and one fight per scaled ability.
 - Whether a full legendary set is too strong (section 3), and whether Hard's +75% boss health is enough.
 - A rune and growth pass against these numbers: the runes and the 35 growth points add to every total.
-- The Cataclysm gear's own Armor and Magic Resist scale off vanilla's armour rates; if Sanchit wants them
-  higher, that is a line each in `ascension-compat-cataclysm`.
+- Cataclysm weapons' attack speed was not measured; the check assumes 1.6. Measure it when the dev server next runs.

@@ -16,6 +16,8 @@ import os
 import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+CATACLYSM_STATS = os.path.join(ROOT, 'modules', 'compat', 'cataclysm', 'src', 'main', 'resources', 'data',
+                               'ascension_combat', 'data_maps', 'item', 'item_stats.json')
 STATS = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'data', 'ascension_combat',
                      'data_maps', 'item', 'item_stats.json')
 
@@ -49,6 +51,8 @@ CATACLYSM = {
     'void_forge': ('melee', 13, 0, 0, 0), 'the_incinerator': ('melee', 13, 0, 0, 0), 'brontes': ('melee', 13, 0, 0, 0),
     'astrape': ('melee', 9.5, 0, 0, 0), 'ancient_spear': ('melee', 8.5, 0, 0, 0),
     'gauntlet_of_guard': ('melee', 10, 10, 7, 7),
+    'meat_shredder': ('melee', 7.5, 0, 0, 0), 'the_annihilator': ('melee', 7.5, 0, 0, 0),
+    'the_immolator': ('melee', 7.5, 0, 0, 0), 'tidal_claws': ('melee', 7, 0, 0, 0), 'coral_bardiche': ('melee', 9, 0, 0, 0),
     'ignitium_helmet': ('helmet', 0, 21, 15, 10), 'ignitium_chestplate': ('chest', 0, 38, 27, 10),
     'ignitium_leggings': ('legs', 0, 31, 22, 10), 'ignitium_boots': ('boots', 0, 21, 15, 10),
     'cursium_helmet': ('helmet', 0, 17, 12, 10), 'cursium_chestplate': ('chest', 0, 35, 25, 10),
@@ -69,8 +73,13 @@ def score_entry(entry):
     return total
 
 
-def score_foreign(slot, ad, armor, mr, hp):
+def score_foreign(slot, ad, armor, mr, hp, name=None, extras=None):
+    entry = (extras or {}).get('cataclysm:' + name, {}) if name else {}
+    stats = entry.get('stats', {})
+    if 'health' in stats:          # a named stat replaces the conversion, so it is the whole Health
+        hp = stats['health']
     base = armor * WEIGHTS['armor'] + mr * WEIGHTS['magic_resist'] + hp * WEIGHTS['health']
+    base += sum(WEIGHTS[s] * x for s, x in stats.items() if s != 'health')
     if slot == 'melee':
         base += ad * CATACLYSM_SPEED * DPS_WEIGHT
     return base
@@ -80,6 +89,8 @@ def main():
     check = '--check' in sys.argv
     with open(STATS, encoding='utf-8') as f:
         values = json.load(f)['values']
+    with open(CATACLYSM_STATS, encoding='utf-8') as f:
+        extras = json.load(f)['values']
     problems = []
 
     print('Legendaries (budget, points):')
@@ -99,7 +110,7 @@ def main():
     print('Other gear (share of its slot budget; ceiling %d%%):' % (CEILING * 100))
     for table in (CATACLYSM, VANILLA):
         for name, (slot, ad, armor, mr, hp) in table.items():
-            s = score_foreign(slot, ad, armor, mr, hp)
+            s = score_foreign(slot, ad, armor, mr, hp, name if table is CATACLYSM else None, extras)
             share = s / BUDGETS[slot]
             flag = '   <-- over the ceiling' if share > CEILING and table is CATACLYSM else ''
             print('  %-8s %-26s %6.1f  %3.0f%%%s' % (slot, name, s, share * 100, flag))
