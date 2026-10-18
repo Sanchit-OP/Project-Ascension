@@ -11,6 +11,9 @@ Sheets:
   bar.png    3 rows of 32 px (track, fill, frame) x [left cap 16 | middle 8 | right cap 16]
   badge.png  a dark disc, 72 px
   food.png   a drumstick, 48 px
+  panel.png  a glass panel with a gold rim, 40 x 40: corners 16, middle 8 (nine-slice)
+  icons.png  six stat icons in a row, 48 px each: attack damage, attack speed, armor,
+             magic resist, move speed, omnivamp (white; the game tints them)
   ring.png   64 frames of a ring filling clockwise from the top, 8 x 8, each 72 px
 """
 import json
@@ -121,6 +124,72 @@ def food_icon():
     return img.resize((size, size), Image.LANCZOS)
 
 
+def panel_sheet():
+    w = h = CAP + MID + CAP
+    big = (w * SS, h * SS)
+    grad = Image.new('RGBA', big)
+    gd = ImageDraw.Draw(grad)
+    top, bot = hexc('#1c2436', 205), hexc('#0a0e18', 205)
+    for y in range(big[1]):
+        t = y / (big[1] - 1)
+        gd.line([(0, y), (big[0], y)], fill=tuple(int(top[i] + (bot[i] - top[i]) * t) for i in range(4)))
+    mask = Image.new('L', big, 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, big[0] - 1, big[1] - 1], radius=CAP * SS, fill=255)
+    grad.putalpha(mask)
+    rim = Image.new('RGBA', big, (0, 0, 0, 0))
+    ImageDraw.Draw(rim).rounded_rectangle([0, 0, big[0] - 1, big[1] - 1], radius=CAP * SS,
+                                          outline=hexc('#c9a45a', 150), width=2 * SS)
+    grad.alpha_composite(rim)
+    return grad.resize((w, h), Image.LANCZOS)
+
+
+ICON = 48
+
+
+def _poly(d, pts, rot=0.0, scale=1.0):
+    a = math.radians(rot)
+    out = []
+    for (x, y) in pts:
+        dx, dy = x - 50, y - 50
+        rx = dx * math.cos(a) - dy * math.sin(a) + 50
+        ry = dx * math.sin(a) + dy * math.cos(a) + 50
+        out.append((rx * scale * ICON * SS / 100.0, ry * scale * ICON * SS / 100.0))
+    d.polygon(out, fill=(255, 255, 255, 255))
+
+
+def icon_sheet():
+    names = ['attack_damage', 'attack_speed', 'armor', 'magic_resist', 'move_speed', 'omnivamp']
+    sheet = Image.new('RGBA', (ICON * len(names), ICON), (0, 0, 0, 0))
+    for i, name in enumerate(names):
+        img = Image.new('RGBA', (ICON * SS, ICON * SS), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        if name == 'attack_damage':
+            _poly(d, [(50, 0), (57, 12), (55, 62), (45, 62), (43, 12)], 40)
+            _poly(d, [(28, 62), (72, 62), (72, 69), (28, 69)], 40)
+            _poly(d, [(46, 69), (54, 69), (54, 88), (46, 88)], 40)
+        elif name == 'attack_speed':
+            for k in range(3):
+                o = k * 24
+                _poly(d, [(8 + o, 18), (24 + o, 18), (44 + o, 50), (24 + o, 82), (8 + o, 82), (28 + o, 50)], 0, 0.82)
+        elif name == 'armor':
+            _poly(d, [(50, 4), (88, 17), (83, 54), (50, 96), (17, 54), (12, 17)])
+        elif name == 'magic_resist':
+            _poly(d, [(50, 4), (90, 27), (90, 73), (50, 96), (10, 73), (10, 27)])
+            # a diamond cut out of the middle
+            d.polygon([(50 * ICON * SS / 100, 28 * ICON * SS / 100), (68 * ICON * SS / 100, 50 * ICON * SS / 100),
+                       (50 * ICON * SS / 100, 72 * ICON * SS / 100), (32 * ICON * SS / 100, 50 * ICON * SS / 100)],
+                      fill=(0, 0, 0, 0))
+        elif name == 'move_speed':
+            _poly(d, [(34, 8), (62, 8), (62, 48), (90, 62), (90, 88), (26, 88), (26, 70), (34, 70)])
+        elif name == 'omnivamp':
+            _poly(d, [(50, 4), (80, 52), (20, 52)])
+            r = 0.31 * ICON * SS
+            cx, cy = 0.5 * ICON * SS, 0.63 * ICON * SS
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(255, 255, 255, 255))
+        sheet.alpha_composite(img.resize((ICON, ICON), Image.LANCZOS), (i * ICON, 0))
+    return sheet
+
+
 def save(name, img):
     path = os.path.join(OUT, name)
     img.save(path)
@@ -134,6 +203,8 @@ def main():
     save('badge.png', badge_sheet())
     save('food.png', food_icon())
     save('ring.png', ring_sheet())
+    save('panel.png', panel_sheet())
+    save('icons.png', icon_sheet())
     print('wrote', OUT)
 
 

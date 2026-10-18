@@ -13,10 +13,34 @@ dependencies {
 // alone its @Mod constructor never runs and nothing freezes the shared registries.
 evaluationDependsOn(":modules:core")
 
+// The dev client shows the whole HUD, so it also loads the modules that contribute elements.
+//
+// **This does not weaken ADR-0003 or ADR-0011.** They are on the *runtime* classpath of a dev run
+// only, never the compile classpath, so no class in this module can name one of theirs, exactly as
+// the third-party mods in dev runs. `-PhudOnly` runs the HUD with nothing but core, which is the
+// standalone case ADR-0003 rule 5 requires to keep working.
+val withContributors = !providers.gradleProperty("hudOnly").isPresent
+if (withContributors) {
+    evaluationDependsOn(":modules:combat")
+    evaluationDependsOn(":modules:atmosphere")
+    dependencies {
+        runtimeOnly(project(":modules:combat"))
+        runtimeOnly(project(":modules:atmosphere"))
+    }
+}
+
 neoForge {
     mods {
         register("ascension_core") {
             sourceSet(project(":modules:core").sourceSets["main"])
+        }
+        if (withContributors) {
+            register("ascension_combat") {
+                sourceSet(project(":modules:combat").sourceSets["main"])
+            }
+            register("ascension_atmosphere") {
+                sourceSet(project(":modules:atmosphere").sourceSets["main"])
+            }
         }
     }
 }

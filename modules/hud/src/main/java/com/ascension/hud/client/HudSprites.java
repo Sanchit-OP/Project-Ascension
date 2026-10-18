@@ -21,6 +21,8 @@ final class HudSprites {
     private static final ResourceLocation BADGE = texture("badge.png");
     private static final ResourceLocation RING = texture("ring.png");
     private static final ResourceLocation FOOD = texture("food.png");
+    private static final ResourceLocation PANEL = texture("panel.png");
+    private static final ResourceLocation ICONS = texture("icons.png");
 
     /** Bar sheet: three rows of 32 texels, each [left cap 16 | middle 8 | right cap 16]. */
     private static final int BAR_SHEET_W = 40;
@@ -145,6 +147,58 @@ final class HudSprites {
         com.mojang.blaze3d.systems.RenderSystem.enableBlend();
         g.setColor(1.0f, 1.0f, 1.0f, opacity);
         g.blit(FOOD, x, y, size, size, 0, 0, 48, 48, 48, 48);
+        g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    // --- panel and icons -------------------------------------------------------
+
+    /** Panel sheet: 40 by 40 texels, corners 16 and a middle of 8, so a nine-slice at 4 texels to the unit. */
+    private static final int PANEL_SHEET = 40;
+    private static final int PANEL_CORNER = 16;
+    private static final int PANEL_MID = 8;
+
+    /** Icon sheet: six icons of 48 texels in a row. */
+    private static final int ICON_TEXELS = 48;
+    private static final int ICON_COUNT = 6;
+
+    /**
+     * The glass panel, stretched to any size from a nine-slice. The corners are cropped when the
+     * panel is smaller than two corners, so a tiny panel is still a rounded shape, never a hole.
+     */
+    static void panel(GuiGraphics g, int x, int y, int w, int h, float opacity) {
+        if (w <= 0 || h <= 0) {
+            return;
+        }
+        com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+        g.setColor(1.0f, 1.0f, 1.0f, opacity);
+        int c = Math.min(CAP_UNITS, Math.min(w, h) / 2);
+        int tc = c * 4;
+        int[] xs = {x, x + c, x + w - c, x + w};
+        int[] ys = {y, y + c, y + h - c, y + h};
+        // The corners use only as much of the sprite as fits (tc texels), the middle all of its 8.
+        int[] srcW = {tc, PANEL_MID, tc};
+        int[] srcU = {0, PANEL_CORNER, PANEL_SHEET - tc};
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                int dx = xs[col];
+                int dw = xs[col + 1] - xs[col];
+                int dy = ys[row];
+                int dh = ys[row + 1] - ys[row];
+                if (dw <= 0 || dh <= 0) {
+                    continue;
+                }
+                g.blit(PANEL, dx, dy, dw, dh, srcU[col], srcU[row], srcW[col], srcW[row], PANEL_SHEET, PANEL_SHEET);
+            }
+        }
+        g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    /** One icon from the sheet, tinted {@code rgb}. {@code index} is the icon's ordinal. */
+    static void icon(GuiGraphics g, int index, int x, int y, int size, int rgb, float opacity) {
+        com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+        g.setColor(((rgb >> 16) & 0xFF) / 255.0f, ((rgb >> 8) & 0xFF) / 255.0f, (rgb & 0xFF) / 255.0f, opacity);
+        g.blit(ICONS, x, y, size, size, index * ICON_TEXELS, 0, ICON_TEXELS, ICON_TEXELS,
+                ICON_TEXELS * ICON_COUNT, ICON_TEXELS);
         g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }

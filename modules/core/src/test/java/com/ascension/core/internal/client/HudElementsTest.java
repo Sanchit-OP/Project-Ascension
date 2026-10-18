@@ -46,7 +46,7 @@ class HudElementsTest {
             }
 
             @Override
-            public void render(GuiGraphics graphics, float partialTick, float opacity) {
+            public void render(GuiGraphics graphics, com.ascension.core.api.client.HudTheme theme, float partialTick, float opacity) {
             }
 
             @Override

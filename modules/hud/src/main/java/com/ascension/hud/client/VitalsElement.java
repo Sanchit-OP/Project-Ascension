@@ -2,6 +2,7 @@ package com.ascension.hud.client;
 
 import com.ascension.core.api.client.HudAnchor;
 import com.ascension.core.api.client.HudElement;
+import com.ascension.core.api.client.HudTheme;
 import com.ascension.hud.internal.HealthBarModel;
 import com.ascension.hud.internal.RegenForecast;
 import net.minecraft.client.Minecraft;
@@ -84,7 +85,7 @@ public final class VitalsElement implements HudElement {
     }
 
     @Override
-    public void render(GuiGraphics g, float partialTick, float opacity) {
+    public void render(GuiGraphics g, HudTheme theme, float partialTick, float opacity) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) {
