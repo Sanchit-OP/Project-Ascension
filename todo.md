@@ -155,3 +155,8 @@ pressurises the room instead of the station; (5) the same working aboard a ship.
   `tools/resource-ledger.py` and checked by every build. Why it exists:
   [`resource-economy.md`](docs/progression/resource-economy.md).
 - Testing and playtest plan
+
+## Parked from the balance session (2026-10-19)
+- **One legendary carried, weapons only** (Sanchit): how to enforce (stop pickup/craft, with a sweep as the tank has), whether a dual-wield pair is the exception, and a retune of the weapons if it lands. He will decide uniqueness after testing.
+- **Flat versus percent weapons on late bosses** (`balance.md` section 3): the Wither takes flat weapons 3 to 4 times longer. Options A and B are worked out in the session; revisit after a client test.
+- **Cataclysm weapons** keep what the mod gave them; their real speeds are known (read from the jar).

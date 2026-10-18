@@ -77,7 +77,9 @@ split on 2026-10-15** (`plans/session-prompts/`) and three of the four parts are
    ADR-0020; the rune HUD is its own session, `5-rune-hud.md`);
 3. player growth, a web of 56 nodes fed by skill points (**merged 2026-10-18**: `docs/progression/growth.md`,
    ADR-0021);
-4. the items' build paths (`4-build-paths.md`): **built 2026-10-18 on branch `combat-build-paths`, not merged, not yet seen in a client** (`docs/progression/build-paths.md`: 23 ingredient components, 6 boss hearts, recipes for all 26 items, a JEI page in `ascension-compat-jei`). Balancing them is next, in that session.
+4. the items' build paths (`4-build-paths.md`): **merged 2026-10-18, not yet seen in a client** (`docs/progression/build-paths.md`: 23 ingredient components, 6 boss hearts, recipes for all 26 items, a JEI page in `ascension-compat-jei`).
+
+**Balance (2026-10-19, merged to `main`, not yet seen in a client; `docs/progression/balance.md`):** the 26 items have tooltips (a Legendary line and one paragraph per mechanic), a gold name, a sound and particles on the actives and a light beam when dropped; stats come from `item_stats.json`, weapons tuned by time to kill (`tools/time-to-kill.py` simulates them, `tools/check-balance.py` fails the build on a drift), no caps on percent-of-health procs, Ragefang and Endless Hunger dual-wield through Better Combat, mobs scale by world difficulty from `mob_difficulty/*.json`, and the six bosses have their own Armor, Magic Resist, health and damage per difficulty. Open: a one-legendary carry limit for weapons (Sanchit parked it), the flat-versus-percent weapon split on late bosses (parked until a real-game test), Cataclysm's weapons untouched.
 
 **The three were then checked against each other (2026-10-18):** `client/dev/IntegrationChecks`
 runs them together in a real client (`docs/technical/dev-environment.md` says how) and found two
