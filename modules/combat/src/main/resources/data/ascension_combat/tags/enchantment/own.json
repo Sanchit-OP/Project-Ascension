@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "ascension_combat:keen_edge",
+    "ascension_combat:leech",
+    "ascension_combat:warding",
+    "ascension_combat:vitality",
+    "ascension_combat:fleet"
+  ]
+}

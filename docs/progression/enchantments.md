@@ -243,6 +243,13 @@ the table; planets and bosses add *extra* ones.
 | Villager books | the `tradeable` tag | villagers sell them because they cannot read them (lore) |
 | Structure loot | our new ones through `on_random_loot` | uses the `enchant_randomly` loot function |
 
+**Built in increment 7:** the Lunar Archive's and the Nether colony's store chests each give, half the time,
+one book of one of *our* five enchantments (`#ascension_combat:own`, a random level). It is a NeoForge
+`add_table` loot modifier in `ascension-combat`'s own data, keyed on the chest table's id
+(`ascension_worlds:archive/stores`, `ascension_worlds:nether_colony/stores`), so `worlds` knows nothing of
+combat and Tier 1 modules stay independent: with combat absent the modifier simply never matches. Rolled 40
+times on a dedicated server: 18 and 16 books. Vanilla chests already offer them through `on_random_loot`.
+
 **Sanchit, 2026-10-18 (decision 5): no boss, planet or tablet rewards.** All enchantments come from the
 table, villagers and structure loot. Boss books, tablet-taught enchantments and a crafted route were
 considered and left out; they can return later without changing anything else here.
@@ -312,7 +319,7 @@ I will check what ships with Cataclysm before saying any more.
 | 4 | **Respiration → lung capacity** (already built in atmosphere; proven here) | Respiration III: lungs 80 → 200 units, seen in a client |
 | 5 | **Our new enchantments** (five built) | each shows its stat, and is offered by the table, trades and loot |
 | 6 | **Refactor pass** | |
-| 7 | **Sources** (loot tables for our new enchantments) | each shows up in structure loot |
+| 7 | **Sources** (our two structures' chests) | built; rolled on a dedicated server, not yet seen in a client |
 | 8 | **Tooltips and JEI** | |
 | 9 | **Refactor pass** | |
 

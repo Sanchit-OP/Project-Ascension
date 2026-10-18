@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "entries": [
+    "ascension_combat:archive_enchantments",
+    "ascension_combat:colony_enchantments"
+  ]
+}
