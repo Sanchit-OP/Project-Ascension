@@ -127,7 +127,7 @@ Each of these changed a quest or is a fact a later session needs.
 | 5.3 HUD chart in space | Leave for now; something later. |
 | 5.4 Helium | Two ideas to check against the rest of the economy: a **better tank** made with it, or a **fuel** for a rocket engine. Undecided. |
 | 5.6 Build paths | A **new session** starts from `plans/session-prompts/4-build-paths.md`. |
-| 5.8 Enchantments | Put them in the table (**they already are**, see 5.8), and add the **Lootr** mod so every player gets their own loot from a chest (awaiting his yes to the download). |
+| 5.8 Enchantments | Put them in the table (**they already are**, see 5.8), and add the **Lootr** mod so every player gets their own loot from a chest (**installed**, not yet seen in a client). |
 | 5.9 First minutes | Tell the player about the book at first login (**built**, not yet seen). |
 | 5.7 Client verification | **One run at the end**, once every page and every path is done. No client run before. |
 
@@ -209,6 +209,8 @@ forge chain on Gear and Growth with real choice rewards (reward tables, below).
 - **Lootr** (proposed by Sanchit): a mod that gives every player their own copy of a chest's loot. Modrinth, MIT, needed on
   client and server, no dependencies. It converts chests that use a loot table, so it covers the Archive, the colony halls and
   every vanilla structure; chests filled by code are left alone. Removing it later deletes the converted chests.
+  **Installed 2026-10-18** in the Ascension Dev instance (his yes), booted once on a dedicated server, not yet seen in a client; the
+  details are in `docs/technical/pack-extras.md`.
 - Reward choices ("one of three") need FTB reward tables. The generator does not write them yet; the format was read from
   the jar (`reward_tables/<name>.snbt`, a table has `loot_size` and weighted `rewards`, a choice reward names it by
   `table_id`).
@@ -227,7 +229,7 @@ cost very little.
 2. **Build paths** (a new session). Its draft already spends helium on eight epic components, so helium has a use there; a
    helium tank or fuel would be a second use, and the supply must cover both.
 3. **Helium's second job**, chosen together with the above.
-4. **Lootr**, once he says yes to the download.
+4. ~~Lootr~~ installed (2026-10-18).
 5. **One client run at the very end**, covering every page, every path, the hand-built gate, a real ship, the Nether whole and
    two clients.
 6. Left for later: the HUD chart (5.3), a starter ship (after the alpha).

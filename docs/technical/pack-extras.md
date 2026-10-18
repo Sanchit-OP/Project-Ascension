@@ -157,6 +157,31 @@ entity-culling mods. **Not part of the recommendation** until Sanchit says that 
 Left out on purpose: Locator Bar and Wayfarer (a direction bar of players, nothing team-aware), Ping Wheel
 (pings, a separate wish).
 
+## Loot of your own in every chest (Lootr, installed 2026-10-18)
+
+Sanchit: add the mod that gives each player their own loot from a chest, so a chest is not emptied by whoever
+reaches it first. **Lootr** is that mod.
+
+**Installed in Ascension Dev (his explicit yes, 2026-10-18):** `lootr-neoforge-1.21.1-1.11.38.127.jar`, 1,075,929
+bytes, from Modrinth (cdn.modrinth.com, project Lootr), sha1 `7a305b581abd90e1a8b7c1bb5eb4511d2653aa58` and sha512
+equal to the hashes Modrinth publishes (checked after the download). MIT licence. Needed on **both** client and
+server; it has no dependencies. **Booted once on a dedicated server beside the whole stack** (the quest check, 10 of 10, and
+Lootr listed as loaded, with its Jade plug-in); the three mixin warnings in that log were already there before it. Not
+yet seen in a client.
+
+**What it does.** Every container with a loot table (chests, trapped chests, barrels, shulker boxes, minecarts) gives
+each player a separate inventory of its own, rolled from the same loot table the vanilla chest would use, so our loot
+modifiers (the Archive's and the colony's enchantment books) still apply. It does not touch chests filled by code
+or by hand. Its settings are in `config/lootr-common.toml`, all left at their defaults: it works in every dimension (the
+Moon and the Nether included), mineshafts are converted, chests already opened before the mod arrived are not, and
+**team loot is off** (a party member gets their own copy, as asked). A `[team] team_loot` switch exists if a party should
+share one chest instead; which team mods it reads has not been checked.
+
+**Two things to know.** (1) **Removing Lootr later deletes every converted chest** and cannot be undone, so it is a
+decision for the pack, not a toggle. (2) Chests we place that use no loot table are not converted; the Archive's store chests
+and the colony chests are filled from loot tables (`ascension_worlds:archive/stores` and `ascension_worlds:nether_colony/stores`, which our enchantment loot modifiers target), so they should be; that is read from the data, not yet seen. Seen in a client:
+not yet, and the quest book's lines about chests ("Take what you can carry") need no change.
+
 ## Chat noise (2026-10-18)
 
 Two lines kept appearing in the chat of the dev client. **"Distant Horizons: Chunky detected"** is real
