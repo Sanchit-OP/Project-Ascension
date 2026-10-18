@@ -114,6 +114,22 @@ skipped (`required: false`), so the same file is safe with or without the mod.
   sonic boom** are all answered by Magic Resist now, which is what the gear that gives it (Null-Magic Mantle,
   Mercury Treads, Gargoyle Stoneplate, the Brace rune, the Warding node and enchantment) is for.
 
+## The hurt tint
+
+A player can tell a hit was magic: a **faint blue tint at the very edge of the screen**, in the Magic Resist stat's own
+colour, for half a second. Deliberately small: a band about 5% of the screen's height, nothing in the middle, at most a
+fifth opaque at the edge and fading out as it goes in and as the half second runs. A bigger hit shows a little more (a
+quarter of your health is the strongest), never less than a third strength. Physical hits show nothing.
+
+How it works: when a magic hit has really landed on a player (damage after shields and Magic Resist above zero), the server
+sends that player's client one small packet (`MagicHitPayload`; nothing per tick, nothing to anyone else). The client keeps the time and strength of
+the last one and draws nested frames of flat fills (`MagicHitLayer`, no texture), just above vanilla's own camera
+overlays and under the HUD, with or without the HUD module. Hidden when the GUI is hidden.
+
+To change it: `ascension_combat-client.toml`, `magicHitTint` from 0 (off) to 1 (normal). To change the look for everyone,
+the constants at the top of `MagicHitPulse` (peak opacity, thickness, length, band count); the arithmetic has unit tests.
+Not seen yet: it is drawn by the client, and the server check cannot see a screen.
+
 ## Checking it
 
 `damage-checks.txt` (a dedicated server, about a minute, no window): put an empty `run/server/damage-checks.txt`,
@@ -121,12 +137,13 @@ run `./gradlew runDevServer`, read `grep "damage-checks\]" run/server/logs/lates
 and Magic Resist is hurt with the game's own damage sources, first Magic Resist 100 and Armor 0, then the other
 way round, and the damage that lands says which defence each attack met. It also checks that our own magic
 is cut once, that Magic Penetration works, and (when Cataclysm is loaded) that Ignis' fireball is magic by its
-entity while an arrow with the same damage type is not. **Seen 2026-10-19: 48 checks, 0 failures.**
+entity while an arrow with the same damage type is not. A stand-in player on a stand-in connection takes a blast, lava, a punch,
+a fall and a hit of no damage: the first two send the tint packet, the rest do not. **Seen 2026-10-19: 59 checks, 0 failures.**
 
 ## Not done
 
-- **Not seen in a client**, and the check uses stand-in mobs, not a real Creeper or Warden.
-- **Players cannot tell** a hit was magic. A cue (a hurt tint, a line in the death message, a stat tooltip
-  that says what percentage it cuts) is a later decision.
+- **Not seen in a client**, and the check uses stand-in mobs, not a real Creeper or Warden. In the client run, look at the
+  tint first: is it noticeable in passing and out of the way? (`MagicHitPulse` and `magicHitTint` are the knobs.)
+- A line in the death message, or a stat tooltip that says what percentage Magic Resist cuts, are later choices.
 - **Physical-only lifesteal** (`combat-api.md` section 3 said it needed per-hit damage tagging this project did
   not have). It has that now; nothing uses it.

@@ -3,17 +3,26 @@ package com.ascension.combat.internal.dev;
 import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.mechanics.DamageKinds;
 import com.ascension.combat.internal.mechanics.MagicDamage;
+import com.ascension.combat.internal.mechanics.MagicHitPulse;
+import com.ascension.combat.internal.net.MagicHitPayload;
+import com.mojang.authlib.GameProfile;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -55,6 +64,8 @@ public final class DamageChecks {
     private static boolean finished;
     private static int checks;
     private static int failures;
+    private static FakeConnection connection;
+    private static ServerPlayer standIn;
 
     private DamageChecks() {
     }
@@ -75,18 +86,29 @@ public final class DamageChecks {
     }
 
     private static void onTick(ServerTickEvent.Post event) {
-        if (!armed || finished || server == null || ++settle < 200) {
+        if (!armed || finished || server == null) {
             return;
         }
-        finished = true;
+        settle++;
+        // Part one once the world has settled; part two eighty ticks later, when the stand-in player has finished
+        // joining and its sixty ticks of join protection are over (a hit before that does nothing at all).
+        if (settle == 200) {
+            guarded(() -> run(server.overworld()));
+        } else if (settle == 280) {
+            guarded(() -> runPlayer(server.overworld()));
+            finished = true;
+            log("RESULT: " + checks + " checks, " + failures + " failures");
+            server.halt(false);
+        }
+    }
+
+    private static void guarded(Runnable part) {
         try {
-            run(server.overworld());
+            part.run();
         } catch (RuntimeException e) {
             fail("the checks threw " + e);
             e.printStackTrace();
         }
-        log("RESULT: " + checks + " checks, " + failures + " failures");
-        server.halt(false);
     }
 
     private static void run(ServerLevel level) {
@@ -208,6 +230,65 @@ public final class DamageChecks {
         }
 
         pig.discard();
+
+        // The stand-in player for part two: joins now, is hurt eighty ticks later.
+        UUID id = UUID.nameUUIDFromBytes("OfflinePlayer:DamageChecks".getBytes(StandardCharsets.UTF_8));
+        GameProfile profile = new GameProfile(id, "DamageChecks");
+        connection = new FakeConnection();
+        standIn = new ServerPlayer(server, level, profile, ClientInformation.createDefault());
+        server.getPlayerList().placeNewPlayer(connection, standIn, CommonListenerCookie.createInitial(profile, false));
+        // The test worlds default to creative, where nobody can be hurt.
+        standIn.setGameMode(GameType.SURVIVAL);
+    }
+
+    /** Part two: the screen tint reaches a real player on a real (stand-in) connection, for magic hits only. */
+    private static void runPlayer(ServerLevel level) {
+        log("--- the screen tint");
+        Zombie zombie = EntityType.ZOMBIE.create(level);
+        if (standIn == null || zombie == null) {
+            fail("no stand-in player");
+            return;
+        }
+        var damage = level.damageSources();
+
+        connection.forget();
+        expect("a blast landed on the player", hurtPlayer(damage.explosion(null, zombie), 4.0f) > 0.0f, true);
+        var blast = connection.sent(MagicHitPayload.class);
+        expectCount("a blast tells the player once", blast.size(), 1);
+        if (!blast.isEmpty()) {
+            float strength = blast.get(0).strength();
+            expect("and the pulse is between the weakest and the strongest (" + strength + ")",
+                    strength >= MagicHitPulse.MIN_STRENGTH && strength <= 1.0f, true);
+        }
+
+        connection.forget();
+        expect("a zombie's fist landed on the player", hurtPlayer(damage.mobAttack(zombie), 4.0f) > 0.0f, true);
+        expectCount("a zombie's fist tells the player nothing", connection.sent(MagicHitPayload.class).size(), 0);
+
+        connection.forget();
+        expect("a fall landed on the player", hurtPlayer(damage.fall(), 4.0f) > 0.0f, true);
+        expectCount("a fall tells the player nothing", connection.sent(MagicHitPayload.class).size(), 0);
+
+        connection.forget();
+        expect("lava landed on the player", hurtPlayer(damage.lava(), 4.0f) > 0.0f, true);
+        expectCount("lava tells the player once", connection.sent(MagicHitPayload.class).size(), 1);
+
+        connection.forget();
+        standIn.getAttribute(CombatAttributes.MAGIC_RESIST).setBaseValue(300.0);
+        float taken = hurtPlayer(damage.explosion(null, zombie), 0.0f);
+        expect("a hit of no damage did nothing", taken <= 0.0f, true);
+        expectCount("and tells the player nothing", connection.sent(MagicHitPayload.class).size(), 0);
+        standIn.getAttribute(CombatAttributes.MAGIC_RESIST).setBaseValue(0.0);
+
+    }
+
+    /** Hurts the stand-in player from full health and returns how much health it lost. */
+    private static float hurtPlayer(DamageSource source, float amount) {
+        standIn.setHealth(standIn.getMaxHealth());
+        standIn.invulnerableTime = 0;
+        float before = standIn.getHealth();
+        standIn.hurt(source, amount);
+        return before - standIn.getHealth();
     }
 
     // ------------------------------------------------------------------------------------------
@@ -236,6 +317,16 @@ public final class DamageChecks {
     }
 
     private static void expect(String what, boolean actual, boolean expected) {
+        checks++;
+        if (actual == expected) {
+            log("PASS " + what);
+        } else {
+            failures++;
+            log("FAIL " + what + " (got " + actual + ")");
+        }
+    }
+
+    private static void expectCount(String what, int actual, int expected) {
         checks++;
         if (actual == expected) {
             log("PASS " + what);

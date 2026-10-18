@@ -237,7 +237,7 @@ Two checks that need a game, both dormant until their trigger file exists in the
 - **`damage-checks.txt`** (a dedicated server, about a minute, no window): a pig with a known Armor and Magic
   Resist is hurt with the game's own damage sources (a zombie's fist, the Warden's sonic boom, a Creeper's blast,
   lava, Ignis' fireball...) and the damage that lands says whether each was met by Armor or Magic Resist
-  (`damage-kinds.md`). Prints `[damage-checks]` lines. Seen 2026-10-19: 48 checks, 0 failures.
+  (`damage-kinds.md`); a stand-in player checks that only magic hits send the hurt-tint packet. Prints `[damage-checks]` lines. Seen 2026-10-19: 59 checks, 0 failures.
 - **`quest-screen-checks.txt`** (a client, about four minutes): opens `runes-test` (copy a fresh one into
   `run/client/saves`, as for the integration run), opens the real quest book at both pages in four states
   (new player, tank done, flying in space over the Moon, standing on the Moon), photographs each to
