@@ -208,6 +208,37 @@ commands, the real advancements and the real damage event, prints `PASS` / `FAIL
 What it cannot see is anything a client draws or sends: FTB's My Team screen and button, the chat line as
 a player reads it, and the HUD's team list when it exists. Those wait for a real client.
 
+### The quest book (`tools/generate-quests.py`, `ascension-compat-ftbquests`)
+
+The book is data, written as readable Python under `pack/quests/` (one module per page, listed in
+`book.py`; the rules for writing one are in `docs/progression/quests.md`). Nothing is edited in the game.
+
+1. **Write or change a page**, then `python tools/generate-quests.py`. It checks the whole book (items,
+   advancements and dimensions that are ours must exist, no guarded story word from
+   `pack/quests/guarded-words.txt`, no dependency loop, no two quests on one spot, pictures and shapes
+   present) and writes `pack/config/ftbquests/quests/` (what FTB Quests loads) and
+   `modules/compat/ftbquests/.../quests/chart_layout.json` (where everything is on the Planets picture).
+   `./gradlew build` runs it with `--check` and fails if the files are stale; its own tests run beside it
+   (`python -m unittest discover -s tools/quests/tests -t tools`).
+2. **Pictures** (needs Pillow and numpy): `python tools/generate-quest-art.py` redraws the theme, quest
+   shapes, chart, planet spheres, rings, halos and icons. Seeded, so a rerun changes nothing. The planets
+   are drawn from the planet files' colours; a new planet is its JSON, a rerun of both tools, and a page.
+3. **Copy into a game:** `python tools/sync-pack-config.py` puts the quest files into `run/client/config`,
+   `run/server/config` and the CurseForge instance, and **removes quest files the pack no longer has**.
+   The repo is the truth: anything changed with FTB's in-game editor is overwritten.
+4. **Ids come from slugs**, so a page can be edited freely, but **never rename a slug that has shipped**:
+   a player's progress follows the id.
+
+Two checks that need a game, both dormant until their trigger file exists in the game directory:
+
+- **`quest-checks.txt`** (a dedicated server, about a minute, no window): the real FTB Quests loads the
+  generated files, every id in them must be an object it knows, and every item must be a real item. Prints
+  `[quest-checks]` lines. Seen 2026-10-18: 2 chapters, 14 quests, 53 ids, 21 items, 0 failures.
+- **`quest-screen-checks.txt`** (a client, about four minutes): opens `runes-test` (copy a fresh one into
+  `run/client/saves`, as for the integration run), opens the real quest book at both pages in four states
+  (new player, tank done, flying in space over the Moon, standing on the Moon), photographs each to
+  `screenshots/quest-book/`, and reads the marker's pixels back. Prints `[quest-screen]` lines.
+
 ### Use `runDevServer`, not a module's own `runServer`
 
 Each module also has its own `runClient` / `runServer`, and **each loads only itself and what it

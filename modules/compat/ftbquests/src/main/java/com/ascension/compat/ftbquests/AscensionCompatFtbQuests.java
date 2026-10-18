@@ -1,6 +1,7 @@
 package com.ascension.compat.ftbquests;
 
 import com.ascension.compat.ftbquests.client.ChartOverlay;
+import com.ascension.compat.ftbquests.client.dev.QuestScreenChecks;
 import com.ascension.compat.ftbquests.internal.dev.QuestChecks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -30,6 +31,7 @@ public final class AscensionCompatFtbQuests {
     public AscensionCompatFtbQuests(IEventBus modBus) {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             modBus.addListener(ChartOverlay::registerReloadListener);
+            QuestScreenChecks.register(NeoForge.EVENT_BUS);
         }
         QuestChecks.register(NeoForge.EVENT_BUS);
         LOGGER.info("Ascension Compat: FTB Quests loaded");

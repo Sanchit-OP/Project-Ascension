@@ -42,6 +42,8 @@ public final class QuestChecks {
     private static final String TRIGGER = "quest-checks.txt";
     private static final String TAG = "[quest-checks] ";
     private static final Pattern ID = Pattern.compile("\\bid:\\s*\"([0-9A-F]{16})\"");
+    private static final Pattern DEPENDENCIES = Pattern.compile("dependencies:\\s*\\[([^\\]]*)]");
+    private static final Pattern QUOTED_ID = Pattern.compile("\"[0-9A-F]{16}\"");
 
     /** Ticks to wait after the server starts: Quests loads its file as the server comes up. */
     private static final int SETTLE_TICKS = 60;
@@ -98,12 +100,21 @@ public final class QuestChecks {
         Path chapters = quests.resolve("chapters");
         Set<String> expected = new HashSet<>();
         int chapterFiles = 0;
+        int dependenciesInFiles = 0;
         try (Stream<Path> list = Files.list(chapters)) {
             for (Path p : (Iterable<Path>) list.filter(f -> f.toString().endsWith(".snbt"))::iterator) {
                 chapterFiles++;
-                Matcher m = ID.matcher(Files.readString(p, StandardCharsets.UTF_8));
+                String text = Files.readString(p, StandardCharsets.UTF_8);
+                Matcher m = ID.matcher(text);
                 while (m.find()) {
                     expected.add(m.group(1));
+                }
+                Matcher deps = DEPENDENCIES.matcher(text);
+                while (deps.find()) {
+                    Matcher each = QUOTED_ID.matcher(deps.group(1));
+                    while (each.find()) {
+                        dependenciesInFiles++;
+                    }
                 }
             }
         }
@@ -127,8 +138,14 @@ public final class QuestChecks {
 
         List<String> missing = new ArrayList<>();
         int stacks = 0;
+        int dependenciesLoaded = 0;
         Collection<?> all = (Collection<?>) file.getClass().getMethod("getAllObjects").invoke(file);
         for (Object object : all) {
+            // Quests drops a dependency it cannot resolve without a word, and a reveal that hangs on one never fires.
+            if (object.getClass().getSimpleName().equals("Quest")) {
+                dependenciesLoaded += (int) ((Stream<?>) object.getClass().getMethod("streamDependencies")
+                        .invoke(object)).count();
+            }
             ItemStack stack = stackOf(object);
             if (stack == null) {
                 continue;
@@ -139,6 +156,8 @@ public final class QuestChecks {
                 missing.add(String.valueOf(object));
             }
         }
+        expect("every dependency in the files was kept when Quests loaded them (" + dependenciesLoaded + " of "
+                + dependenciesInFiles + ")", dependenciesLoaded == dependenciesInFiles && dependenciesInFiles > 0);
         expect("every item a task or reward names is a real item (" + stacks + " checked)"
                 + (missing.isEmpty() ? "" : " (missing: " + missing.subList(0, Math.min(5, missing.size())) + ")"),
                 missing.isEmpty());
