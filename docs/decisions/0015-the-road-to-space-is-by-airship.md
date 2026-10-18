@@ -2,6 +2,8 @@
 
 - **Status:** Accepted
 - **Date:** 2026-10-11
+- **Amended by:** [ADR-0025](0025-rockets-are-thruster-ships.md): the context's "no rocket engines" no longer holds (rockets are
+  ships with thrusters, helium is their fuel). The decision below is unchanged.
 
 ## Context
 

@@ -51,3 +51,4 @@ forgets it.
 | [0022](0022-enchantments-are-stat-sources.md) | Enchantments are stat sources, as data | Accepted |
 | [0023](0023-teams-are-ftb-teams-parties.md) | Teams are FTB Teams parties; progress has three owners (world, team, you) | Accepted |
 | [0024](0024-the-hud-is-its-own-module.md) | The HUD is its own Tier 1 module, `ascension-hud`, with a contract in `core` | Accepted |
+| [0025](0025-rockets-are-thruster-ships.md) | Rockets are ships with thrusters (Create Simulated Thrusters), and helium is their fuel | Accepted |

@@ -1,0 +1,10 @@
+{
+  "values": {
+    "ascension_worlds:raw_helium": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "ascension_worlds" }
+      ],
+      "burn_time": 4800
+    }
+  }
+}

@@ -182,6 +182,39 @@ decision for the pack, not a toggle. (2) Chests we place that use no loot table 
 and the colony chests are filled from loot tables (`ascension_worlds:archive/stores` and `ascension_worlds:nether_colony/stores`, which our enchantment loot modifiers target), so they should be; that is read from the data, not yet seen. Seen in a client:
 not yet, and the quest book's lines about chests ("Take what you can carry") need no change.
 
+## Thrusters for rockets (Create Simulated Thrusters, installed 2026-10-18)
+
+Sanchit: add the thruster mod for Create Aeronautics, "that is how we will actually make the rockets for space travel". No
+mod is called "Iron Thrusters"; he named **Create: Simulated Thrusters** from the candidates found (Create Propulsion: Simulated,
+Gadgets & Gizmos, Linked Thrusters), and asked that it also be on CurseForge (it is). Decision record: ADR-0025.
+
+**Installed in Ascension Dev (his explicit yes, 2026-10-18):** `create_simulated_thrusters-1.21.1-NeoForge-1.1.1.jar`,
+298,484 bytes (the page says 291.5 KB), downloaded from CurseForge's CDN (project 1546743, file ID 8220627), sha1
+`e8f480fa206e2f958b7fc6a04841ffde09d06ac7`, sha256 `bcaaf4bffa8df9e776a4b786efbdc4d24ce6fa0f8a54828093357a8afe297024`.
+CurseForge publishes no hash to compare with, so only the size and a clean zip were checked. **Modrinth carries only 1.0.1
+(207,778 bytes); the CurseForge 1.1.1 is the newer file and the one we use**, which is also what the CurseForge app would install.
+
+**What it declares and brings** (read from the jar): requires NeoForge 21+, Create 6.0+, Sable 1.1.3+ and Simulated 1.1.0+
+(the instance has Create 6.0.10, Sable 2.0.5 and Simulated 1.3.2 inside Aeronautics). Three blocks:
+
+| Block | Recipe | What it does |
+|---|---|---|
+| Redstone Thruster | 2 electron tubes, a dropper, 2 repeaters, a shaft | Pushes along its shaft when spun and powered; costs stress |
+| Blaze Thruster | 2 iron ingots, 2 engine assemblies, a blaze burner | Burns Create's blaze-burner fuels, costs no stress; redstone pauses it |
+| Brass Thruster | 4 brass sheets, a shaft, 2 electron tubes, a Redstone Thruster, a precision mechanism | 3 by 3 by 3, steerable by two redstone inputs, costs stress |
+
+Settings are in `config/create_simulated_thrusters-common.toml` (defaults: redstone 600, blaze 80 / 700 / 1500 for sticks / coal and
+logs / blaze cake, brass 4800). **Helium** is made a superheated fuel (the 1500 grade) by one data file in `ascension-compat-create`.
+
+**Cautions.** (1) **Licence: All Rights Reserved** on both CurseForge and Modrinth (its own `mods.toml` says MIT, which looks like
+the template's default), no source link: install it in the dev instance, and reference it from a pack, never bundle the jar in
+something we publish. (2) It carries a mixin config (`create_simulated_thrusters.mixins.json`), so it is the first suspect if a boot
+misbehaves beside Sable. (3) One author, no docs or source: how it treats thin air is unknown. (4) Create Propulsion: Simulated
+(MIT, data-driven fuels) is the fallback.
+
+**Seen:** a dedicated server boots with it beside everything, and the quest check (10 of 10) passes with its items named. **Not
+seen** in a client; no thruster has been fuelled yet.
+
 ## Chat noise (2026-10-18)
 
 Two lines kept appearing in the chat of the dev client. **"Distant Horizons: Chunky detected"** is real

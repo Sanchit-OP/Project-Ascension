@@ -5,10 +5,11 @@ plugins {
 description =
     "Disables Create's Copper/Netherite Backtank and Diving Helmet -- our own atmosphere tank " +
     "already owns the wearable-pressurised-air idea, and two of them side by side is just " +
-    "player confusion."
+    "player confusion -- and makes raw helium a superheated blaze-burner fuel (which is also what " +
+    "a thruster burns, so helium becomes rocket fuel)."
 
 // No `dependencies {}` block: this jar never calls a line of Create's Java API. The whole
-// integration is a datapack (recipe overrides + a hidden-from-recipe-viewers tag), so there is
+// integration is a datapack (recipe overrides, a hidden-from-recipe-viewers tag and a fuel data map), so there is
 // nothing to compile against.
 
 @Suppress("UNCHECKED_CAST")

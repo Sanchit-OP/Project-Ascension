@@ -142,6 +142,8 @@ and build our own JEI pages for what it cannot know (§7).
   - **The helium lamp** (`the-moon.md`): by its light, hidden Sealer carvings show, and so does
     what the Observers touched. It is a new thing to do, not a number. Planet 3's Sealer carving
     could carry a line only helium light reveals.
+  - **Ship fuel (2026-10-18, ADR-0025):** raw helium is a superheated blaze-burner fuel, so it is the strongest fuel for a
+    Create Simulated Thrusters blaze thruster, the heart of a rocket. Not a requirement: coal and logs also burn.
   - **Optional, later:** a helium burner, a Create heat source, would open brass without the
     Nether. Not needed now that the titanium bearing gets ships into space.
 

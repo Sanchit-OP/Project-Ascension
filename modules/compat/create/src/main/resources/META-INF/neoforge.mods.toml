@@ -15,6 +15,10 @@ already is, under a different name and different rules -- shipping both invites 
 confusion ADR-0002 exists to avoid. Diving Boots are untouched: they are a movement item with
 no air mechanic of their own.
 
+Also makes raw helium (from ascension-worlds, when it is installed) a superheated blaze-burner fuel, the
+highest grade. Create's blaze burners and Create Simulated Thrusters' Blaze Thruster both read that fuel list,
+so the same data entry makes helium rocket fuel.
+
 Optional. Without Create installed, this jar simply is not present -- nothing else notices,
 because nothing else knew this existed in the first place.
 '''
