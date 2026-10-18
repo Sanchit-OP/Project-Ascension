@@ -1,0 +1,23 @@
+[quest-screen] opening world runes-test
+[quest-screen] PASS the chart layout was read
+[quest-screen] PASS our texture is the one registered for the quest book's overlay image
+[quest-screen] PASS on Earth the marker is a ring around it (255, 255) and nothing in the middle (0)
+[quest-screen] photographed first-days-fresh (screen: ScreenWrapper)
+[quest-screen] photographed planets-fresh (screen: ScreenWrapper)
+[quest-screen] PASS 'A breath of your own' is done
+[quest-screen] photographed first-days-progress (screen: ScreenWrapper)
+[quest-screen] photographed planets-moon-known (screen: ScreenWrapper)
+[quest-screen] FAIL the player is in space (ascension_worlds:moon)
+[quest-screen] FAIL the player stands about where the check sent them (1, 1)
+[quest-screen] FAIL in space the marker is a bright point at 626,512 (255) with its arrow ahead at 0,0 (0)
+[quest-screen] FAIL the projection put the player where the layout says (513,513)
+[quest-screen] photographed planets-space-at-moon (screen: ScreenWrapper)
+[quest-screen] PASS the player is in space (ascension_worlds:space)
+[quest-screen] PASS the player stands about where the check sent them (1501, -2199)
+[quest-screen] PASS in space the marker is a bright point at 564,435 (255) with its arrow ahead at 546,417 (255)
+[quest-screen] PASS the projection put the player where the layout says (564,435)
+[quest-screen] photographed planets-space-between (screen: ScreenWrapper)
+[quest-screen] PASS on the Moon the marker is a ring around it (255, 255) and nothing in the middle (0)
+[quest-screen] PASS 'The Moon' is done
+[quest-screen] photographed planets-moon-visited (screen: ScreenWrapper)
+[quest-screen] RESULT: 14 checks, 4 failures

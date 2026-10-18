@@ -237,7 +237,9 @@ Two checks that need a game, both dormant until their trigger file exists in the
 - **`quest-screen-checks.txt`** (a client, about four minutes): opens `runes-test` (copy a fresh one into
   `run/client/saves`, as for the integration run), opens the real quest book at both pages in four states
   (new player, tank done, flying in space over the Moon, standing on the Moon), photographs each to
-  `screenshots/quest-book/`, and reads the marker's pixels back. Prints `[quest-screen]` lines.
+  `screenshots/quest-book/`, and reads the marker's pixels back. Prints `[quest-screen]` lines. First run
+  2026-10-18: about two minutes, 14 checks, 4 failures, all from the check's own space stop landing on the Moon;
+  what it found is in `docs/progression/quests.md` section 12, and the pictures are in `design/quest-book/`.
 
 ### Use `runDevServer`, not a module's own `runServer`
 

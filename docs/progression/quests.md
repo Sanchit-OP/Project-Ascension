@@ -1,7 +1,7 @@
 # The quest book
 
-> **Status (2026-10-18): Q1 and Q2 BUILT, loaded by the real FTB Quests on a dedicated server, not yet seen in
-> a client** (section 10). Written after Sanchit asked for quest pages that teach, reward and point onward
+> **Status (2026-10-18): Q1 and Q2 BUILT, loaded by the real FTB Quests on a dedicated server, and seen in a
+> client once by the scripted run: it works, with a few things still unconfirmed** (sections 10 and 12). Written after Sanchit asked for quest pages that teach, reward and point onward
 > without giving the lore away, a special **Planets** page that looks like a solar system and shows where you
 > are (also while you are in space), and a book that looks like our pack. His four answers are in section 9.
 > Sections 2 to 4 are what FTB Quests already does (read from the installed jar, `ftb-quests-neoforge-2101.1.36`),
@@ -230,7 +230,8 @@ things genuinely need it).
 | Design | this page; section 9 answered 2026-10-18 |
 | **Built (Q1, Q2)** | `ascension-compat-ftbquests` (theme, three quest shapes `ascension_star` / `ascension_nova` / `ascension_eye`, night-sky background tile, the chart, three planet spheres, ring, halo, icons, the marker); the generator, validator, art tool and their tests; two pages: **First Days** (11 quests) and **Planets** (Earth, the Moon, the Nether, with rumour rings, halos and the marker) |
 | Checked by machine | 19 Java tests (projection, painter, the layout file, and the generator's sample points replayed against the game's own projection), 36 Python tests (writer, ids, the real book, the chart, and a validator shown to catch each kind of mistake), `./gradlew build` runs the book check; **a dedicated server with the real FTB Quests loaded it first time: 1 chapter group, 2 chapters, 14 quests, 53 ids all known, 21 items all real, 0 failures** |
-| **Not yet seen** | everything a client draws: that our theme wins the stack, the three shapes, the chart and the spheres at book scale, the marker (the texture-by-name trick is read from bytecode, not seen), the text at book width, the reveal order. `QuestScreenChecks` is written to see all of it in one run (`dev-environment.md`) and waits for Sanchit's go |
+| **Seen (scripted client run, 2026-10-18)** | the theme wins the stack; the chart, rings, bearings and frame at book scale; a world's sphere, ring and dependency line; our pictures as quest and toast icons; the text at book width; the reveal order (Nether named after the Moon); and **the marker drawing in the real book** through the texture-by-name trick (section 12). Photographs in `design/quest-book/` |
+| **Not yet confirmed** | the marker and the Moon's sphere in a clear, unobstructed shot (the quest panel covered them); the marker in space; the three quest shapes at normal size; how First Days looks as a whole page. Section 12 says why and what the next run should change |
 | Open | the refactor pass (Q3); the rest of the pages (Q4); the HUD chart in space with its core contract and packet (Q5); whether a late joiner can claim past rewards (`teams.md`); reward choices need reward tables, so the first pages give plain items |
 
 ## 11. Writing a page
@@ -250,3 +251,54 @@ tools are in `tools/quests/model.py`; `first_days.py` is the pattern.
   comes near saying what it should only point at.
 - **A world on the Planets page** is its planet file (`worlds`), a line in `planets.py` for what reveals it and
   what its page says, and a rerun of both tools; its place on the chart is computed.
+
+## 12. The first client run (2026-10-18)
+
+Recorded after Sanchit asked for the scripted run and then for nothing more than notes: **nothing below has been
+fixed yet.** `QuestScreenChecks` opened `runes-test`, opened the real quest book in four states, photographed
+it and read the marker's pixels back. Photographs and the check's own output are in `design/quest-book/`
+(`run-2026-10-18.txt`). The run took about two minutes.
+
+**Result: 14 checks, 4 failures, all four from one cause that is the check's, not the game's** (finding 1).
+No error or warning from `ascension_*` or FTB Quests in the client log; the 96 exception-like lines are third-party
+noise (mixin warnings for mods that are not installed, Cataclysm's missing subtitles, another mod's parse error).
+
+| Passed | |
+|---|---|
+| The layout file was read | yes |
+| Our texture is the one registered for the overlay image | yes |
+| On Earth: a ring of marker around it, nothing in the middle | yes (alpha 255, 255, 0) |
+| The oxygen-tank quest completes through `/ftbquests change_progress` | yes |
+| In space at (1500, -2200): a point at the player's real place with its arrow ahead, and the Java projection agrees with the layout | yes (pixel 564, 435; arrow 546, 417; both alpha 255) |
+| On the Moon: a ring around it, nothing in the middle; "The Moon" quest completes by standing there | yes |
+
+**What the photographs show.** The theme is in effect: our dark starfield behind the page, brass borders, cream text,
+the quest panel in our colours. The chart draws at book scale with its rings (the 20K and 40K labels read), N/E/S/W,
+the bearing ticks and the brass frame. After the Moon is visited the Nether appears as a lava sphere inside a faint
+ring with a dependency line running to it; before, only its ring. Our pictures work as quest icons (the Moon in
+the "Quest completed" toast) and the chapter icons. Quests the player cannot start show a lock, ones with a reward to
+claim show a red mark, and the sidebar button shows one too. The text wraps cleanly at the panel's width.
+**The marker is drawn by the real book:** in the on-the-Moon shot a brass ring with a dark edge shows at the
+panel's right edge, around the Moon's position and with the Moon's teal halo inside it, at the radius the code
+draws it. So FTB Quests does ask the texture manager for our texture by name, which was the one idea in the design
+that had only been read from bytecode.
+
+**Findings** (all about the check, none yet about the book; none fixed):
+
+1. **The "space at the Moon" stop is not in space.** The check teleports to the Moon's own position, which is inside
+   the Moon's approach radius (320 blocks), so the game does what it is built to do and lands the player on the Moon
+   (+1 skill point, "Landing on the Moon"). That caused the four failures, and the photograph named
+   `planets-space-at-moon` was really taken on the Moon, with "The Moon" already done. A point more than 320 blocks
+   from (4000, 0), such as (4600, 0), would be in space.
+2. **The quest panel covers the subject.** `openGui(quest)` opens that quest's panel in the middle of the screen,
+   which hides Earth, the Moon and the marker at the middle of the chart, and most of the First Days page. Every
+   photograph is therefore a good picture of the theme and a poor one of the layout. The next run should close the
+   panel (or open the chapter without a quest) before photographing, and could photograph twice, with and without it.
+3. **The window did not resize.** The photographs are 1920 x 1080, not the 1600 x 900 the script asks for, so the
+   window size call had no effect (the window may be maximised). Cosmetic.
+4. **Not judged:** whether the three quest shapes read as star / nova / eye at normal size, whether the spheres are
+   big enough on the chart (the Nether's is about 55 px across with a ring of about 95 px), and whether the First Days
+   page reads as a whole. These need the clear shots from the next run, or Sanchit's own eyes.
+
+**Left for when Sanchit says:** change the check for findings 1 to 3 and rerun for clean shots; his own look at the
+book (J, then Planets); then the refactor pass (Q3, due), the remaining pages (Q4) and the HUD chart in space (Q5).
