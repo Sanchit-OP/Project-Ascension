@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
@@ -214,7 +215,8 @@ public final class HeartwoodOfPallasEffects {
             return;
         }
 
-        MagicDamage.apply(event, ON_HIT_MAGIC_DAMAGE);
+        MagicDamage.apply(event,
+                ON_HIT_MAGIC_DAMAGE + AbilityScaling.HEARTWOOD_ON_HIT_PER_AD * AbilityScaling.attackDamage(source.getEntity()));
 
         LivingEntity target = event.getEntity();
         if (!(target.level() instanceof ServerLevel serverLevel)) {

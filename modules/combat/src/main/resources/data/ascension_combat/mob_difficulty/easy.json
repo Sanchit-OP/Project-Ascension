@@ -1,0 +1,10 @@
+{
+  "_comment": "Easy: softer mobs. Percent of a mob's own base value, by tier (tags/entity_type/tier/). docs/progression/balance.md section 2. Placeholders Sanchit tunes by playing.",
+  "tiers": {
+    "swarm": { "health_percent": -20 },
+    "light": { "health_percent": -20 },
+    "medium": { "health_percent": -25, "attack_damage_percent": -10 },
+    "heavy": { "health_percent": -30, "attack_damage_percent": -15 },
+    "boss": { "health_percent": -30, "attack_damage_percent": -15 }
+  }
+}

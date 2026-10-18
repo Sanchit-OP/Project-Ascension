@@ -1,0 +1,192 @@
+{
+  "_comment": "Cataclysm's gear by what it costs: its power is set here, not left to what the mod gave it (docs/progression/balance.md section 3). Boss weapons are lifted to about 60% of a legendary weapon's budget (72 points), mid weapons to about 38% (46), boss armour to about 55%; everything else stays as Cataclysm made it. A stat named here replaces the conversion for that stat, so the armour entries write the whole Health. tools/check-balance.py reads this file and fails the build if any item passes 65%.",
+  "values": {
+    "cataclysm:soul_render": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 2
+      }
+    },
+    "cataclysm:infernal_forge": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 5
+      }
+    },
+    "cataclysm:void_forge": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 5
+      }
+    },
+    "cataclysm:the_incinerator": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 5
+      }
+    },
+    "cataclysm:brontes": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 5
+      }
+    },
+    "cataclysm:ancient_spear": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 3
+      }
+    },
+    "cataclysm:meat_shredder": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 5
+      }
+    },
+    "cataclysm:the_annihilator": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 5
+      }
+    },
+    "cataclysm:the_immolator": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 5
+      }
+    },
+    "cataclysm:tidal_claws": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 6
+      }
+    },
+    "cataclysm:coral_bardiche": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "armor_penetration": 1
+      }
+    },
+    "cataclysm:ignitium_helmet": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "health": 12
+      }
+    },
+    "cataclysm:ignitium_chestplate": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "health": 15
+      }
+    },
+    "cataclysm:ignitium_leggings": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "health": 12
+      }
+    },
+    "cataclysm:cursium_helmet": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "health": 16
+      }
+    },
+    "cataclysm:cursium_chestplate": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "health": 17
+      }
+    },
+    "cataclysm:cursium_leggings": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "stats": {
+        "health": 15
+      }
+    }
+  }
+}

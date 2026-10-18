@@ -1,5 +1,9 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.ArmedState;
@@ -70,10 +74,12 @@ public final class DarkenBladeEffects {
         }
 
         LivingEntity target = event.getEntity();
-        float rawMagicBonus = target.getMaxHealth() * MAGIC_MAX_HP_PERCENT;
+        float rawMagicBonus = target.getMaxHealth()
+                * (MAGIC_MAX_HP_PERCENT + AbilityScaling.DARKEN_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
         MagicDamage.apply(event, rawMagicBonus);
 
-        Shield.grant(attacker, SHIELD_AMOUNT);
+        Presence.burst(attacker, SoundEvents.WITHER_SHOOT, 0.6f, 1.5f, ParticleTypes.SOUL_FIRE_FLAME, 15, 0.5);
+        Shield.grant(attacker, SHIELD_AMOUNT + AbilityScaling.DARKEN_SHIELD_PER_AD * AbilityScaling.attackDamage(attacker));
         attacker.getCooldowns().addCooldown(weapon.getItem(), PROC_COOLDOWN_TICKS);
     }
 }

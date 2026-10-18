@@ -1,5 +1,9 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
@@ -67,6 +71,7 @@ public final class DivineSundererEffects {
             return;
         }
 
+        Presence.burst(player, SoundEvents.BEACON_ACTIVATE, 0.8f, 1.8f, ParticleTypes.END_ROD, 14, 0.5);
         player.getData(CombatAttachments.DIVINE_SUNDERER_PRIMED).arm();
         player.getCooldowns().addCooldown(stack.getItem(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }
@@ -81,7 +86,8 @@ public final class DivineSundererEffects {
             return;
         }
 
-        float physicalBonus = event.getEntity().getMaxHealth() * PHYSICAL_MAX_HP_PERCENT;
+        float physicalBonus = event.getEntity().getMaxHealth()
+                * (PHYSICAL_MAX_HP_PERCENT + AbilityScaling.SUNDERER_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
         event.setAmount(event.getAmount() + physicalBonus);
     }
 
@@ -100,8 +106,9 @@ public final class DivineSundererEffects {
         }
 
         LivingEntity target = event.getEntity();
-        float physicalBonus = target.getMaxHealth() * PHYSICAL_MAX_HP_PERCENT;
-        float rawMagicBonus = target.getMaxHealth() * MAGIC_MAX_HP_PERCENT;
+        float perAttackDamage = AbilityScaling.SUNDERER_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker);
+        float physicalBonus = target.getMaxHealth() * (PHYSICAL_MAX_HP_PERCENT + perAttackDamage);
+        float rawMagicBonus = target.getMaxHealth() * (MAGIC_MAX_HP_PERCENT + perAttackDamage);
         float magicDelivered = MagicDamage.apply(event, rawMagicBonus);
 
         attacker.heal(physicalBonus + magicDelivered);
