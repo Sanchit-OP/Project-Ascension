@@ -37,9 +37,10 @@ public interface HudElement {
      * Draw in local coordinates: {@code (0, 0)} is the element's top-left and it occupies
      * {@link #width()} by {@link #height()}. The host has already moved the pose there.
      *
+     * @param theme   the host's panel, typeface and icons; draw with these so the HUD stays one family
      * @param opacity 0 to 1, the host's overall opacity setting; multiply it into alpha
      */
-    void render(GuiGraphics graphics, float partialTick, float opacity);
+    void render(GuiGraphics graphics, HudTheme theme, float partialTick, float opacity);
 
     /** Sorts elements sharing an anchor; lower is nearer the hotbar. Ties break on id. */
     default int order() {
