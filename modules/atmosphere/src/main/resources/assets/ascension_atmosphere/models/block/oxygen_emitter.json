@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "minecraft:block/iron_block"
+    "end": "ascension_atmosphere:block/oxygen_emitter_end",
+    "side": "ascension_atmosphere:block/oxygen_emitter_side"
   }
 }
