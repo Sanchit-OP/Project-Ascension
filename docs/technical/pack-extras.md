@@ -1,0 +1,80 @@
+# Pack extras: quality-of-life, teams and quests
+
+Third-party mods the pack adds **beside** the game we are building. Like the
+[optimisation stack](optimisation-stack.md), none of these is a dependency of any Ascension module
+(ADR-0002, ADR-0003): they change how the game is played and seen, not what it is. Where a mod needs
+an Ascension connector (teams and quests will), the connector is a Tier-2 `ascension-compat-*` jar
+that loads only when the mod is there.
+
+Every entry was checked on **2026-10-18** against the build that exists for **Minecraft 1.21.1 on
+NeoForge**, from Modrinth's API or FTB's own maven. A project listing "NeoForge" and "1.21.1"
+separately does not mean the pairing exists (see the Zoomify row).
+
+**Status: proposed, waiting for Sanchit's go-ahead to download.** Nothing below is installed yet.
+
+## The set
+
+| Mod | Build | File (size) | From | What it is for |
+|---|---|---|---|---|
+| **Iris Shaders** | `1.8.14-beta.1+1.21.1` | `iris-neoforge-1.8.14-beta.1+mc1.21.1.jar` (2.5 MB) | Modrinth | Shader packs. **The beta is the right one:** its changelog says "updates to Sodium 0.8", which is the Sodium we run (0.8.13). The last full release, 1.8.12, was built for Sodium 0.6 and will not load beside it. Client only. |
+| **Ok Zoomer** | `10.0.0-beta.13` (NeoForge) | `ok_zoomer-neo-10.0.0-beta.13.jar` (208 KB) | Modrinth | The zoom key, with smooth scroll zoom and a cinematic camera, all configurable. No dependencies. Client only. |
+| **FTB Quests** | `2101.1.36` | `ftb-quests-neoforge-2101.1.36.jar` (1.6 MB) | maven.ftb.dev | The quest book: chapters, tasks, rewards, **shared by a team**. |
+| **FTB Library** | `2101.1.37` | `ftb-library-neoforge-2101.1.37.jar` (1.4 MB) | maven.ftb.dev | Required by Quests and Teams (screens, config, SNBT files). |
+| **FTB Teams** | `2101.1.11` | `ftb-teams-neoforge-2101.1.11.jar` (308 KB) | maven.ftb.dev | Parties and teams: create, invite, a team id other mods read. Required by Quests. |
+| **Architectury API** | `13.0.11` (NeoForge) | `architectury-13.0.11-neoforge.jar` (585 KB) | Modrinth | Required by Quests, Library and Teams. |
+| **FTB XMod Compat** | `21.1.12` | `ftb-xmod-compat-neoforge-21.1.12.jar` (149 KB) | maven.ftb.dev | Small glue between the FTB mods and JEI. Listed as a dependency of Quests on CurseForge. |
+
+FTB's mods are not on Modrinth. maven.ftb.dev is FTB's own release repository, the same files
+CurseForge serves. Quests' pom asks for Architectury 13.0.8, Library and Teams 2101.1.x; the newer
+patch versions above are the latest of each.
+
+**Optional, not asked for, worth a decision:**
+
+| Mod | Build | Why |
+|---|---|---|
+| **Xaero's Minimap** `26.6.0` and **World Map** `1.47.0` | 2.2 MB and 1.4 MB, Modrinth | A game about travelling needs a map; both handle custom dimensions. They draw a minimap on the HUD, so the HUD overhaul must make room. |
+| **Mouse Tweaks** `2.26.1`, **Controlling** `19.0.5` with **Searchables** `1.0.2` | under 100 KB each | Inventory handling; searchable key bindings (we now have R, K, V and an ability key). |
+
+## Left out on purpose
+
+| Mod | Why |
+|---|---|
+| **Zoomify** | Its NeoForge builds start at Minecraft 26.1; there is **no 1.21.1 NeoForge build**. Ok Zoomer does the same job. |
+| **AppleSkin, Neat and other health-bar and HUD mods** | They draw what the HUD overhaul (`plans/session-prompts/6-hud-overhaul.md`) is about to replace. Revisit after it. |
+| **FTB Essentials, Waystones and other teleport mods** | They would short-cut the airship road to space (ADR-0015). |
+| **FTB Chunks** | Claims and a map. Later, if co-op griefing becomes real; Xaero's covers the map. |
+| **Mod Menu, Embeddium** and friends | Fabric plumbing, or a second copy of Sodium. |
+
+## What to check once they are in
+
+The client:
+
+1. The game boots with the whole stack and no new errors in the log.
+2. **Shaders:** a shader pack loads with Sodium 0.8.13 and Distant Horizons 2.4.5-b together. Then the
+   things that draw their own way: our Moon, Earth and planets in the sky, the dust storm overlay,
+   the lit-sphere planets in space, the gateway portals, and a **Sable / Aeronautics ship** (Sable is
+   mixin-heavy; shaders change the render pipeline). Vanilla-looking fallbacks matter more than pretty.
+3. **Keys:** none of the new keys collides with R (runes), K (skill tree), V (character sheet).
+4. **FTB Quests** opens, a quest completes, and the team screen works.
+5. Distant Horizons' `PRE_EXISTING_ONLY` setting is unchanged.
+
+The server: boots with the FTB set, clients without Iris and Ok Zoomer can still join (both are
+client-only), and the dev mirror (`syncDevMods`) skips the client-only jars on the server.
+
+## What this is for
+
+Once these run beside our mods, the **team** and **quest** design can start. Facts that will shape it:
+
+- **Teams today are the whole server.** Growth's shared milestones (a boss's first kill, a lit gate)
+  go to every player on the server, late joiners included (ADR-0021; `TeamGrowthState` says it is
+  "the whole server until Ascension has teams"). FTB Teams is the natural source of a real team.
+  A Tier-2 `ascension-compat-ftbteams` could make those milestones per team, and Bulwark's
+  team runes and share-air could use the same team id. **Sanchit decides** whether a team shares
+  growth, and what a solo player is.
+- **Quests can feed growth with no code.** Our milestones are advancements; an FTB Quests reward can
+  run `/advancement grant @p only <id>`, and a quest task can be "have this advancement". So a
+  quest chapter can award skill points, exactly as a boss kill does, from data.
+- **Quest files are text** (SNBT in `config/ftbquests/`), so quest lines can be written and reviewed
+  here, not only clicked together in the editor. They need a home in the repository and a way to
+  reach the pack; to be settled with the first chapter.
+- **No world is ever required** (ADR-0018): quests *reward* going somewhere, they never gate a path.
