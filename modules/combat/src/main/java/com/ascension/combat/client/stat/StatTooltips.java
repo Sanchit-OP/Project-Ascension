@@ -120,69 +120,78 @@ public final class StatTooltips {
 
     private static List<Component> block(Map<EquipmentSlotGroup, List<Line>> bySlot, @Nullable Player player, TooltipFlag flag) {
         List<Component> block = new ArrayList<>();
-        bySlot.forEach((slot, lines) -> {
-            List<Component> weapon = new ArrayList<>();
-            List<Line> stats = new ArrayList<>();
-            List<Component> others = new ArrayList<>();
-            Map<Key, Double> enchanted = new LinkedHashMap<>();
-            List<CombatStat> weaponStats = new ArrayList<>();
-            List<Double> weaponValues = new ArrayList<>();
-
-            for (Line line : lines) {
-                AttributeModifier modifier = line.modifier();
-                if (modifier.amount() == 0.0 || isConverted(line.attribute())) {
-                    continue;
-                }
-
-                CombatStat stat = statFor(line.attribute());
-                if (stat != null && isEnchantment(modifier)) {
-                    enchanted.merge(new Key(stat, modifier.operation()), modifier.amount(), Double::sum);
-                } else if (modifier.id().equals(Item.BASE_ATTACK_DAMAGE_ID) && is(line.attribute(), Attributes.ATTACK_DAMAGE)) {
-                    weaponStats.add(CombatStats.ATTACK_DAMAGE);
-                    weaponValues.add(modifier.amount() + base(player, Attributes.ATTACK_DAMAGE, ItemStatModifiers.BARE_HAND_DAMAGE));
-                } else if (modifier.id().equals(Item.BASE_ATTACK_SPEED_ID) && is(line.attribute(), Attributes.ATTACK_SPEED)) {
-                    weaponStats.add(CombatStats.ATTACK_SPEED);
-                    weaponValues.add(modifier.amount() + base(player, Attributes.ATTACK_SPEED, ItemStatModifiers.BARE_HAND_SPEED));
-                } else if (stat != null) {
-                    stats.add(line);
-                } else {
-                    others.add(line.attribute().value().toComponent(modifier, flag));
-                }
-            }
-
-            // The weapon's own attack, with what its enchantments add after it: "7 +2 Attack Damage".
-            for (int i = 0; i < weaponStats.size(); i++) {
-                CombatStat stat = weaponStats.get(i);
-                Double extra = enchanted.remove(new Key(stat, AttributeModifier.Operation.ADD_VALUE));
-                weapon.add(weaponLine(stat, weaponValues.get(i), extra));
-            }
-
-            List<StatLine> statLines = new ArrayList<>();
-            for (Line line : stats) {
-                CombatStat stat = statFor(line.attribute());
-                Double extra = enchanted.remove(new Key(stat, line.modifier().operation()));
-                statLines.add(new StatLine(stat, line.modifier().operation(), line.modifier().amount(), extra));
-            }
-            // Enchantment stats with no line of the item's own to join are lines in their own right.
-            enchanted.forEach((key, amount) -> statLines.add(new StatLine(key.stat(), key.operation(), amount, null)));
-
-            if (weapon.isEmpty() && statLines.isEmpty() && others.isEmpty()) {
-                return;
-            }
-
-            block.add(Component.translatable(slotKey(slot)).withStyle(ChatFormatting.GRAY));
-            block.addAll(weapon);
-            statLines.sort(Comparator.comparingInt(line -> CombatStats.all().indexOf(line.stat())));
-            for (StatLine line : statLines) {
-                block.add(Component.literal(StatText.modifier(line.stat(), line.operation(), line.amount()))
-                        .append(extra(line.stat(), line.operation(), line.extra()))
-                        .append(" ")
-                        .append(line.stat().displayName())
-                        .withStyle(style -> style.withColor(TextColor.fromRgb(line.stat().color()))));
-            }
-            block.addAll(others);
-        });
+        bySlot.forEach((slot, lines) -> block.addAll(section(slot, sort(lines, player, flag))));
         return block;
+    }
+
+    /** One slot group's lines, sorted into what each is drawn as. */
+    private record Sorted(List<CombatStat> weaponStats, List<Double> weaponValues, List<Line> stats,
+                          List<Component> others, Map<Key, Double> enchanted) {
+    }
+
+    private static Sorted sort(List<Line> lines, @Nullable Player player, TooltipFlag flag) {
+        Sorted sorted = new Sorted(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new LinkedHashMap<>());
+        for (Line line : lines) {
+            AttributeModifier modifier = line.modifier();
+            if (modifier.amount() == 0.0 || isConverted(line.attribute())) {
+                continue;
+            }
+
+            CombatStat stat = statFor(line.attribute());
+            if (stat != null && isEnchantment(modifier)) {
+                sorted.enchanted().merge(new Key(stat, modifier.operation()), modifier.amount(), Double::sum);
+            } else if (modifier.id().equals(Item.BASE_ATTACK_DAMAGE_ID) && is(line.attribute(), Attributes.ATTACK_DAMAGE)) {
+                sorted.weaponStats().add(CombatStats.ATTACK_DAMAGE);
+                sorted.weaponValues().add(modifier.amount() + base(player, Attributes.ATTACK_DAMAGE, ItemStatModifiers.BARE_HAND_DAMAGE));
+            } else if (modifier.id().equals(Item.BASE_ATTACK_SPEED_ID) && is(line.attribute(), Attributes.ATTACK_SPEED)) {
+                sorted.weaponStats().add(CombatStats.ATTACK_SPEED);
+                sorted.weaponValues().add(modifier.amount() + base(player, Attributes.ATTACK_SPEED, ItemStatModifiers.BARE_HAND_SPEED));
+            } else if (stat != null) {
+                sorted.stats().add(line);
+            } else {
+                sorted.others().add(line.attribute().value().toComponent(modifier, flag));
+            }
+        }
+        return sorted;
+    }
+
+    /**
+     * The lines for one slot group: where the stats count, the weapon's own attack, then each stat. An
+     * enchantment's share is added to the item's own line for that stat when there is one ("7 +2 Attack
+     * Damage"); a stat only an enchantment gives is a line of its own.
+     */
+    private static List<Component> section(EquipmentSlotGroup slot, Sorted sorted) {
+        List<Component> weapon = new ArrayList<>();
+        for (int i = 0; i < sorted.weaponStats().size(); i++) {
+            CombatStat stat = sorted.weaponStats().get(i);
+            weapon.add(weaponLine(stat, sorted.weaponValues().get(i), sorted.enchanted().remove(new Key(stat, AttributeModifier.Operation.ADD_VALUE))));
+        }
+
+        List<StatLine> statLines = new ArrayList<>();
+        for (Line line : sorted.stats()) {
+            CombatStat stat = statFor(line.attribute());
+            Double extra = sorted.enchanted().remove(new Key(stat, line.modifier().operation()));
+            statLines.add(new StatLine(stat, line.modifier().operation(), line.modifier().amount(), extra));
+        }
+        sorted.enchanted().forEach((key, amount) -> statLines.add(new StatLine(key.stat(), key.operation(), amount, null)));
+
+        if (weapon.isEmpty() && statLines.isEmpty() && sorted.others().isEmpty()) {
+            return List.of();
+        }
+
+        List<Component> section = new ArrayList<>();
+        section.add(Component.translatable(slotKey(slot)).withStyle(ChatFormatting.GRAY));
+        section.addAll(weapon);
+        statLines.sort(Comparator.comparingInt(line -> CombatStats.all().indexOf(line.stat())));
+        for (StatLine line : statLines) {
+            section.add(Component.literal(StatText.modifier(line.stat(), line.operation(), line.amount()))
+                    .append(extra(line.stat(), line.operation(), line.extra()))
+                    .append(" ")
+                    .append(line.stat().displayName())
+                    .withStyle(style -> style.withColor(TextColor.fromRgb(line.stat().color()))));
+        }
+        section.addAll(sorted.others());
+        return section;
     }
 
     private record StatLine(CombatStat stat, AttributeModifier.Operation operation, double amount, @Nullable Double extra) {

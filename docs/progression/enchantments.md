@@ -1,7 +1,7 @@
 # Enchantments
 
-> **Status, 2026-10-18, branch `combat-enchantments`: decisions answered, increments 1, 2, 4 and 5 built and
-> seen working, refactor passes 3 and 6 done.** Not yet merged. The audit (§2) is read from
+> **Status, 2026-10-18, branch `combat-enchantments`: decisions answered, increments 1 to 8 built (1, 2, 4, 5
+> seen in a client; 7 and 8 checked on a dedicated server and by build only), refactor passes 3, 6 and 9 done.** Not yet merged. The audit (§2) is read from
 > the 1.21.1 data and our code; rows marked **measure** still need a measured hit in a running game
 > (ADR-0008). Every number is a placeholder: a balancing and stats session follows. The decisions are in
 > §11; the structural choice is [ADR-0022](../decisions/0022-enchantments-are-stat-sources.md).
@@ -341,7 +341,7 @@ I will check what ships with Cataclysm before saying any more.
 | 6 | **Refactor pass** | |
 | 7 | **Sources** (our two structures' chests) | built; rolled on a dedicated server, not yet seen in a client |
 | 8 | **Tooltips and JEI** | tooltips built; not yet seen in a client; JEI is the registry's own list |
-| 9 | **Refactor pass** | |
+| 9 | **Refactor pass** | done: the tooltip code split into sort and section, and a data rule for our enchantments' lang and tags |
 
 Each increment is also checked on a dedicated server (the registry is synced), after a reload, and
 with `IntegrationChecks` extended to cover it.

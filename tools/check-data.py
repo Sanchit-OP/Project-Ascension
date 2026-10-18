@@ -28,6 +28,10 @@ RULES = [
      'A minecraft:attributes effect needs all four, spelt exactly, and an attribute that exists. A '
      'missing or misspelt one is dropped or fails the whole enchantment, and a stat id outside '
      'ascension_combat:enchantment/ shows as "Other" on the sheet (ADR-0022).'),
+    ('our enchantment: a name in the lang file, and a place in the loot and table tags',
+     'An enchantment with no lang key shows its raw key ("enchantment.ascension_combat.x") on every book and '
+     'tooltip. One missing from minecraft:non_treasure is never offered by the table, villagers or loot, and '
+     'one missing from ascension_combat:own never turns up in the structure chests. Neither logs anything.'),
 ]
 
 ATTRIBUTE_KEYS = {'id', 'attribute', 'amount', 'operation'}
@@ -78,6 +82,39 @@ def check_enchantment(file, document):
     return findings
 
 
+def check_our_enchantments(module_resources):
+    """Every enchantment this module defines under its own namespace has a name and is in both tags."""
+    findings = []
+    data = os.path.join(module_resources, 'data', 'ascension_combat')
+    names = sorted(os.path.splitext(os.path.basename(f))[0]
+                   for f in glob.glob(os.path.join(data, 'enchantment', '*.json')))
+    if not names:
+        return findings
+
+    def values(path):
+        full = os.path.join(module_resources, 'data', *path)
+        if not os.path.exists(full):
+            return set()
+        with open(full, encoding='utf-8') as handle:
+            return set(json.load(handle).get('values', []))
+
+    lang_path = os.path.join(module_resources, 'assets', 'ascension_combat', 'lang', 'en_us.json')
+    with open(lang_path, encoding='utf-8') as handle:
+        lang = json.load(handle)
+    own = values(('ascension_combat', 'tags', 'enchantment', 'own.json'))
+    table = values(('minecraft', 'tags', 'enchantment', 'non_treasure.json'))
+    for name in names:
+        file = os.path.join(data, 'enchantment', name + '.json')
+        key = 'ascension_combat:' + name
+        if 'enchantment.ascension_combat.' + name not in lang:
+            findings.append((file, '', 'has no "enchantment.ascension_combat.%s" in en_us.json' % name))
+        if key not in own:
+            findings.append((file, '', 'is not in tags/enchantment/own.json (no structure loot)'))
+        if key not in table:
+            findings.append((file, '', 'is not in minecraft tags/enchantment/non_treasure.json (not offered)'))
+    return findings
+
+
 def main():
     if '--list' in sys.argv:
         for name, why in RULES:
@@ -105,6 +142,8 @@ def main():
             except json.JSONDecodeError as error:
                 findings.append((file, '', 'is not valid JSON: %s' % error))
     files = files + enchantments
+    for resources in glob.glob(os.path.join(ROOT, 'modules', '*', 'src', 'main', 'resources')):
+        findings.extend(check_our_enchantments(resources))
 
     for file, where, message in findings:
         print('%s %s %s' % (os.path.relpath(file, ROOT), where, message), file=sys.stderr)
