@@ -146,8 +146,8 @@ the Protection problem comes back by another route.
 | Projectile Protection | **more** Armor than Protection (arrows are Attack Damage hits), plus 2.25% less projectile damage | +4 Armor, 2.25% vs projectiles | IV: +16 Armor a piece | 16 |
 | Fire Protection | +Magic Resist, plus 2.25% less fire damage | +3 Magic Resist, 2.25% vs fire | IV: +12 Magic Resist a piece | 12 |
 | Blast Protection | +Magic Resist, plus 2.25% less explosion damage | +3 Magic Resist, 2.25% vs blasts | IV: +12 Magic Resist a piece | 12 |
-| Sharpness | +Attack Damage, held | +0.3 | V: +1.5 | 6 |
-| Power | +Attack Damage (arrows add the shooter's AD already) | +0.3 | V: +1.5 | 6 |
+| Sharpness | +Attack Damage, held | +0.5 | V: +2.5 | 10 |
+| Power | +Attack Damage (arrows add the shooter's AD already) | +0.5 | V: +2.5 | 10 |
 | Breach | +Armor Penetration % | +4% | IV: 16% | 8 |
 
 **Sanchit, 2026-10-18 (decision 1).** Protection gives Armor *and* a small reduction on top, so a
@@ -248,7 +248,9 @@ I will check what ships with Cataclysm before saying any more.
 
 1. **Protection: ANSWERED.** +Armor plus a small reduction (36% on a full set); Projectile gives more
    Armor; Fire and Blast give Magic Resist plus the reduction. See §3.3.
-2. **Sharpness and Power become +Attack Damage.** (recommended)
+2. **Sharpness and Power: ANSWERED.** +Attack Damage, 0.5 a level (V = +2.5), the larger option.
+   That is 10 units, above the 3 to 5 proposed in §3.2; Sanchit accepts it, and a balancing and stats
+   session at the end of this one will retune everything. Mark all numbers as placeholders until then.
 3. **Mending:** keep, remove, or make it cost something (my recommendation: keep, but make it only
    repair slowly, because our items are expensive to rebuild).
 4. **How much** may a full enchant set give: my proposal is about 25 units (§3.2).
@@ -261,7 +263,7 @@ I will check what ships with Cataclysm before saying any more.
 | # | Increment | Seen working when |
 |---|---|---|
 | 1 | **Plumbing.** The `Enchantments` stat source and one reworked enchantment (Protection) as data, plus a data-check rule | A Protection IV chestplate shows +12 Armor on the sheet under "Enchantments", and a measured hit matches the curve |
-| 2 | **The other reworks** (Sharpness, Power, Breach) | Sharpness V shows +1.5 Attack Damage under "Enchantments" |
+| 2 | **The other reworks** (Sharpness, Power, Breach) | Sharpness V shows +2.5 Attack Damage under "Enchantments" |
 | 3 | **Refactor pass** | |
 | 4 | **Respiration → lung capacity** | A Respiration III helmet gives 32 s of lungs on the Moon |
 | 5 | **Our new enchantments** | each shows its stat |
