@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "cataclysm:abyssal_burn", "required": false },
+    { "id": "cataclysm:deathlaser", "required": false },
+    { "id": "cataclysm:laser", "required": false },
+    { "id": "cataclysm:emp", "required": false },
+    { "id": "cataclysm:flame_strike", "required": false },
+    { "id": "cataclysm:lightning", "required": false },
+    { "id": "cataclysm:storm_bringer", "required": false },
+    { "id": "cataclysm:player_ceraunus", "required": false },
+    { "id": "cataclysm:maledictio_magicae", "required": false },
+    { "id": "cataclysm:maledictio_anima", "required": false }
+  ]
+}
