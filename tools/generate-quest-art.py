@@ -14,7 +14,8 @@ Writes, under modules/compat/ftbquests/src/main/resources/assets/:
       planets/{earth,moon,nether}.png        a lit sphere for each world (from the planet files' colours)
       planets/ring.png                       the faint ring of a world not yet known
       planets/halo.png                       the teal halo of a world that has been visited
-      icons/{first_days,planets,road_up,the_moon,the_rot,gear_and_growth,together}.png   chapter icons
+      icons/{first_days,planets,road_up,the_moon,the_rot,gear_and_growth,together,
+             the_gate,create_power,create_craft,ship_build,ship_fly}.png   chapter icons
       gate/plan.png                          Earth's gate: a view, a key and every layer (from gateway.json)
 
 The look is the orrery's: a night sky in a brass frame (tools/generate-rune-art.py), and teal, which is
@@ -547,6 +548,73 @@ def write_icons(size=64):
     for dx, colour in ((-r * 0.22, BRASS[2]), (r * 0.22, BRASS[3])):
         draw.ellipse((c + dx - ring, c - ring, c + dx + ring, c + ring), outline=colour + (255,), width=int(2.2 * k))
     save(downsample(image, size), os.path.join(NS, 'icons', 'together.png'))
+
+    # The Gate: two pillars and a lintel round a teal opening.
+    image, draw, k, c, r = _icon_base(size)
+    pw, px, top, bottom = r * 0.15, r * 0.40, c - r * 0.56, c + r * 0.56
+    draw.rectangle((c - px + pw, top + pw * 1.7, c + px - pw, bottom), fill=TEAL[2] + (255,))
+    for cx in (c - px, c + px):
+        draw.rectangle((cx - pw, top, cx + pw, bottom), fill=BRASS[2] + (255,), outline=BRASS[3] + (255,), width=int(1.1 * k))
+    draw.rectangle((c - px - pw * 1.3, top, c + px + pw * 1.3, top + pw * 1.7), fill=BRASS[3] + (255,),
+                   outline=BRASS[2] + (255,), width=int(1.1 * k))
+    draw.rectangle((c - px - pw * 1.3, bottom - pw * 0.5, c + px + pw * 1.3, bottom + pw * 0.5), fill=BRASS[1] + (255,),
+                   outline=BRASS[2] + (255,), width=int(1.0 * k))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'the_gate.png'))
+
+    # Create: Power: a large and a small cogwheel, meshed.
+    def cog(cx, cy, body, teeth, fill, edge):
+        pts = []
+        for i in range(teeth * 4):
+            a = 2 * math.pi * i / (teeth * 4)
+            out = body * 1.3 if (i % 4) in (1, 2) else body
+            pts.append((cx + out * math.cos(a), cy + out * math.sin(a)))
+        draw.polygon(pts, fill=fill + (255,), outline=edge + (255,))
+        draw.ellipse((cx - body * 0.55, cy - body * 0.55, cx + body * 0.55, cy + body * 0.55), fill=SKY[1] + (255,),
+                     outline=edge + (255,), width=int(1.0 * k))
+        draw.ellipse((cx - body * 0.2, cy - body * 0.2, cx + body * 0.2, cy + body * 0.2), fill=edge + (255,))
+    image, draw, k, c, r = _icon_base(size)
+    cog(c - r * 0.14, c + r * 0.12, r * 0.36, 10, BRASS[2], BRASS[3])
+    cog(c + r * 0.40, c - r * 0.34, r * 0.19, 7, BRASS[3], BRASS[2])
+    save(downsample(image, size), os.path.join(NS, 'icons', 'create_power.png'))
+
+    # Create: Machines: a press coming down on a sheet.
+    image, draw, k, c, r = _icon_base(size)
+    draw.rectangle((c - r * 0.52, c + r * 0.30, c + r * 0.52, c + r * 0.48), fill=BRASS[1] + (255,),
+                   outline=BRASS[2] + (255,), width=int(1.1 * k))
+    draw.rectangle((c - r * 0.30, c + r * 0.22, c + r * 0.30, c + r * 0.30), fill=BRASS[3] + (255,))
+    draw.rectangle((c - r * 0.08, c - r * 0.58, c + r * 0.08, c - r * 0.10), fill=BRASS[1] + (255,),
+                   outline=BRASS[2] + (255,), width=int(1.0 * k))
+    draw.rectangle((c - r * 0.38, c - r * 0.10, c + r * 0.38, c + r * 0.14), fill=BRASS[2] + (255,),
+                   outline=BRASS[3] + (255,), width=int(1.1 * k))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'create_craft.png'))
+
+    # Aeronautics: A Ship: a propeller, three blades round a hub.
+    image, draw, k, c, r = _icon_base(size)
+    for deg in (-90, 30, 150):
+        a = math.radians(deg)
+        dx, dy = math.cos(a), math.sin(a)
+        px_, py_ = -dy, dx
+        blade = [(c + dx * r * 0.10, c + dy * r * 0.10),
+                 (c + dx * r * 0.30 + px_ * r * 0.15, c + dy * r * 0.30 + py_ * r * 0.15),
+                 (c + dx * r * 0.62, c + dy * r * 0.62),
+                 (c + dx * r * 0.30 - px_ * r * 0.15, c + dy * r * 0.30 - py_ * r * 0.15)]
+        draw.polygon(blade, fill=BRASS[3] + (255,), outline=BRASS[2] + (255,))
+    draw.ellipse((c - r * 0.13, c - r * 0.13, c + r * 0.13, c + r * 0.13), fill=BRASS[1] + (255,),
+                 outline=BRASS[2] + (255,), width=int(1.2 * k))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'ship_build.png'))
+
+    # Aeronautics: In Flight: a rocket on its flame.
+    image, draw, k, c, r = _icon_base(size)
+    draw.polygon([(c - r * 0.10, c + r * 0.34), (c + r * 0.10, c + r * 0.34), (c, c + r * 0.64)],
+                 fill=(255, 190, 80, 255), outline=(210, 76, 24, 255))
+    for s in (-1, 1):
+        draw.polygon([(c + s * r * 0.17, c + r * 0.04), (c + s * r * 0.38, c + r * 0.40), (c + s * r * 0.17, c + r * 0.32)],
+                     fill=BRASS[2] + (255,), outline=BRASS[3] + (255,))
+    draw.polygon([(c, c - r * 0.64), (c + r * 0.18, c - r * 0.22), (c + r * 0.18, c + r * 0.34), (c - r * 0.18, c + r * 0.34),
+                  (c - r * 0.18, c - r * 0.22)], fill=BRASS[3] + (255,), outline=BRASS[2] + (255,))
+    draw.ellipse((c - r * 0.08, c - r * 0.14, c + r * 0.08, c + r * 0.02), fill=TEAL[3] + (255,),
+                 outline=BRASS[1] + (255,), width=int(1.0 * k))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'ship_fly.png'))
 
 
 # ----------------------------------------------------------------------------------------------

@@ -1,0 +1,447 @@
+{
+	id: "12DD3B4DBD29560D"
+	group: ""
+	order_index: 5
+	filename: "create_craft"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/create_craft.png"
+		}
+	}
+	quests: [
+		{
+			id: "31F7D08D8D723EF6"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:millstone"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "3C488954F40932B1"
+					type: "advancement"
+					advancement: "create:millstone"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "055264F2E42ED583"
+					type: "item"
+					item: "minecraft:raw_iron"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "25BCAADEC1250707"
+			x: 0.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:mechanical_saw"
+				count: 1
+			}
+			dependencies: ["31F7D08D8D723EF6"]
+			tasks: [
+				{
+					id: "71E8A0FE57E49095"
+					type: "advancement"
+					advancement: "create:saw_processing"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "2B49330F98B47BF1"
+					type: "item"
+					item: "minecraft:oak_log"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "750221738B454389"
+			x: 0.0d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:crushing_wheel"
+				count: 1
+			}
+			dependencies: ["25BCAADEC1250707", "39C750A73A2D005D"]
+			tasks: [
+				{
+					id: "7BEF15ABF05984D7"
+					type: "advancement"
+					advancement: "create:crushing_wheel"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "1DCF6A26AA12A53F"
+					type: "item"
+					item: "minecraft:raw_copper"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "681459E09FA0993E"
+			x: 3.0d
+			y: 0.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:encased_fan"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "32F694C21BE25E12"
+					type: "advancement"
+					advancement: "create:encased_fan"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "73D3DB01FD5E56FA"
+					type: "item"
+					item: "create:andesite_alloy"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "389FFCFA329129D6"
+			x: 3.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:lava_bucket"
+				count: 1
+			}
+			dependencies: ["681459E09FA0993E"]
+			tasks: [
+				{
+					id: "3C0BCADED7608FE6"
+					type: "advancement"
+					advancement: "create:fan_processing"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "43BE8D854C1DAFF7"
+					type: "item"
+					item: "minecraft:bucket"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "58271DC5E963B5AB"
+			x: 6.0d
+			y: 0.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:basin"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "114938FAA5546F5E"
+					type: "item"
+					item: "create:basin"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "48664D2250668454"
+					type: "item"
+					item: "create:andesite_alloy"
+					count: 5
+				}
+			]
+		}
+		{
+			id: "6AFCA0A066B96E1F"
+			x: 6.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:mechanical_mixer"
+				count: 1
+			}
+			dependencies: ["58271DC5E963B5AB"]
+			tasks: [
+				{
+					id: "7B1B613EAA40D65F"
+					type: "advancement"
+					advancement: "create:mechanical_mixer"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "14430FB146C4234B"
+					type: "item"
+					item: "minecraft:redstone"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "5188ABFFFDCD7AF8"
+			x: 6.0d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:mechanical_press"
+				count: 1
+			}
+			dependencies: ["58271DC5E963B5AB", "51560B86C08B0177"]
+			tasks: [
+				{
+					id: "3BEAA524E437E596"
+					type: "advancement"
+					advancement: "create:compacting"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "59EA438D1F1258D4"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "035D40066F6B68BA"
+			x: 9.0d
+			y: 0.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:copper_casing"
+				count: 1
+			}
+			dependencies: ["5E1D45D61CAF85BB"]
+			tasks: [
+				{
+					id: "348AB6ED962F66E1"
+					type: "advancement"
+					advancement: "create:copper_casing"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "5F67310019AD62A4"
+					type: "item"
+					item: "minecraft:copper_ingot"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "39C750A73A2D005D"
+			x: 9.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:deployer"
+				count: 1
+			}
+			dependencies: ["04BF3DEDB6B04093"]
+			tasks: [
+				{
+					id: "0D98539DDB6FF644"
+					type: "advancement"
+					advancement: "create:deployer"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "25168A96428CE581"
+					type: "item"
+					item: "minecraft:gold_ingot"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "0482E37944A9D9FC"
+			x: 9.0d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:mechanical_crafter"
+				count: 1
+			}
+			dependencies: ["39C750A73A2D005D"]
+			tasks: [
+				{
+					id: "7E503BACC1783E08"
+					type: "advancement"
+					advancement: "create:mechanical_crafter"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "5FF2155374C381C3"
+					type: "item"
+					item: "minecraft:crafting_table"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "13A40786829CBFDD"
+			x: 9.0d
+			y: 6.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:precision_mechanism"
+				count: 1
+			}
+			dependencies: ["0482E37944A9D9FC"]
+			tasks: [
+				{
+					id: "09E254A4F43A7451"
+					type: "advancement"
+					advancement: "create:precision_mechanism"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "3DB983145D038A62"
+					type: "item"
+					item: "minecraft:gold_nugget"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "1413DFAA81D343E1"
+			x: 0.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:chute"
+				count: 1
+			}
+			dependencies: ["51560B86C08B0177"]
+			tasks: [
+				{
+					id: "36D43CB0D88CBF59"
+					type: "advancement"
+					advancement: "create:chute"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "49597BCD446B6DF8"
+					type: "item"
+					item: "minecraft:iron_nugget"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "4688718CB2F09B64"
+			x: 3.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:andesite_funnel"
+				count: 1
+			}
+			dependencies: ["1413DFAA81D343E1"]
+			tasks: [
+				{
+					id: "5DBB6E1643E5C1C4"
+					type: "advancement"
+					advancement: "create:funnel"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "71F605D233D0DDEA"
+					type: "item"
+					item: "minecraft:dried_kelp"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "675737843FA5B0A6"
+			x: 6.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:mechanical_pump"
+				count: 1
+			}
+			dependencies: ["035D40066F6B68BA"]
+			tasks: [
+				{
+					id: "1C13E0A22ECC148B"
+					type: "advancement"
+					advancement: "create:mechanical_pump_0"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "2F42B6F01CCE67E5"
+					type: "item"
+					item: "minecraft:copper_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "4EF8B9F90325851D"
+			x: 9.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:spout"
+				count: 1
+			}
+			dependencies: ["675737843FA5B0A6"]
+			tasks: [
+				{
+					id: "3E6B9E1038CA8A47"
+					type: "advancement"
+					advancement: "create:spout"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "16A44F8E4F9A9255"
+					type: "item"
+					item: "minecraft:glass_bottle"
+					count: 4
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

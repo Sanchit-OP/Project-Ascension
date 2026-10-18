@@ -5,16 +5,22 @@ The generator turns this into FTB Quests' files (pack/config/ftbquests/quests/) 
 file; the build fails if those are out of date or if anything in here is wrong.
 See docs/progression/quests.md.
 
-The order is the order of the player's journey: the ground (First Days), the signpost (Planets), the way up
-(The Road Up), the two worlds that exist (The Moon, The Rot), and then the two pages that are not a place
-(Gear and Growth, Together). A page's order index is not part of any id, so it can move freely; only a slug
+The order is the order of the player's journey: the ground (First Days) and the ring you build on it (Build the
+Gate), the signpost (Planets), the way up (The Road Up) with the four pages that teach it (Create: Power, Create:
+Machines, Aeronautics: A Ship, Aeronautics: In Flight), the two worlds that exist (The Moon, The Rot), and then the
+two pages that are not a place (Gear and Growth, Together). A page's order index is not part of any id, so it can move freely; only a slug
 can never be renamed.
 """
 
+import create_craft
+import create_power
 import first_days
 import gear_and_growth
 import planets
 import road_up
+import ship_build
+import ship_fly
+import the_gate
 import the_moon
 import the_rot
 import together
@@ -22,8 +28,13 @@ from quests.model import Book
 
 BOOK = Book(chapters=[
     first_days.CHAPTER,
+    the_gate.CHAPTER,
     planets.CHAPTER,
     road_up.CHAPTER,
+    create_power.CHAPTER,
+    create_craft.CHAPTER,
+    ship_build.CHAPTER,
+    ship_fly.CHAPTER,
     the_moon.CHAPTER,
     the_rot.CHAPTER,
     gear_and_growth.CHAPTER,

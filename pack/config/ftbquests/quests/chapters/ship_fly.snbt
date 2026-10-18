@@ -1,0 +1,366 @@
+{
+	id: "62B8C7928B93CDB4"
+	group: ""
+	order_index: 7
+	filename: "ship_fly"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/ship_fly.png"
+		}
+	}
+	quests: [
+		{
+			id: "062AFA714E6E51FF"
+			x: 4.5d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:feather"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "3F4E5030E5A253F4"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "615AD4485CFB9699"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "6D3E9CD8CBD31E01"
+			x: 1.5d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:altitude_sensor"
+				count: 1
+			}
+			dependencies: ["062AFA714E6E51FF"]
+			tasks: [
+				{
+					id: "008FE41969048700"
+					type: "advancement"
+					advancement: "simulated:no_pressure"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "151B6C4B5099266A"
+					type: "item"
+					item: "minecraft:paper"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "64302D6A1B17CC5D"
+			x: 4.5d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:velocity_sensor"
+				count: 1
+			}
+			dependencies: ["062AFA714E6E51FF"]
+			tasks: [
+				{
+					id: "1BB3890D3B43CBC2"
+					type: "advancement"
+					advancement: "simulated:speed_is_key"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "132D10F0A0BC5759"
+					type: "item"
+					item: "minecraft:barrel"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "2CF4F64AB697E399"
+			x: 7.5d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "aeronautics:aviators_goggles"
+				count: 1
+			}
+			dependencies: ["062AFA714E6E51FF"]
+			tasks: [
+				{
+					id: "04E99316BF667971"
+					type: "advancement"
+					advancement: "aeronautics:high_fashion"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "347BDB57BE341AEB"
+					type: "item"
+					item: "minecraft:leather"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "7CAF54B976C4D1D8"
+			x: 1.5d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:throttle_lever"
+				count: 1
+			}
+			dependencies: ["6D3E9CD8CBD31E01", "04BF3DEDB6B04093"]
+			tasks: [
+				{
+					id: "2F432CC706D8E694"
+					type: "item"
+					item: "simulated:throttle_lever"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "193C99F3F743EE60"
+					type: "item"
+					item: "minecraft:stick"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "267C2E5B0F74C7D0"
+			x: 4.5d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:gimbal_sensor"
+				count: 1
+			}
+			dependencies: ["64302D6A1B17CC5D", "04BF3DEDB6B04093"]
+			tasks: [
+				{
+					id: "00B71ACC1F8C7B1F"
+					type: "advancement"
+					advancement: "simulated:the_definition_of_up"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "3F81CCFB18357C72"
+					type: "item"
+					item: "minecraft:compass"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "059C346EDD68A171"
+			x: 7.5d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:navigation_table"
+				count: 1
+			}
+			dependencies: ["2CF4F64AB697E399", "13A40786829CBFDD"]
+			tasks: [
+				{
+					id: "646877705D4F9990"
+					type: "advancement"
+					advancement: "simulated:thataway"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "5CE44388C4DF9B55"
+					type: "item"
+					item: "minecraft:map"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "52C066015E7F0C3E"
+			x: 4.5d
+			y: 7.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "create_simulated_thrusters:blaze_thruster"
+				count: 1
+			}
+			dependencies: ["059C346EDD68A171", "267C2E5B0F74C7D0"]
+			tasks: [
+				{
+					id: "37A8C25DB2FEB5AF"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "0134AF64917A4097"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "6A7631BD9B812EA7"
+			x: 1.5d
+			y: 9.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create_simulated_thrusters:blaze_thruster"
+				count: 1
+			}
+			dependencies: ["52C066015E7F0C3E", "21D9B7848ED84479"]
+			tasks: [
+				{
+					id: "5D66E10278DB7DEB"
+					type: "item"
+					item: "create_simulated_thrusters:blaze_thruster"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "2D8E0690802BB4E6"
+					type: "item"
+					item: "minecraft:coal"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "4E1D1D205D57F9D7"
+			x: 4.5d
+			y: 9.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_worlds:raw_helium"
+				count: 1
+			}
+			dependencies: ["52C066015E7F0C3E"]
+			tasks: [
+				{
+					id: "418AA1E8DED44C5C"
+					type: "item"
+					item: "ascension_worlds:raw_helium"
+					count: 8L
+				}
+			]
+			rewards: [
+				{
+					id: "10864A7B6E696345"
+					type: "item"
+					item: "minecraft:coal_block"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "7300826BC210D88A"
+			x: 7.5d
+			y: 9.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create_simulated_thrusters:redstone_thruster"
+				count: 1
+			}
+			dependencies: ["52C066015E7F0C3E", "279C1B352598D68D"]
+			tasks: [
+				{
+					id: "26E040E81434B77F"
+					type: "item"
+					item: "create_simulated_thrusters:redstone_thruster"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "544A05D379AA41BA"
+					type: "item"
+					item: "minecraft:repeater"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "12732B562BDCC9BB"
+			x: 10.5d
+			y: 9.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create_simulated_thrusters:brass_thruster"
+				count: 1
+			}
+			dependencies: ["7300826BC210D88A"]
+			tasks: [
+				{
+					id: "245355629A69A98E"
+					type: "item"
+					item: "create_simulated_thrusters:brass_thruster"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "5760BCE4BEB2C19D"
+					type: "item"
+					item: "minecraft:redstone_block"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "167E54E270783F56"
+			x: 4.5d
+			y: 12.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "create_simulated_thrusters:blaze_thruster"
+				count: 1
+			}
+			dependencies: ["6A7631BD9B812EA7", "4E1D1D205D57F9D7"]
+			tasks: [
+				{
+					id: "5284E4E3168E2619"
+					type: "dimension"
+					dimension: "ascension_worlds:space"
+				}
+			]
+			rewards: [
+				{
+					id: "5EE92E6CD1339873"
+					type: "item"
+					item: "ascension_worlds:raw_helium"
+					count: 4
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

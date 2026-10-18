@@ -19,11 +19,11 @@ CHAPTER = Chapter(
     subtitle='Earth. Learn the ground you stand on.',
     icon=picture('textures/quests/icons/first_days.png'),
     shape=LESSON,
-    # The plan of Earth's gate, drawn from the frame's own data (tools/generate-quest-art.py). It appears once the
-    # dark city is found, which is where most of what the ring is made of comes from.
+    # The plan of Earth's gate, drawn from the frame's own data (tools/generate-quest-art.py). It sits beside the gate
+    # quests and is always drawn: a plan nobody can find teaches nothing (the first version hid it until the dark city
+    # was found and put it far to the right; Sanchit could not find it). The Build the Gate page has it too.
     images=[
-        Image('gate_plan', 'textures/quests/gate/plan.png', 18, 12, 24, 24 * 600 / 1024, order=0,
-              shown_after='the_dark_below'),
+        Image('gate_plan', 'textures/quests/gate/plan.png', 7, 14, 9, 9 * 600 / 1024, order=0),
     ],
     quests=[
         # ---- The ledger itself, and the basics -------------------------------------------------
@@ -183,7 +183,7 @@ CHAPTER = Chapter(
             icon=item_icon('ascension_worlds:inscribed_gatestone'), shape=LANDMARK, size=1.2,
             deps=['gatestone', 'keystone'], hide_until='complete',
             text=[
-                'Build the ring on level ground from the plan beside this page, and set the keystone in its base.',
+                'Build the ring on level ground from the plan beside these quests, and set the keystone in its base. The Build the Gate page walks through it.',
                 'Use a tendril on the keystone to wake it. When it is lit, everyone on the server gains from it.',
                 'A gate on its own has nowhere to lead yet. Look at the Planets page.',
             ],

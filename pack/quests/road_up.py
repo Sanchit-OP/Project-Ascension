@@ -122,8 +122,8 @@ CHAPTER = Chapter(
             icon=item_icon('aeronautics:adjustable_burner'), shape=GOAL,
             deps=['press'],
             text=[
-                'Envelopes are wool and sticks. Seal them into a shell, put a burner under it, and feed the '
-                'burner a coal block.',
+                'Envelopes are wool and sticks. Seal them into an airtight shell, put a burner under it and '
+                'power the burner with redstone.',
                 'A burner is four iron sheets, two alloy, redstone and a coal block.',
             ],
             tasks=[advancement('aeronautics:head_in_the_clouds')],

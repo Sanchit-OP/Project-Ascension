@@ -466,13 +466,12 @@
 	images: [
 		{
 			id: "2920D76FE915CCFE"
-			x: 18.0d
-			y: 12.0d
-			width: 24.0d
-			height: 14.0625d
+			x: 7.0d
+			y: 14.0d
+			width: 9.0d
+			height: 5.2734375d
 			image: "ascension_compat_ftbquests:textures/quests/gate/plan.png"
 			order: 0
-			dependency: "0AC0AFA737E77E30"
 		}
 	]
 }

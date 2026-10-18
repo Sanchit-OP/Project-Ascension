@@ -1,7 +1,7 @@
 {
 	id: "4FC237B40A7ED679"
 	group: ""
-	order_index: 5
+	order_index: 10
 	filename: "gear_and_growth"
 	default_quest_shape: "ascension_star"
 	icon: {
