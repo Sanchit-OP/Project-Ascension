@@ -157,6 +157,14 @@ public final class IntegrationChecks {
         server(5, IntegrationChecks::respawn);
         server(40, p -> afterRespawn(p, healthBeforeRespawn, "gear kept"));
 
+        // ---- Respec gives the tree back (for 20 levels), then the same node is taken again
+        server(5, p -> p.giveExperienceLevels(30));
+        server(5, IntegrationChecks::respecAndRetake);
+        server(30, p -> expect("Health names Growth again after retaking", sources(StatReader.breakdown(p, CombatStats.HEALTH)).contains("Growth"), true));
+
+        // ---- A hit lands through the defence curve with gear, a shard and a rune all counted
+        server(5, IntegrationChecks::damageThroughDefence);
+
         // ---- An admin revoking a milestone closes a slot again, and the client sees it
         server(5, p -> revoke(p, MILESTONES.get(3)));
         client(10, () -> expect("the client sees the last shard row shut again", ClientRunePageCache.open().defence(), false));
@@ -272,6 +280,36 @@ public final class IntegrationChecks {
         ServerPlayer fresh = player.server.getPlayerList().respawn(player, false, Entity.RemovalReason.KILLED);
         fresh.connection.player = fresh;
         SCRIPT.log("   died and respawned");
+    }
+
+    private static void respecAndRetake(ServerPlayer player) {
+        int levels = player.experienceLevel;
+        expect("respec is allowed", PlayerGrowth.respec(player), GrowthRules.RespecCheck.OK);
+        expect("respec costs 20 levels", player.experienceLevel, levels - GrowthRules.RESPEC_LEVELS);
+        expect("every point is back after respec", PlayerGrowth.pointsSpent(player), 0);
+        expect("Health no longer names Growth after respec",
+                sources(StatReader.breakdown(player, CombatStats.HEALTH)).contains("Growth"), false);
+        expect("the tree node is taken again", PlayerGrowth.take(player, NODE), GrowthRules.TakeCheck.OK);
+    }
+
+    /**
+     * A zombie's hit of a fixed size, taken in full gear with a rune page: the Health lost is the
+     * hit times the defence curve at the player's total Armor, whatever gave it.
+     */
+    private static void damageThroughDefence(ServerPlayer player) {
+        var level = player.serverLevel();
+        level.getServer().setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
+        var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.spawn(level, player.blockPosition().above(5),
+                net.minecraft.world.entity.MobSpawnType.COMMAND);
+        double armor = StatReader.value(player, CombatStats.ARMOR);
+        float before = player.getHealth();
+        player.invulnerableTime = 0;
+        player.hurt(level.damageSources().mobAttack(zombie), 20.0f);
+        double lost = before - player.getHealth();
+        double expected = 20.0 * com.ascension.combat.internal.mechanics.DefenseFormula.multiplier(armor);
+        SCRIPT.log("   a 20 point hit at " + armor + " Armor took " + lost + " Health; the curve says " + expected);
+        expect("a hit is cut by the defence curve at the player's whole Armor", Math.abs(lost - expected) < 0.05, true);
+        zombie.discard();
     }
 
     private static void setKeepInventory(ServerPlayer player, boolean keep) {
