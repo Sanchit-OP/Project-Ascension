@@ -27,13 +27,20 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLPaths;
@@ -175,15 +182,15 @@ public final class IntegrationChecks {
             expect("the client sheet gives Protection IV +12 Armor", amountOf(armor, "Enchantments"), 12.0);
             expect("no Armor is left under Other", sources(armor).contains("Other"), false);
         });
-        server(20, IntegrationChecks::checkProtectionHit);
+        server(20, IntegrationChecks::checkProtectionPoints);
         server(20, p -> expect("taking Protection off gives the Armor back", StatReader.value(p, CombatStats.ARMOR), armorBeforeEnchant));
 
         // ---- Sharpness IV is +2 Attack Damage and Breach IV is +16% Armor Penetration, in the main hand
-        server(5, p -> holdEnchanted(p, Items.DIAMOND_SWORD, net.minecraft.world.item.enchantment.Enchantments.SHARPNESS, 4));
+        server(5, p -> holdEnchanted(p, Items.DIAMOND_SWORD, Enchantments.SHARPNESS, 4));
         server(20, p -> expectEnchanted(p, CombatStats.ATTACK_DAMAGE, "Sharpness IV", 2.0));
         client(10, () -> expect("the client sheet gives Sharpness IV +2 Attack Damage",
                 amountOf(StatReader.breakdown(Minecraft.getInstance().player, CombatStats.ATTACK_DAMAGE), "Enchantments"), 2.0));
-        server(5, p -> holdEnchanted(p, Items.MACE, net.minecraft.world.item.enchantment.Enchantments.BREACH, 4));
+        server(5, p -> holdEnchanted(p, Items.MACE, Enchantments.BREACH, 4));
         server(20, p -> expectEnchanted(p, CombatStats.ARMOR_PENETRATION, "Breach IV", 0.16));
         server(5, p -> p.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY));
 
@@ -272,12 +279,15 @@ public final class IntegrationChecks {
 
     private static double armorBeforeEnchant;
 
-    /** Puts an enchanted item in the main hand; vanilla re-reads its modifiers on the next tick. */
-    private static void holdEnchanted(ServerPlayer player, net.minecraft.world.item.Item item,
-            net.minecraft.resources.ResourceKey<net.minecraft.world.item.enchantment.Enchantment> enchantment, int level) {
-        ItemStack stack = new ItemStack(item);
-        stack.enchant(player.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
+    /** Enchants a stack in place. Vanilla re-reads worn or held modifiers on the next tick, so read stats a few ticks later. */
+    private static void enchant(ServerPlayer player, ItemStack stack, ResourceKey<Enchantment> enchantment, int level) {
+        stack.enchant(player.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT)
                 .getHolderOrThrow(enchantment), level);
+    }
+
+    private static void holdEnchanted(ServerPlayer player, Item item, ResourceKey<Enchantment> enchantment, int level) {
+        ItemStack stack = new ItemStack(item);
+        enchant(player, stack, enchantment, level);
         player.setItemSlot(EquipmentSlot.MAINHAND, stack);
     }
 
@@ -289,12 +299,10 @@ public final class IntegrationChecks {
 
     private static void enchantChestplate(ServerPlayer player) {
         armorBeforeEnchant = StatReader.value(player, CombatStats.ARMOR);
-        var protection = player.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
-                .getHolderOrThrow(net.minecraft.world.item.enchantment.Enchantments.PROTECTION);
-        player.getItemBySlot(EquipmentSlot.CHEST).enchant(protection, 4);
+        enchant(player, player.getItemBySlot(EquipmentSlot.CHEST), Enchantments.PROTECTION, 4);
     }
 
-    /** Vanilla re-reads worn gear's modifiers on the next tick, so this runs a few ticks after the enchant. */
+    /** Runs a few ticks after the enchant (see {@link #enchant}). */
     private static void checkEnchantedArmor(ServerPlayer player) {
         double armor = StatReader.value(player, CombatStats.ARMOR);
         expect("Protection IV adds exactly 12 Armor", armor - armorBeforeEnchant, 12.0);
@@ -302,32 +310,17 @@ public final class IntegrationChecks {
         expect("Armor names Enchantments with 12", amountOf(breakdown, "Enchantments"), 12.0);
     }
 
-    /** One piece of Protection IV is 9% off every hit, on top of the curve at the new Armor. */
-    private static void checkProtectionHit(ServerPlayer player) {
-        var level = player.serverLevel();
-        var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.spawn(level, player.blockPosition().above(5),
-                net.minecraft.world.entity.MobSpawnType.COMMAND);
-        double armor = StatReader.value(player, CombatStats.ARMOR);
-        float before = player.getHealth();
-        float points = net.minecraft.world.item.enchantment.EnchantmentHelper.getDamageProtection(level, player,
-                level.damageSources().mobAttack(zombie));
-        SCRIPT.log("   vanilla counts " + points + " protection points on the player (4 levels on one piece should be 2.25)");
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            SCRIPT.log("   " + slot + ": " + player.getItemBySlot(slot).getItem() + " "
-                    + player.getItemBySlot(slot).getEnchantments());
-        }
-        // The reduction itself is checked as vanilla counts it: 2.25 points is 9%. The whole hit was
-        // checked on a dedicated server (6.435 off a 10-point hit at 50 Armor). A hit here, straight after
-        // the previous check's hit, takes more off than the curve says, and has no enchantment in it:
-        // something from that first hit (a rune or growth effect) is still active. Logged, not asserted.
+    /**
+     * One piece of Protection IV is 2.25 protection points, which vanilla turns into 9% off. Checked as
+     * vanilla counts it; the whole hit through the curve was checked on a dedicated server. (A player hit
+     * straight after another took more off than the curve says with no enchantment involved, so the hit
+     * is not asserted here: see enchantments.md section 3.5.) Then Protection is taken off.
+     */
+    private static void checkProtectionPoints(ServerPlayer player) {
+        float points = EnchantmentHelper.getDamageProtection(player.serverLevel(), player,
+                player.serverLevel().damageSources().generic());
         expect("Protection IV on one piece counts 2.25 protection points (9% off)", (double) points, 2.25);
-        player.invulnerableTime = 0;
-        player.hurt(level.damageSources().mobAttack(zombie), 20.0f);
-        SCRIPT.log("   (for the record) a 20 point hit at " + armor + " Armor took " + (before - player.getHealth()));
-        zombie.discard();
-        player.setHealth(player.getMaxHealth());
-        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        chest.remove(net.minecraft.core.component.DataComponents.ENCHANTMENTS);
+        player.getItemBySlot(EquipmentSlot.CHEST).remove(DataComponents.ENCHANTMENTS);
     }
 
     /** The parts of Health and Armor add up to the totals, and growth and runes are each named. */

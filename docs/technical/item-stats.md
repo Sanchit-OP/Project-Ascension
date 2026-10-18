@@ -191,7 +191,7 @@ armour all count automatically.
 - **Vanilla's own Armor and Toughness lines are hidden from the tooltip**, so a chestplate never
   shows two different "Armor" numbers.
 - Vanilla's armour bar above the hotbar still shows. It still rises with better armour.
-- Protection enchantments keep working as they do today. They were never part of this.
+- The Protection enchantments are stat sources now: they give Armor or Magic Resist plus a small damage reduction (`docs/progression/enchantments.md`, ADR-0022).
 
 **Netherite's own line.** Sanchit wants a diamond set to give +20 Health and a netherite set +40.
 - A diamond piece has 2 toughness, so the rate gives it +5 Health and the set +20.

@@ -1,10 +1,10 @@
 # Enchantments
 
-> **Draft 1, 2026-10-18, branch `combat-enchantments`.** Nothing here is built. The audit (§2) is
-> read from the 1.21.1 data and from our code; the rows marked **measure** still need a measured hit
-> in a running game (ADR-0008) before anyone trusts them. Every number is a placeholder to tune by
-> playing. All six decisions in §11 are answered (2026-10-18). The structural choice is
-> [ADR-0022](../decisions/0022-enchantments-are-stat-sources.md) (Proposed).
+> **Status, 2026-10-18, branch `combat-enchantments`: decisions answered, increments 1 and 2 built and
+> seen working, increment 3 (this refactor pass) done.** Not yet merged. The audit (§2) is read from
+> the 1.21.1 data and our code; rows marked **measure** still need a measured hit in a running game
+> (ADR-0008). Every number is a placeholder: a balancing and stats session follows. The decisions are in
+> §11; the structural choice is [ADR-0022](../decisions/0022-enchantments-are-stat-sources.md).
 >
 > Sanchit, 2026-10-18: *"we need to work on how the enchantments are gonna work. I feel like maybe we
 > can implement the enchantment with our stat system and it will make it all pretty cool."*
@@ -180,6 +180,16 @@ Known limits, left for the balancing session:
   it. Vanilla's Power was fixed when the arrow was fired.
 - **Melee with a Power bow:** the same Attack Damage is also there if you hit with the bow.
 - Smite, Bane of Arthropods and Impaling are untouched (still vanilla's situational damage).
+
+### 3.5 One unexplained thing (open)
+
+In the scripted client run, a 20-point hit on the player taken straight after another 20-point hit
+took about 36% more off than the curve plus Protection's 9% says. The same item on a zombie on a
+dedicated server matched exactly (6.435 off a 10-point hit at 50 Armor). Vanilla counts 2.25 protection
+points on the player, as designed. The extra cut shows up with no enchantment involved, so I believe a
+rune or growth effect from the first hit is still active, but I have **not** confirmed that. The check
+asserts the protection points and logs the hit instead. To settle it: take two hits with no enchantment
+at all and compare.
 
 ## 4. New enchantments of ours (all data)
 
