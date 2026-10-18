@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "ascension_compat_create:block/air_compressor_end",
+    "side": "ascension_compat_create:block/air_compressor_side"
+  }
+}

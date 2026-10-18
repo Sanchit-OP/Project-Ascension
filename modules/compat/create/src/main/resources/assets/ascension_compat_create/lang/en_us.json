@@ -1,0 +1,6 @@
+{
+  "block.ascension_compat_create.air_compressor": "Air Compressor",
+  "block.ascension_compat_create.air_compressor.filled": "Tank filled \u2014 %1$s mB of air",
+  "block.ascension_compat_create.air_compressor.nothing": "No air to give (turn the shaft, or the tank is full)",
+  "block.ascension_compat_create.air_compressor.rate": "Making %1$s mB of air per second"
+}

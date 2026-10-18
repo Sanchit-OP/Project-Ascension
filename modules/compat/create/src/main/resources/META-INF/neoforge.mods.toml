@@ -48,3 +48,12 @@ type = "required"
 versionRange = "${create_version_range}"
 ordering = "AFTER"
 side = "BOTH"
+
+# The Air Compressor fills the air fluid of ascension-atmosphere's api (ADR-0026), so that mod is
+# required now. It never depends on this one.
+[[dependencies.${mod_id}]]
+modId = "ascension_atmosphere"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "AFTER"
+side = "BOTH"

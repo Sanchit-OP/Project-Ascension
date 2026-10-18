@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "ISI",
+    "PCP",
+    "IBI"
+  ],
+  "key": {
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "S": {
+      "item": "create:shaft"
+    },
+    "P": {
+      "item": "create:fluid_pipe"
+    },
+    "C": {
+      "item": "create:andesite_casing"
+    },
+    "B": {
+      "item": "create:propeller"
+    }
+  },
+  "result": {
+    "id": "ascension_compat_create:air_compressor",
+    "count": 1
+  }
+}

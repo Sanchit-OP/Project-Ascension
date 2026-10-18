@@ -20,6 +20,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..'))
 TEX = os.path.join(ROOT, 'modules', 'atmosphere', 'src', 'main', 'resources', 'assets',
                    'ascension_atmosphere', 'textures')
+TEX_CREATE = os.path.join(ROOT, 'modules', 'compat', 'create', 'src', 'main', 'resources', 'assets',
+                          'ascension_compat_create', 'textures')
 DESIGN = os.path.join(ROOT, 'design', 'atmosphere')
 
 _spec = importlib.util.spec_from_file_location('moon_art', os.path.join(HERE, 'generate-moon-materials-art.py'))
@@ -231,6 +233,56 @@ def dispenser_end():
     return im
 
 
+FAN = ['.....kk.....',
+       '....kffk....',
+       '....kffk....',
+       '.....kffk...',
+       '..kk..kffk..',
+       'kfffkkkffk..',
+       'kffffnnkk...',
+       '.kkffnnfk...',
+       '...kffk.kk..',
+       '..kffk..kfk.',
+       '..kffk...kk.',
+       '...kk.......']
+
+
+def compressor_side():
+    """A steel casing with a three-bladed intake fan (a pinwheel, not a cross)."""
+    rng = random.Random(901)
+    im = img()
+    plate(im, 0, 0, 15, 15, rng, base=2, grain=3)
+    px = im.load()
+    fill(im, 1, 1, 14, 14, STEEL[1])
+    fill(im, 2, 2, 13, 13, DARK)
+    key = {'k': STEEL[1], 'f': FROST_D, 'n': FROST}
+    for dy, row in enumerate(FAN):
+        for dx, ch in enumerate(row):
+            if ch in key:
+                px[2 + dx, 2 + dy] = key[ch] + (255,)
+    rivet(im, 0, 0)
+    rivet(im, 14, 14)
+    return im
+
+
+def compressor_end():
+    """The shaft face: a plate with a square shaft in a collar."""
+    rng = random.Random(902)
+    im = img()
+    plate(im, 0, 0, 15, 15, rng, base=3, grain=3)
+    fill(im, 3, 3, 12, 12, STEEL[1])
+    fill(im, 4, 4, 11, 11, DARK)
+    fill(im, 5, 5, 10, 10, STEEL[2])
+    fill(im, 6, 6, 9, 9, STEEL[4])
+    fill(im, 7, 7, 8, 8, STEEL[3])
+    px = im.load()
+    px[6, 9] = STEEL[1] + (255,)
+    px[9, 9] = STEEL[1] + (255,)
+    for c in ((1, 1), (13, 1), (1, 13), (13, 13)):
+        rivet(im, *c)
+    return im
+
+
 def wave(x, y, t, terms):
     """Tileable in x, y and t: every term uses whole numbers of periods."""
     v = 0.0
@@ -277,6 +329,14 @@ def main():
     ]
     for rel, im in sheets:
         save(im, rel)
+    # The Create jar's own blocks are drawn here too, so every look stays in one script.
+    compat = [('block/air_compressor_side.png', compressor_side()),
+              ('block/air_compressor_end.png', compressor_end())]
+    for rel, im in compat:
+        path = os.path.join(TEX_CREATE, rel)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        im.save(path)
+    sheets += compat
     fluids = [('fluid/air_still.png', air(16, 16, 701), 16), ('fluid/air_flow.png', air(32, 16, 702), 32)]
     for rel, im, _ in fluids:
         save(im, rel)

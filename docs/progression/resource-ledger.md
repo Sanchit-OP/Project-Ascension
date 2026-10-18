@@ -432,3 +432,10 @@ No survival source, on purpose. The rules say why.
 - From: Mined: Earth's rock, y −64 to 0, needs a diamond pickaxe or better; with Silk Touch
 - Used: Blast furnace into Titanium Ingot
 - Used: Furnace into Titanium Ingot
+
+## ascension-compat-create
+
+### Blocks
+
+**Air Compressor** · `ascension_compat_create:air_compressor`
+- From: Crafting: Iron Sheet + Shaft + Fluid Pipe + Andesite Casing + Propeller

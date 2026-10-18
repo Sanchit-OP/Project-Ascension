@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "ascension_compat_create:block/air_compressor"
+    },
+    "axis=x": {
+      "model": "ascension_compat_create:block/air_compressor",
+      "x": 90,
+      "y": 90
+    },
+    "axis=z": {
+      "model": "ascension_compat_create:block/air_compressor",
+      "x": 90
+    }
+  }
+}

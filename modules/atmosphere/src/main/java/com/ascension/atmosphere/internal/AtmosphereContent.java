@@ -7,6 +7,7 @@ import com.ascension.atmosphere.internal.sealed.OxygenEmitterBlock;
 import com.ascension.atmosphere.internal.sealed.OxygenEmitterBlockEntity;
 import com.ascension.atmosphere.internal.supply.OxygenRefillStationBlock;
 import com.ascension.atmosphere.internal.supply.OxygenTankItem;
+import com.ascension.atmosphere.internal.supply.TankFluidHandler;
 import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponentType;
@@ -191,6 +192,9 @@ public final class AtmosphereContent {
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AIR_DISPENSER_ENTITY.get(),
                 (dispenser, side) -> dispenser.fluidHandler());
+        // Any mod can fill a tank with air through the standard item capability (fill only).
+        event.registerItem(Capabilities.FluidHandler.ITEM,
+                (stack, context) -> new TankFluidHandler(stack), OXYGEN_TANK.get());
     }
 
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
