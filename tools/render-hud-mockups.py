@@ -159,10 +159,9 @@ def icon(L, kind, x, y, size, colour):
     elif kind == 'mr':  # hexagon with centre gem
         L.poly([(50, 4), (90, 27), (90, 73), (50, 96), (10, 73), (10, 27)], colour, scale=s, ox=x, oy=y)
         L.poly([(50, 28), (68, 50), (50, 72), (32, 50)], (10, 14, 24, 255), scale=s, ox=x, oy=y)
-    elif kind == 'ms':  # speed arrow
-        L.poly([(30, 22), (52, 22), (82, 50), (52, 78), (30, 78), (60, 50)], colour, scale=s, ox=x, oy=y)
-        L.poly([(6, 36), (30, 36), (30, 43), (6, 43)], colour, scale=s, ox=x, oy=y)
-        L.poly([(6, 57), (30, 57), (30, 64), (6, 64)], colour, scale=s, ox=x, oy=y)
+    elif kind == 'ms':  # boot
+        L.poly([(34, 8), (62, 8), (62, 48), (90, 62), (90, 88), (26, 88), (26, 70), (34, 70)], colour, scale=s, ox=x, oy=y)
+        L.poly([(26, 78), (90, 78), (90, 90), (26, 90)], (255, 255, 255, 80), scale=s, ox=x, oy=y)
     elif kind == 'omni':  # droplet
         L.poly([(50, 4), (80, 52), (50, 52), (20, 52)], colour, scale=s, ox=x, oy=y)
         L.disc(x + s * 0.5, y + s * 0.63, s * 0.31, colour)
@@ -190,30 +189,65 @@ def hotbar(L, cx, bottom, selected=2):
     return x0, y0, w, h
 
 
-def health(L, x0, y, w, cur, mx, shield=0, trail=None):
+def health(L, x0, y, w, cur, mx, shield=0, regen=0, lost=0):
+    """Left to right: green = health now; white = shield; grey = health that is about to
+    regenerate; red = health just lost (fades out). The bar is green even when low."""
     h = 8
-    low = cur / mx < 0.3
     L.rrect(x0, y, x0 + w, y + h, 4, fill=C('#05070c', 230))
-    if trail is not None and trail > cur:
-        L.grad_rrect(x0, y, x0 + w * trail / mx, y + h, 4, C('#ff8a8a', 120), C('#c04050', 120))
-    top, bot = (RED[1], RED[0]) if low else (GREEN[1], GREEN[0])
-    L.grad_rrect(x0, y, x0 + max(8, w * cur / mx), y + h, 4, top, bot)
-    L.rrect(x0 + 1.5, y + 0.9, x0 + max(8, w * cur / mx) - 1.5, y + 2.4, 1.2, fill=C('#ffffff', 70))
+    px = lambda v: x0 + w * min(v, mx) / mx
+    end = cur
+    segs = []
     if shield:
-        sw = min(w, w * shield / mx)
-        L.grad_rrect(x0 + w * cur / mx, y, x0 + w * cur / mx + sw, y + h, 1, GOLD_SH[1], GOLD_SH[0])
+        segs.append((end, end + shield, C('#ffffff'), C('#c9d2e0')))
+        end += shield
+    if regen:
+        segs.append((end, end + regen, C('#9aa3b4', 235), C('#6a7384', 235)))
+        end += regen
+    if lost:
+        segs.append((end, end + lost, C('#ff6a6a'), C('#b02838')))
+    for lo, hi, top, bot in segs:
+        L.grad_rrect(px(lo), y, px(hi), y + h, 1, top, bot)
+    L.grad_rrect(x0, y, x0 + max(8, w * cur / mx), y + h, 4, GREEN[1], GREEN[0])
+    L.rrect(x0 + 1.5, y + 0.9, x0 + max(8, w * cur / mx) - 1.5, y + 2.4, 1.2, fill=C('#ffffff', 70))
     for i in range(1, int(mx // 100) + 1):
         if i * 100 < mx:
             tx = x0 + w * i * 100 / mx
             L.d.line([L.p(tx), L.p(y + 1), L.p(tx), L.p(y + h - 1)], fill=(0, 0, 0, 90), width=max(1, L.p(0.25)))
     L.rrect(x0, y, x0 + w, y + h, 4, outline=GOLD[:3] + (170,), width=0.5)
-    cur_s, mx_s = f'{cur}', f' / {mx}'
-    total = L.text_w(cur_s, 6.4) + L.text_w(mx_s, 5.2, bold=False)
-    tx = x0 + w / 2 - total / 2
-    L.text(tx, y + 4.3, cur_s, 6.4, WHITE, anchor='lm')
-    L.text(tx + L.text_w(cur_s, 6.4), y + 4.5, mx_s, 5.2, DIM, anchor='lm', bold=False)
+    # Numbers sit above the bar so no segment ever sits under them.
+    cur_s = f'{cur}'
+    L.text(x0 + 1, y - 2.6, cur_s, 6.2, WHITE, anchor='lm')
+    L.text(x0 + 1 + L.text_w(cur_s, 6.2) + 1.5, y - 2.4, f'/ {mx}', 5.0, DIM, anchor='lm', bold=False)
+    extra = []
     if shield:
-        L.text(x0 + w - 2, y - 2.2, f'+{shield}', 5.4, GOLD_SH[1], anchor='rm')
+        extra.append((f'+{shield}', C('#ffffff')))
+    if regen:
+        extra.append((f'+{regen}', C('#9aa3b4')))
+    ex = x0 + w - 1
+    for label, col in reversed(extra):
+        L.text(ex, y - 2.4, label, 5.2, col, anchor='rm')
+        ex -= L.text_w(label, 5.2) + 3
+
+
+def food_badge(L, cx, cy, food):
+    """Hunger gates healing, so it sits at the bar's other end from the level. The ring is the food
+    level; it glows green while 18+ (regeneration allowed) and reddens when low."""
+    r = 8.4
+    healing = food >= 18
+    low = food <= 6
+    col = C('#6fe08a') if healing else (C('#ff5a64') if low else C('#ffb04a'))
+    if healing or low:
+        L.glow(cx, cy, r, col, 0.22, blur=3)
+    L.disc(cx, cy, r, C('#0a0e18', 245))
+    L.ring(cx, cy, r - 0.7, 1.4, C('#ffffff', 28))
+    L.ring(cx, cy, r - 0.7, 1.4, col, -90, -90 + 360 * food / 20)
+    # drumstick: a bone with two knobs under a round piece of meat
+    bone = C('#f4f6fa')
+    L.d.line([L.p(cx - r * 0.5), L.p(cy + r * 0.5), L.p(cx), L.p(cy)], fill=bone, width=L.p(r * 0.26))
+    L.disc(cx - r * 0.6, cy + r * 0.38, r * 0.16, bone)
+    L.disc(cx - r * 0.38, cy + r * 0.6, r * 0.16, bone)
+    L.disc(cx + r * 0.16, cy - r * 0.16, r * 0.46, C('#e8923a'))
+    L.disc(cx + r * 0.05, cy - r * 0.3, r * 0.16, C('#ffd29a', 200))
 
 
 def level_badge(L, cx, cy, lvl, frac):
@@ -361,32 +395,38 @@ def scene(name, k, w=1920, h=1080):
     cx = gw // 2
     hx0, hy0, hw, hh = hotbar(L, cx, gh - 3)
     hy = hy0 - 13
+    bx, bw = hx0 + 10, hw - 20
     vals = {'ad': '54', 'as': '0.63', 'omni': '0%', 'armor': '74', 'mr': '41', 'ms': '+10%'}
     deltas = {}
+    level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
+    hud_food = 20
     if name == 'calm':
-        health(L, hx0 + 10, hy, hw - 10, 640, 640)
-        level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
+        health(L, bx, hy, bw, 640, 640)
     elif name == 'fight':
-        health(L, hx0 + 10, hy, hw - 10, 148, 640, shield=60, trail=232)
-        level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
+        hud_food = 14
+        health(L, bx, hy, bw, 148, 640, shield=60, regen=40)
         vals.update({'ad': '58', 'as': '0.81', 'ms': '+25%'})
         deltas = {'ad': 1, 'as': 1, 'ms': 1}
         rx = hx0 + hw + 15
         rune_disc(L, rx, hy0 + 11, 'conquerors_resolve', 'vanguard', 'live', stacks=8)
         rune_disc(L, rx + 23, hy0 + 11, 'cadence', 'vanguard', 'live', stacks=2)
         rune_disc(L, rx + 46, hy0 + 11, 'second_wind', 'bulwark', 'idle', cooldown=0.55)
+    elif name == 'hit':
+        hud_food = 5
+        health(L, bx, hy, bw, 300, 640, regen=20, lost=90)
     elif name == 'vacuum':
-        health(L, hx0 + 10, hy, hw - 10, 520, 640)
-        level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
+        hud_food = 18
+        health(L, bx, hy, bw, 520, 640)
         oxygen_big(L, cx, hy0 - 62, 0.16, 0.0, 6, True)
     elif name == 'vacuum-ok':
-        health(L, hx0 + 10, hy, hw - 10, 640, 640)
-        level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
+        hud_food = 18
+        health(L, bx, hy, bw, 640, 640)
         oxygen_small(L, cx, hy0 - 24, 1.0, 0.7)
     elif name == 'vacuum-mid':
-        health(L, hx0 + 10, hy, hw - 10, 640, 640)
-        level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
+        hud_food = 18
+        health(L, bx, hy, bw, 640, 640)
         oxygen_big(L, cx, hy0 - 62, 0.42, 0.0, 21, False)
+    food_badge(L, hx0 + hw - 4.5, hy + 4, hud_food)
     stat_block(L, hx0 - 6, gh - 3, vals, deltas)
     base.alpha_composite(L.finish())
     return base.convert('RGB')
@@ -397,7 +437,7 @@ def main():
     for f in os.listdir(OUT):
         if f.endswith('.png'):
             os.remove(os.path.join(OUT, f))
-    for name in ['calm', 'fight', 'vacuum', 'vacuum-mid', 'vacuum-ok']:
+    for name in ['calm', 'fight', 'hit', 'vacuum', 'vacuum-mid', 'vacuum-ok']:
         scene(name, 3).save(os.path.join(OUT, f'{name}-scale3.png'))
     for k in (2, 4):
         scene('fight', k).save(os.path.join(OUT, f'fight-scale{k}.png'))
