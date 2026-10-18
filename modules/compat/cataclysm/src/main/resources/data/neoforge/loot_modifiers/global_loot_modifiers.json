@@ -1,6 +1,10 @@
 {
   "replace": false,
   "entries": [
-    "ascension_compat_cataclysm:netherite_monstrosity_key"
+    "ascension_compat_cataclysm:netherite_monstrosity_key",
+    "ascension_compat_cataclysm:ender_guardian_heart",
+    "ascension_compat_cataclysm:ender_golem_heart",
+    "ascension_compat_cataclysm:netherite_monstrosity_heart",
+    "ascension_compat_cataclysm:ignis_heart"
   ]
 }
