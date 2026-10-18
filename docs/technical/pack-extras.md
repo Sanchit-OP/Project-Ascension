@@ -105,6 +105,14 @@ The client:
 The server: boots with the FTB set, clients without Iris and Ok Zoomer can still join (both are
 client-only), and the dev mirror (`syncDevMods`) skips the client-only jars on the server.
 
+## Chat noise (2026-10-18)
+
+Two lines kept appearing in the chat of the dev client. **"Distant Horizons: Chunky detected"** is real
+and would reach players: it is turned off in the pack's `DistantHorizons.toml`
+(`pack/config/`). **"Hello from FTB Library!"** is FTB Library's own greeting, hardcoded to show only in
+a development environment, so no player sees it; the dev client hides it (`client/dev/DevChatFilter`).
+Both were checked gone in a dev client that joined the test world.
+
 ## What this is for
 
 Once these run beside our mods, the **team** and **quest** design can start. Facts that will shape it:
