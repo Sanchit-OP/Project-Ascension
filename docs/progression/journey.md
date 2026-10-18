@@ -84,6 +84,11 @@ source and no job is a bug (`resource-economy.md` principle 1).
 | The Rot | 18 | Gold, the long flight, the ring in the teal forest, the smith, wealth (piglins, bastion, netherite), fire (blazes, brass, a smarter propeller) |
 | Gear and Growth | 10 | Armour, enchanting, tomes, abilities; points and the web; runes, chalk, slots |
 | Together | 6 | Parties, catching up, no friendly fire, one shared book, the map, a breath for a friend |
+| Build the Gate | 7 | Read the plan, level ground, the five stone families and their counts, gatestones, the keystone, raise the ring, wake it |
+| Create: Power | 9 | Shafts and cogs, a crank, water, wind, stress, wrench and goggles, gearboxes, belts, steam |
+| Create: Machines | 16 | Grind, blow, mix, press, assemble, and move things and fluids |
+| Aeronautics: A Ship | 11 | The assembler, glue, weight, balloon and burner, propellers, an engine, steering, bearings, handles |
+| Aeronautics: In Flight | 13 | Air pressure and the sensors, thrusters, fuel (helium), a rocket |
 
 **Rules the book keeps** (checked by the build): no guarded story word (now including Sealers, Openers, the Heir, the
 voice, keepers, the destroyer); every item, advancement and structure exists; titles and lines fit the panel; no task
@@ -125,7 +130,7 @@ Each of these changed a quest or is a fact a later session needs.
 | 5.1 First survival ship | **Leave it.** Players try it in the alpha; the alpha test decides whether a starter design or a schematic ruin is needed. |
 | 5.2 Range and air | **A ship is a closed space, so the Oxygen Emitter aboard should pressurise it.** No tank change. This becomes part of **Oxygen v2** (below), which he starts soon. |
 | 5.3 HUD chart in space | Leave for now; something later. |
-| 5.4 Helium | Two ideas to check against the rest of the economy: a **better tank** made with it, or a **fuel** for a rocket engine. Undecided. |
+| 5.4 Helium | **Fuel: decided and built** (ADR-0025): raw helium is a superheated blaze-burner fuel, so it is the strongest thruster fuel. A better tank stays an idea for Oxygen v2. |
 | 5.6 Build paths | A **new session** starts from `plans/session-prompts/4-build-paths.md`. |
 | 5.8 Enchantments | Put them in the table (**they already are**, see 5.8), and add the **Lootr** mod so every player gets their own loot from a chest (**installed**, not yet seen in a client). |
 | 5.9 First minutes | Tell the player about the book at first login (**built**, not yet seen). |
@@ -172,6 +177,12 @@ The Planets page shows the point and the arrow, but a pilot should not have to s
 (Q5 in `quests.md`) needs a `core` contract and one packet, in the HUD session's area.
 
 ### 5.4 Helium has no job (a bug under the economy's own rule)
+
+**Update 2026-10-18: built as ship fuel, ADR-0025.** Sanchit chose fuel, and chose Create Simulated Thrusters as the thruster mod
+("that is how we make the rockets"), which amends ADR-0015's "no rocket engines". The Blaze Thruster burns Create's blaze-burner fuels;
+raw helium is now in the *superheated* list (4,800 ticks, a blaze cake is 3,200), the strongest push. It is one data file in
+`ascension-compat-create`. It loads without error on a dedicated server; **no thruster has been fuelled with helium in a client**.
+The analysis below is what led there.
 
 Sources exist (ore, Archive chests), uses do not. Sanchit (2026-10-18) is weighing a **better tank** made with it, or a **fuel**.
 What was found, so the choice is made on facts:
@@ -248,7 +259,7 @@ cost very little.
 1. **Oxygen v2**, including air aboard a ship (his, soon). The quest book's flight pages change with it.
 2. **Build paths** (a new session). Its draft already spends helium on eight epic components, so helium has a use there; a
    helium tank or fuel would be a second use, and the supply must cover both.
-3. **Helium's second job**, chosen together with the above.
+3. ~~Helium's second job~~ built as thruster fuel (ADR-0025); a helium tank can come with Oxygen v2.
 4. ~~Lootr~~ installed (2026-10-18).
 5. **One client run at the very end**, covering every page, every path, the hand-built gate, a real ship, the Nether whole and
    two clients.
@@ -258,3 +269,7 @@ cost very little.
 
 Added "Dead doors", "Diamonds", "The Warden", "Gatestone", "The keystone" and the gate plan to First Days; wrote the five
 remaining pages; fixed the first page's wording that the new guarded words caught ("keeper").
+
+Later the same night, at Sanchit's request: **Build the Gate** (the plan was a picture nobody could find) and four teaching pages for
+Create and Aeronautics (`quests.md` section 14), a corrected line on the hot air burner (redstone-powered, not coal-fed), and the
+rocket quests of ADR-0025.

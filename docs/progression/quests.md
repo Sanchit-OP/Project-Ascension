@@ -6,6 +6,8 @@
 > are (also while you are in space), and a book that looks like our pack. His four answers are in section 9.
 > **Update, same evening: Q3 (the refactor pass) is done and Q4 (the five remaining pages) is built: 7 pages, 85 quests,
 > loaded by the real FTB Quests on a dedicated server (10 checks, 0 failures). The new pages have not been seen in a client.**
+> **Later that night: five pages were added (Build the Gate, Create: Power, Create: Machines, Aeronautics: A Ship, Aeronautics: In
+> Flight): 12 pages, 141 quests, server check 10 of 10 again. See section 14.**
 > What the book taught us about the whole game is in [`journey.md`](journey.md); where this work stopped is section 13.
 > Sections 2 to 4 are what FTB Quests already does (read from the installed jar, `ftb-quests-neoforge-2101.1.36`),
 > so we only build what it cannot.
@@ -332,3 +334,33 @@ dimensions and 2 structures exist, and no item task consumes what a player holds
 4. ~~Update `CLAUDE.md` and `docs/technical/architecture.md`~~ **Done (2026-10-18).**
 5. The decisions in `journey.md` section 5, which are Sanchit's to pick (a real ship test, range and air, helium's job, the
    build paths, the HUD chart, the ship cabin bridge).
+
+## 14. The teaching pages (2026-10-18, late)
+
+Sanchit tried the book in his client and made two requests: "I didn't find the page for the portal building. Where did you add it?" and
+"add more pages teaching Create and Aeronautics to the people."
+
+**The gate plan was not findable, for three reasons**, all mine: it was a picture, not a page; it was drawn only after the dark
+city was found; and it sat at x 18, far right of every quest. His instance's jar was also from before the picture existed, so the
+texture was missing. Fixed: **Build the Gate** is now a page of its own (read the plan, level ground, the five stone families with
+counts, gatestones, the keystone, raise the ring, wake it) with the plan beside it, always drawn; First Days still shows the plan,
+now always drawn and beside the gate quests. Every number is read from `gateway.json` and the block tags (418 blocks: 189 dark, 72
+pale, 46 pillar, 26 accent, 56 step, 28 gatestones, 1 keystone; an opening 5 wide and 7 high; the keystone in the third layer, at the
+centre).
+
+**Four pages teach Create and Aeronautics**, 49 quests in all, each reading its part's real recipe and the mods' own Ponder text, and
+waiting for the mods' real advancements where they exist (64 advancements are now checked):
+
+| Page | Quests | What it teaches |
+|---|---|---|
+| Create: Power | 9 | Shafts and cogs, hand crank, water wheel, windmill, stress, wrench and goggles, gearboxes, belts, steam |
+| Create: Machines | 16 | Millstone, saw, crushing wheels, fan and what its air passes through, basin, mixer, compacting, copper casing, deployer, mechanical crafters, precision mechanisms, chutes, funnels, pipes and a pump, a spout |
+| Aeronautics: A Ship | 11 | The physics assembler, glue, weight, a balloon and its burner, propellers, a portable engine, the steering wheel, a swivel bearing, handles, nameplates |
+| Aeronautics: In Flight | 13 | Air pressure, the altitude, velocity, gimbal and navigation sensors, a throttle lever, aviator's goggles, **thrusters** (blaze, redstone, brass), fuel, **a rocket** |
+
+Nothing on them is locked: the first quests have no prerequisite, and the cross-page prerequisites that remain are real material
+needs (for example the deployer after brass). **A mistake was fixed on the way:** The Road Up said to "feed the burner a coal block";
+the hot air burner is powered by redstone and the coal block is only a crafting ingredient.
+
+**The book now needs Create Simulated Thrusters** (its items are named), and the quest on helium needs `raw_helium`. See ADR-0025.
+Unseen in a client: all five pages and their icons; the plan on both pages.
