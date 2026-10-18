@@ -195,13 +195,13 @@ def health(L, x0, y, w, cur, mx, shield=0, trail=None):
     low = cur / mx < 0.3
     L.rrect(x0, y, x0 + w, y + h, 4, fill=C('#05070c', 230))
     if trail is not None and trail > cur:
-        L.grad_rrect(x0, y, x0 + w * trail / mx, y + h, 4, TRAIL, C('#d8c8b0', 230))
+        L.grad_rrect(x0, y, x0 + w * trail / mx, y + h, 4, C('#ff8a8a', 120), C('#c04050', 120))
     top, bot = (RED[1], RED[0]) if low else (GREEN[1], GREEN[0])
     L.grad_rrect(x0, y, x0 + max(8, w * cur / mx), y + h, 4, top, bot)
     L.rrect(x0 + 1.5, y + 0.9, x0 + max(8, w * cur / mx) - 1.5, y + 2.4, 1.2, fill=C('#ffffff', 70))
     if shield:
         sw = min(w, w * shield / mx)
-        L.grad_rrect(x0, y, x0 + sw, y + 3.6, 1.8, GOLD_SH[1], GOLD_SH[0])
+        L.grad_rrect(x0 + w * cur / mx, y, x0 + w * cur / mx + sw, y + h, 1, GOLD_SH[1], GOLD_SH[0])
     for i in range(1, int(mx // 100) + 1):
         if i * 100 < mx:
             tx = x0 + w * i * 100 / mx
@@ -366,26 +366,22 @@ def scene(name, k, w=1920, h=1080):
     if name == 'calm':
         health(L, hx0 + 10, hy, hw - 10, 640, 640)
         level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
-        food(L, hx0 + hw + 7, hy + 1.5, 1.0)
     elif name == 'fight':
         health(L, hx0 + 10, hy, hw - 10, 148, 640, shield=60, trail=232)
         level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
-        food(L, hx0 + hw + 7, hy + 1.5, 0.7)
         vals.update({'ad': '58', 'as': '0.81', 'ms': '+25%'})
         deltas = {'ad': 1, 'as': 1, 'ms': 1}
         rx = hx0 + hw + 15
         rune_disc(L, rx, hy0 + 11, 'conquerors_resolve', 'vanguard', 'live', stacks=8)
-        rune_disc(L, rx + 23, hy0 + 11, 'cadence', 'vanguard', 'live', charge=0.66)
+        rune_disc(L, rx + 23, hy0 + 11, 'cadence', 'vanguard', 'live', stacks=2)
         rune_disc(L, rx + 46, hy0 + 11, 'second_wind', 'bulwark', 'idle', cooldown=0.55)
     elif name == 'vacuum':
         health(L, hx0 + 10, hy, hw - 10, 520, 640)
         level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
-        food(L, hx0 + hw + 7, hy + 1.5, 0.9)
         oxygen_big(L, cx, hy0 - 62, 0.16, 0.0, 6, True)
     elif name == 'vacuum-ok':
         health(L, hx0 + 10, hy, hw - 10, 640, 640)
         level_badge(L, hx0 + 4.5, hy + 4, 27, 0.62)
-        food(L, hx0 + hw + 7, hy + 1.5, 0.9)
         oxygen_small(L, cx, hy0 - 24, 1.0, 0.7)
     elif name == 'vacuum-mid':
         health(L, hx0 + 10, hy, hw - 10, 640, 640)
