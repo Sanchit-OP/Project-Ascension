@@ -51,12 +51,12 @@ public final class RagefangEffects {
      * Attributes.ATTACK_SPEED} genuinely drives the live swing-cooldown timer -- the increment was
      * just too small to read as "ramping" over a realistic combo length.
      */
-    private static final float ATTACK_SPEED_PERCENT_PER_HIT = 0.05f;
+    private static final float ATTACK_SPEED_PERCENT_PER_HIT = 0.03f;
 
-    private static final double ATTACK_SPEED_SHADOW_LIMIT = 5.0;
+    private static final double ATTACK_SPEED_SHADOW_LIMIT = 2.8;
     private static final long DECAY_GRACE_TICKS = 20L;
     private static final long DECAY_RAMP_TICKS = 60L;
-    private static final float ON_HIT_MAGIC_DAMAGE = 5.0f;
+    private static final float ON_HIT_MAGIC_DAMAGE = 3.0f;
 
     private static final ResourceLocation ATTACK_SPEED_MODIFIER_ID =
             ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "ragefang_attack_speed");

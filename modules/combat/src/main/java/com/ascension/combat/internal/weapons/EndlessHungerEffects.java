@@ -33,7 +33,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public final class EndlessHungerEffects {
 
     /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final float ATTACK_SPEED_PERCENT_PER_AD_POINT = 0.02f;
+    private static final float ATTACK_SPEED_PERCENT_PER_AD_POINT = 0.012f;
 
     private static final float BASE_OMNIVAMP_PERCENT = 0.0f;
     private static final float MAX_BONUS_OMNIVAMP_PERCENT = 0.07f;

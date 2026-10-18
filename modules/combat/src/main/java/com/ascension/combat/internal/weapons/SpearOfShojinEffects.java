@@ -86,6 +86,7 @@ public final class SpearOfShojinEffects {
         state.clear();
         float trueDamage = event.getEntity().getMaxHealth()
                 * (TRUE_DAMAGE_MAX_HP_PERCENT + AbilityScaling.SHOJIN_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
+        trueDamage = AbilityScaling.capped(trueDamage, attacker);
         event.setNewDamage(event.getNewDamage() + trueDamage);
     }
 }

@@ -31,7 +31,7 @@ public final class AbilityScaling {
     public static final float GALEFORCE_MISSING_HP_PER_AD = 0.005f;
     /** Heartwood of Pallas and Ragefang: extra flat magic damage per Attack Damage on each hit. */
     public static final float HEARTWOOD_ON_HIT_PER_AD = 0.15f;
-    public static final float RAGEFANG_ON_HIT_PER_AD = 0.2f;
+    public static final float RAGEFANG_ON_HIT_PER_AD = 0.1f;
     /** Rocketbelt: extra burst damage per Attack Damage. */
     public static final float ROCKETBELT_BURST_PER_AD = 0.5f;
     /** Unending Despair: extra pulse damage per point of Health (10%). */
@@ -40,7 +40,24 @@ public final class AbilityScaling {
     public static final float GARGOYLE_PER_ENEMY_PER_ARMOR = 0.05f;
     public static final float GARGOYLE_CAP_PER_ARMOR = 0.4f;
 
+    /**
+     * The most a percent-of-health proc may deal in one go, as a multiple of the wielder's Attack
+     * Damage (Sanchit, 2026-10-19). Without it a bigger boss would never slow Veigo's Blade, Divine
+     * Sunderer, the Spear or Darken Blade: they take a share of the target's health, so a boss with
+     * five times the health took five times the damage, and the item that works best is the one that
+     * ignores the boss's size.
+     */
+    public static final float PERCENT_PROC_CAP_PER_AD = 1.0f;
+    /** The same cap for the two missing-health bonuses, which fire rarely: Galeforce's shot and Hunt. */
+    public static final float GALEFORCE_CAP_PER_AD = 3.0f;
+    public static final float HUNT_CAP_PER_AD = 5.0f;
+
     private AbilityScaling() {
+    }
+
+    /** {@code bonus}, held to {@link #PERCENT_PROC_CAP_PER_AD} times the attacker's Attack Damage. */
+    public static float capped(float bonus, @Nullable Entity attacker) {
+        return Math.min(bonus, PERCENT_PROC_CAP_PER_AD * attackDamage(attacker));
     }
 
     /** The Attack Damage of whoever dealt a hit, 0 for anything that is not a living entity. */

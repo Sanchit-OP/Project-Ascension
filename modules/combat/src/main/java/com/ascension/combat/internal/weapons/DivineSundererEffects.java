@@ -88,6 +88,7 @@ public final class DivineSundererEffects {
 
         float physicalBonus = event.getEntity().getMaxHealth()
                 * (PHYSICAL_MAX_HP_PERCENT + AbilityScaling.SUNDERER_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
+        physicalBonus = AbilityScaling.capped(physicalBonus, attacker);
         event.setAmount(event.getAmount() + physicalBonus);
     }
 
@@ -107,8 +108,8 @@ public final class DivineSundererEffects {
 
         LivingEntity target = event.getEntity();
         float perAttackDamage = AbilityScaling.SUNDERER_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker);
-        float physicalBonus = target.getMaxHealth() * (PHYSICAL_MAX_HP_PERCENT + perAttackDamage);
-        float rawMagicBonus = target.getMaxHealth() * (MAGIC_MAX_HP_PERCENT + perAttackDamage);
+        float physicalBonus = AbilityScaling.capped(target.getMaxHealth() * (PHYSICAL_MAX_HP_PERCENT + perAttackDamage), attacker);
+        float rawMagicBonus = AbilityScaling.capped(target.getMaxHealth() * (MAGIC_MAX_HP_PERCENT + perAttackDamage), attacker);
         float magicDelivered = MagicDamage.apply(event, rawMagicBonus);
 
         attacker.heal(physicalBonus + magicDelivered);

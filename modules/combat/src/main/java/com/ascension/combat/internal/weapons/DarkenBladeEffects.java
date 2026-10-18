@@ -76,6 +76,7 @@ public final class DarkenBladeEffects {
         LivingEntity target = event.getEntity();
         float rawMagicBonus = target.getMaxHealth()
                 * (MAGIC_MAX_HP_PERCENT + AbilityScaling.DARKEN_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
+        rawMagicBonus = AbilityScaling.capped(rawMagicBonus, attacker);
         MagicDamage.apply(event, rawMagicBonus);
 
         Presence.burst(attacker, SoundEvents.WITHER_SHOOT, 0.6f, 1.5f, ParticleTypes.SOUL_FIRE_FLAME, 15, 0.5);

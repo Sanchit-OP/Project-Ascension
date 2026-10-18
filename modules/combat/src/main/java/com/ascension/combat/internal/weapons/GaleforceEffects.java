@@ -205,9 +205,10 @@ public final class GaleforceEffects {
 
         float missingHealth = event.getEntity().getMaxHealth() - event.getEntity().getHealth();
         if (missingHealth > 0.0f) {
-            event.setAmount(event.getAmount() + missingHealth
-                    * (MISSING_HEALTH_BONUS_PERCENT
-                    + AbilityScaling.GALEFORCE_MISSING_HP_PER_AD * AbilityScaling.attackDamage(source.getEntity())));
+            float attackDamage = AbilityScaling.attackDamage(source.getEntity());
+            float bonus = missingHealth
+                    * (MISSING_HEALTH_BONUS_PERCENT + AbilityScaling.GALEFORCE_MISSING_HP_PER_AD * attackDamage);
+            event.setAmount(event.getAmount() + Math.min(bonus, AbilityScaling.GALEFORCE_CAP_PER_AD * attackDamage));
         }
     }
 

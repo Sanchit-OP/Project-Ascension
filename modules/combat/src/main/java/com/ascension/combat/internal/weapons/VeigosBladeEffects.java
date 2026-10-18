@@ -57,6 +57,7 @@ public final class VeigosBladeEffects {
         LivingEntity target = event.getEntity();
         float bonus = target.getHealth()
                 * (CURRENT_HP_PERCENT + AbilityScaling.VEIGO_CURRENT_HP_PER_AD * AbilityScaling.attackDamage(attacker));
+        bonus = AbilityScaling.capped(bonus, attacker);
         event.setAmount(event.getAmount() + bonus);
     }
 }
