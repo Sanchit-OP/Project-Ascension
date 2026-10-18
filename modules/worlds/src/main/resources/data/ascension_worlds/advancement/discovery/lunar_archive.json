@@ -10,7 +10,7 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structure": "ascension_worlds:lunar_archive"
+                "structures": "ascension_worlds:lunar_archive"
               }
             }
           }

@@ -10,7 +10,7 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structure": "minecraft:bastion_remnant"
+                "structures": "minecraft:bastion_remnant"
               }
             }
           }

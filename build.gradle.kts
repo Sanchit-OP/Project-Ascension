@@ -56,8 +56,17 @@ val checkResourceLedger = tasks.register<Exec>("checkResourceLedger") {
     commandLine("python", "tools/resource-ledger.py", "--check")
 }
 
+// Data mistakes Minecraft ignores without a word (tools/check-data.py): a misspelt field turns a
+// narrow condition into an always-true one. Same Python and the same always-on rule as the ledger.
+val checkData = tasks.register<Exec>("checkData") {
+    group = "verification"
+    description = "Fails on a data mistake the game would silently ignore."
+    workingDir = rootDir
+    commandLine("python", "tools/check-data.py")
+}
+
 subprojects {
-    tasks.matching { it.name == "check" }.configureEach { dependsOn(checkResourceLedger) }
+    tasks.matching { it.name == "check" }.configureEach { dependsOn(checkResourceLedger, checkData) }
 }
 
 tasks.register("moduleReport") {
