@@ -1,32 +1,29 @@
 package com.ascension.combat.internal.rune;
 
-import java.util.function.ToIntFunction;
+import com.ascension.combat.api.growth.GrowthProgress;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Which of a player's page slots are open (docs/technical/rune-system.md section 6).
  *
- * <p>Milestones belong to player growth, a separate session's work. Until it is merged, nothing
- * counts them, so {@link #setMilestones} is the one seam it plugs into: growth hands over a
- * function from a player to their milestone count, and this reads it. The agreement goes through
- * Sanchit; nothing here reaches into growth's code.
+ * <p>Read live from growth's milestone count each time, never stored, so a milestone earned (or
+ * revoked by an admin) changes the answer with nothing to keep in step. The one thing growth must
+ * do is tell the player's client, which draws the padlocks: {@link #milestonesChanged}.
  */
 public final class RuneUnlocks {
 
-    private static ToIntFunction<ServerPlayer> milestones = player -> 0;
-
     private RuneUnlocks() {
-    }
-
-    /** Growth's hook: how many milestones a player has reached. */
-    public static void setMilestones(ToIntFunction<ServerPlayer> source) {
-        milestones = source;
     }
 
     public static RunePageRules.OpenSlots open(ServerPlayer player) {
         if (RuneConfig.INSTANCE.unlocks.get() == RuneConfig.Unlocks.ALL) {
             return RunePageRules.OpenSlots.ALL;
         }
-        return RunePageRules.OpenSlots.atMilestones(milestones.applyAsInt(player));
+        return RunePageRules.OpenSlots.atMilestones(GrowthProgress.milestonesReached(player));
+    }
+
+    /** Growth's milestones may have changed: the client is sent the page with its slots as they are now. */
+    public static void milestonesChanged(ServerPlayer player) {
+        Runes.sync(player);
     }
 }

@@ -91,6 +91,11 @@ public final class PlayerGrowth {
         return earned;
     }
 
+    /** The team's milestones (bosses and gates) this player has: what the rune page's slots open with. */
+    public static int sharedMilestonesReached(ServerPlayer player) {
+        return (int) earnedMilestones(player).stream().filter(GrowthMilestone::shared).count();
+    }
+
     public static int pointsEarned(ServerPlayer player) {
         return earnedMilestones(player).stream().mapToInt(GrowthMilestone::points).sum();
     }

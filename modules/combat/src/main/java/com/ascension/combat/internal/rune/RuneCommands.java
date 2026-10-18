@@ -41,7 +41,9 @@ public final class RuneCommands {
         for (ServerPlayer player : players) {
             RunePageState state = player.getData(CombatAttachments.RUNE_PAGE);
             RunePage page = state.page();
-            String line = player.getScoreboardName() + ": primary "
+            RunePageRules.OpenSlots open = RuneUnlocks.open(player);
+            String line = player.getScoreboardName() + " (open: secondary " + open.secondary()
+                    + ", shards " + open.offence() + "/" + open.flex() + "/" + open.defence() + "): primary "
                     + page.primary().map(p -> p.getSerializedName()).orElse("-")
                     + " keystone " + page.keystone().map(ResourceLocation::getPath).orElse("-")
                     + " minors " + ids(page.primaryMinors())

@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.growth;
 
+import com.ascension.combat.internal.stat.StatText;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -115,16 +116,12 @@ final class GrowthCommands {
 
     private static Component statLine(GrowthStat.StatKey key, double amount) {
         boolean percent = key.operation() != AttributeModifier.Operation.ADD_VALUE;
-        String number = percent ? format(amount * 100.0) + "%" : format(amount);
+        String number = percent ? StatText.number(amount * 100.0, 1) + "%" : StatText.number(amount, 2);
         Attribute attribute = BuiltInRegistries.ATTRIBUTE.get(key.attribute());
         Component name = attribute == null
                 ? Component.literal(key.attribute().toString())
                 : Component.translatable(attribute.getDescriptionId());
         return Component.literal((amount >= 0 ? "+" : "") + number + " ").append(name);
-    }
-
-    private static String format(double value) {
-        return value == Math.rint(value) ? Long.toString((long) value) : Double.toString(value);
     }
 
     private static int take(CommandSourceStack source, ResourceLocation nodeId) throws CommandSyntaxException {

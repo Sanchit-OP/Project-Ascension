@@ -39,9 +39,9 @@ public final class RuneConfig {
                         "ALL: the whole page from the first minute.",
                         "PROGRESSIVE: the primary path from the start; the secondary path at a player's",
                         "first milestone, then one shard row at each of the second, third and fourth.",
-                        "Milestones come from player growth; until that is installed, PROGRESSIVE opens",
-                        "only the primary path.")
-                .defineEnum("unlocks", Unlocks.ALL);
+                        "A milestone is a boss's first kill or a lit gate, counted by player growth and",
+                        "shared with the whole team.")
+                .defineEnum("unlocks", Unlocks.PROGRESSIVE);
 
         changeChalk = builder
                 .comment(
