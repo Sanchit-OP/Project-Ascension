@@ -173,6 +173,11 @@ It takes about three minutes a part, and opens a game window.
    loaded from disk and compared with the state file.
 4. Read the result with `grep "\[integration\]" <log>`; the last line is `RESULT: N checks, M failures`.
 
+Enchantments are checked in the same run, by their own class (`EnchantmentChecks`): enchanted gear shows its
+stat under "Enchantments", the data enchantments are offered by the table, trades and loot, and Respiration
+grows the lungs. **Wait for the previous client to close before starting the next run**: two clients at once
+starve each other and make timing checks fail for no reason (seen 2026-10-18, 13 false failures).
+
 The trigger file is deleted when it is read, so it arms one run. Add a check there whenever two of
 the three systems meet somewhere new; a unit test cannot see these (ADR-0008). The checks on 2026-10-18
 found two real faults: discovery advancements that gave every player nine free points, and a respawn

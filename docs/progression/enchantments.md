@@ -1,7 +1,7 @@
 # Enchantments
 
-> **Status, 2026-10-18, branch `combat-enchantments`: decisions answered, increments 1 and 2 built and
-> seen working, increment 3 (this refactor pass) done.** Not yet merged. The audit (§2) is read from
+> **Status, 2026-10-18, branch `combat-enchantments`: decisions answered, increments 1, 2, 4 and 5 built and
+> seen working, refactor passes 3 and 6 done.** Not yet merged. The audit (§2) is read from
 > the 1.21.1 data and our code; rows marked **measure** still need a measured hit in a running game
 > (ADR-0008). Every number is a placeholder: a balancing and stats session follows. The decisions are in
 > §11; the structural choice is [ADR-0022](../decisions/0022-enchantments-are-stat-sources.md).
