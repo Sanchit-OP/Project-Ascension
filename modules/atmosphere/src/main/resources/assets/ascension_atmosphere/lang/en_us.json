@@ -9,6 +9,7 @@
   "block.ascension_atmosphere.oxygen_refill_station": "Oxygen Refill Station",
 
   "item.ascension_atmosphere.oxygen_tank": "Oxygen Tank",
+  "item.ascension_atmosphere.oxygen_tank_helium": "Helium Oxygen Tank",
   "item.ascension_atmosphere.oxygen_tank.contents": "Air: %1$s / %2$s",
   "item.ascension_atmosphere.oxygen_tank.valve_open": "Valve open — supplying air",
   "item.ascension_atmosphere.oxygen_tank.valve_closed": "Valve closed — stowed",

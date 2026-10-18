@@ -8,6 +8,9 @@ import com.ascension.atmosphere.internal.sealed.OxygenEmitterBlockEntity;
 import com.ascension.atmosphere.internal.supply.OxygenRefillStationBlock;
 import com.ascension.atmosphere.internal.supply.OxygenTankItem;
 import com.ascension.atmosphere.internal.supply.TankFluidHandler;
+import com.ascension.atmosphere.internal.supply.TankUpgradeRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponentType;
@@ -49,6 +52,8 @@ public final class AtmosphereContent {
     private static final DeferredRegister<DataComponentType<?>> COMPONENTS =
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AscensionAtmosphere.MOD_ID);
 
+    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
+            DeferredRegister.create(Registries.RECIPE_SERIALIZER, AscensionAtmosphere.MOD_ID);
     private static final DeferredRegister<FluidType> FLUID_TYPES =
             DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, AscensionAtmosphere.MOD_ID);
     private static final DeferredRegister<Fluid> FLUIDS =
@@ -174,10 +179,19 @@ public final class AtmosphereContent {
             "oxygen_tank",
             () -> new OxygenTankItem(new Item.Properties()));
 
+    /** Level 2 (ADR-0026): a helium upgrade of the tank, twice the air, same valve and rules. */
+    public static final Supplier<Item> OXYGEN_TANK_HELIUM = ITEMS.register(
+            "oxygen_tank_helium",
+            () -> new OxygenTankItem(new Item.Properties()));
+
+    public static final Supplier<RecipeSerializer<TankUpgradeRecipe>> TANK_UPGRADE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("tank_upgrade", TankUpgradeRecipe.Serializer::new);
+
     private AtmosphereContent() {
     }
 
     public static void register(IEventBus modBus) {
+        RECIPE_SERIALIZERS.register(modBus);
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
@@ -194,7 +208,7 @@ public final class AtmosphereContent {
                 (dispenser, side) -> dispenser.fluidHandler());
         // Any mod can fill a tank with air through the standard item capability (fill only).
         event.registerItem(Capabilities.FluidHandler.ITEM,
-                (stack, context) -> new TankFluidHandler(stack), OXYGEN_TANK.get());
+                (stack, context) -> new TankFluidHandler(stack), OXYGEN_TANK.get(), OXYGEN_TANK_HELIUM.get());
     }
 
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
@@ -207,6 +221,9 @@ public final class AtmosphereContent {
             // Full, not empty. A crafted tank starts empty on purpose, but an empty one in the
             // creative menu just looks broken to anyone grabbing it to test with.
             event.accept(OxygenTankItem.filled());
+            ItemStack helium = new ItemStack(OXYGEN_TANK_HELIUM.get());
+            OxygenTankItem.setUnits(helium, OxygenTankItem.capacity(helium));
+            event.accept(helium);
         }
     }
 }

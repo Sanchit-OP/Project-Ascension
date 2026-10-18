@@ -65,7 +65,9 @@ public final class OxygenTankItem extends Item {
      * and not a change to every call site.
      */
     public static int capacity(ItemStack stack) {
-        return AtmosphereTuning.TANK_CAPACITY;
+        return stack.is(AtmosphereContent.OXYGEN_TANK_HELIUM.get())
+                ? AtmosphereTuning.TANK_CAPACITY_HELIUM
+                : AtmosphereTuning.TANK_CAPACITY;
     }
 
     /**

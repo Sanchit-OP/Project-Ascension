@@ -31,6 +31,9 @@ public final class AtmosphereTuning {
     /** Units in one standard portable tank. At baseline drain, five minutes of air. */
     public static final int TANK_CAPACITY = BASE_UNITS_PER_SECOND * 60 * 5;
 
+    /** The helium tank (level 2, ADR-0026): twice the air, ten minutes at baseline drain. */
+    public static final int TANK_CAPACITY_HELIUM = TANK_CAPACITY * 2;
+
     /**
      * Where portable tanks sit in the consumption order. Lower is drained first.
      *

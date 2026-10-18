@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "ascension_worlds:raw_helium",
+      "required": false
+    }
+  ]
+}

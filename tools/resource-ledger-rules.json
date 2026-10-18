@@ -20,6 +20,7 @@
   },
   "equipment": {
     "ascension_atmosphere:oxygen_tank": "carried air",
+    "ascension_atmosphere:oxygen_tank_helium": "carried air, twice as much",
     "ascension_worlds:archive_tablet": "read",
     "ascension_combat:berserkers_greaves": "weapon or armour",
     "ascension_combat:collectors_pants": "weapon or armour",

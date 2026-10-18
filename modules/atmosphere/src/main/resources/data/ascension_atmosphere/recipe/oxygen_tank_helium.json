@@ -1,0 +1,16 @@
+{
+  "type": "ascension_atmosphere:tank_upgrade",
+  "ingredients": [
+    {
+      "item": "ascension_atmosphere:oxygen_tank"
+    },
+    {
+      "tag": "c:raw_materials/helium"
+    }
+  ],
+  "count": 8,
+  "result": {
+    "id": "ascension_atmosphere:oxygen_tank_helium",
+    "count": 1
+  }
+}

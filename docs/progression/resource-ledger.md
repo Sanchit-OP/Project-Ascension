@@ -28,6 +28,10 @@ No survival source, on purpose. The rules say why.
 **Oxygen Tank** · `ascension_atmosphere:oxygen_tank`
 - From: Crafting: Iron Ingot + Glass
 - Used: Crafting into Oxygen Emitter, Oxygen Refill Station
+- Used: Tank Upgrade into Helium Oxygen Tank
+
+**Helium Oxygen Tank** · `ascension_atmosphere:oxygen_tank_helium`
+- From: Tank Upgrade: Oxygen Tank + anything in `#c:raw_materials/helium`
 
 ### Blocks
 
@@ -262,6 +266,7 @@ No survival source, on purpose. The rules say why.
 **Raw Helium Crystal** · `ascension_worlds:raw_helium`
 - From: Chests in the Lunar Archive (the Moon): 1 to 4, weight 3 of 11, 3 to 5 rolls
 - From: Mined from Lunar Helium Ore: The Moon's rock, y −64 to 24, needs an iron pickaxe or better
+- Used: Tank Upgrade into Helium Oxygen Tank
 - Used: Crafting into Caulfield's Warhammer, Chain Vest, Giant's Belt, Last Whisper, Noonquiver, Pickaxe, Recurve Bow, Seeker's Armguard, Wizard's Agony
 
 **Raw Titanium** · `ascension_worlds:raw_titanium`
