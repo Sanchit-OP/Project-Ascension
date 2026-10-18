@@ -464,7 +464,7 @@
   "tooltip.ascension_combat.ragefang.1": "On hit, Frenzy: Each hit adds 5% attack speed with no cap. Stacks begin to fade after 1 second without a hit.",
   "tooltip.ascension_combat.ragefang.2": "On hit, Rage: Each hit deals 5 bonus magic damage (+0.2 per Attack Damage), doubled on every third hit.",
   "tooltip.ascension_combat.endless_hunger.1": "Passive, Hunger: Gains 2% attack speed for every point of your Attack Damage.",
-  "tooltip.ascension_combat.endless_hunger.2": "Passive, Bloodthirst: Heals you for 6% of damage dealt, rising to 20% as your health falls.",
+  "tooltip.ascension_combat.endless_hunger.2": "Passive, Bloodthirst: Heals you for 7% of damage dealt (the Omnivamp above), rising to 14% as your health falls.",
   "tooltip.ascension_combat.wraithblade.1": "Passive, Ghostly Edge: Your hits ignore a flat amount of the target's Armor (the Lethality above).",
   "tooltip.ascension_combat.wraithblade.2": "Active, Blink (10s cooldown): Right-click to blink 12 blocks forward, then run 30% faster for 3 seconds.",
   "tooltip.ascension_combat.mortal_reminder.1": "On hit, Grievous Wounds: Arrows ignore 60% of the target's Armor and reduce its healing for 3 seconds. Every hit refreshes the wound.",

@@ -53,12 +53,11 @@ stats are worth.
 | Move Speed % | 1.5 |
 | Omnivamp % | 6 |
 | Lethality | 1.2 |
-| Armor or Magic Penetration % | 2 |
 
 | Slot | Budget | Items |
 |---|---|---|
-| Melee weapon | 120 | Veigo's Blade, Darius's Axe, Spear of Shojin, Divine Sunderer, Darken Blade, Ragefang, Endless Hunger, Wraithblade |
-| Bow | 120 | Mortal Reminder, Heartwood of Pallas, Galeforce |
+| Melee weapon | 110 | Veigo's Blade, Darius's Axe, Spear of Shojin, Divine Sunderer, Darken Blade, Ragefang, Endless Hunger, Wraithblade |
+| Bow | 110 | Mortal Reminder, Heartwood of Pallas, Galeforce |
 | Helmet | 55 | Protean Mask, Edge of Night |
 | Chestplate | 85 | Gargoyle Stoneplate, Guardian's Wing |
 | Leggings | 70 | Rocketbelt, Collector's Pants, Unending Despair |
@@ -77,21 +76,20 @@ stats are worth.
 
 ### Other mods' gear
 
-Cataclysm's gear is set by what it costs, in `ascension-compat-cataclysm`'s own `item_stats.json` (each entry
-carries a `cataclysm` mod check). Items in one band sit at one power, and no band reaches a legendary:
+Cataclysm's gear keeps what the mod gave it, except that boss armour is lifted in Health so each set sits near
+55% of its slots (`ascension-compat-cataclysm`'s `item_stats.json`, each entry with a `cataclysm` mod check).
+Its weapons are left as made: adding a stat to a weapon would only be a Penetration or a second damage line,
+and neither belongs. The check holds a ceiling of **70% of the slot's budget** for every Cataclysm item.
 
-| Band | Share of its slot | Items | How |
-|---|---|---|---|
-| Boss weapons, epic | 60% (72 points) | Ceraunus, Soul Render, Infernal Forge, Void Forge, the Incinerator, Brontes | Armor Penetration 2% to 5% on top of their own damage |
-| Boss armour, epic | 55% | the Ignitium and Cursium sets (helmet, chestplate, leggings) | Health lifted so each set sits at one share (boots already at 54% to 62%) |
-| Mid weapons, rare | 38% (46 points) | Astrape, Ancient Spear, Meat Shredder, the Annihilator, the Immolator, Tidal Claws, Coral Bardiche | Armor Penetration 1% to 6% |
-| Left as made | 28% to 53% | Gauntlet of Guard, Monstrous Helm, Bone Reptile gear, the black steel and coral tools | |
-| Vanilla | 32% to 40% | netherite sword 32%, netherite chestplate 40% | |
+| Band | Share of its slot | Items |
+|---|---|---|
+| Boss weapons | 52% to 65% | Ceraunus, Soul Render, the Forges, the Incinerator, Brontes |
+| Boss armour | 55% to 62% | the Ignitium and Cursium sets |
+| Mid weapons | 28% to 38% | Astrape, Ancient Spear, the Annihilator, Tidal Claws and the rest |
+| Vanilla | 32% to 40% | netherite sword and chestplate |
 
-A legendary is therefore 1.65 times the best boss item of its slot, and 2.5 to 3 times netherite. The check
-holds a ceiling of 65% for every Cataclysm item and prints the table (`python tools/check-balance.py`).
-Other mods' gear follows the same rule when its compat jar arrives: measure it, place it in a band, write the
-difference. Create's tools and the like are not combat gear and are left alone.
+A legendary weapon is about 1.5 times the best boss weapon in raw points, and its ability is on top. Cataclysm
+weapons' attack speed was never measured (the check assumes 1.6), so those shares are estimates.
 
 ## 4. Scaling the abilities
 

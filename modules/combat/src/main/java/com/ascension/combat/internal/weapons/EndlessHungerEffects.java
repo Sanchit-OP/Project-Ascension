@@ -35,8 +35,8 @@ public final class EndlessHungerEffects {
     /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
     private static final float ATTACK_SPEED_PERCENT_PER_AD_POINT = 0.02f;
 
-    private static final float BASE_OMNIVAMP_PERCENT = 0.06f;
-    private static final float MAX_BONUS_OMNIVAMP_PERCENT = 0.14f;
+    private static final float BASE_OMNIVAMP_PERCENT = 0.0f;
+    private static final float MAX_BONUS_OMNIVAMP_PERCENT = 0.07f;
 
     private static final ResourceLocation ATTACK_SPEED_MODIFIER_ID = ResourceLocation
             .fromNamespaceAndPath(AscensionCombat.MOD_ID, "endless_hunger_attack_speed");

@@ -24,13 +24,13 @@ STATS = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'dat
 # Points per unit of each stat. A weapon's own damage counts as damage per second (damage x speed).
 WEIGHTS = {
     'health': 1.0, 'armor': 0.5, 'magic_resist': 0.5, 'attack_damage': 4.0, 'attack_speed': 0.8,
-    'move_speed': 1.5, 'omnivamp': 6.0, 'lethality': 1.2, 'armor_penetration': 2.0, 'magic_penetration': 2.0,
+    'move_speed': 1.5, 'omnivamp': 6.0, 'lethality': 1.2,
 }
 DPS_WEIGHT = 3.0
 
-BUDGETS = {'melee': 120, 'ranged': 120, 'helmet': 55, 'chest': 85, 'legs': 70, 'boots': 45, 'offhand': 55}
+BUDGETS = {'melee': 110, 'ranged': 110, 'helmet': 55, 'chest': 85, 'legs': 70, 'boots': 45, 'offhand': 55}
 TOLERANCE = 3.0   # points, either way
-CEILING = 0.65    # a Cataclysm item's share of its slot's budget, at most
+CEILING = 0.70    # a Cataclysm item's share of its slot's budget, at most
 
 SLOTS = {
     'melee': ['veigos_blade', 'darius_axe', 'spear_of_shojin', 'divine_sunderer', 'darken_blade', 'ragefang',
@@ -42,6 +42,12 @@ SLOTS = {
     'boots': ['ninja_tabi', 'mercury_treads', 'swifty', 'berserkers_greaves', 'wizards_agony', 'tasted_blood'],
     'offhand': ['zonias_hourglass', 'steraks_harness'],
 }
+
+# Rules a number cannot say (Sanchit, 2026-10-19): what a stat line may and may not hold.
+OMNIVAMP = {'veigos_blade': 4, 'endless_hunger': 7, 'spear_of_shojin': 3, 'divine_sunderer': 3}
+NO_PENETRATION = ('armor_penetration', 'magic_penetration')
+BOW_STATS = {'attack_damage', 'move_speed'}      # damage from afar; no Health, and a bow's draw ignores Attack Speed
+MELEE_NOT_IN_STATS = {'attack_damage', 'attack_speed'}   # a weapon's damage and speed are one figure, in `weapon`
 
 # Cataclysm's own numbers, measured 2026-10-16 (docs/technical/item-stats.md section 8): the slot, then
 # Attack Damage, Armor, Magic Resist, Health. A weapon's speed is not measured; 1.6 is assumed.
@@ -106,6 +112,22 @@ def main():
             print('  %-8s %-22s %6.1f / %d%s' % (slot, name, s, budget, flag))
             if flag:
                 problems.append('%s scores %.1f, its %s budget is %d (+/-%.0f)' % (name, s, slot, budget, TOLERANCE))
+
+    for slot, names in SLOTS.items():
+        for name in names:
+            entry = values.get('ascension_combat:' + name, {})
+            stats = entry.get('stats', {})
+            for stat in NO_PENETRATION:
+                if stat in stats:
+                    problems.append('%s has %s: Penetration is not a stat we hand out' % (name, stat))
+            if 'omnivamp' in stats and OMNIVAMP.get(name) != stats['omnivamp']:
+                problems.append('%s has omnivamp %s; only %s may' % (name, stats['omnivamp'], OMNIVAMP))
+            if name in OMNIVAMP and stats.get('omnivamp') != OMNIVAMP[name]:
+                problems.append('%s should have omnivamp %s' % (name, OMNIVAMP[name]))
+            if slot == 'ranged' and not set(stats) <= BOW_STATS:
+                problems.append('%s (a bow) has %s; bows carry %s only' % (name, sorted(set(stats) - BOW_STATS), sorted(BOW_STATS)))
+            if slot == 'melee' and (set(stats) & MELEE_NOT_IN_STATS or 'weapon' not in entry):
+                problems.append('%s: damage and speed belong in `weapon` as one figure' % name)
 
     print('Other gear (share of its slot budget; ceiling %d%%):' % (CEILING * 100))
     for table in (CATACLYSM, VANILLA):

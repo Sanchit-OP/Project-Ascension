@@ -1,5 +1,5 @@
 {
-  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. The 26 combat items are balanced by a power budget per slot, docs/progression/balance.md section 3, and tools/check-balance.py fails the build when one drifts. Placeholders Sanchit tunes by playing.",
+  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. The 26 combat items are balanced by a power budget per slot, docs/progression/balance.md section 3, and tools/check-balance.py fails the build when one drifts or breaks a rule (2026-10-19: a melee weapon's damage is one figure in `weapon`; bows carry damage only; no Armor or Magic Penetration anywhere; Omnivamp on four items only). Placeholders Sanchit tunes by playing.",
   "values": {
     "minecraft:netherite_helmet": {
       "stats": {
@@ -23,119 +23,89 @@
     },
     "ascension_combat:veigos_blade": {
       "weapon": {
-        "damage": 12.5,
+        "damage": 17.9,
         "speed": 1.6
       },
       "stats": {
-        "attack_damage": 5,
-        "attack_speed": 15,
-        "armor_penetration": 8,
-        "health": 12
+        "omnivamp": 4
       }
     },
     "ascension_combat:darius_axe": {
       "weapon": {
-        "damage": 20,
+        "damage": 30,
         "speed": 1.0
       },
       "stats": {
-        "attack_damage": 6,
-        "health": 20,
-        "armor_penetration": 8
+        "health": 20
       }
     },
     "ascension_combat:spear_of_shojin": {
       "weapon": {
-        "damage": 14.3,
+        "damage": 21.9,
         "speed": 1.4
       },
       "stats": {
-        "attack_damage": 4,
-        "attack_speed": 20,
-        "omnivamp": 2,
-        "health": 16
+        "omnivamp": 3
       }
     },
     "ascension_combat:divine_sunderer": {
       "weapon": {
-        "damage": 16.7,
+        "damage": 21.4,
         "speed": 1.2
       },
       "stats": {
-        "attack_damage": 5,
-        "health": 22,
-        "omnivamp": 3
+        "omnivamp": 3,
+        "health": 15
       }
     },
     "ascension_combat:darken_blade": {
       "weapon": {
-        "damage": 14.3,
+        "damage": 22.6,
         "speed": 1.4
       },
       "stats": {
-        "attack_damage": 4,
-        "health": 16,
-        "magic_penetration": 8,
-        "attack_speed": 15
+        "health": 15
       }
     },
     "ascension_combat:ragefang": {
       "weapon": {
-        "damage": 10,
+        "damage": 18.3,
         "speed": 2.0
-      },
-      "stats": {
-        "attack_damage": 3,
-        "attack_speed": 25,
-        "magic_penetration": 10,
-        "health": 8
       }
     },
     "ascension_combat:endless_hunger": {
       "weapon": {
-        "damage": 5,
+        "damage": 5.7,
         "speed": 4.0
       },
       "stats": {
-        "attack_damage": 6,
-        "omnivamp": 2,
-        "health": 24
+        "omnivamp": 7
       }
     },
     "ascension_combat:wraithblade": {
       "weapon": {
-        "damage": 12.5,
+        "damage": 14.2,
         "speed": 1.6
       },
       "stats": {
         "lethality": 20,
-        "attack_damage": 4,
-        "move_speed": 12,
-        "health": 2
+        "move_speed": 12
       }
     },
     "ascension_combat:mortal_reminder": {
       "stats": {
-        "attack_damage": 15,
-        "attack_speed": 20,
-        "armor_penetration": 6,
-        "health": 32
+        "attack_damage": 27.5
       }
     },
     "ascension_combat:heartwood_of_pallas": {
       "stats": {
-        "attack_damage": 14,
-        "magic_penetration": 10,
-        "attack_speed": 15,
-        "health": 32
+        "attack_damage": 27.5
       }
     },
     "ascension_combat:galeforce": {
       "stats": {
-        "attack_damage": 14,
-        "attack_speed": 25,
-        "move_speed": 12,
-        "health": 26
+        "attack_damage": 23,
+        "move_speed": 12
       }
     },
     "ascension_combat:protean_mask": {
@@ -222,15 +192,16 @@
     },
     "ascension_combat:wizards_agony": {
       "stats": {
-        "armor_penetration": 8,
-        "magic_penetration": 8,
-        "lethality": 10
+        "lethality": 10,
+        "attack_damage": 4,
+        "health": 17
       }
     },
     "ascension_combat:tasted_blood": {
       "stats": {
-        "omnivamp": 5,
-        "health": 15
+        "health": 30,
+        "armor": 20,
+        "magic_resist": 10
       }
     },
     "ascension_combat:zonias_hourglass": {
