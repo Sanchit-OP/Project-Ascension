@@ -198,9 +198,10 @@ the table; planets and bosses add *extra* ones.
 | Enchanting table | the vanilla pool and our reworks | the `in_enchanting_table` tag lists what is rollable |
 | Villager books | the `tradeable` tag | villagers sell them because they cannot read them (lore) |
 | Structure loot | our new ones through `on_random_loot` | uses the `enchant_randomly` loot function |
-| Boss drop | a **book** per boss that teaches one enchantment | proposal: each boss gives one named enchantment, once; e.g. the Warden's, the Wither's |
-| The Archive tablets (Moon), the Nether tablets (Planet 3) | one enchantment read from the script | fits the voice and the "Observers notice" lore |
-| A crafted route | an enchanted book made at a table from planet materials | the same bench as the build paths (`resource-economy.md`) |
+
+**Sanchit, 2026-10-18 (decision 5): no boss, planet or tablet rewards.** All enchantments come from the
+table, villagers and structure loot. Boss books, tablet-taught enchantments and a crafted route were
+considered and left out; they can return later without changing anything else here.
 
 ## 6. Respiration and Aqua Affinity on a planet
 
@@ -254,8 +255,7 @@ I will check what ships with Cataclysm before saying any more.
 3. **Mending: ANSWERED.** Keep, at half vanilla's repair rate (data only).
 4. **Size: ANSWERED.** No cap now. Use the numbers above as placeholders; the balancing and stats
    session after this one sets the real ceiling (§3.2's 25 units is only a starting guess).
-5. **Boss and planet enchantments:** each boss teaches one enchantment from its book (reward, never a
-   requirement). Yes or no?
+5. **Rewards: ANSWERED.** No. Table, villagers and loot only (§5).
 6. **Cost:** stay with XP levels and lapis.
 
 ## 12. Build order (ADR-0008: each increment seen in a client; a refactor pass every third)
@@ -268,7 +268,7 @@ I will check what ships with Cataclysm before saying any more.
 | 4 | **Respiration → lung capacity** | A Respiration III helmet gives 32 s of lungs on the Moon |
 | 5 | **Our new enchantments** | each shows its stat |
 | 6 | **Refactor pass** | |
-| 7 | **Sources** (boss books, tablets, loot) | each reward drops once |
+| 7 | **Sources** (loot tables for our new enchantments) | each shows up in structure loot |
 | 8 | **Tooltips and JEI** | |
 | 9 | **Refactor pass** | |
 
