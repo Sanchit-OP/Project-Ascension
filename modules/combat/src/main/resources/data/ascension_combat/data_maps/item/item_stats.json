@@ -1,5 +1,5 @@
 {
-  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. The 26 combat items are balanced by a power budget per slot, docs/progression/balance.md section 3, and tools/check-balance.py fails the build when one drifts or breaks a rule (2026-10-19: a melee weapon's damage is one figure in `weapon`; bows carry damage only; no Armor or Magic Penetration anywhere; Omnivamp on four items only). Placeholders Sanchit tunes by playing.",
+  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. The 26 combat items are balanced by a power budget per slot, docs/progression/balance.md section 3, and tools/check-balance.py fails the build when one drifts or breaks a rule (2026-10-19: a melee weapon's damage is one figure in `weapon`; bows carry damage only; Armor and Magic Penetration only on Wizard's Agony; Omnivamp on five items only). Placeholders Sanchit tunes by playing.",
   "values": {
     "minecraft:netherite_helmet": {
       "stats": {
@@ -165,16 +165,16 @@
     },
     "ascension_combat:ninja_tabi": {
       "stats": {
-        "armor": 45,
-        "magic_resist": 25,
-        "health": 10
+        "armor": 36,
+        "magic_resist": 20,
+        "health": 8
       }
     },
     "ascension_combat:mercury_treads": {
       "stats": {
-        "magic_resist": 45,
-        "armor": 25,
-        "health": 10
+        "magic_resist": 36,
+        "armor": 20,
+        "health": 8
       }
     },
     "ascension_combat:swifty": {
@@ -192,16 +192,13 @@
     },
     "ascension_combat:wizards_agony": {
       "stats": {
-        "lethality": 10,
-        "attack_damage": 4,
-        "health": 17
+        "armor_penetration": 12,
+        "magic_penetration": 12
       }
     },
     "ascension_combat:tasted_blood": {
       "stats": {
-        "health": 30,
-        "armor": 20,
-        "magic_resist": 10
+        "omnivamp": 8
       }
     },
     "ascension_combat:zonias_hourglass": {

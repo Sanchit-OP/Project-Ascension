@@ -24,7 +24,7 @@ STATS = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'dat
 # Points per unit of each stat. A weapon's own damage counts as damage per second (damage x speed).
 WEIGHTS = {
     'health': 1.0, 'armor': 0.5, 'magic_resist': 0.5, 'attack_damage': 4.0, 'attack_speed': 0.8,
-    'move_speed': 1.5, 'omnivamp': 6.0, 'lethality': 1.2,
+    'move_speed': 1.5, 'omnivamp': 6.0, 'lethality': 1.2, 'armor_penetration': 2.0, 'magic_penetration': 2.0,
 }
 DPS_WEIGHT = 3.0
 
@@ -44,8 +44,11 @@ SLOTS = {
 }
 
 # Rules a number cannot say (Sanchit, 2026-10-19): what a stat line may and may not hold.
-OMNIVAMP = {'veigos_blade': 4, 'endless_hunger': 7, 'spear_of_shojin': 3, 'divine_sunderer': 3}
+OMNIVAMP = {'veigos_blade': 4, 'endless_hunger': 7, 'spear_of_shojin': 3, 'divine_sunderer': 3, 'tasted_blood': 8}
+PENETRATION = {'wizards_agony': 12}              # both Armor and Magic Penetration, and nowhere else
 NO_PENETRATION = ('armor_penetration', 'magic_penetration')
+# The two defensive boots sit below their slot on purpose: Sanchit, 2026-10-19, they felt strong.
+TARGET = {'ninja_tabi': 36, 'mercury_treads': 36}
 BOW_STATS = {'attack_damage', 'move_speed'}      # damage from afar; no Health, and a bow's draw ignores Attack Speed
 MELEE_NOT_IN_STATS = {'attack_damage', 'attack_speed'}   # a weapon's damage and speed are one figure, in `weapon`
 
@@ -108,6 +111,7 @@ def main():
                 problems.append('%s has no entry in item_stats.json' % name)
                 continue
             s = score_entry(entry)
+            budget = TARGET.get(name, BUDGETS[slot])
             flag = '' if abs(s - budget) <= TOLERANCE else '   <-- off by %.1f' % (s - budget)
             print('  %-8s %-22s %6.1f / %d%s' % (slot, name, s, budget, flag))
             if flag:
@@ -118,8 +122,8 @@ def main():
             entry = values.get('ascension_combat:' + name, {})
             stats = entry.get('stats', {})
             for stat in NO_PENETRATION:
-                if stat in stats:
-                    problems.append('%s has %s: Penetration is not a stat we hand out' % (name, stat))
+                if stat in stats and PENETRATION.get(name) != stats[stat]:
+                    problems.append('%s has %s: Penetration is only on %s' % (name, stat, sorted(PENETRATION)))
             if 'omnivamp' in stats and OMNIVAMP.get(name) != stats['omnivamp']:
                 problems.append('%s has omnivamp %s; only %s may' % (name, stats['omnivamp'], OMNIVAMP))
             if name in OMNIVAMP and stats.get('omnivamp') != OMNIVAMP[name]:
