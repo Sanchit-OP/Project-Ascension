@@ -26,7 +26,7 @@ import org.slf4j.Logger;
  *
  * <pre>
  * { "tiers": { "boss": { "health_percent": 75, "attack_damage_percent": 25 } },
- *   "types": { "minecraft:warden": { "health_percent": 40 } } }
+ *   "types": { "minecraft:warden": { "health_total": 1500, "attack_damage_percent": 20 } } }
  * </pre>
  *
  * <p>A mob is scaled by its entry in {@code types}, else by its tier ({@code
@@ -39,10 +39,17 @@ public final class DifficultyScaling extends SimpleJsonResourceReloadListener {
 
     public static final DifficultyScaling INSTANCE = new DifficultyScaling();
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Scale NONE = new Scale(0.0, 0.0);
+    private static final Scale NONE = new Scale(0.0, 0.0, Double.NaN);
 
-    /** Percent changes to a mob's own base health and attack damage. */
-    public record Scale(double healthPercent, double attackDamagePercent) {
+    /**
+     * What a difficulty does to a mob: percent changes to its own base health and attack damage, and
+     * optionally a total health that replaces the mob's own ({@code health_total}, for bosses whose
+     * health is written down as a number; NaN when absent, and then the percent applies).
+     */
+    public record Scale(double healthPercent, double attackDamagePercent, double healthTotal) {
+        public boolean hasHealthTotal() {
+            return !Double.isNaN(healthTotal);
+        }
     }
 
     private record Table(Map<String, Scale> tiers, Map<ResourceLocation, Scale> types) {
@@ -104,7 +111,8 @@ public final class DifficultyScaling extends SimpleJsonResourceReloadListener {
 
     private static Scale scale(JsonObject object) {
         return new Scale(GsonHelper.getAsDouble(object, "health_percent", 0.0),
-                GsonHelper.getAsDouble(object, "attack_damage_percent", 0.0));
+                GsonHelper.getAsDouble(object, "attack_damage_percent", 0.0),
+                GsonHelper.getAsDouble(object, "health_total", Double.NaN));
     }
 
     private static Difficulty difficultyNamed(String name) {

@@ -1,0 +1,44 @@
+{
+  "values": {
+    "cataclysm:ender_golem": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "armor": 100,
+      "magic_resist": 50
+    },
+    "cataclysm:ender_guardian": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "armor": 120,
+      "magic_resist": 60
+    },
+    "cataclysm:netherite_monstrosity": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "armor": 140,
+      "magic_resist": 80
+    },
+    "cataclysm:ignis": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "armor": 160,
+      "magic_resist": 90
+    }
+  }
+}

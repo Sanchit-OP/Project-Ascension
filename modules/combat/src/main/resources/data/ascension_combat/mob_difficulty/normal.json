@@ -1,4 +1,14 @@
 {
-  "_comment": "Normal: every mob as its own attributes say. docs/progression/balance.md section 2.",
-  "tiers": {}
+  "_comment": "Normal: every mob as its own attributes say. docs/progression/balance.md section 2. The six bosses carry their own totals in `types` (docs/progression/balance.md section 5): easy is 15% less health and 15 points less damage than normal, hard 25% more health and 20 points more.",
+  "tiers": {},
+  "types": {
+    "minecraft:warden": {
+      "health_total": 1500,
+      "attack_damage_percent": 0
+    },
+    "minecraft:wither": {
+      "health_total": 6500,
+      "attack_damage_percent": 100
+    }
+  }
 }

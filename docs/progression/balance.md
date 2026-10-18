@@ -136,25 +136,26 @@ scaled proc grows by half again or doubles.
 
 Tooltips state each base number and what it scales with.
 
-## 5. Bosses by progression (a draft, for Sanchit to edit)
+## 5. Bosses by progression (Sanchit approved these, 2026-10-19)
 
-Bosses should grow as the game goes on: each later boss has more of everything, and the numbers are written
-per boss, not per tier. These are proposals. Heavy and boss tiers share nothing below; each row is one
-boss's own entry. Attack Damage is a multiple of what the boss does now.
+Each later boss has more of everything, written per boss. These are the **Normal** numbers; Easy is 15% less
+health and 15 points less damage, Hard is 25% more health and 20 points more. Armor and Magic Resist do not
+change with difficulty. Attack Damage is a percent on the boss's own, so x1.2 is +20%.
 
-| Boss | HP | Armor | Magic Resist | Damage | Kit time to kill (fastest to slowest weapon, s) | Alone |
-|---|---|---|---|---|---|---|
-| The Warden | 1500 | 80 | 40 | x1.0 | 43 to 80 | 77 to 128 |
-| The Ender Golem | 2500 | 100 | 50 | x1.2 | 81 to 140 | 147 to 221 |
-| The Ender Guardian | 3200 | 120 | 60 | x1.4 | 120 to 188 | 214 to 299 |
-| The Netherite Monstrosity | 4200 | 140 | 80 | x1.6 | 179 to 270 | 320 to 451 |
-| Ignis | 5200 | 160 | 90 | x1.8 | 255 to 385 | 438 to 642 |
-| The Wither | 6500 | 180 | 110 | x2.0 | 365 to 553 | 564 and up |
+| Boss | HP (Easy / Normal / Hard) | Armor | Magic Resist | Damage (Easy / Normal / Hard) | Kit time to kill, Normal (s) |
+|---|---|---|---|---|---|
+| The Warden | 1275 / 1500 / 1875 | 80 | 40 | -15% / 0 / +20% | 43 to 80 |
+| The Ender Golem | 2125 / 2500 / 3125 | 100 | 50 | +5% / +20% / +40% | 81 to 140 |
+| The Ender Guardian | 2720 / 3200 / 4000 | 120 | 60 | +25% / +40% / +60% | 120 to 188 |
+| The Netherite Monstrosity | 3570 / 4200 / 5250 | 140 | 80 | +45% / +60% / +80% | 179 to 270 |
+| Ignis | 4420 / 5200 / 6500 | 160 | 90 | +65% / +80% / +100% | 255 to 385 |
+| The Wither | 5525 / 6500 / 8125 | 180 | 110 | +85% / +100% / +120% | 365 to 553 |
 
-The order is the order of the growth milestones. HP is the total, so it will be written as a flat addition
-once each boss's base health is read from a running game. The times use the same weapons and kit as section 3,
-with no growth points or runes, which only shorten them; a well-built player will beat these. A later world's
-boss goes below the Wither in this table.
+Written into `mob_stats` (Armor, Magic Resist) and `mob_difficulty` (`health_total` and the damage percent, per
+difficulty); the four Cataclysm bosses live in `ascension-compat-cataclysm`'s own files. `health_total` sets
+the boss's maximum health to that number whatever its own base is. The Wither's damage percent has no effect: it
+has no Attack Damage attribute, its skulls do fixed damage. Times use the same weapons and kit as section 3,
+with no growth points or runes. A later world's boss goes below the Wither.
 
 ## 6. Still open
 

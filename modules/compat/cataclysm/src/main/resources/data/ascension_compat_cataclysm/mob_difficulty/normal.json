@@ -1,0 +1,21 @@
+{
+  "_comment": "The Cataclysm bosses' totals by difficulty (docs/progression/balance.md section 5); stacks with ascension-combat's file of the same name.",
+  "types": {
+    "cataclysm:ender_golem": {
+      "health_total": 2500,
+      "attack_damage_percent": 20
+    },
+    "cataclysm:ender_guardian": {
+      "health_total": 3200,
+      "attack_damage_percent": 40
+    },
+    "cataclysm:netherite_monstrosity": {
+      "health_total": 4200,
+      "attack_damage_percent": 60
+    },
+    "cataclysm:ignis": {
+      "health_total": 5200,
+      "attack_damage_percent": 80
+    }
+  }
+}
