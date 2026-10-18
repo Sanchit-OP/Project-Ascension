@@ -97,9 +97,12 @@ teammates cannot hurt each other. Built, and seen on a dedicated server with sta
 `pack/quests/` and generated into FTB Quests' files by `tools/generate-quests.py` (the build runs it with
 `--check`: our items and advancements must exist, no guarded story word, no dependency loop). The look and a
 live "you are here" marker on the **Planets** page (also between the worlds in space) are
-`ascension-compat-ftbquests`, with no compile dependency on Quests. Built: First Days (11 quests) and Planets;
-loaded by the real FTB Quests on a dedicated server; **not yet seen in a client**. The book says what and
-where, never why, and never gates a path.
+`ascension-compat-ftbquests`, with no compile dependency on Quests. Built (2026-10-18): seven pages and 84 quests (First
+Days, Planets, The Road Up, The Moon, The Rot, Gear and Growth, Together), loaded by the real FTB Quests on a dedicated
+server; the first two pages were **seen once in a client**, the other five **not yet**. The book says what and where,
+never why, and never gates a path. **`docs/progression/journey.md` is the step-by-step map of the whole game, what every
+material is for, and what is missing** (no survival-built ship has ever flown, helium has no job, the 26 combat items have
+no source); `quests.md` section 13 says where the work stopped.
 
 Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,

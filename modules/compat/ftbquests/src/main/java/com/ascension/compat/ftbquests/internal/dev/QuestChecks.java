@@ -145,6 +145,8 @@ public final class QuestChecks {
 
         List<String> missing = new ArrayList<>();
         int stacks = 0;
+        int itemTasks = 0;
+        int consuming = 0;
         int dependenciesLoaded = 0;
         Collection<?> all = (Collection<?>) file.getClass().getMethod("getAllObjects").invoke(file);
         for (Object object : all) {
@@ -152,6 +154,12 @@ public final class QuestChecks {
             if (object.getClass().getSimpleName().equals("Quest")) {
                 dependenciesLoaded += (int) ((Stream<?>) object.getClass().getMethod("streamDependencies")
                         .invoke(object)).count();
+            }
+            if (object.getClass().getSimpleName().equals("ItemTask")) {
+                itemTasks++;
+                if ((boolean) object.getClass().getMethod("consumesResources").invoke(object)) {
+                    consuming++;
+                }
             }
             ItemStack stack = stackOf(object);
             if (stack == null) {
@@ -168,6 +176,9 @@ public final class QuestChecks {
         REPORT.expect("every item a task or reward names is a real item (" + stacks + " checked)"
                 + (missing.isEmpty() ? "" : " (missing: " + missing.subList(0, Math.min(5, missing.size())) + ")"),
                 missing.isEmpty());
+        // "Have 28 gatestones" must not take them: a quest asks what you hold, it never charges for it.
+        REPORT.expect("no item task takes what the player holds (" + itemTasks + " item tasks, " + consuming
+                + " that consume)", consuming == 0 && itemTasks > 0);
         checkWhatTasksWaitFor(advancements, dimensions, structures);
     }
 
