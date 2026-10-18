@@ -212,6 +212,26 @@ Each one is a build choice instead of a number only if two enchantments **compet
 or the same pool** (the exclusive sets), so we should add a few exclusive sets: Keen Edge / Sharpness,
 Leech / Mending (the healing ones), Warding / Protection.
 
+### 4.1 What increment 5 built (2026-10-18)
+
+Five of the eight, all data (`data/ascension_combat/enchantment/`), each a `minecraft:attributes`
+effect under `ascension_combat:enchantment/<name>`, so each shows under "Enchantments" on the sheet.
+
+| Enchantment | Max | Gives, per level | Items | Notes |
+|---|---|---|---|---|
+| Keen Edge | III | +2 Lethality | weapons | exclusive with Sharpness, Smite, Bane (the damage set) |
+| Leech | III | +1% Omnivamp | weapons | stacks with Keen Edge |
+| Warding | IV | +3 Magic Resist | armour | exclusive with the Protection family (the armour set), a build choice |
+| Vitality | III | +1 Health | armour | takes Protection |
+| Fleet | III | +3% Move Speed | boots | |
+
+They are in `minecraft:non_treasure`, so the enchanting table, villagers and loot all offer them (vanilla's
+tags are built on that one). **Mending now repairs at half rate** (decision 3: `factor` 2.0 to 1.0).
+
+**Left out for now:** Deep Lung (Respiration already does it), Pressure Seal (would need an atmosphere
+change, and a tank must not be stretched by an enchantment), Glyphbound (needs code). Our 26 combat items
+accept enchantments only through vanilla's tags so far; choosing per item is §8.
+
 ## 5. Where they come from
 
 Rewards, never requirements (ADR-0018). A player can always reach every vanilla-power enchantment at
@@ -290,7 +310,7 @@ I will check what ships with Cataclysm before saying any more.
 | 2 | **The other reworks** (Sharpness, Power, Breach) | Sharpness V shows +2.5 Attack Damage under "Enchantments" |
 | 3 | **Refactor pass** | |
 | 4 | **Respiration → lung capacity** (already built in atmosphere; proven here) | Respiration III: lungs 80 → 200 units, seen in a client |
-| 5 | **Our new enchantments** | each shows its stat |
+| 5 | **Our new enchantments** (five built) | each shows its stat, and is offered by the table, trades and loot |
 | 6 | **Refactor pass** | |
 | 7 | **Sources** (loot tables for our new enchantments) | each shows up in structure loot |
 | 8 | **Tooltips and JEI** | |

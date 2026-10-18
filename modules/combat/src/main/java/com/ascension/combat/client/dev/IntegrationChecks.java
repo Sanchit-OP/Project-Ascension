@@ -37,6 +37,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
@@ -198,6 +199,23 @@ public final class IntegrationChecks {
         server(20, p -> expectEnchanted(p, CombatStats.ARMOR_PENETRATION, "Breach IV", 0.16));
         server(5, p -> p.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY));
 
+        // ---- Our own enchantments (data), each a stat under Enchantments; the table, trades and loot offer them
+        server(5, IntegrationChecks::holdOurEnchantedGear);
+        server(20, p -> {
+            expectEnchanted(p, CombatStats.LETHALITY, "Keen Edge III", 6.0);
+            expectEnchanted(p, CombatStats.MAGIC_RESIST, "Warding IV", 12.0);
+            expectEnchanted(p, CombatStats.HEALTH, "Vitality III", 3.0);
+            expectEnchanted(p, CombatStats.MOVE_SPEED, "Fleet III", 0.1 * 0.09);
+            expectEnchanted(p, CombatStats.OMNIVAMP, "Leech III", 0.03);
+        });
+        server(5, IntegrationChecks::ourEnchantmentsAreOffered);
+        server(5, p -> {
+            p.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            for (EquipmentSlot slot : List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.FEET)) {
+                strip(p, slot);
+            }
+        });
+
         // ---- Respiration grows lung capacity (the atmosphere module's rule), asked through its own command
         server(5, p -> {
             lungsWithoutRespiration = lungCapacity(p);
@@ -206,7 +224,7 @@ public final class IntegrationChecks {
         });
         server(20, p -> expect("Respiration III adds 30 seconds (120 units) to the lungs",
                 lungCapacity(p) - lungsWithoutRespiration, 120));
-        server(5, p -> p.getItemBySlot(EquipmentSlot.HEAD).remove(DataComponents.ENCHANTMENTS));
+        server(5, p -> strip(p, EquipmentSlot.HEAD));
         server(20, p -> expect("taking Respiration off gives the lungs back", lungCapacity(p), lungsWithoutRespiration));
 
         // ---- An admin revoking a milestone closes a slot again, and the client sees it
@@ -296,6 +314,48 @@ public final class IntegrationChecks {
     private static int lungsWithoutRespiration;
 
     /**
+     * Takes every enchantment off a worn or held item by swapping in a fresh copy of the item. (Removing the
+     * enchantments component in place left a stack that would not take a new enchantment: seen in this
+     * script for the chestplate and the helmet, 2026-10-18.)
+     */
+    private static void strip(ServerPlayer player, EquipmentSlot slot) {
+        player.setItemSlot(slot, new ItemStack(player.getItemBySlot(slot).getItem()));
+    }
+
+    private static ResourceKey<Enchantment> ours(String name) {
+        return ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath("ascension_combat", name));
+    }
+
+    /** Leech III in hand (Keen Edge goes on the same sword below), Warding IV, Vitality III and Fleet III worn. */
+    private static void holdOurEnchantedGear(ServerPlayer player) {
+        ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
+        enchant(player, sword, ours("keen_edge"), 3);
+        // Leech and Keen Edge are not exclusive, so one sword takes both.
+        enchant(player, sword, ours("leech"), 3);
+        player.setItemSlot(EquipmentSlot.MAINHAND, sword);
+        enchant(player, player.getItemBySlot(EquipmentSlot.CHEST), ours("warding"), 4);
+        enchant(player, player.getItemBySlot(EquipmentSlot.HEAD), ours("vitality"), 3);
+        enchant(player, player.getItemBySlot(EquipmentSlot.FEET), ours("fleet"), 3);
+    }
+
+    /** In the enchanting table's pool, on traders and in loot; and Keen Edge and Warding refuse their rivals. */
+    private static void ourEnchantmentsAreOffered(ServerPlayer player) {
+        var registry = player.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        for (String name : List.of("keen_edge", "leech", "warding", "vitality", "fleet")) {
+            var holder = registry.getHolderOrThrow(ours(name));
+            expect(name + " is in the enchanting table pool", holder.is(EnchantmentTags.IN_ENCHANTING_TABLE), true);
+            expect(name + " is sold by villagers", holder.is(EnchantmentTags.TRADEABLE), true);
+            expect(name + " can turn up in loot", holder.is(EnchantmentTags.ON_RANDOM_LOOT), true);
+        }
+        expect("Keen Edge refuses Sharpness", Enchantment.areCompatible(registry.getHolderOrThrow(ours("keen_edge")),
+                registry.getHolderOrThrow(Enchantments.SHARPNESS)), false);
+        expect("Warding refuses Protection", Enchantment.areCompatible(registry.getHolderOrThrow(ours("warding")),
+                registry.getHolderOrThrow(Enchantments.PROTECTION)), false);
+        expect("Vitality takes Protection", Enchantment.areCompatible(registry.getHolderOrThrow(ours("vitality")),
+                registry.getHolderOrThrow(Enchantments.PROTECTION)), true);
+    }
+
+    /**
      * The player's lung capacity in units, read from {@code /ascension atmosphere query} so combat names
      * no atmosphere class (Tier 1 modules never depend on each other, ADR-0011). The line reads
      * "lungs 80/80   carried ...": the number after the slash.
@@ -374,7 +434,7 @@ public final class IntegrationChecks {
         float points = EnchantmentHelper.getDamageProtection(player.serverLevel(), player,
                 player.serverLevel().damageSources().generic());
         expect("Protection IV on one piece counts 2.25 protection points (9% off)", (double) points, 2.25);
-        player.getItemBySlot(EquipmentSlot.CHEST).remove(DataComponents.ENCHANTMENTS);
+        strip(player, EquipmentSlot.CHEST);
     }
 
     /** The parts of Health and Armor add up to the totals, and growth and runes are each named. */
