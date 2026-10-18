@@ -1,0 +1,27 @@
+# Words and phrases the quest book must never use (docs/progression/quests.md section 1).
+#
+# The book says what and where, never why. These are the names and ideas that carry the story's answers
+# (docs/lore/what-the-warden-keeps.md and its companions); a quest that uses one has probably explained
+# something it should only have pointed at. tools/generate-quests.py fails the build on a match.
+#
+# One per line, whole words, any case. A line starting with # is a comment. Add a word the first time
+# a draft comes close to saying it; take one out only when the story has already said it aloud in the game.
+
+observer
+observers
+tacita
+archivist
+the hole
+the quiet
+the trap
+the seal
+sealing
+the last order
+the builders
+the ancients
+bedrock hole
+void beneath
+the fold
+the ember
+the anvil
+the bulwark

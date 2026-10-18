@@ -26,5 +26,6 @@ public final class RuneSystem {
         ReaverRunes.register(gameBus);
         AetherwrightRunes.register(gameBus);
         BulwarkRunes.register(gameBus);
+        com.ascension.combat.internal.rune.hud.RuneHudSync.register(gameBus);
     }
 }

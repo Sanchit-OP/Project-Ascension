@@ -135,6 +135,15 @@ public final class RuneAttachments {
             "killing_surge_burst",
             () -> AttachmentType.builder(DurationState::new).build());
 
+    /**
+     * What the HUD was last told about this player's runes, so the next tick can tell whether
+     * anything changed and send only then. Not saved and not copied on death: a respawned player
+     * has none, so their next check sends a fresh, correct list.
+     */
+    public static final Supplier<AttachmentType<java.util.List<com.ascension.combat.internal.rune.hud.RuneHudEntry>>> HUD_SENT =
+            TYPES.register("hud_sent", () -> AttachmentType.<java.util.List<com.ascension.combat.internal.rune.hud.RuneHudEntry>>builder(
+                    () -> java.util.List.of()).build());
+
     private RuneAttachments() {
     }
 

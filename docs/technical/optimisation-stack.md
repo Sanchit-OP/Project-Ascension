@@ -95,6 +95,13 @@ field-tested 1.21.1 release that exists) instead of the `3.2.0-b` beta that had 
 confirmed via a live Spark profile to cost 0.37% of server-thread time, in the same negligible
 company as every Ascension module.
 
+**Shipped with the pack from 2026-10-18** (`pack/config/DistantHorizons.toml`, applied by
+`tools/sync-pack-config.py`): the dev client's own config had been freshly generated with the default
+`FEATURES` until then, so dev runs were on the setting that corrupted chunks; only the CurseForge
+instance had the fix. The same file turns off the chat warning "Distant Horizons: Chunky detected"
+(`showModCompatibilityWarningsOnStartup = false`). The warning is a fair one in general, but Chunky
+is in the pack on purpose and the fix above is what makes the two safe together.
+
 **What this means for Chunky.** With DH never generating its own guesses, Chunky's pre-generation
 radius *is* DH's effective long-range view distance now — the two systems are directly coupled in
 a way they weren't before. Widening Chunky's reach later is now also a rendering-distance lever,

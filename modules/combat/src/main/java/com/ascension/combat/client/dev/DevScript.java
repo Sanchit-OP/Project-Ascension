@@ -52,6 +52,12 @@ final class DevScript {
         return true;
     }
 
+    /** After leaving the world: let the script open it again, once the menu has settled. */
+    void reopenWorld() {
+        this.opening = false;
+        this.menuTicks = 0;
+    }
+
     void add(int waitAfter, Runnable action) {
         this.steps.add(new Step(waitAfter, action));
     }

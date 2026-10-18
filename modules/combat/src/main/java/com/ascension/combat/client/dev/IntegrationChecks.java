@@ -18,6 +18,7 @@ import com.ascension.combat.internal.rune.RunePage;
 import com.ascension.combat.internal.rune.RunePageRules;
 import com.ascension.combat.internal.rune.RuneUnlocks;
 import com.ascension.combat.internal.rune.Runes;
+import com.ascension.core.api.TeamRegistry;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
@@ -67,6 +68,10 @@ public final class IntegrationChecks {
     private static final List<String> MILESTONES = List.of(
             "ascension_worlds:gates/overworld", "ascension_combat:growth/wither",
             "ascension_combat:growth/warden", "ascension_worlds:gates/moon");
+
+    private static List<ResourceLocation> milestoneIds() {
+        return MILESTONES.stream().map(ResourceLocation::parse).toList();
+    }
 
     private static int checks;
     private static int failures;
@@ -171,6 +176,27 @@ public final class IntegrationChecks {
         client(10, () -> expect("the client sees the last shard row shut again", ClientRunePageCache.open().defence(), false));
         server(5, p -> award(p, MILESTONES.get(3)));
         client(10, () -> expect("and open again", ClientRunePageCache.open().defence(), true));
+
+        // ---- Teams (teams.md): with no team mod everyone is one team; a change of team makes the player
+        // and the team hold the same milestones, in both directions. The change is announced by hand,
+        // as a team mod would, so the whole path from the event to an award runs on the real server.
+        server(5, p -> {
+            expect("with no team mod everyone is on one team", TeamRegistry.teamOf(p), TeamRegistry.EVERYONE);
+            expect("the team holds the four milestones", PlayerGrowth.team(p.server).earned(TeamRegistry.teamOf(p)).containsAll(milestoneIds()), true);
+            revoke(p, MILESTONES.get(3));
+            expect("revoked, the player is down to three", GrowthProgress.milestonesReached(p), 3);
+            TeamRegistry.announceChange(p.server, p.getUUID(), TeamRegistry.EVERYONE, TeamRegistry.EVERYONE);
+            expect("a change of team gives back the milestone the team holds", GrowthProgress.milestonesReached(p), 4);
+        });
+        server(5, p -> {
+            ResourceLocation moon = ResourceLocation.parse(MILESTONES.get(3));
+            p.server.getCommands().performPrefixedCommand(p.createCommandSourceStack().withPermission(4),
+                    "ascension growth team " + p.getGameProfile().getName() + " forget " + moon);
+            expect("the forget command took it from the team", PlayerGrowth.team(p.server).earned(TeamRegistry.teamOf(p)).contains(moon), false);
+            TeamRegistry.announceChange(p.server, p.getUUID(), TeamRegistry.EVERYONE, TeamRegistry.EVERYONE);
+            expect("a change of team gives the team the milestone the player holds", PlayerGrowth.team(p.server).earned(TeamRegistry.teamOf(p)).contains(moon), true);
+            expect("and the player still has all four", GrowthProgress.milestonesReached(p), 4);
+        });
 
         // ---- The three screens lead to each other by their keys, and a screen's own key closes it
         client(5, IntegrationChecks::screensLink);
@@ -289,9 +315,14 @@ public final class IntegrationChecks {
     private static void screensLink() {
         Minecraft mc = Minecraft.getInstance();
         // The dev client's saved options bind these keys elsewhere; check the defaults a new player gets.
+        // The pack moves the sheet's default (pack/config/defaultoptions), so ask the key what it is.
+        int sheetKey = -1;
         for (net.minecraft.client.KeyMapping mapping : mc.options.keyMappings) {
             if (mapping.getName().startsWith("key.ascension_combat.open_")) {
                 mapping.setKey(mapping.getDefaultKey());
+                if (mapping.getName().equals("key.ascension_combat.open_character_sheet")) {
+                    sheetKey = mapping.getDefaultKey().getValue();
+                }
             }
         }
         net.minecraft.client.KeyMapping.resetMapping();
@@ -302,10 +333,10 @@ public final class IntegrationChecks {
         expect("R in the character sheet opens the runes", screenName(mc), "RuneScreen");
         press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_K);
         expect("K in the runes opens the skill tree", screenName(mc), "GrowthScreen");
-        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_V);
-        expect("V in the skill tree opens the character sheet", screenName(mc), "CharacterSheetScreen");
-        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_V);
-        expect("V in the character sheet closes it", screenName(mc), "(none)");
+        press(mc, sheetKey);
+        expect("the sheet's key in the skill tree opens the character sheet", screenName(mc), "CharacterSheetScreen");
+        press(mc, sheetKey);
+        expect("the sheet's key in the character sheet closes it", screenName(mc), "(none)");
         mc.setScreen(new com.ascension.combat.client.RuneScreen());
         press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_R);
         expect("R in the runes closes them", screenName(mc), "(none)");
@@ -415,6 +446,7 @@ public final class IntegrationChecks {
             expect("points earned came back", PlayerGrowth.pointsEarned(p), Integer.parseInt(before.getOrDefault("earned", "-1")));
             expect("points spent came back", PlayerGrowth.pointsSpent(p), Integer.parseInt(before.getOrDefault("spent", "-1")));
             expect("milestones came back", GrowthProgress.milestonesReached(p), Integer.parseInt(before.getOrDefault("milestones", "-1")));
+            expect("the team's milestones came back from disk", PlayerGrowth.team(p.server).earned(TeamRegistry.teamOf(p)).containsAll(milestoneIds()), true);
             expect("the tree node is still taken", p.getData(GrowthAttachments.GROWTH).taken().contains(NODE), true);
             expect("the rune page came back", p.getData(com.ascension.combat.internal.CombatAttachments.RUNE_PAGE).page().sameAs(page(true, true)), true);
             expect("every slot is open", RuneUnlocks.open(p), RunePageRules.OpenSlots.ALL);

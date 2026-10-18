@@ -17,6 +17,11 @@ public final class GrowthKeybind {
     static final KeyMapping OPEN = new KeyMapping(
             "key.ascension_combat.open_growth", InputConstants.KEY_K, "key.categories.ascension_combat");
 
+    /** The key that opens the skill tree, as the player has it bound, for the HUD's hint. */
+    public static net.minecraft.network.chat.Component keyName() {
+        return OPEN.getTranslatedKeyMessage();
+    }
+
     private GrowthKeybind() {
     }
 

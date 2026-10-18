@@ -65,8 +65,27 @@ val checkData = tasks.register<Exec>("checkData") {
     commandLine("python", "tools/check-data.py")
 }
 
+// The quest book (tools/generate-quests.py, docs/progression/quests.md): fails when a page names an item,
+// advancement or dimension that does not exist, uses a guarded story word, loops its dependencies, or when
+// the files generated from the pages are out of date. The generator's own tests run beside it.
+val checkQuests = tasks.register<Exec>("checkQuests") {
+    group = "verification"
+    description = "Fails on a quest book mistake, or when the generated quest files are stale."
+    workingDir = rootDir
+    commandLine("python", "tools/generate-quests.py", "--check")
+}
+
+val testQuestTools = tasks.register<Exec>("testQuestTools") {
+    group = "verification"
+    description = "Runs the quest generator's own tests."
+    workingDir = rootDir
+    commandLine("python", "-m", "unittest", "discover", "-s", "tools/quests/tests", "-t", "tools")
+}
+
 subprojects {
-    tasks.matching { it.name == "check" }.configureEach { dependsOn(checkResourceLedger, checkData) }
+    tasks.matching { it.name == "check" }.configureEach {
+        dependsOn(checkResourceLedger, checkData, checkQuests, testQuestTools)
+    }
 }
 
 tasks.register("moduleReport") {

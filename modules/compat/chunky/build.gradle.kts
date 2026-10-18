@@ -51,6 +51,14 @@ evaluationDependsOn(":modules:compat:endermanoverhaul")
 // here to exercise ship travel at all.
 evaluationDependsOn(":modules:compat:sable")
 
+// Same reasoning again -- server-side (it answers "who is on which team" for growth and allies), so
+// `runDevServer` and the dev client need it here to exercise parties at all.
+evaluationDependsOn(":modules:compat:ftbteams")
+
+// Client-side look and the chart marker for the quest book, plus a server-side load check, so the dev
+// client and `runDevServer` need it here to show or check the book at all.
+evaluationDependsOn(":modules:compat:ftbquests")
+
 neoForge {
     mods {
         register("ascension_core") {
@@ -76,6 +84,12 @@ neoForge {
         }
         register("ascension_compat_sable") {
             sourceSet(project(":modules:compat:sable").sourceSets["main"])
+        }
+        register("ascension_compat_ftbteams") {
+            sourceSet(project(":modules:compat:ftbteams").sourceSets["main"])
+        }
+        register("ascension_compat_ftbquests") {
+            sourceSet(project(":modules:compat:ftbquests").sourceSets["main"])
         }
     }
 }
