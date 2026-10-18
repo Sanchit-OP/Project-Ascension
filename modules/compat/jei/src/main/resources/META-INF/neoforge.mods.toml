@@ -1,0 +1,44 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: JEI"
+authors = "${mod_authors}"
+description = '''
+A "Build path" page in JEI for each of the 26 combat items: every raw material it costs, from every
+world, and the boss heart it needs. Optional; without JEI this jar is not loaded.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+# The one Tier 1 module this integrates -- the items this page is about.
+[[dependencies.${mod_id}]]
+modId = "ascension_combat"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+# The integration target.
+[[dependencies.${mod_id}]]
+modId = "jei"
+type = "required"
+versionRange = "${jei_version_range}"
+ordering = "NONE"
+side = "CLIENT"

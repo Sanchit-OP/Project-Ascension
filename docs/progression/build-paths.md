@@ -39,6 +39,12 @@ The Cataclysm modifiers carry a `neoforge:conditions` `mod_loaded` check for `as
 Just Enough Resources will not show drops added by loot modifiers; `ascension-compat-jei`'s
 "Where it's found" pages are the planned answer.
 
+## In JEI
+
+Every recipe shows in JEI as a crafting recipe. `ascension-compat-jei` adds a **Build path** page per combat
+item: everything its whole tree costs, flattened, with counts. Hover a material to see which world (or boss)
+it comes from. Built, compiled, not yet seen in a client.
+
 ## Still open
 
 - **Seen in a client and on a dedicated server:** recipes in JEI, each heart dropping from its boss,
