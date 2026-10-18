@@ -159,6 +159,25 @@ leaving it on.
 3. **`./gradlew runDevServer`** (dev server on `localhost`, port 25565)
 4. Join from the **Ascension Dev** CurseForge instance via Multiplayer
 
+### The scripted integration run (combat: stats, runes and growth together)
+
+`client/dev/IntegrationChecks` plays the merged systems against each other in a real client, on the
+real server inside it, and prints `PASS` / `FAIL` lines tagged `[integration]`. No one has to click.
+It takes about three minutes a part, and opens a game window.
+
+1. Copy the test world: `run/server/runes-test` to `run/client/saves/runes-test`.
+2. Create an empty file `run/client/integration-checks.txt` (**part one**), then `./gradlew runDevClient`.
+   It opens the world by itself, earns milestones, wears netherite, dies and respawns, respecs, takes
+   a hit, writes `run/client/integration-state.txt`, and quits (which saves the world).
+3. Create `run/client/integration-checks-2.txt` (**part two**) and run it again: the same world is
+   loaded from disk and compared with the state file.
+4. Read the result with `grep "\[integration\]" <log>`; the last line is `RESULT: N checks, M failures`.
+
+The trigger file is deleted when it is read, so it arms one run. Add a check there whenever two of
+the three systems meet somewhere new; a unit test cannot see these (ADR-0008). The checks on 2026-10-18
+found two real faults: discovery advancements that gave every player nine free points, and a respawn
+that healed before gear's Health was back.
+
 ### Use `runDevServer`, not a module's own `runServer`
 
 Each module also has its own `runClient` / `runServer`, and **each loads only itself and what it

@@ -215,8 +215,13 @@ growth is the page's **slots**:
   hook is agreed through Sanchit.
 - **No world is ever needed** (ADR-0018): any milestone counts, in any order.
 - **A locked slot is shown**, dark with a padlock, and its card says what opens it.
-- **Until growth is merged**, a server config switch (`runes.unlocks`: `all` or `progressive`)
-  defaults to `all`.
+- **Built 2026-10-18 (R9).** Growth is merged, so the slots really open. The rune side reads one
+  number through `com.ascension.combat.api.growth.GrowthProgress.milestonesReached`: the team's boss
+  and gate milestones the player has, not the smaller discoveries, which give skill points but never
+  open the page. Growth tells the client whenever that number changes. A server config switch
+  (`runes.unlocks`: `all` or `progressive`) now defaults to `progressive`; **a world made before this
+  keeps the value its config file already holds**, so an old test world stays open until its
+  `serverconfig` is edited.
 
 ## 7. Changing runes
 
@@ -414,7 +419,7 @@ server; anything saved, across a world reload.
 | **R6** | **Refactor pass.** *Done 2026-10-17: one helper for the four growing runes (`GrowingStat`), one re-entrancy guard (`Reentry`) in place of five hand-rolled flags, `Runes.active` accepts any entity, the shards go through `setStat`, and the hover card's painting left the screen for `RuneCardPainter` (growth's tree can reuse it). No behaviour changed except Blooded's data, now written as a percent like every other number.* | The screen looks the same; the same 45 runes load. |
 | **R7** | **The screen: the orrery** (§10): dials, cards, motion, sound. *Built 2026-10-17 and photographed in a client at GUI scales 2, 3 and 4 (`design/runes/in-game/`); the HUD stack counter is not built yet (it needs the stack counts synced to the client): **Sanchit, 2026-10-18: the HUD is its own session**, briefed in `plans/session-prompts/5-rune-hud.md`.* | At GUI scales 2, 3, 4. |
 | **R8** | **The art:** every icon, emblem and frame from the generator. *Built 2026-10-17: 181 GUI sprites, `design/runes/kit.png`.* | In the screen, at all three scales. |
-| **R9** | **Unlocks**, once growth's API is merged. | Slots opening as milestones land, on a dedicated server. |
+| **R9** | **Unlocks**, once growth's API is merged. *Built 2026-10-18 and checked in a client by the scripted integration run: the secondary opens at the first milestone, the shard rows at the second to fourth, the client is told each time, and an admin revoking one closes it again.* | Slots opening as milestones land, on a dedicated server. |
 | **R10** | **Refactor pass.** | |
 
 **Re-sequenced 2026-10-17 (Sanchit):** he will not test until the full screen exists, so after R3 the

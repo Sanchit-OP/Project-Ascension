@@ -5,17 +5,22 @@
 > Every number here is a placeholder, as in `combat-api.md` §3: Sanchit balances by playing, and
 > every number lives in a data file.
 >
-> **Status, 2026-10-18: merged to `main` ([ADR-0021](../decisions/0021-player-growth.md)).**
-> **Seen in Sanchit's client on a dedicated server:** the screen (K), marking and confirming nodes,
-> nine points earned just by exploring (Earth's four places, the Nether fortress and bastion, the Lunar
-> Archive, the gate ruin and Cataclysm's Ruined Citadel), a connected path of nine nodes accepted by the
-> server, and the server's live stats matching the tree (Max Health 25, Attack Speed 5.2, Omnivamp 0.1).
-> **Not yet seen:** the tree surviving a server restart, death and respawn, a real respec, boss kills
-> (the Warden, the Wither, Cataclysm's four), a gate lit by hand, a second player and late joiners
-> (the shared milestones). **Not done:** polishing the node icons (G5), the closing refactor pass and
-> performance-log reading (G6), registering the "Growth" label with `StatSources` (now on `main`),
-> and §13 questions 6 to 10, built on the first option. `/ascension growth show` prints some numbers raw
-> (Omnivamp as 0.1, not 10%); the screen formats them properly.
+> **Status, 2026-10-18: merged to `main` ([ADR-0021](../decisions/0021-player-growth.md)), then
+> checked together with the runes and the stat system (`client/dev/IntegrationChecks`).**
+> **Seen in Sanchit's client on a dedicated server:** the screen (K), marking and confirming nodes, a
+> connected path of nine nodes accepted by the server, and the server's live stats matching the tree.
+> **Correction:** the "nine points just by exploring" he saw were a data bug, not discoveries. The
+> structure discoveries were written `"structure"`, which Minecraft ignores without a word, so the
+> condition was empty and every new player was given nine of the v1 budget's 35 points at once. They
+> are `"structures"` now, and `tools/check-data.py` (part of every build) fails on the old spelling.
+> **Checked by the scripted integration run (49 checks, then 15 after a reload, all passing):** points
+> and the tree survive a world reload, a death and respawn (with and without keep-inventory), a real
+> respec costs 20 levels and gives every point back, growth is named "Growth" on the stat sheet, and
+> the rune page's slots open with the team's milestones.
+> **Not yet seen:** a discovery earned by standing in its structure (only that none fire for free),
+> boss kills, a gate lit by hand, a second player and late joiners (the shared milestones).
+> **Not done:** polishing the node icons (G5), the performance-log reading (G6), and §13 questions 6 to
+> 10, built on the first option.
 
 ## 1. In short
 

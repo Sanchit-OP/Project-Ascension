@@ -64,19 +64,27 @@ Map: [`docs/technical/architecture.md`](docs/technical/architecture.md).
   discretionary.
 - Every milestone ends with a recorded measurement in `docs/technical/performance-log.md`.
 
-## Current state (2026-10-15)
+## Current state (2026-10-18)
 
 Four Tier 1 modules exist. **`ascension-core`** holds shared contracts (no behaviour).
 **`ascension-atmosphere`** is feature-complete for v0.1. **`ascension-worlds`** has Earth and
 the Moon. **`ascension-combat`** (ADR-0012) is the League-style item/stat/rune system, built in a
-separate parallel session — do not fold its work into this one's without asking. **Since
-2026-10-15 its next work is split across new sessions** (`plans/session-prompts/`):
-1. one stat system for every item, which owns the stat definitions and the API for reading them
-   (**built and merged 2026-10-17**: `docs/technical/item-stats.md`, ADR-0019; read stats through
-   `com.ascension.combat.api.stat.StatReader`; Cataclysm extras are still open);
-2. the rune system, with a professional screen;
-3. player growth (merged 2026-10-18: `docs/progression/growth.md`, ADR-0021);
-4. later, the items' build paths.
+separate parallel session — do not fold its work into this one's without asking. **Its next work was
+split on 2026-10-15** (`plans/session-prompts/`) and three of the four parts are now in `main`:
+1. one stat system for every item (**merged 2026-10-17**: `docs/technical/item-stats.md`, ADR-0019;
+   read stats through `com.ascension.combat.api.stat.StatReader`; Cataclysm extras still open);
+2. the rune system, 45 runes and the orrery screen (**merged 2026-10-18**: `docs/technical/rune-system.md`,
+   ADR-0020; the rune HUD is its own session, `5-rune-hud.md`);
+3. player growth, a web of 56 nodes fed by skill points (**merged 2026-10-18**: `docs/progression/growth.md`,
+   ADR-0021);
+4. the items' build paths, next (`4-build-paths.md`; its two prerequisites now exist).
+
+**The three were then checked against each other (2026-10-18):** `client/dev/IntegrationChecks`
+runs them together in a real client (`docs/technical/dev-environment.md` says how) and found two
+faults, both fixed: the structure discoveries were spelled `"structure"` so every new player got nine
+free points, and a respawn healed before worn gear's Health was back. Rune slots now open with the
+team's boss and gate milestones (`api.growth.GrowthProgress`, default `progressive`), and growth is
+named on the stat sheet. `tools/check-data.py` (every build) fails on the first fault's spelling.
 
 Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,
