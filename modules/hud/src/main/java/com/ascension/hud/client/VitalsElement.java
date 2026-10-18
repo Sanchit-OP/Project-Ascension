@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.neoforged.api.distmarker.Dist;
@@ -47,14 +48,14 @@ public final class VitalsElement implements HudElement {
 
     private int cachedHealth = Integer.MIN_VALUE;
     private int cachedMax = Integer.MIN_VALUE;
-    private String healthText = "";
-    private String maxText = "";
+    private Component healthText = Component.empty();
+    private Component maxText = Component.empty();
     private int cachedShield = Integer.MIN_VALUE;
-    private String shieldText = "";
+    private Component shieldText = Component.empty();
     private int cachedRegen = Integer.MIN_VALUE;
-    private String regenText = "";
+    private Component regenText = Component.empty();
     private int cachedLevel = Integer.MIN_VALUE;
-    private String levelText = "";
+    private Component levelText = Component.empty();
 
     /** Forget the remembered red part, on leaving a world. */
     public void reset() {
@@ -125,13 +126,13 @@ public final class VitalsElement implements HudElement {
         int shield = Math.round(model.shield());
         int pending = Math.round(model.regen());
         if (pending > 0) {
-            String s = regenText(pending);
+            Component s = regenText(pending);
             rightX -= font.width(s);
             g.drawString(font, s, rightX, textY, withAlpha(GREY, opacity), true);
             rightX -= 4;
         }
         if (shield > 0) {
-            String s = shieldText(shield);
+            Component s = shieldText(shield);
             rightX -= font.width(s);
             g.drawString(font, s, rightX, textY, withAlpha(WHITE, opacity), true);
         }
@@ -149,39 +150,39 @@ public final class VitalsElement implements HudElement {
     private void updateHealthText(int health, int max) {
         if (health != cachedHealth) {
             cachedHealth = health;
-            healthText = Integer.toString(health);
+            healthText = HudFonts.bold(Integer.toString(health));
         }
         if (max != cachedMax) {
             cachedMax = max;
-            maxText = "/ " + max;
+            maxText = HudFonts.light("/ " + max);
         }
     }
 
-    private String shieldText(int shield) {
+    private Component shieldText(int shield) {
         if (shield != cachedShield) {
             cachedShield = shield;
-            shieldText = "+" + shield;
+            shieldText = HudFonts.bold("+" + shield);
         }
         return shieldText;
     }
 
-    private String regenText(int pending) {
+    private Component regenText(int pending) {
         if (pending != cachedRegen) {
             cachedRegen = pending;
-            regenText = "+" + pending;
+            regenText = HudFonts.bold("+" + pending);
         }
         return regenText;
     }
 
-    private String levelText(int level) {
+    private Component levelText(int level) {
         if (level != cachedLevel) {
             cachedLevel = level;
-            levelText = Integer.toString(level);
+            levelText = HudFonts.bold(Integer.toString(level));
         }
         return levelText;
     }
 
-    private static void drawCentred(GuiGraphics g, Font font, String text, int cx, int y, int colour) {
+    private static void drawCentred(GuiGraphics g, Font font, Component text, int cx, int y, int colour) {
         g.drawString(font, text, cx - font.width(text) / 2, y, colour, true);
     }
 
