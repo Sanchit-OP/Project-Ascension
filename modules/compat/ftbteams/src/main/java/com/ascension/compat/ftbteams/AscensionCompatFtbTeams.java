@@ -3,6 +3,7 @@ package com.ascension.compat.ftbteams;
 import com.ascension.compat.ftbteams.internal.FtbTeamEvents;
 import com.ascension.compat.ftbteams.internal.FtbTeamSource;
 import com.ascension.compat.ftbteams.internal.FtbTeamWelcome;
+import com.ascension.compat.ftbteams.internal.dev.TeamChecks;
 import com.ascension.core.api.TeamRegistry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -33,6 +34,7 @@ public final class AscensionCompatFtbTeams {
         TeamRegistry.register(new FtbTeamSource());
         FtbTeamEvents.register();
         FtbTeamWelcome.register(modBus, NeoForge.EVENT_BUS);
+        TeamChecks.register(NeoForge.EVENT_BUS);
         LOGGER.info("Ascension Compat: FTB Teams loaded");
     }
 }

@@ -182,6 +182,27 @@ the three systems meet somewhere new; a unit test cannot see these (ADR-0008). T
 found two real faults: discovery advancements that gave every player nine free points, and a respawn
 that healed before gear's Health was back.
 
+### The scripted team run (a dedicated server with stand-in players)
+
+`ascension-compat-ftbteams`' `TeamChecks` plays the team rules (`docs/progression/teams.md`) on a
+dedicated server with three stand-in players, real `ServerPlayer`s with no client behind them (the
+connection is `FakeConnection`, which tells NeoForge it can carry any payload). It uses FTB Teams' own
+commands, the real advancements and the real damage event, prints `PASS` / `FAIL` lines tagged
+`[team-checks]`, and stops the server. No game window opens.
+
+1. In `run/server/server.properties` set `level-name` to a throwaway name (and put it back afterwards),
+   and copy a world there, for example `run/server/runes-test` to `run/server/team-test` (delete its
+   `playerdata` and `advancements` folders for a clean start). The dev server defaults to creative; the
+   stand-ins switch themselves to survival.
+2. Create an empty `run/server/team-checks.txt` (**part one**), then `./gradlew runDevServer`. About two
+   minutes. It leaves one stand-in missing a milestone his party holds.
+3. When the server has stopped, create `run/server/team-checks-2.txt` (**part two**) and run it again:
+   the party and the saved team state are read back from disk.
+4. `grep "team-checks\]" run/server/logs/latest.log`; the last line is `RESULT: N checks, M failures`.
+
+What it cannot see is anything a client draws or sends: FTB's My Team screen and button, the chat line as
+a player reads it, and the HUD's team list when it exists. Those wait for a real client.
+
 ### Use `runDevServer`, not a module's own `runServer`
 
 Each module also has its own `runClient` / `runServer`, and **each loads only itself and what it
