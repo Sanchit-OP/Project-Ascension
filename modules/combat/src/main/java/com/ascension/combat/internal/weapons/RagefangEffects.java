@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
@@ -94,7 +95,8 @@ public final class RagefangEffects {
 
         int procs = state.everyThirdHit() ? 2 : 1;
         for (int i = 0; i < procs; i++) {
-            MagicDamage.apply(event, ON_HIT_MAGIC_DAMAGE);
+            MagicDamage.apply(event,
+                    ON_HIT_MAGIC_DAMAGE + AbilityScaling.RAGEFANG_ON_HIT_PER_AD * AbilityScaling.attackDamage(attacker));
         }
     }
 

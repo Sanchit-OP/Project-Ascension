@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import com.ascension.combat.internal.mechanics.Presence;
@@ -85,7 +86,8 @@ public final class DivineSundererEffects {
             return;
         }
 
-        float physicalBonus = event.getEntity().getMaxHealth() * PHYSICAL_MAX_HP_PERCENT;
+        float physicalBonus = event.getEntity().getMaxHealth()
+                * (PHYSICAL_MAX_HP_PERCENT + AbilityScaling.SUNDERER_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
         event.setAmount(event.getAmount() + physicalBonus);
     }
 
@@ -104,8 +106,9 @@ public final class DivineSundererEffects {
         }
 
         LivingEntity target = event.getEntity();
-        float physicalBonus = target.getMaxHealth() * PHYSICAL_MAX_HP_PERCENT;
-        float rawMagicBonus = target.getMaxHealth() * MAGIC_MAX_HP_PERCENT;
+        float perAttackDamage = AbilityScaling.SUNDERER_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker);
+        float physicalBonus = target.getMaxHealth() * (PHYSICAL_MAX_HP_PERCENT + perAttackDamage);
+        float rawMagicBonus = target.getMaxHealth() * (MAGIC_MAX_HP_PERCENT + perAttackDamage);
         float magicDelivered = MagicDamage.apply(event, rawMagicBonus);
 
         attacker.heal(physicalBonus + magicDelivered);

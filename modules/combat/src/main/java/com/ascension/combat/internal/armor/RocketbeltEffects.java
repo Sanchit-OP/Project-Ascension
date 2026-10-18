@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.armor;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import com.ascension.combat.internal.mechanics.Presence;
@@ -92,7 +93,8 @@ public final class RocketbeltEffects {
             if (target == player || !target.isAlive()) {
                 continue;
             }
-            target.hurt(player.damageSources().playerAttack(player), BURST_DAMAGE);
+            target.hurt(player.damageSources().playerAttack(player),
+                    BURST_DAMAGE + AbilityScaling.ROCKETBELT_BURST_PER_AD * AbilityScaling.attackDamage(player));
         }
     }
 }

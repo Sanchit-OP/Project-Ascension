@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import com.ascension.combat.internal.mechanics.Presence;
@@ -204,7 +205,9 @@ public final class GaleforceEffects {
 
         float missingHealth = event.getEntity().getMaxHealth() - event.getEntity().getHealth();
         if (missingHealth > 0.0f) {
-            event.setAmount(event.getAmount() + missingHealth * MISSING_HEALTH_BONUS_PERCENT);
+            event.setAmount(event.getAmount() + missingHealth
+                    * (MISSING_HEALTH_BONUS_PERCENT
+                    + AbilityScaling.GALEFORCE_MISSING_HP_PER_AD * AbilityScaling.attackDamage(source.getEntity())));
         }
     }
 

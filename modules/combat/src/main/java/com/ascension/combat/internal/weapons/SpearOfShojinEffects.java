@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.StackingChargeState;
@@ -83,7 +84,8 @@ public final class SpearOfShojinEffects {
         }
 
         state.clear();
-        float trueDamage = event.getEntity().getMaxHealth() * TRUE_DAMAGE_MAX_HP_PERCENT;
+        float trueDamage = event.getEntity().getMaxHealth()
+                * (TRUE_DAMAGE_MAX_HP_PERCENT + AbilityScaling.SHOJIN_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
         event.setNewDamage(event.getNewDamage() + trueDamage);
     }
 }

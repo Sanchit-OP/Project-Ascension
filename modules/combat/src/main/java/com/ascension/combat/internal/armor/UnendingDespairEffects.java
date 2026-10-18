@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.armor;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.MagicDamage;
@@ -102,7 +103,9 @@ public final class UnendingDespairEffects {
             if (target == player || !target.isAlive()) {
                 continue;
             }
-            totalDealt += MagicDamage.applyStandalone(target, player.damageSources().magic(), PULSE_DAMAGE);
+            totalDealt += MagicDamage.applyStandalone(target, player.damageSources().magic(),
+                    PULSE_DAMAGE + AbilityScaling.DESPAIR_PULSE_PER_HEALTH
+                            * AbilityScaling.stat(player, com.ascension.combat.api.stat.CombatStats.HEALTH));
         }
 
         if (totalDealt > 0.0f) {
