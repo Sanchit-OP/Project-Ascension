@@ -1,0 +1,10 @@
+{
+  "_comment": "Hard: tougher mobs, on top of vanilla's own hard-mode damage. Percent of a mob's own base value, by tier. docs/progression/balance.md section 2. Placeholders Sanchit tunes by playing.",
+  "tiers": {
+    "swarm": { "health_percent": 20 },
+    "light": { "health_percent": 30, "attack_damage_percent": 10 },
+    "medium": { "health_percent": 40, "attack_damage_percent": 15 },
+    "heavy": { "health_percent": 50, "attack_damage_percent": 20 },
+    "boss": { "health_percent": 75, "attack_damage_percent": 25 }
+  }
+}

@@ -75,6 +75,15 @@ val checkQuests = tasks.register<Exec>("checkQuests") {
     commandLine("python", "tools/generate-quests.py", "--check")
 }
 
+// The legendary power budget (docs/progression/balance.md section 3): every combat item's stats are scored,
+// and a legendary off its slot's budget, or boss gear too close to it, fails the build.
+val checkBalance = tasks.register<Exec>("checkBalance") {
+    group = "verification"
+    description = "Fails when a legendary drifts from its slot's power budget."
+    workingDir = rootDir
+    commandLine("python", "tools/check-balance.py", "--check")
+}
+
 val testQuestTools = tasks.register<Exec>("testQuestTools") {
     group = "verification"
     description = "Runs the quest generator's own tests."
@@ -84,7 +93,7 @@ val testQuestTools = tasks.register<Exec>("testQuestTools") {
 
 subprojects {
     tasks.matching { it.name == "check" }.configureEach {
-        dependsOn(checkResourceLedger, checkData, checkQuests, testQuestTools)
+        dependsOn(checkResourceLedger, checkData, checkQuests, testQuestTools, checkBalance)
     }
 }
 

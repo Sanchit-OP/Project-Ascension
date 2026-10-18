@@ -1,27 +1,253 @@
 {
-  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. The combat items carry the numbers they had in code until 2026-10-16, unchanged; all are placeholders Sanchit tunes by playing.",
+  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. The 26 combat items are balanced by a power budget per slot, docs/progression/balance.md section 3, and tools/check-balance.py fails the build when one drifts. Placeholders Sanchit tunes by playing.",
   "values": {
-    "minecraft:netherite_helmet": { "stats": { "health": 10 } },
-    "minecraft:netherite_chestplate": { "stats": { "health": 10 } },
-    "minecraft:netherite_leggings": { "stats": { "health": 10 } },
-    "minecraft:netherite_boots": { "stats": { "health": 10 } },
-
-    "ascension_combat:veigos_blade": { "weapon": { "damage": 7, "speed": 1.6 } },
-    "ascension_combat:darius_axe": { "weapon": { "damage": 8, "speed": 1.0 } },
-    "ascension_combat:spear_of_shojin": { "weapon": { "damage": 7, "speed": 1.4 } },
-    "ascension_combat:divine_sunderer": { "weapon": { "damage": 7, "speed": 1.2 } },
-    "ascension_combat:darken_blade": { "weapon": { "damage": 7, "speed": 1.4 } },
-    "ascension_combat:ragefang": { "weapon": { "damage": 6, "speed": 2.0 } },
-    "ascension_combat:endless_hunger": { "weapon": { "damage": 10, "speed": 4.0 } },
-    "ascension_combat:wraithblade": { "weapon": { "damage": 7, "speed": 1.6 }, "stats": { "lethality": 20 } },
-
-    "ascension_combat:gargoyle_stoneplate": { "stats": { "armor": 2, "magic_resist": 2 } },
-
-    "ascension_combat:mercury_treads": { "stats": { "magic_resist": 15 } },
-    "ascension_combat:ninja_tabi": { "stats": { "armor": 15 } },
-    "ascension_combat:swifty": { "stats": { "move_speed": 15 } },
-    "ascension_combat:berserkers_greaves": { "stats": { "attack_speed": 50 } },
-    "ascension_combat:wizards_agony": { "stats": { "armor_penetration": 10, "magic_penetration": 10 } },
-    "ascension_combat:tasted_blood": { "stats": { "omnivamp": 8 } }
+    "minecraft:netherite_helmet": {
+      "stats": {
+        "health": 10
+      }
+    },
+    "minecraft:netherite_chestplate": {
+      "stats": {
+        "health": 10
+      }
+    },
+    "minecraft:netherite_leggings": {
+      "stats": {
+        "health": 10
+      }
+    },
+    "minecraft:netherite_boots": {
+      "stats": {
+        "health": 10
+      }
+    },
+    "ascension_combat:veigos_blade": {
+      "weapon": {
+        "damage": 12.5,
+        "speed": 1.6
+      },
+      "stats": {
+        "attack_damage": 5,
+        "attack_speed": 15,
+        "armor_penetration": 8,
+        "health": 12
+      }
+    },
+    "ascension_combat:darius_axe": {
+      "weapon": {
+        "damage": 20,
+        "speed": 1.0
+      },
+      "stats": {
+        "attack_damage": 6,
+        "health": 20,
+        "armor_penetration": 8
+      }
+    },
+    "ascension_combat:spear_of_shojin": {
+      "weapon": {
+        "damage": 14.3,
+        "speed": 1.4
+      },
+      "stats": {
+        "attack_damage": 4,
+        "attack_speed": 20,
+        "omnivamp": 2,
+        "health": 16
+      }
+    },
+    "ascension_combat:divine_sunderer": {
+      "weapon": {
+        "damage": 16.7,
+        "speed": 1.2
+      },
+      "stats": {
+        "attack_damage": 5,
+        "health": 22,
+        "omnivamp": 3
+      }
+    },
+    "ascension_combat:darken_blade": {
+      "weapon": {
+        "damage": 14.3,
+        "speed": 1.4
+      },
+      "stats": {
+        "attack_damage": 4,
+        "health": 16,
+        "magic_penetration": 8,
+        "attack_speed": 15
+      }
+    },
+    "ascension_combat:ragefang": {
+      "weapon": {
+        "damage": 10,
+        "speed": 2.0
+      },
+      "stats": {
+        "attack_damage": 3,
+        "attack_speed": 25,
+        "magic_penetration": 10,
+        "health": 8
+      }
+    },
+    "ascension_combat:endless_hunger": {
+      "weapon": {
+        "damage": 5,
+        "speed": 4.0
+      },
+      "stats": {
+        "attack_damage": 6,
+        "omnivamp": 2,
+        "health": 24
+      }
+    },
+    "ascension_combat:wraithblade": {
+      "weapon": {
+        "damage": 12.5,
+        "speed": 1.6
+      },
+      "stats": {
+        "lethality": 20,
+        "attack_damage": 4,
+        "move_speed": 12,
+        "health": 2
+      }
+    },
+    "ascension_combat:mortal_reminder": {
+      "stats": {
+        "attack_damage": 15,
+        "attack_speed": 20,
+        "armor_penetration": 6,
+        "health": 32
+      }
+    },
+    "ascension_combat:heartwood_of_pallas": {
+      "stats": {
+        "attack_damage": 14,
+        "magic_penetration": 10,
+        "attack_speed": 15,
+        "health": 32
+      }
+    },
+    "ascension_combat:galeforce": {
+      "stats": {
+        "attack_damage": 14,
+        "attack_speed": 25,
+        "move_speed": 12,
+        "health": 26
+      }
+    },
+    "ascension_combat:protean_mask": {
+      "stats": {
+        "armor": 30,
+        "magic_resist": 30,
+        "health": 25
+      }
+    },
+    "ascension_combat:edge_of_night": {
+      "stats": {
+        "armor": 20,
+        "magic_resist": 20,
+        "health": 15,
+        "lethality": 10,
+        "attack_damage": 2
+      }
+    },
+    "ascension_combat:gargoyle_stoneplate": {
+      "stats": {
+        "armor": 55,
+        "magic_resist": 45,
+        "health": 35
+      }
+    },
+    "ascension_combat:guardian_wing": {
+      "stats": {
+        "armor": 35,
+        "magic_resist": 35,
+        "health": 50
+      }
+    },
+    "ascension_combat:rocketbelt": {
+      "stats": {
+        "armor": 30,
+        "magic_resist": 20,
+        "health": 20,
+        "attack_damage": 3,
+        "move_speed": 9
+      }
+    },
+    "ascension_combat:collectors_pants": {
+      "stats": {
+        "armor": 30,
+        "magic_resist": 20,
+        "health": 15,
+        "attack_damage": 5,
+        "lethality": 8
+      }
+    },
+    "ascension_combat:unending_despair": {
+      "stats": {
+        "armor": 30,
+        "magic_resist": 40,
+        "health": 35
+      }
+    },
+    "ascension_combat:ninja_tabi": {
+      "stats": {
+        "armor": 45,
+        "magic_resist": 25,
+        "health": 10
+      }
+    },
+    "ascension_combat:mercury_treads": {
+      "stats": {
+        "magic_resist": 45,
+        "armor": 25,
+        "health": 10
+      }
+    },
+    "ascension_combat:swifty": {
+      "stats": {
+        "move_speed": 20,
+        "health": 15
+      }
+    },
+    "ascension_combat:berserkers_greaves": {
+      "stats": {
+        "attack_speed": 40,
+        "attack_damage": 3,
+        "health": 1
+      }
+    },
+    "ascension_combat:wizards_agony": {
+      "stats": {
+        "armor_penetration": 8,
+        "magic_penetration": 8,
+        "lethality": 10
+      }
+    },
+    "ascension_combat:tasted_blood": {
+      "stats": {
+        "omnivamp": 5,
+        "health": 15
+      }
+    },
+    "ascension_combat:zonias_hourglass": {
+      "slot": "offhand",
+      "stats": {
+        "armor": 40,
+        "magic_resist": 40,
+        "health": 15
+      }
+    },
+    "ascension_combat:steraks_harness": {
+      "slot": "offhand",
+      "stats": {
+        "health": 37,
+        "armor": 20,
+        "attack_damage": 2
+      }
+    }
   }
 }
