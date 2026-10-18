@@ -7,7 +7,6 @@ import com.ascension.combat.internal.stat.ItemStatModifiers;
 import com.ascension.combat.internal.stat.StatDataMaps;
 import com.ascension.combat.internal.stat.StatSystem;
 import com.ascension.combat.internal.stat.StatText;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -19,7 +18,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -29,12 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.enchantment.ConditionalEffect;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.GatherSkippedAttributeTooltipsEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
@@ -78,25 +71,24 @@ public final class StatTooltips {
     }
 
     private static void onGatherSkipped(GatherSkippedAttributeTooltipsEvent event) {
-        if (hasCombatStats(collect(event.getStack()))) {
+        Map<EquipmentSlotGroup, List<Line>> lines = collect(event.getStack());
+        if (hasCombatStats(lines)) {
             event.setSkipAll(true);
+            return;
         }
+        // Respiration's "Oxygen Bonus" is vanilla's air bubbles; here its effect is lung capacity, said in its description.
+        lines.values().stream().flatMap(List::stream)
+                .filter(line -> is(line.attribute(), Attributes.OXYGEN_BONUS))
+                .forEach(line -> event.skipId(line.modifier().id()));
     }
 
     private static void onItemTooltip(ItemTooltipEvent event) {
         Map<EquipmentSlotGroup, List<Line>> lines = collect(event.getItemStack());
-        List<Component> reductions = damageReductionLines(event.getItemStack());
         if (!hasCombatStats(lines)) {
-            // Enchantments' own damage reduction still shows on an item with no stats of its own.
-            if (!reductions.isEmpty()) {
-                int at = Math.min(1, event.getToolTip().size());
-                event.getToolTip().addAll(at, reductions);
-            }
             return;
         }
 
-        List<Component> block = new ArrayList<>(block(lines, event.getEntity(), event.getFlags()));
-        block.addAll(reductions);
+        List<Component> block = block(lines, event.getEntity(), event.getFlags());
         List<Component> tooltip = event.getToolTip();
         int at = Math.min(1, tooltip.size());
         tooltip.addAll(at, block);
@@ -128,29 +120,6 @@ public final class StatTooltips {
                 .anyMatch(line -> line.modifier().amount() != 0.0 && statFor(line.attribute()) != null);
     }
 
-    /**
-     * The damage reduction an item's enchantments give besides their stats ("-4.5% damage taken
-     * (Protection II)"). It is not an attribute, so no stat line carries it: Protection's cut comes from
-     * vanilla's own damage step, at 4% per protection point.
-     */
-    private static List<Component> damageReductionLines(ItemStack stack) {
-        List<Component> lines = new ArrayList<>();
-        ItemEnchantments enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
-        for (Object2IntMap.Entry<Holder<Enchantment>> entry : enchantments.entrySet()) {
-            float points = 0.0f;
-            for (ConditionalEffect<EnchantmentValueEffect> effect : entry.getKey().value()
-                    .getEffects(EnchantmentEffectComponents.DAMAGE_PROTECTION)) {
-                points = effect.effect().process(entry.getIntValue(), RandomSource.create(), points);
-            }
-            if (points > 0.0f) {
-                lines.add(Component.translatable("tooltip.ascension_combat.damage_reduction",
-                                StatText.number(points * 4.0, 1), Enchantment.getFullname(entry.getKey(), entry.getIntValue()))
-                        .withStyle(ChatFormatting.GRAY));
-            }
-        }
-        return lines;
-    }
-
     /** One stat's share from enchantments in one slot group, folded into the item's own line for that stat. */
     private record Key(CombatStat stat, AttributeModifier.Operation operation) {
     }
@@ -171,6 +140,10 @@ public final class StatTooltips {
         for (Line line : lines) {
             AttributeModifier modifier = line.modifier();
             if (modifier.amount() == 0.0 || isConverted(line.attribute())) {
+                continue;
+            }
+
+            if (is(line.attribute(), Attributes.OXYGEN_BONUS)) {
                 continue;
             }
 

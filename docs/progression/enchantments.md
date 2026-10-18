@@ -351,7 +351,13 @@ have no stat for. Everything else shows only the enchantment's name.
 from the lang file by key (`enchantment.<namespace>.<name>.desc`, with the level's number filled in where
 there is one). Data-driven, so another mod's enchantment gains a line by adding a key, and we write keys
 only for the ones in the table marked fix or add. On a book it also shows the stat preview.
-Not built: waiting for Sanchit's go.
+**Built 2026-10-18 (compiles, builds, data check passes; not seen in a client):** `EnchantmentTooltips`.
+Under an enchantment's name it adds (a) its damage reduction, worded by `enchantment.<ns>.<name>.reduces`
+("-12% fall damage taken" for Feather Falling; "damage" otherwise), (b) its grey description from
+`enchantment.<ns>.<name>.desc` when the lang file has one, and (c) on an enchanted book only, a coloured line
+per stat it gives at that level. Descriptions exist for Soulbound, Mending, Smite, Bane of Arthropods,
+Impaling, Density, Respiration and our five; Respiration's vanilla "Oxygen Bonus" line is hidden. A data
+rule fails the build when one of our enchantments has no description.
 
 ## 10. Other mods' enchantments
 

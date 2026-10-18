@@ -30,7 +30,7 @@ RULES = [
      'ascension_combat:enchantment/ shows as "Other" on the sheet (ADR-0022).'),
     ('our enchantment: a name in the lang file, and a place in the loot and table tags',
      'An enchantment with no lang key shows its raw key ("enchantment.ascension_combat.x") on every book and '
-     'tooltip. One missing from minecraft:non_treasure is never offered by the table, villagers or loot, and '
+     'tooltip, and one with no .desc key has no description line. One missing from minecraft:non_treasure is never offered by the table, villagers or loot, and '
      'one missing from ascension_combat:own never turns up in the structure chests. Neither logs anything.'),
 ]
 
@@ -109,6 +109,8 @@ def check_our_enchantments(module_resources):
         key = 'ascension_combat:' + name
         if 'enchantment.ascension_combat.' + name not in lang:
             findings.append((file, '', 'has no "enchantment.ascension_combat.%s" in en_us.json' % name))
+        if 'enchantment.ascension_combat.' + name + '.desc' not in lang:
+            findings.append((file, '', 'has no "enchantment.ascension_combat.%s.desc" in en_us.json (its tooltip line)' % name))
         if key in treasure:
             continue  # found in loot and sold, not rolled at the table: Soulbound
         if key not in own:
