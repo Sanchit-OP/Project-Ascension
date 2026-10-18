@@ -88,13 +88,40 @@ badge), `fight-scale2` / `fight-scale4`. Known gaps: the rune glyphs are still t
 smoothed up, so they should be redrawn as vector; the real font is not chosen; skill points, status
 effects and share-air are not drawn.
 
-## 6. Build order
+## 6. Build status
 
-**Done:** increment 1, the shell (2026-10-18): the contract in `core`, the `ascension-hud` module with `HudLayout` (anchors to positions, 8 tests), `HudLayer` and a client config (`enabled`, `opacity`). Core has 7 tests for the registry. Built and unit-tested; **not yet seen in a client**, and it draws nothing until an element is registered.
+Built and seen in a client (2026-10-18), each photographed at GUI scales 2 to 4:
 
-**Next:** health, then the stat block, oxygen, runes.
+1. **Shell:** the contract in `core` (`HudElement`, `HudAnchor`, `HudRegistry`, `HudTheme`, `HudIcon`),
+   the `ascension-hud` module, a layout (`HudLayout`, 8 tests) and a client config (`enabled`, `opacity`).
+2. **Health row** (hud): level badge, health bar (green now, white shield, grey regeneration, red just
+   lost), hunger badge. Vanilla hearts, armour, food and XP are hidden while the HUD is on.
+3. **Stat block** (combat): two columns, icon and number, left of the hotbar. Move Speed ignores the
+   sprint boost; Attack Speed reads against the bare hand (1.00); a number turns green or red for three
+   seconds after a buff or debuff.
+4. **Oxygen emblem** (atmosphere): a big O2 that rises as air runs low, amber then red with the screen
+   edge reddening; a quiet badge in good air. Atmosphere's plain bar remains as the fallback when no
+   HUD host is installed.
+5. **Rune chips** (combat): a round chip for each equipped rune with running state, right of the
+   hotbar; delta-synced (`RuneHudSyncPayload`, sent only when the list changes, only to the owner).
+   Stacks and charges fill a ring and carry a number; a cooldown refills its ring; a window drains it.
+6. **Skill points note** (combat): gold, above the health row, only while points are unspent.
 
+**Not yet:** the lungs-and-tank split on the oxygen emblem (the server sends one total today);
+per-element config (position, scale, visibility); item abilities, status effects and the boss bar are
+left as vanilla; a dedicated-server check with two players; a relog check; the frame-cost reading.
 
-Shell and layout, health, stat panel, oxygen, runes (with delta sync), the rest; a refactor pass
-every third increment. Proof per ADR-0008: scripted screenshots at GUI scales 2 to 4, a dedicated
-server with two players, a relog, and a frame-cost reading in `performance-log.md`.
+## 7. How it is checked
+
+Dormant dev scripts photograph the real HUD without a person playing. Each is armed by an empty file
+in `run/client/` and deletes it when it starts, then opens the `runes-test` world, sets states on the
+server, photographs at several GUI scales, and quits:
+
+| Trigger file | Script | Photographs |
+|---|---|---|
+| `hud-screenshots.txt` | `ascension-hud`'s `HudScreenshots` | health row and oxygen emblem |
+| `rune-hud-screenshots.txt` | combat's `RuneHudScreenshots` | rune chips |
+
+Launch with `./gradlew :modules:hud:runClient` (it also loads combat and atmosphere; `-PhudOnly` runs
+the HUD with nothing but core). Pictures land in `run/client/screenshots/hud-*.png`. Only one of the
+two scripts should be armed at a time.

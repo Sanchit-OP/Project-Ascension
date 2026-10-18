@@ -10,6 +10,11 @@ public final class DurationState {
 
     private long expiresAtGameTime;
 
+    /** The game tick it ends at, or 0 if it never started. For display; gameplay uses {@link #isActive}. */
+    public long expiresAtGameTime() {
+        return expiresAtGameTime;
+    }
+
     public void activateUntil(long expiresAtGameTime) {
         this.expiresAtGameTime = expiresAtGameTime;
     }

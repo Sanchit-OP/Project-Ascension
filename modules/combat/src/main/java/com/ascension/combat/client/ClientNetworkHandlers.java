@@ -46,6 +46,14 @@ public final class ClientNetworkHandlers {
         });
     }
 
+    public static void onRuneHudSync(com.ascension.combat.internal.net.RuneHudSyncPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+            long now = mc.level == null ? 0L : mc.level.getGameTime();
+            com.ascension.combat.client.hud.ClientRuneHud.update(payload.entries(), now);
+        });
+    }
+
     public static void onAbilityCooldownSync(AbilityCooldownSyncPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> ClientAbilityCooldowns.update(
                 payload.key(), payload.endsAtGameTime(), payload.durationTicks()));

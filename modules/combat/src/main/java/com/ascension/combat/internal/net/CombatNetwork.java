@@ -35,7 +35,7 @@ public final class CombatNetwork {
      * Protocol version. Bump when the set of payloads or any payload's shape changes, so
      * mismatched clients are rejected at handshake rather than silently misreading a packet.
      */
-    private static final String VERSION = "4";
+    private static final String VERSION = "5";
 
     private CombatNetwork() {
     }
@@ -65,6 +65,10 @@ public final class CombatNetwork {
                     AbilityCooldownSyncPayload.TYPE,
                     AbilityCooldownSyncPayload.STREAM_CODEC,
                     com.ascension.combat.client.ClientNetworkHandlers::onAbilityCooldownSync);
+            registrar.playToClient(
+                    RuneHudSyncPayload.TYPE,
+                    RuneHudSyncPayload.STREAM_CODEC,
+                    com.ascension.combat.client.ClientNetworkHandlers::onRuneHudSync);
         } else {
             // Registered so the server can encode and send; never received here.
             registrar.playToClient(StasisSyncPayload.TYPE, StasisSyncPayload.STREAM_CODEC, (payload, context) -> {
@@ -76,6 +80,8 @@ public final class CombatNetwork {
             registrar.playToClient(
                     AbilityCooldownSyncPayload.TYPE, AbilityCooldownSyncPayload.STREAM_CODEC, (payload, context) -> {
                     });
+            registrar.playToClient(RuneHudSyncPayload.TYPE, RuneHudSyncPayload.STREAM_CODEC, (payload, context) -> {
+            });
         }
     }
 
