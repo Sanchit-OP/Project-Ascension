@@ -23,7 +23,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
  *   <li>An advancement revoked by command: refreshed, so its points go.</li>
  *   <li>Login: the team's shared milestones the player is missing are awarded (a late joiner
  *       arrives with the team's points), then refreshed.</li>
- *   <li>Respawn: a new body carries only base values, so growth is applied again, then full health.</li>
+ *   <li>Respawn: a new body carries only base values, so growth is applied again.</li>
  *   <li>{@code /reload}: every player refreshed against the reloaded advancements.</li>
  * </ul>
  *
@@ -101,11 +101,9 @@ final class GrowthEvents {
 
     private static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            // Healing to full is not done here: gear and runes are still being put back at this
+            // point, so the stat system does it last (HealthAcrossLogin).
             PlayerGrowth.refresh(player, false);
-            // Returning from the End keeps health; a death respawns at full, growth included.
-            if (!event.isEndConquered()) {
-                player.setHealth(player.getMaxHealth());
-            }
         }
     }
 

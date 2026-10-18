@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -16,8 +17,8 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Keeps a player's health across logging out and back in, now that armour gives Health
- * (docs/technical/item-stats.md section 5).
+ * Keeps a player's health across logging out and back in, and across a respawn, now that armour
+ * gives Health (docs/technical/item-stats.md section 5).
  *
  * <p>The vanilla trap: a player's saved health is read back with {@code setHealth}, which caps it
  * at max health. Worn gear's modifiers are never saved and only return on the player's first tick,
@@ -52,6 +53,28 @@ public final class HealthAcrossLogin {
     public static void register(IEventBus modBus, IEventBus gameBus) {
         TYPES.register(modBus);
         gameBus.addListener(HealthAcrossLogin::onLoggedIn);
+        gameBus.addListener(EventPriority.LOWEST, HealthAcrossLogin::onRespawn);
+    }
+
+    /**
+     * A respawn is the same trap in a smaller shape. A new body starts at the bare 20 Health, and
+     * the modifiers that raise it (worn gear that survived death, growth, runes) come back one at a
+     * time: gear on the new body's first tick, the others in their own respawn handlers. Healing
+     * to full before they were all back left a player in netherite at 23 of 63.
+     *
+     * <p>So this runs last (lowest priority, after growth and the runes have put theirs back),
+     * puts the worn gear's modifiers on now rather than a tick later, and only then heals. Coming
+     * back from the End is not a death: health stays as it was.
+     */
+    private static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        WornGear.reapply(player);
+        if (!event.isEndConquered()) {
+            player.setHealth(player.getMaxHealth());
+        }
     }
 
     private static void onLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
