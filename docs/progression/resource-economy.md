@@ -157,6 +157,8 @@ and build our own JEI pages for what it cannot know (§7).
 
 ## 5. The combat items: League-style build paths
 
+> **Built 2026-10-18** on branch `combat-build-paths`: the recipes, the six hearts and their drops, and a JEI page. The recipes are in [`build-paths.md`](build-paths.md); what follows is the design they came from.
+
 **Paused 2026-10-15** (Sanchit): stat growth, armour and runes come first, so build paths have
 something to be balanced against ([`player-power.md`](player-power.md)).
 
