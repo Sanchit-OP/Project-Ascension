@@ -1,6 +1,8 @@
 package com.ascension.atmosphere.internal;
 
 import com.ascension.atmosphere.AscensionAtmosphere;
+import com.ascension.atmosphere.internal.sealed.AirDispenserBlock;
+import com.ascension.atmosphere.internal.sealed.AirDispenserBlockEntity;
 import com.ascension.atmosphere.internal.sealed.OxygenEmitterBlock;
 import com.ascension.atmosphere.internal.sealed.OxygenEmitterBlockEntity;
 import com.ascension.atmosphere.internal.supply.OxygenRefillStationBlock;
@@ -11,6 +13,12 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -39,6 +47,35 @@ public final class AtmosphereContent {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, AscensionAtmosphere.MOD_ID);
     private static final DeferredRegister<DataComponentType<?>> COMPONENTS =
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AscensionAtmosphere.MOD_ID);
+
+    private static final DeferredRegister<FluidType> FLUID_TYPES =
+            DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, AscensionAtmosphere.MOD_ID);
+    private static final DeferredRegister<Fluid> FLUIDS =
+            DeferredRegister.create(Registries.FLUID, AscensionAtmosphere.MOD_ID);
+
+    /**
+     * Air as a fluid (ADR-0026): what Create tanks and pipes carry and an Air Dispenser takes.
+     * No bucket and no world block, so it exists only inside containers.
+     */
+    public static final Supplier<FluidType> AIR_TYPE = FLUID_TYPES.register(
+            "air",
+            () -> new FluidType(FluidType.Properties.create()
+                    .density(1)
+                    .viscosity(1)
+                    .temperature(293)
+                    .canSwim(false)
+                    .canDrown(false)
+                    .canPushEntity(false)
+                    .canExtinguish(false)
+                    .supportsBoating(false)));
+    public static final Supplier<BaseFlowingFluid.Source> AIR =
+            FLUIDS.register("air", () -> new BaseFlowingFluid.Source(airProperties()));
+    public static final Supplier<BaseFlowingFluid.Flowing> AIR_FLOWING =
+            FLUIDS.register("air_flowing", () -> new BaseFlowingFluid.Flowing(airProperties()));
+
+    private static BaseFlowingFluid.Properties airProperties() {
+        return new BaseFlowingFluid.Properties(AIR_TYPE, AIR, AIR_FLOWING);
+    }
 
     /**
      * Units of oxygen stored in one item stack.
@@ -92,6 +129,25 @@ public final class AtmosphereContent {
                             .of(OxygenEmitterBlockEntity::new, OXYGEN_EMITTER.get())
                             .build(null));
 
+    public static final Supplier<Block> AIR_DISPENSER = BLOCKS.register(
+            "air_dispenser",
+            () -> new AirDispenserBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(3.0f, 6.0f)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.METAL)));
+
+    public static final Supplier<Item> AIR_DISPENSER_ITEM = ITEMS.register(
+            "air_dispenser",
+            () -> new BlockItem(AIR_DISPENSER.get(), new Item.Properties()));
+
+    public static final Supplier<BlockEntityType<AirDispenserBlockEntity>> AIR_DISPENSER_ENTITY =
+            BLOCK_ENTITIES.register(
+                    "air_dispenser",
+                    () -> BlockEntityType.Builder
+                            .of(AirDispenserBlockEntity::new, AIR_DISPENSER.get())
+                            .build(null));
+
     public static final Supplier<Block> OXYGEN_REFILL_STATION = BLOCKS.register(
             "oxygen_refill_station",
             () -> new OxygenRefillStationBlock(BlockBehaviour.Properties.of()
@@ -125,12 +181,22 @@ public final class AtmosphereContent {
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
         COMPONENTS.register(modBus);
+        FLUID_TYPES.register(modBus);
+        FLUIDS.register(modBus);
         modBus.addListener(AtmosphereContent::addToCreativeTabs);
+        modBus.addListener(AtmosphereContent::registerCapabilities);
+    }
+
+    /** Pipes and tanks reach the dispenser through the standard fluid capability. */
+    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, AIR_DISPENSER_ENTITY.get(),
+                (dispenser, side) -> dispenser.fluidHandler());
     }
 
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             event.accept(OXYGEN_EMITTER_ITEM.get());
+            event.accept(AIR_DISPENSER_ITEM.get());
             event.accept(OXYGEN_REFILL_STATION_ITEM.get());
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {

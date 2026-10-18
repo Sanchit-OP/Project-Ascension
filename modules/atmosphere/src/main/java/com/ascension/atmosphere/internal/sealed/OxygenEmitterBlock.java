@@ -62,7 +62,7 @@ public final class OxygenEmitterBlock extends Block implements EntityBlock {
      * space must say so, not sit there doing nothing while the player wonders why they are still
      * suffocating.
      */
-    private static void report(Player player, SealedVolume.Result result) {
+    static void report(Player player, SealedVolume.Result result) {
         if (result.sealed()) {
             // This emitter's own volume. The previous version reported the level-wide union,
             // which is a different and much less useful number the moment a second emitter

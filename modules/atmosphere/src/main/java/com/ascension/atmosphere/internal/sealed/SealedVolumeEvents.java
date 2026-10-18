@@ -103,7 +103,7 @@ public final class SealedVolumeEvents {
                         .withStyle(ChatFormatting.GREEN));
     }
 
-    private static void notifyNear(ServerLevel level, List<BlockPos> emitters, Component message) {
+    static void notifyNear(ServerLevel level, List<BlockPos> emitters, Component message) {
         if (emitters.isEmpty()) {
             return;
         }

@@ -1,7 +1,10 @@
 package com.ascension.atmosphere.client;
 
 import com.ascension.atmosphere.AscensionAtmosphere;
+import com.ascension.atmosphere.internal.AtmosphereContent;
 import com.ascension.core.api.client.HudRegistry;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,6 +40,22 @@ public final class AtmosphereClient {
         HudRegistry.register(
                 ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "oxygen"),
                 new OxygenElement());
+    }
+
+    /** Air has no world block, so only its texture matters: a pale veil in tanks and pipes. */
+    @SubscribeEvent
+    public static void registerFluidExtensions(RegisterClientExtensionsEvent event) {
+        event.registerFluidType(new IClientFluidTypeExtensions() {
+            @Override
+            public ResourceLocation getStillTexture() {
+                return ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "fluid/air_still");
+            }
+
+            @Override
+            public ResourceLocation getFlowingTexture() {
+                return ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "fluid/air_flow");
+            }
+        }, AtmosphereContent.AIR_TYPE.get());
     }
 
     /**

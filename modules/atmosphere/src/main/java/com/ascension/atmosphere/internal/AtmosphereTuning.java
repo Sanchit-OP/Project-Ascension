@@ -109,6 +109,18 @@ public final class AtmosphereTuning {
     /** How far from the emitter the fill may reach, in blocks along any axis. */
     public static final int SEALED_VOLUME_RADIUS = 24;
 
+    /** Air an Air Dispenser holds, in mB (1 unit of oxygen = 1 mB, ADR-0026). */
+    public static final int DISPENSER_CAPACITY_MB = 4000;
+
+    /**
+     * Blocks of room one mB per second holds: a dispenser spends 1 mB a second per 16 blocks of the
+     * room it keeps breathable, so a 2,000-block hall needs 125 mB/s. One rule, no gas physics.
+     */
+    public static final int ROOM_BLOCKS_PER_MB_SECOND = 16;
+
+    /** Ticks between a dispenser's air checks. One subtraction a second, never a scan. */
+    public static final int DISPENSER_CHECK_TICKS = 20;
+
     private AtmosphereTuning() {
     }
 

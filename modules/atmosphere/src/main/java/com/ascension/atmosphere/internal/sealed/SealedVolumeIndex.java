@@ -31,6 +31,13 @@ public final class SealedVolumeIndex {
     /** Emitter position to the volume it pressurises. Only sealed emitters appear here. */
     private final Long2ObjectOpenHashMap<LongOpenHashSet> volumes = new Long2ObjectOpenHashMap<>();
 
+    /**
+     * Emitters whose supply has run dry (an Air Dispenser out of air). Their volume is still known,
+     * so the size is available and the room recovers the moment air returns, but it is not
+     * pressurised while they are in here. Emitters absent from this set are always supplied.
+     */
+    private final LongOpenHashSet starved = new LongOpenHashSet();
+
     /** Flattened union of every volume, for O(1) lookup. */
     private final LongOpenHashSet pressurised = new LongOpenHashSet();
 
@@ -58,6 +65,7 @@ public final class SealedVolumeIndex {
     /** Stop tracking an emitter entirely. */
     public void removeEmitter(BlockPos emitter) {
         emitters.remove(emitter.asLong());
+        starved.remove(emitter.asLong());
         if (volumes.remove(emitter.asLong()) != null) {
             rebuildUnion();
         }
@@ -141,10 +149,30 @@ public final class SealedVolumeIndex {
                 && Math.abs(emitter.getZ() - changed.getZ()) <= reach;
     }
 
+    /**
+     * Say whether an emitter has air to hold its room with.
+     *
+     * @return true when this changed whether a sealed room is pressurised
+     */
+    public boolean setSupplied(BlockPos emitter, boolean supplied) {
+        long key = emitter.asLong();
+        boolean changed = supplied ? starved.remove(key) : starved.add(key);
+        if (changed) {
+            rebuildUnion();
+        }
+        return changed && volumes.containsKey(key);
+    }
+
+    public boolean isSupplied(BlockPos emitter) {
+        return !starved.contains(emitter.asLong());
+    }
+
     private void rebuildUnion() {
         pressurised.clear();
-        for (LongOpenHashSet volume : volumes.values()) {
-            pressurised.addAll(volume);
+        for (Long2ObjectOpenHashMap.Entry<LongOpenHashSet> entry : volumes.long2ObjectEntrySet()) {
+            if (!starved.contains(entry.getLongKey())) {
+                pressurised.addAll(entry.getValue());
+            }
         }
     }
 

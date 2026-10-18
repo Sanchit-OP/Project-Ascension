@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "ascension_atmosphere:block/air_dispenser_end",
+    "side": "ascension_atmosphere:block/air_dispenser_side"
+  }
+}

@@ -200,6 +200,37 @@ def emitter_end():
     return im
 
 
+def dispenser_side():
+    """A casing with a round nozzle and a frost-lit slot: the thing that breathes out."""
+    rng = random.Random(801)
+    im = img()
+    plate(im, 0, 0, 15, 15, rng, base=2, grain=3)
+    px = im.load()
+    fill(im, 3, 3, 12, 12, DARK)
+    fill(im, 4, 4, 11, 11, STEEL[1])
+    fill(im, 5, 5, 10, 10, DARK)
+    fill(im, 6, 6, 9, 9, FROST_D)
+    fill(im, 7, 7, 8, 8, FROST)
+    for x in range(3, 13):
+        px[x, 13] = STEEL[3] + (255,)
+    rivet(im, 0, 0)
+    rivet(im, 14, 14)
+    return im
+
+
+def dispenser_end():
+    rng = random.Random(802)
+    im = img()
+    plate(im, 0, 0, 15, 15, rng, base=3, grain=3)
+    fill(im, 2, 2, 13, 13, STEEL[1])
+    fill(im, 3, 3, 12, 12, STEEL[2])
+    px = im.load()
+    for y in range(4, 12, 2):                # a fluid intake grille, so pipes read as feeding it
+        for x in range(4, 12):
+            px[x, y] = DARK + (255,)
+    return im
+
+
 def wave(x, y, t, terms):
     """Tileable in x, y and t: every term uses whole numbers of periods."""
     v = 0.0
@@ -241,6 +272,8 @@ def main():
         ('block/oxygen_refill_station_bottom.png', station_bottom()),
         ('block/oxygen_emitter_side.png', emitter_side()),
         ('block/oxygen_emitter_end.png', emitter_end()),
+        ('block/air_dispenser_side.png', dispenser_side()),
+        ('block/air_dispenser_end.png', dispenser_end()),
     ]
     for rel, im in sheets:
         save(im, rel)

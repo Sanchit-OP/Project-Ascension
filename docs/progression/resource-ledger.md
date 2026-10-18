@@ -31,6 +31,9 @@ No survival source, on purpose. The rules say why.
 
 ### Blocks
 
+**Air Dispenser** · `ascension_atmosphere:air_dispenser`
+- From: Crafting: Iron Ingot + Glass + Hopper
+
 **Oxygen Emitter** · `ascension_atmosphere:oxygen_emitter`
 - From: Crafting: Oxygen Tank + Redstone Block + Iron Ingot
 
