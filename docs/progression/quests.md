@@ -325,8 +325,8 @@ dimensions and 2 structures exist, and no item task consumes what a player holds
 1. ~~Small content fixes~~ **Done (2026-10-18):** an optional "The Wither" quest on The Rot (after the fortress) and a line on "The dark below" saying the city lies inside the Deep Dark. Server check 10 of 10 again.
 2. **Update `QuestScreenChecks`** for the new pages and fix its three findings from section 12 (the space stop at (4000, 0)
    lands on the Moon, so use (4600, 0); close the quest panel before photographing; the window size call has no effect).
-   Photograph every page, and the gate plan page. **Needs Sanchit's go to launch the client**; one batched run, then record
-   the photographs in `design/quest-book/` and what they show.
+   **Sanchit decided (2026-10-18): no client run until every page and every path (the build paths) is done, then one run.**
+   So do this update last, once, with the forge chain pages in; do not launch a client for it before.
 3. **Reward tables** (choice of one from three): the generator does not write them yet (format in `journey.md` 5.8). Only
    worth it once there is gear to choose between (build paths).
 4. ~~Update `CLAUDE.md` and `docs/technical/architecture.md`~~ **Done (2026-10-18).**

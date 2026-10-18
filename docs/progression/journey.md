@@ -118,6 +118,29 @@ Each of these changed a quest or is a fact a later session needs.
 
 ## 5. What to add or tune, in the order it hurts
 
+### Decided by Sanchit, 2026-10-18 (read this before the gaps below)
+
+| Gap | Decision |
+|---|---|
+| 5.1 First survival ship | **Leave it.** Players try it in the alpha; the alpha test decides whether a starter design or a schematic ruin is needed. |
+| 5.2 Range and air | **A ship is a closed space, so the Oxygen Emitter aboard should pressurise it.** No tank change. This becomes part of **Oxygen v2** (below), which he starts soon. |
+| 5.3 HUD chart in space | Leave for now; something later. |
+| 5.4 Helium | Two ideas to check against the rest of the economy: a **better tank** made with it, or a **fuel** for a rocket engine. Undecided. |
+| 5.6 Build paths | A **new session** starts from `plans/session-prompts/4-build-paths.md`. |
+| 5.8 Enchantments | Put them in the table (**they already are**, see 5.8), and add the **Lootr** mod so every player gets their own loot from a chest (awaiting his yes to the download). |
+| 5.9 First minutes | Tell the player about the book at first login (**built**, not yet seen). |
+| 5.7 Client verification | **One run at the end**, once every page and every path is done. No client run before. |
+
+**What is true about air on a ship today (so Oxygen v2 starts from fact, not hope).** The Oxygen Emitter pressurises a sealed
+room (up to 4,096 blocks, 24 out), and a ship's cabin is exactly such a room, so the idea is right. But **it has never been
+seen to work aboard a moving ship, and the code to do it does not exist.** What exists is the seam: `AtmosphereAnchor.Region`
+(a pressurised zone stored in the ship's own space and translated when asked) and the `AnchorSpace` a mod registers to say
+how. Nothing registers one: `ascension-compat-sable` has no atmosphere code. What Oxygen v2 needs for this: (1) the Sable side
+of that seam; (2) an emitter and a refill station that work aboard; (3) a cabin that stays valid when the ship's blocks
+change; (4) doors and hatches that seal (todo.md: "Airlocks need solid blocks"). With a cabin that holds air, tanks are only for
+walking outside, and the "29 blocks a second" limit in 5.2 goes away. Until v2 lands, the book's "A long flight" quest
+(tanks count the trip) is the true story and must be rewritten when it does.
+
 ### 5.1 No one has ever built a ship from survival parts and flown it (blocks the whole spine)
 
 The road to space is by airship (ADR-0015), titanium makes the bearing (ADR-0018), and the book now teaches the parts.
@@ -178,27 +201,36 @@ forge chain on Gear and Growth with real choice rewards (reward tables, below).
 
 ### 5.8 Smaller things
 
-- Our five enchantments are chest-only (not in the table, trades or random loot). Either say so in the book (it already
-  sends players to the colony chests) or add them to the enchanting table's pool.
+- **Correction (2026-10-18): our five enchantments are already in the enchanting table, sold by villagers and in loot.** An
+  earlier version of this list said they were chest-only; that was wrong. Vanilla's `in_enchanting_table`, `tradeable` and
+  `on_random_loot` tags are all built on `#minecraft:non_treasure`, ours are in it, and the combat client check
+  (`EnchantmentChecks.ourEnchantmentsAreOffered`) has passed. Soulbound is the exception: loot and trades only, by design.
+  Nothing to add.
+- **Lootr** (proposed by Sanchit): a mod that gives every player their own copy of a chest's loot. Modrinth, MIT, needed on
+  client and server, no dependencies. It converts chests that use a loot table, so it covers the Archive, the colony halls and
+  every vanilla structure; chests filled by code are left alone. Removing it later deletes the converted chests.
 - Reward choices ("one of three") need FTB reward tables. The generator does not write them yet; the format was read from
   the jar (`reward_tables/<name>.snbt`, a table has `loot_size` and weighted `rewards`, a choice reward names it by
   `table_id`).
 - The Wither now has a quest (optional, after the fortress). Its advancement is a growth milestone, so the first team kill gives points.
 
-### 5.9 First minutes
+### 5.9 First minutes (built 2026-10-18, not yet seen)
 
-Nothing tells a new player to press J. FTB Quests puts a button in the inventory sidebar (a red mark when there is
+Nothing told a new player to press J; now `QuestBookWelcome` (in `ascension-compat-ftbquests`) sends one chat line, once per
+player, naming the player's own key for the book. Original problem: nothing told a new player to press J. FTB Quests puts a button in the inventory sidebar (a red mark when there is
 something to claim), but a first-login chat line like the one `ascension-compat-ftbteams` already shows for parties would
 cost very little.
 
-## 6. Suggested order
+## 6. Suggested order (after Sanchit's decisions, 2026-10-18)
 
-1. **A real ship, and a hand-built gate, in one client session** (5.1, 5.7). It decides 5.2 and costs no code.
-2. **Helium's job** (5.4), small, then its quest.
-3. **The book's own client run** (the three findings in `quests.md` section 12 fixed first).
-4. **Build paths** (5.6), the big one.
-5. **The HUD chart** (5.3) and, if 5.2 says so, **the ship cabin bridge**.
-6. **The Nether's whole-world client test**, which has been waiting longest.
+1. **Oxygen v2**, including air aboard a ship (his, soon). The quest book's flight pages change with it.
+2. **Build paths** (a new session). Its draft already spends helium on eight epic components, so helium has a use there; a
+   helium tank or fuel would be a second use, and the supply must cover both.
+3. **Helium's second job**, chosen together with the above.
+4. **Lootr**, once he says yes to the download.
+5. **One client run at the very end**, covering every page, every path, the hand-built gate, a real ship, the Nether whole and
+   two clients.
+6. Left for later: the HUD chart (5.3), a starter ship (after the alpha).
 
 ## 7. What was changed in the book because of this
 

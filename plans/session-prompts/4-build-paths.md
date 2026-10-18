@@ -78,6 +78,24 @@ Drafted 2026-10-12, never shown to Sanchit. Put it to him before building.
     condition works on loot modifiers.
 - **JER:** Just Enough Resources is in the pack, but it won't show drops added by loot modifiers.
 
+## What changed beside this since it was drafted (2026-10-18)
+
+- **The quest book exists** (`docs/progression/quests.md`, `docs/progression/journey.md`). Its Gear and Growth page
+  (`pack/quests/gear_and_growth.py`) can only teach what exists today. **When your recipes land, give it a forge chain**: one
+  quest per component and legendary, each an `item(...)` task (a quest never takes the item from the player). Run
+  `python tools/generate-quests.py`; the build refuses an item id that does not exist. Where the path forks, the book wants a
+  **choice of one reward from three**, which needs FTB reward tables; the generator does not write them yet (the format is in
+  `journey.md` 5.8), so adding that to `tools/quests/emit.py` is part of your hand-off.
+- **The Wither already has a quest** (The Rot page, optional), and so does every boss named above except the Ender Guardian
+  and Golem, which are on The Moon page. Your hearts are their natural rewards to point at, never a requirement.
+- **Helium** has sources (ore, Archive chests) and, in the draft above, eight epic components as its first real use. Sanchit
+  is also considering a helium tank or a fuel; keep the supply enough for both, and tell him how much helium the draft asks for.
+- **Our five enchantments are already in the enchanting table, villagers and loot** (`docs/progression/enchantments.md`),
+  and Sanchit is adding Lootr, so chests give every player their own loot. The per-item enchantment choice for the 26 items
+  (enchantments.md section 8) belongs here.
+- **He will do one client run at the very end** of the quest book and the build paths together. Test on a dedicated server as you
+  go, and record anything only a client can show in your hand-off instead of asking for a launch.
+
 ## Working beside other sessions
 
 - **Ask the stats session for the API** your items read stats through. Never read stats around it.

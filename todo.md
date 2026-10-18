@@ -130,6 +130,15 @@ Captured during M1.6 testing; none block v0.1.
 - **No general block-change event** means external world edits are not seen until something else
   near the volume changes. Fails safe, but worth revisiting if it bites.
 
+## Oxygen v2 (Sanchit, 2026-10-18: starting soon)
+
+First item, decided: **a ship is a closed space, so the Oxygen Emitter aboard a ship pressurises it.** Today that is unbuilt and
+unseen (journey.md, "Decided by Sanchit"). Needs: the Sable side of `AtmosphereAnchor.Region` / `AnchorSpace` (the seam exists in
+the API, nothing registers it); an emitter and a refill station that work aboard; a cabin that stays valid as the ship's blocks
+change; doors and hatches that seal (see "Airlocks need solid blocks" above). With it, tanks are only for walking outside and the
+ship-speed limit on reaching the Nether goes away. **The quest book's "A long flight" and "Share your air" lines change when it
+lands.** Also queued by Sanchit: helium as a better tank or as a fuel (undecided; build paths also use helium).
+
 ## Missing documentation
 
 - Quest and onboarding design — FTB Quests appears in the mod list with no design behind it. In
