@@ -1,9 +1,12 @@
 # Teams: who shares what
 
 > **Designed and decided 2026-10-18 ([ADR-0023](../decisions/0023-teams-are-ftb-teams-parties.md)).**
-> Sanchit chose all three recommendations in §8. **T1 is built (2026-10-18)**: the `core` contract
-> and growth per team, seen in the scripted run with one team. Until the FTB Teams jar (T2) is in, the
-> game behaves as before (the whole server is one team). Facts about FTB Teams below were read from
+> Sanchit chose all three recommendations in §8. **T1, T2 and T3 are built (2026-10-18)**: the `core`
+> contract and growth per team (T1, seen in the scripted client run with one team), the FTB Teams jar
+> with a one-time first-login line (T2), and friendly fire (T3). **T2 and T3 are built and compile, but
+> not yet seen in a game**: they wait for one combined session with two clients and a dedicated server
+> (§7), so no player has yet been on a real party. T4 (the HUD's team list) is not built. Without the FTB
+> Teams jar the game behaves as before (the whole server is one team). Facts about FTB Teams below were read from
 > the installed jar (`2101.1.11`), not remembered. Every number is a placeholder.
 
 ## 1. In short
@@ -70,13 +73,17 @@ parties are invite-only unless set to free to join), and it is exactly the catch
 
 ## 5. What else asks "who is on my team?"
 
-- **Allies for runes.** Today only Challenge looks (`rune-system.md` §4.4). It should mean teammates
-  and your own pets, found on the event that needs them and never by scanning every tick (ADR-0007).
-  Players of other teams are not allies.
-- **Friendly fire.** Our combat is built for big numbers and area effects. **Proposal: teammates cannot
-  hurt each other** (a server setting, on by default), because Whirlwind-sized hits in a crowded fight
-  would otherwise be a way to kill a friend by accident. PvP between teams stays whatever the server's
-  `pvp` setting says.
+- **Allies for runes.** **No rune looks for allies yet**: Challenge only turns mobs back on its owner
+  (`rune-system.md` §4.4). The first ally rune (a Guardian-style shield) should mean teammates and your
+  own pets, found on the event that needs them and never by scanning every tick (ADR-0007), through
+  `TeamRegistry.onlineMembers` and a radius. Players of other teams are not allies. Nothing is built for
+  it until a rune needs it.
+- **Friendly fire.** Our combat is built for big numbers and area effects, so **teammates cannot hurt
+  each other** (decided; `TeamFire`, setting `friendlyFire` in `ascension_combat-teams-server.toml`,
+  false by default). It runs ahead of everything else on a hit, so a cancelled hit starts no combat
+  timer, heals no one and triggers no rune, and it covers a teammate's arrows, pets and fuses. Only a
+  real team is protected: with no team mod the stand-in team is never covered, so pvp is the server's
+  `pvp` setting, as is fighting another team.
 - **The HUD** can show teammates' health in the corner, League-style, and an oxygen warning on a
   teammate you could rescue. That needs one small synced list of "who is on my team", sent when it
   changes, never per tick. It is the HUD session's to draw (`plans/session-prompts/6-hud-overhaul.md`);
@@ -121,9 +128,9 @@ claims their own rewards. That fits the owners in §1 without code:
 
 | Step | What | Checked by |
 |---|---|---|
-| **T1** | The `core` contract, the default provider, growth per team, unit tests for the union rule | Dedicated server, the dev client alone: nothing changes (one team) |
-| **T2** | The FTB Teams jar, join and leave handling | Dedicated server, **two clients**: a solo player's kill pays only them; the second joins their party and gets the points; leaves and keeps them. Restart the server: same |
-| **T3** | Allies and friendly fire | Two clients: a rune effect reaches a teammate and not a stranger; a teammate's hit does no damage |
+| **T1** | The `core` contract, the default provider, growth per team, unit tests for the union rule | **Built.** Scripted client run with no team mod: an old save loads, the team events award both ways. Not yet: a dedicated server, a reload of the new save format |
+| **T2** | The FTB Teams jar (`ascension-compat-ftbteams`), join and leave handling, the first-login line | **Built, not seen.** Dedicated server, **two clients**: a solo player's kill pays only them; the second joins their party and gets the points; leaves and keeps them; the line appears once. Restart the server: same |
+| **T3** | Friendly fire (allies wait for a rune that needs them) | **Built, not seen.** Two clients: a teammate's hit does no damage, a stranger's does; a stand-in team is never protected |
 | **T4** | The team list for the HUD | The HUD session reads it |
 | **T5** | Refactor pass (ADR-0008) | No new features |
 

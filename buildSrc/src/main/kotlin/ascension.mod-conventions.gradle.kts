@@ -81,6 +81,15 @@ repositories {
         name = "Modrinth"
         content { includeGroup("maven.modrinth") }
     }
+    // FTB's own release repository: Teams and Library are not on Modrinth.
+    maven("https://maven.ftb.dev/releases") {
+        name = "FTB"
+        content { includeGroup("dev.ftb.mods") }
+    }
+    maven("https://maven.architectury.dev") {
+        name = "Architectury"
+        content { includeGroup("dev.architectury") }
+    }
 }
 
 /**

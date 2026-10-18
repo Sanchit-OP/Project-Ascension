@@ -1,0 +1,55 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: FTB Teams"
+authors = "${mod_authors}"
+description = '''
+Makes an FTB Teams party the team Ascension means: a boss's skill points go to the killer's party,
+a rune's allies are the party's members, and teammates do not hurt each other.
+
+Optional. Without FTB Teams installed, this jar simply is not present, and Ascension treats everyone
+on the server as one team.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# The contract this answers (com.ascension.core.api.TeamRegistry).
+[[dependencies.${mod_id}]]
+modId = "ascension_core"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+# The actual integration target. Required, not optional: if FTB Teams is absent NeoForge should
+# refuse to load this rather than load it into a no-op (ADR-0003, as ascension-compat-chunky does).
+[[dependencies.${mod_id}]]
+modId = "ftbteams"
+type = "required"
+versionRange = "${ftbteams_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "architectury"
+type = "required"
+versionRange = "${architectury_version_range}"
+ordering = "NONE"
+side = "BOTH"
