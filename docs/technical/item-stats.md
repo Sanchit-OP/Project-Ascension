@@ -503,3 +503,11 @@ A refactor pass comes every third increment.
   (`SpecificityPicker`); `MobStatTier` and `CataclysmBossStats` are gone.
 
 **The rune and growth sessions can read stats now**, through `StatReader` (§6).
+
+**Seen together with them, 2026-10-18** (`client/dev/IntegrationChecks`, 64 checks): netherite, one
+growth node and a Health shard add up to 63 Health, and the sheet names each part ("Netherite Boots
+10, Growth 1, Runes 2"); a 20-point hit in that gear is cut by exactly the defence curve at the
+player's whole Armor (74); max Health and held Health come back from disk. It found one fault here: a
+respawn healed to full before worn gear's Health was back, so a player in netherite who kept their
+inventory came back at 23 of 63. `HealthAcrossLogin` now heals last, after growth and the runes,
+having put the gear's modifiers on at once.
