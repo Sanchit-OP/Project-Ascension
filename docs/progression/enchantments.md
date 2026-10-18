@@ -167,6 +167,20 @@ Notes on the choices:
   damage effect, scaled the same way, so a stat-source one cannot be stacked with them
   (`exclusive_set/damage` already prevents that).
 
+### 3.4 What increment 2 built (2026-10-18)
+
+Sharpness and Power give +0.5 Attack Damage a level in the main hand; Breach gives +4% Armor
+Penetration a level (the attribute holds a fraction, so the data says 0.04). Seen on a dedicated
+server (Sharpness IV on a diamond sword: `Base 3, Diamond Sword +6, Enchantments +2`; Power V on a
+bow +2.5; Breach IV on a mace +16%) and in a client by the scripted checks.
+
+Known limits, left for the balancing session:
+- **Arrows:** a bow's Power counts while the bow is in the main hand. `PhysicalDamage` adds the
+  shooter's Attack Damage at the moment an arrow lands, so a player who switches item in flight loses
+  it. Vanilla's Power was fixed when the arrow was fired.
+- **Melee with a Power bow:** the same Attack Damage is also there if you hit with the bow.
+- Smite, Bane of Arthropods and Impaling are untouched (still vanilla's situational damage).
+
 ## 4. New enchantments of ours (all data)
 
 Names are working titles. Each is a `minecraft:attributes` effect on a stat from `item-stats.md` §3,

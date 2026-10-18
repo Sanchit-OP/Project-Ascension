@@ -178,6 +178,15 @@ public final class IntegrationChecks {
         server(20, IntegrationChecks::checkProtectionHit);
         server(20, p -> expect("taking Protection off gives the Armor back", StatReader.value(p, CombatStats.ARMOR), armorBeforeEnchant));
 
+        // ---- Sharpness IV is +2 Attack Damage and Breach IV is +16% Armor Penetration, in the main hand
+        server(5, p -> holdEnchanted(p, Items.DIAMOND_SWORD, net.minecraft.world.item.enchantment.Enchantments.SHARPNESS, 4));
+        server(20, p -> expectEnchanted(p, CombatStats.ATTACK_DAMAGE, "Sharpness IV", 2.0));
+        client(10, () -> expect("the client sheet gives Sharpness IV +2 Attack Damage",
+                amountOf(StatReader.breakdown(Minecraft.getInstance().player, CombatStats.ATTACK_DAMAGE), "Enchantments"), 2.0));
+        server(5, p -> holdEnchanted(p, Items.MACE, net.minecraft.world.item.enchantment.Enchantments.BREACH, 4));
+        server(20, p -> expectEnchanted(p, CombatStats.ARMOR_PENETRATION, "Breach IV", 0.16));
+        server(5, p -> p.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY));
+
         // ---- An admin revoking a milestone closes a slot again, and the client sees it
         server(5, p -> revoke(p, MILESTONES.get(3)));
         client(10, () -> expect("the client sees the last shard row shut again", ClientRunePageCache.open().defence(), false));
@@ -262,6 +271,21 @@ public final class IntegrationChecks {
     }
 
     private static double armorBeforeEnchant;
+
+    /** Puts an enchanted item in the main hand; vanilla re-reads its modifiers on the next tick. */
+    private static void holdEnchanted(ServerPlayer player, net.minecraft.world.item.Item item,
+            net.minecraft.resources.ResourceKey<net.minecraft.world.item.enchantment.Enchantment> enchantment, int level) {
+        ItemStack stack = new ItemStack(item);
+        stack.enchant(player.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
+                .getHolderOrThrow(enchantment), level);
+        player.setItemSlot(EquipmentSlot.MAINHAND, stack);
+    }
+
+    private static void expectEnchanted(ServerPlayer player, CombatStat stat, String what, double amount) {
+        StatBreakdown breakdown = StatReader.breakdown(player, stat);
+        expect(what + " gives " + stat.name() + " exactly " + amount + " under Enchantments", amountOf(breakdown, "Enchantments"), amount);
+        expect(what + " leaves no " + stat.name() + " under Other", sources(breakdown).contains("Other"), false);
+    }
 
     private static void enchantChestplate(ServerPlayer player) {
         armorBeforeEnchant = StatReader.value(player, CombatStats.ARMOR);
