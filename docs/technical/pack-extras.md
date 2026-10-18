@@ -105,7 +105,7 @@ The client:
 The server: boots with the FTB set, clients without Iris and Ok Zoomer can still join (both are
 client-only), and the dev mirror (`syncDevMods`) skips the client-only jars on the server.
 
-## A map that shows the team (researched 2026-10-18, awaiting Sanchit's go-ahead to install)
+## A map that shows the team (FTB Chunks, installed 2026-10-18)
 
 Sanchit: a minimap that works with FTB Teams so team members see each other, in the world too, even far
 away; use a mod, do not build it. Everything below was read from the mods' own changelogs, Modrinth
@@ -118,8 +118,27 @@ and FTB's maven, for **Minecraft 1.21.1 on NeoForge**.
 | JourneyMap `+` JourneyMap Teams (Apache-2.0, 212 KB) | Colours teammates' icons by team colour, and can hide non-teammates | Nothing found that shows far players | Lists FTB Teams as supported | Possible; unclear at range |
 | Open Parties and Claims | Party heads on Xaero's maps | Yes | **Replaces** FTB Teams with its own party system | Rejected: we chose FTB Teams (ADR-0023) |
 
-**FTB Chunks needs** Architectury, FTB Library and FTB Teams, all already in the instance (it was built
-against slightly older patch versions of each). **Two minimaps clash:** its own can be switched off in the
+**Installed in Ascension Dev (Sanchit's go-ahead, 2026-10-18):** `ftb-chunks-neoforge-2101.1.22.jar`,
+655,807 bytes, from maven.ftb.dev, sha1 `a53f1bb7965c6954a348d4f321f03d3971ad503f` (equal to the hash FTB
+publishes, and again after the copy). Read from the jar without starting the game: no nested jars and no
+native code; it needs Architectury 13.0.8+, FTB Library 2101.1.34+ and FTB Teams 2101.1.9+, and the instance has
+13.0.11, 2101.1.37 and 2101.1.11. It carries **12 mixins** (armor stands, biomes, block states, the chunk map,
+fire, flowing fluid, item frames, pistons, vehicles, and on the client the packet listener, `Gui` and a util
+class), so it is the first thing to suspect if a boot misbehaves beside Lithium, ModernFix or our HUD. **Not yet
+booted**: Sanchit will say when to test.
+
+**Its keys** (read from the code, so they match the audit once it is rerun): Open Map **M**, minimap zoom in
+**=** and out **-**, and four unbound: toggle minimap, claim manager, quick add waypoint, waypoint manager.
+M is free in the pack. `=` and `-` are also FTB Quests' zoom keys, but those act only inside a screen, so
+they do not clash. No change to `pack/config/defaultoptions/keybindings.txt` is needed.
+
+**Its server settings** (`config/ftbchunks-world.snbt`; copy it to `world/serverconfig/` to survive pack
+updates), names read from the jar, defaults to be read once it has written the file: `max_claimed_chunks`,
+`hard_team_claim_limit`, `max_force_loaded_chunks`, `disable_protection`, `no_wilderness`, `pvp_mode`,
+`ally_mode`, `location_mode_override`, `force_disable_minimap`, `long_range_tracker_interval` (how often
+far-away teammates are re-sent, the knob if that traffic ever shows in the performance log) and
+`waypoint_sharing` (server, party, players). Claims can be limited to nothing by setting the claim limits to 0
+or switching protection off. **Two minimaps clash:** its own can be switched off in the
 client config if a player prefers another.
 
 **It brings claims with it.** Players can claim chunks and keep them loaded; the team's claim, PvP and
