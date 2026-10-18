@@ -11,6 +11,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -31,7 +35,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public final class StatBlockElement implements HudElement {
 
-    private static final int COLUMN_WIDTH = 33;
+    private static final int COLUMN_WIDTH = 38;
     private static final int WIDTH = COLUMN_WIDTH * 2;
     private static final int ROW_HEIGHT = 10;
     private static final int HEIGHT = ROW_HEIGHT * 3 + 6;
@@ -55,6 +59,9 @@ public final class StatBlockElement implements HudElement {
             new Cell(CombatStats.MAGIC_RESIST, HudIcon.MAGIC_RESIST, Format.POINTS),
             new Cell(CombatStats.MOVE_SPEED, HudIcon.MOVE_SPEED, Format.MOVE_SPEED),
     };
+
+    /** Vanilla's sprinting speed modifier. Walking and sprinting must read the same. */
+    private static final ResourceLocation SPRINT_ID = ResourceLocation.withDefaultNamespace("sprinting");
 
     private final StatTrend[] trends = new StatTrend[CELLS.length];
     private final double[] shownValue = new double[CELLS.length];
@@ -114,6 +121,9 @@ public final class StatBlockElement implements HudElement {
         for (int i = 0; i < CELLS.length; i++) {
             Cell cell = CELLS[i];
             double value = StatReader.value(player, cell.stat());
+            if (cell.stat() == CombatStats.MOVE_SPEED) {
+                value = StatFormat.withoutSprint(value, sprintAmount(player));
+            }
             trends[i].update(value, tick);
             if (text[i] == null || value != shownValue[i]) {
                 shownValue[i] = value;
@@ -131,6 +141,13 @@ public final class StatBlockElement implements HudElement {
             g.drawString(font, text[i], right - font.width(text[i]), y + (ICON - font.lineHeight) / 2 + 1,
                     (alpha << 24) | colour, true);
         }
+    }
+
+    /** The sprint modifier's amount while the player is sprinting, else 0. */
+    private static double sprintAmount(LocalPlayer player) {
+        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeModifier sprint = speed == null ? null : speed.getModifier(SPRINT_ID);
+        return sprint == null ? 0.0 : sprint.amount();
     }
 
     private static String format(Format format, double value) {

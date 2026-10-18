@@ -1,6 +1,6 @@
 {
   "providers": [
-    { "type": "ttf", "file": "ascension_hud:barlow_regular.ttf", "size": 9.0, "oversample": 8.0, "shift": [0.0, 0.0] },
+    { "type": "ttf", "file": "ascension_hud:barlow_regular.ttf", "size": 8.5, "oversample": 8.0, "shift": [0.0, 0.0] },
     { "type": "reference", "id": "minecraft:default" }
   ]
 }

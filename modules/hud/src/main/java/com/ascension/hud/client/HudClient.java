@@ -35,6 +35,8 @@ public final class HudClient {
     public static void onClientSetup(FMLClientSetupEvent event) {
         HudRegistry.declareHost(HOST_ID);
         HudRegistry.register(ResourceLocation.fromNamespaceAndPath(AscensionHud.MOD_ID, "vitals"), VITALS);
+        // Dormant unless its trigger file is in the game directory.
+        com.ascension.hud.client.dev.HudScreenshots.register(net.neoforged.neoforge.common.NeoForge.EVENT_BUS);
     }
 
     @SubscribeEvent

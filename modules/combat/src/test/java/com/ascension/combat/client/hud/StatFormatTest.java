@@ -16,9 +16,25 @@ class StatFormatTest {
     }
 
     @Test
-    void attackSpeedHasTwoDecimals() {
-        assertEquals("0.63", StatFormat.attackSpeed(0.63));
-        assertEquals("4.00", StatFormat.attackSpeed(4.0));
+    void attackSpeedIsAgainstTheBareHand() {
+        assertEquals("1.00", StatFormat.attackSpeed(4.0));
+        assertEquals("1.20", StatFormat.attackSpeed(4.8));
+        assertEquals("0.63", StatFormat.attackSpeed(2.52));
+    }
+
+    @Test
+    void sprintingDoesNotChangeMoveSpeed() {
+        double walking = 0.1;
+        double sprinting = walking * 1.3;
+        assertEquals("0%", StatFormat.moveSpeed(StatFormat.withoutSprint(sprinting, 0.3)));
+        assertEquals("0%", StatFormat.moveSpeed(StatFormat.withoutSprint(walking, 0.0)));
+    }
+
+    @Test
+    void aRealBonusSurvivesRemovingTheSprint() {
+        // +20% from a potion, while sprinting.
+        double sprinting = 0.1 * 1.2 * 1.3;
+        assertEquals("+20%", StatFormat.moveSpeed(StatFormat.withoutSprint(sprinting, 0.3)));
     }
 
     @Test

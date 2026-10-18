@@ -23,9 +23,25 @@ final class StatFormat {
         return String.format(Locale.ROOT, "%.1f", value);
     }
 
-    /** Attacks per second, two decimals. */
+    /** Vanilla's bare-hand attack speed, in attacks per second. */
+    static final double BARE_HAND_ATTACK_SPEED = 4.0;
+
+    /**
+     * Attack Speed against the bare hand: an empty hand reads 1.00, and a bonus reads above it
+     * (+20% is 1.20). Shown this way because "4.00" for doing nothing special looks wrong.
+     */
     static String attackSpeed(double perSecond) {
-        return String.format(Locale.ROOT, "%.2f", perSecond);
+        return String.format(Locale.ROOT, "%.2f", perSecond / BARE_HAND_ATTACK_SPEED);
+    }
+
+    /**
+     * Move Speed with vanilla's sprinting boost taken back out. Sprinting adds a transient +30%
+     * on top of everything, which is not a bonus the player earned, so it must not show.
+     *
+     * @param sprintAmount the sprint modifier's amount (0.3), or 0 when it is not applied
+     */
+    static double withoutSprint(double value, double sprintAmount) {
+        return sprintAmount == 0.0 ? value : value / (1.0 + sprintAmount);
     }
 
     /** A fraction as a percent: 0.08 is "8%". */
