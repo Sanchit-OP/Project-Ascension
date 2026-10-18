@@ -103,11 +103,14 @@ def check_our_enchantments(module_resources):
         lang = json.load(handle)
     own = values(('ascension_combat', 'tags', 'enchantment', 'own.json'))
     table = values(('minecraft', 'tags', 'enchantment', 'non_treasure.json'))
+    treasure = values(('minecraft', 'tags', 'enchantment', 'treasure.json'))
     for name in names:
         file = os.path.join(data, 'enchantment', name + '.json')
         key = 'ascension_combat:' + name
         if 'enchantment.ascension_combat.' + name not in lang:
             findings.append((file, '', 'has no "enchantment.ascension_combat.%s" in en_us.json' % name))
+        if key in treasure:
+            continue  # found in loot and sold, not rolled at the table: Soulbound
         if key not in own:
             findings.append((file, '', 'is not in tags/enchantment/own.json (no structure loot)'))
         if key not in table:

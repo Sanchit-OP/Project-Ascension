@@ -4,11 +4,15 @@ import com.ascension.combat.api.stat.CombatStat;
 import com.ascension.combat.api.stat.CombatStats;
 import com.ascension.combat.api.stat.StatBreakdown;
 import com.ascension.combat.api.stat.StatReader;
+import com.ascension.combat.internal.enchanting.EnchantingAttachments;
+import com.ascension.combat.internal.enchanting.EnchantingContent;
+import com.ascension.combat.internal.enchanting.Soulbound;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSource;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -19,14 +23,20 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import static com.ascension.combat.client.dev.IntegrationChecks.SCRIPT;
 import static com.ascension.combat.client.dev.IntegrationChecks.amountOf;
 import static com.ascension.combat.client.dev.IntegrationChecks.client;
 import static com.ascension.combat.client.dev.IntegrationChecks.expect;
 import static com.ascension.combat.client.dev.IntegrationChecks.server;
+import static com.ascension.combat.client.dev.IntegrationChecks.setKeepInventory;
 import static com.ascension.combat.client.dev.IntegrationChecks.sources;
 
 /**
@@ -91,6 +101,9 @@ final class EnchantmentChecks {
         server(5, p -> strip(p, EquipmentSlot.HEAD));
         server(20, p -> expect("taking Respiration off gives the lungs back", lungCapacity(p), lungsWithoutRespiration));
 
+
+        // ---- Soulbound and the tomes, last: it ends in a death and a respawn
+        planTomes();
     }
 
     private static double armorBeforeEnchant;
@@ -103,6 +116,65 @@ final class EnchantmentChecks {
      */
     private static void strip(ServerPlayer player, EquipmentSlot slot) {
         player.setItemSlot(slot, new ItemStack(player.getItemBySlot(slot).getItem()));
+    }
+
+    /** Soulbound and the two tomes (not in the first plan; run with the rest). */
+    static void planTomes() {
+        // ---- Soulbound: a real death, then a respawn. The Soulbound sword comes back in its slot; a plain item does not.
+        server(5, p -> {
+            setKeepInventory(p, false);
+            // The worn netherite is Soulbound for this death too, so the rest of the run still has it.
+            for (EquipmentSlot slot : List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)) {
+                enchant(p, p.getItemBySlot(slot), Soulbound.ENCHANTMENT, 1);
+            }
+            p.getInventory().setItem(3, ItemStack.EMPTY);
+            p.getInventory().setItem(4, ItemStack.EMPTY);
+            ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
+            enchant(p, sword, Soulbound.ENCHANTMENT, 1);
+            p.getInventory().setItem(3, sword);
+            p.getInventory().setItem(4, new ItemStack(Items.DIRT, 5));
+        });
+        server(5, p -> p.kill());
+        server(20, IntegrationChecks::respawn);
+        server(40, p -> {
+            expect("worn Soulbound armour comes back worn", p.getItemBySlot(EquipmentSlot.CHEST).is(Items.NETHERITE_CHESTPLATE), true);
+            for (EquipmentSlot slot : List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)) {
+                strip(p, slot);
+            }
+            expect("a Soulbound sword comes back in its slot", p.getInventory().getItem(3).is(Items.DIAMOND_SWORD), true);
+            expect("a plain item does not", p.getInventory().getItem(4).isEmpty(), true);
+            expect("the kept items are cleared once given back", p.getData(EnchantingAttachments.KEPT_ITEMS).items().isEmpty(), true);
+            setKeepInventory(p, true);
+        });
+
+        // ---- The tomes: extraction by crafting recipe, scrapping at the anvil
+        server(5, p -> {
+            ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
+            enchant(p, sword, Enchantments.SHARPNESS, 4);
+            ItemStack tome = new ItemStack(EnchantingContent.TOME_OF_EXTRACTION.get());
+            CraftingInput grid = CraftingInput.of(3, 1, List.of(sword, tome, new ItemStack(Items.BOOK)));
+            var recipe = p.server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, grid, p.level());
+            expect("the extraction recipe matches an item, a tome and a book", recipe.isPresent(), true);
+            if (recipe.isPresent()) {
+                ItemStack result = recipe.get().value().assemble(grid, p.level().registryAccess());
+                expect("extraction gives an enchanted book", result.is(Items.ENCHANTED_BOOK), true);
+                expect("with the sword's Sharpness IV", result.get(DataComponents.STORED_ENCHANTMENTS).getLevel(
+                        p.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SHARPNESS)), 4);
+                expect("and the sword comes back with none",
+                        recipe.get().value().getRemainingItems(grid).get(0).getOrDefault(DataComponents.ENCHANTMENTS,
+                                ItemEnchantments.EMPTY).isEmpty(), true);
+            }
+            CraftingInput two = CraftingInput.of(3, 1, List.of(sword, tome, new ItemStack(Items.STICK)));
+            expect("a stick in place of the book does not match",
+                    p.server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, two, p.level()).isPresent(), false);
+
+            AnvilUpdateEvent anvil = new AnvilUpdateEvent(sword, new ItemStack(EnchantingContent.TOME_OF_SCRAPPING.get()), "", 0, p);
+            NeoForge.EVENT_BUS.post(anvil);
+            expect("the anvil gives the sword back", anvil.getOutput().is(Items.DIAMOND_SWORD), true);
+            expect("with no enchantments", anvil.getOutput().getOrDefault(DataComponents.ENCHANTMENTS,
+                    ItemEnchantments.EMPTY).isEmpty(), true);
+            expect("for one level", anvil.getCost(), 1L);
+        });
     }
 
     private static ResourceKey<Enchantment> ours(String name) {

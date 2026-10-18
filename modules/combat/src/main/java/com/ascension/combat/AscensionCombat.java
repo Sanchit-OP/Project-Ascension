@@ -82,6 +82,7 @@ public final class AscensionCombat {
         // Runes (docs/technical/rune-system.md): the rune registry, Rune Chalk, settings, command.
         RuneRegistries.register(modBus);
         RuneContent.register(modBus);
+        com.ascension.combat.internal.enchanting.EnchantingContent.register(modBus, NeoForge.EVENT_BUS);
         container.registerConfig(ModConfig.Type.SERVER, RuneConfig.SPEC);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> RuneCommands.register(event.getDispatcher()));
 

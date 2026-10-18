@@ -113,6 +113,14 @@ No survival source, on purpose. The rules say why.
 **Test Magic Blade [DEBUG]** · `ascension_combat:test_magic_blade`
 - From: *nothing yet*
 
+**Tome of Extraction** · `ascension_combat:tome_of_extraction`
+- From: Crafting: Book + Lapis Lazuli + Amethyst Shard
+- Used: Used up in a crafting grid to move an item's enchantments onto a book (ExtractionRecipe)
+
+**Tome of Scrapping** · `ascension_combat:tome_of_scrapping`
+- From: Crafting: Book + Lapis Lazuli + Flint
+- Used: Used up at an anvil to wipe an item's enchantments (TomeAnvil)
+
 **Unending Despair** · `ascension_combat:unending_despair`
 - From: *nothing yet*
 

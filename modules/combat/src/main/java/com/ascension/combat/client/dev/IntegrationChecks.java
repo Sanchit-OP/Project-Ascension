@@ -278,7 +278,7 @@ public final class IntegrationChecks {
         SCRIPT.log("   the client reads max health " + seen);
     }
 
-    private static void respawn(ServerPlayer player) {
+    static void respawn(ServerPlayer player) {
         // The packet listener ticks the player it holds, so it must be handed the new body, as
         // the game does when a player presses Respawn.
         ServerPlayer fresh = player.server.getPlayerList().respawn(player, false, Entity.RemovalReason.KILLED);
@@ -351,7 +351,7 @@ public final class IntegrationChecks {
         zombie.discard();
     }
 
-    private static void setKeepInventory(ServerPlayer player, boolean keep) {
+    static void setKeepInventory(ServerPlayer player, boolean keep) {
         player.serverLevel().getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_KEEPINVENTORY).set(keep, player.server);
         SCRIPT.log("   keepInventory is now " + keep);
     }

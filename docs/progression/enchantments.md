@@ -232,6 +232,25 @@ tags are built on that one). **Mending now repairs at half rate** (decision 3: `
 change, and a tank must not be stretched by an enchantment), Glyphbound (needs code). Our 26 combat items
 accept enchantments only through vanilla's tags so far; choosing per item is §8.
 
+### 4.2 Soulbound and the tomes (built 2026-10-18; Sanchit dropped Apotheosis for now and asked for these)
+
+Sanchit's answers: Soulbound from loot and trades only; Scrapping and Extraction first; how the tomes are
+obtained was left to me (crafted, so no world is needed, ADR-0018).
+
+| Thing | What it does | How you get it |
+|---|---|---|
+| **Soulbound** (enchantment, level 1) | The item stays with you through death and returns to the same inventory slot after the respawn. Does nothing under `keepInventory`. Code is `Soulbound.java` (a saved attachment, no mixin); the enchantment is data. | Loot and villager trades only (the `treasure`, `tradeable` and `on_random_loot` tags, not the table). The Archive's and Colony's chests give it 10% of the time. |
+| **Tome of Scrapping** | At an anvil with an enchanted item: returns the item with every enchantment off (curses and Soulbound too), for 1 level; uses up the tome. | Shapeless: book, 2 lapis, flint. |
+| **Tome of Extraction** | In a crafting grid with an enchanted item and a book: makes an enchanted book with all its enchantments, and the item comes back with none. A custom recipe type (`ascension_combat:extraction`), because an anvil can return only one thing. | Shapeless: book, 2 lapis, amethyst shard. |
+
+Art: `tools/generate-tome-art.py` (ash cover with three ember scratches; violet cover with a gold clasp and
+three rising motes). Not seen in a client yet. Soulbound, the recipe and the anvil have checks written in
+`EnchantmentChecks.planTomes()` that have **not** been run.
+
+**Damage reduction on tooltips (2026-10-18):** Protection's extra cut is not a stat, so no line showed it and
+it looked missing. An enchanted piece's tooltip now says, for example, `-4.5% damage taken (Protection II)`.
+The cut itself was measured working (see 3.5).
+
 ## 5. Where they come from
 
 Rewards, never requirements (ADR-0018). A player can always reach every vanilla-power enchantment at
