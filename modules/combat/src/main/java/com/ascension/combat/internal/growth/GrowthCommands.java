@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.growth;
 
 import com.ascension.combat.internal.stat.StatText;
+import com.ascension.core.api.TeamRegistry;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -34,8 +35,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
  * /ascension growth take &lt;node&gt;             take a node
  * /ascension growth respec                  reset your tree (out of combat, 20 levels)
  * /ascension growth reset &lt;player&gt;          reset someone's tree, free (op)
- * /ascension growth team                    the team's shared milestones (op)
- * /ascension growth team forget &lt;advancement&gt;  so it can be earned again (op)
+ * /ascension growth team &lt;player&gt;          the shared milestones of that player's team (op)
+ * /ascension growth team &lt;player&gt; forget &lt;advancement&gt;  so that team can earn it again (op)
  * </pre>
  */
 final class GrowthCommands {
@@ -63,12 +64,14 @@ final class GrowthCommands {
                                         .executes(ctx -> reset(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))))
                         .then(Commands.literal("team")
                                 .requires(source -> source.hasPermission(2))
-                                .executes(ctx -> team(ctx.getSource()))
-                                .then(Commands.literal("forget")
-                                        .then(Commands.argument("advancement", ResourceLocationArgument.id())
-                                                .suggests(GrowthCommands::suggestTeamMilestones)
-                                                .executes(ctx -> forget(ctx.getSource(),
-                                                        ResourceLocationArgument.getId(ctx, "advancement"))))))));
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .executes(ctx -> team(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))
+                                        .then(Commands.literal("forget")
+                                                .then(Commands.argument("advancement", ResourceLocationArgument.id())
+                                                        .suggests(GrowthCommands::suggestTeamMilestones)
+                                                        .executes(ctx -> forget(ctx.getSource(),
+                                                                EntityArgument.getPlayer(ctx, "player"),
+                                                                ResourceLocationArgument.getId(ctx, "advancement")))))))));
     }
 
     private static int show(CommandSourceStack source, ServerPlayer player) {
@@ -156,15 +159,15 @@ final class GrowthCommands {
         return 1;
     }
 
-    private static int team(CommandSourceStack source) {
-        var earned = PlayerGrowth.team(source.getServer()).earned();
-        source.sendSuccess(() -> Component.literal("Team milestones: "
-                + (earned.isEmpty() ? "none yet" : earned.toString())), false);
+    private static int team(CommandSourceStack source, ServerPlayer player) {
+        var earned = PlayerGrowth.team(source.getServer()).earned(TeamRegistry.teamOf(player));
+        source.sendSuccess(() -> Component.literal("Team milestones of ").append(player.getDisplayName())
+                .append(": " + (earned.isEmpty() ? "none yet" : earned.toString())), false);
         return earned.size();
     }
 
-    private static int forget(CommandSourceStack source, ResourceLocation advancement) {
-        boolean had = PlayerGrowth.team(source.getServer()).remove(advancement);
+    private static int forget(CommandSourceStack source, ServerPlayer player, ResourceLocation advancement) {
+        boolean had = PlayerGrowth.team(source.getServer()).remove(TeamRegistry.teamOf(player), advancement);
         if (!had) {
             source.sendFailure(Component.literal("The team has no milestone " + advancement));
             return 0;
@@ -181,6 +184,13 @@ final class GrowthCommands {
 
     private static CompletableFuture<Suggestions> suggestTeamMilestones(CommandContext<CommandSourceStack> ctx,
             SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggestResource(PlayerGrowth.team(ctx.getSource().getServer()).earned(), builder);
+        // The suggestion is for the first player named in the command, if it has been parsed yet.
+        try {
+            ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
+            return SharedSuggestionProvider.suggestResource(
+                    PlayerGrowth.team(ctx.getSource().getServer()).earned(TeamRegistry.teamOf(player)), builder);
+        } catch (CommandSyntaxException e) {
+            return builder.buildFuture();
+        }
     }
 }

@@ -1,8 +1,9 @@
 # Teams: who shares what
 
 > **Designed and decided 2026-10-18 ([ADR-0023](../decisions/0023-teams-are-ftb-teams-parties.md)).**
-> Sanchit chose all three recommendations in §8. **Nothing is built yet**: until T1 lands, the game
-> behaves as it does today (the whole server is one team). Facts about FTB Teams below were read from
+> Sanchit chose all three recommendations in §8. **T1 is built (2026-10-18)**: the `core` contract
+> and growth per team, seen in the scripted run with one team. Until the FTB Teams jar (T2) is in, the
+> game behaves as before (the whole server is one team). Facts about FTB Teams below were read from
 > the installed jar (`2101.1.11`), not remembered. Every number is a placeholder.
 
 ## 1. In short

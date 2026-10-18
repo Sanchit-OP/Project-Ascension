@@ -2,11 +2,14 @@ package com.ascension.combat.internal.growth;
 
 import com.ascension.combat.AscensionCombat;
 import com.ascension.core.api.CombatStateRegistry;
+import com.ascension.core.api.TeamRegistry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
@@ -94,6 +97,49 @@ public final class PlayerGrowth {
     /** The team's milestones (bosses and gates) this player has: what the rune page's slots open with. */
     public static int sharedMilestonesReached(ServerPlayer player) {
         return (int) earnedMilestones(player).stream().filter(GrowthMilestone::shared).count();
+    }
+
+    /** The advancement ids of the shared milestones this player has: what they bring to a team. */
+    static Set<ResourceLocation> sharedHeld(ServerPlayer player) {
+        Set<ResourceLocation> held = new HashSet<>();
+        for (GrowthMilestone milestone : earnedMilestones(player)) {
+            if (milestone.shared()) {
+                held.add(milestone.advancement());
+            }
+        }
+        return held;
+    }
+
+    /**
+     * Makes the player and their team hold the same shared milestones (docs/progression/teams.md
+     * section 4): the player is awarded what the team has and they lack, and the team, and its other
+     * members who are online, are given what the player has and the team lacks. Runs at login and
+     * when the player's team changes. Takes nothing from anyone.
+     */
+    public static void joinTeam(ServerPlayer player) {
+        MinecraftServer server = player.server;
+        UUID team = TeamRegistry.teamOf(player);
+        TeamGrowthState state = team(server);
+        TeamGrowthState.Join join = TeamGrowthState.join(state.earned(team), sharedHeld(player));
+
+        for (ResourceLocation id : join.forTeam()) {
+            state.add(team, id);
+            for (ServerPlayer mate : TeamRegistry.onlineMembers(server, team)) {
+                if (mate != player) {
+                    awardById(mate, id);
+                }
+            }
+        }
+        for (ResourceLocation id : join.forPlayer()) {
+            awardById(player, id);
+        }
+    }
+
+    private static void awardById(ServerPlayer player, ResourceLocation id) {
+        AdvancementHolder advancement = player.server.getAdvancements().get(id);
+        if (advancement != null) {
+            awardIfMissing(player, advancement);
+        }
     }
 
     public static int pointsEarned(ServerPlayer player) {
@@ -227,7 +273,7 @@ public final class PlayerGrowth {
     }
 
     /**
-     * A shared milestone reaches every player: awards each criterion this player is missing. Fires
+     * A shared milestone reaches every player on the team: awards each criterion this player is missing. Fires
      * the player's own advancement event, which refreshes their growth ({@link GrowthEvents}).
      */
     public static void awardIfMissing(ServerPlayer player, AdvancementHolder advancement) {
