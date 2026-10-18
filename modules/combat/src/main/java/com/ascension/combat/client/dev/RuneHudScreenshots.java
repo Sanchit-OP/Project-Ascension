@@ -64,6 +64,11 @@ public final class RuneHudScreenshots {
         add(6, RuneHudScreenshots::logProbes);
         add(6, () -> shoot("runes-3"));
         add(50, () -> shoot("runes-3-later"));
+        // What the HUD layer costs a frame with everything showing: health row, stat block, five
+        // rune chips and the skill points note, for about fifteen seconds of frames.
+        add(2, () -> cost("start"));
+        add(300, () -> { });
+        add(2, () -> System.out.println("[rune-hud-screenshots] frame cost, everything showing: " + cost("stop")));
         add(30, () -> resizeFor(4));
         add(14, () -> shoot("runes-4"));
         add(30, () -> resizeFor(2));
@@ -75,7 +80,10 @@ public final class RuneHudScreenshots {
         add(5, () -> command("ascension atmosphere debug oxygen 70"));
         add(14, () -> shoot("all-warning-3"));
         add(8, () -> command("ascension atmosphere debug oxygen 24"));
-        add(14, () -> shoot("all-critical-3"));
+        add(2, () -> cost("start"));
+        add(20, () -> shoot("all-critical-3"));
+        add(200, () -> command("ascension atmosphere debug oxygen 24"));
+        add(2, () -> System.out.println("[rune-hud-screenshots] frame cost, oxygen critical (glow and screen edge): " + cost("stop")));
         add(4, () -> command("ascension atmosphere debug clear"));
         add(30, () -> hudConfig("scale", 1.35));
         add(14, () -> shoot("all-scaled-3"));
@@ -83,6 +91,13 @@ public final class RuneHudScreenshots {
         add(2, () -> hudHide("ascension_combat:rune_chips"));
         add(14, () -> shoot("all-hidden-3"));
         add(2, () -> hudHide(null));
+        // A relog: leave the world, come back, and the chips must be there, right, with nothing stale.
+        add(4, () -> System.out.println("[rune-hud-screenshots] before the relog the client holds "
+                + com.ascension.combat.client.hud.ClientRuneHud.size() + " rune entries"));
+        add(2, RuneHudScreenshots::leaveWorld);
+        add(120, () -> holding = true);
+        add(10, RuneHudScreenshots::logProbes);
+        add(30, () -> shoot("relog-3"));
         add(10, () -> {
             holding = false;
             Minecraft mc = Minecraft.getInstance();
@@ -141,6 +156,27 @@ public final class RuneHudScreenshots {
             entry.getClass().getMethod("set", Object.class).invoke(entry, id == null ? List.of() : List.of(id));
         } catch (ReflectiveOperationException e) {
             System.out.println("[rune-hud-screenshots] could not set hidden elements: " + e);
+        }
+    }
+
+    /** Leaves the world as a player would, and lets the script open it again. */
+    private static void leaveWorld() {
+        Minecraft mc = Minecraft.getInstance();
+        holding = false;
+        mc.disconnect();
+        System.out.println("[rune-hud-screenshots] after leaving the world the client holds "
+                + com.ascension.combat.client.hud.ClientRuneHud.size() + " rune entries (expect 0)");
+        SCRIPT.reopenWorld();
+    }
+
+    /** Starts or stops the HUD module's frame-cost measurement, by name: combat does not depend on the HUD. */
+    private static String cost(String method) {
+        try {
+            Class<?> type = Class.forName("com.ascension.hud.client.HudFrameCost");
+            Object result = type.getMethod(method).invoke(null);
+            return result == null ? "" : result.toString();
+        } catch (ReflectiveOperationException e) {
+            return "unavailable: " + e;
         }
     }
 

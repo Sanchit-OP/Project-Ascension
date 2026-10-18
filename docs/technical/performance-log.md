@@ -309,3 +309,19 @@ kept as history and is not a comparison target. See *What a baseline can be comp
 M1.9 takes a fresh reading on the real configuration (dedicated server, current mod set) and
 runs the atmosphere-on / atmosphere-off A/B, which is the measurement that actually signs the
 milestone off.
+
+## 2026-10-18: the HUD layer, per frame
+
+Measured inside the client by `HudFrameCost` (two clock reads around the layer, armed only by the dev
+script), in the dev stack at GUI scale 3, with the health row, stat block, five rune chips and the
+skill points note all showing. This is the HUD's own cost, not total frame time.
+
+| State | Frames | Average | Worst |
+|---|---|---|---|
+| Everything showing, calm | 1,255 | 147.7 µs | 626.8 µs |
+| Oxygen critical (glow and screen-edge tint added) | 873 | 171.8 µs | 4,560.9 µs |
+
+About 0.9% of a 60 fps frame on average. The 4.5 ms worst frame in the second row is a single outlier
+(not repeated, probably a garbage collection or first draw of the edge sprite) and has not been
+investigated. **Not measured:** a Spark profile with the HUD on and off, and a dedicated server with two
+players; the relog check started but was interrupted before its result was read.

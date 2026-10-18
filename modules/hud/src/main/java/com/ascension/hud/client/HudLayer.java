@@ -45,6 +45,15 @@ public final class HudLayer implements LayeredDraw.Layer {
 
     @Override
     public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
+        long started = HudFrameCost.begin();
+        try {
+            draw(graphics, deltaTracker);
+        } finally {
+            HudFrameCost.end(started);
+        }
+    }
+
+    private void draw(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.options.hideGui
                 || !HudConfig.INSTANCE.enabled.getAsBoolean()) {

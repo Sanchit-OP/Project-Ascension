@@ -1,0 +1,176 @@
+{
+	id: "5B70CA1E5CE414C2"
+	group: ""
+	order_index: 1
+	filename: "planets"
+	default_quest_shape: "none"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/planets.png"
+		}
+	}
+	quests: [
+		{
+			id: "64FEAAF9F93DFB90"
+			x: 0.0d
+			y: 0.0d
+			shape: "none"
+			size: 1.7d
+			icon: {
+				id: "ftbquests:custom_icon"
+				count: 1
+				components: {
+					"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/planets/earth.png"
+				}
+			}
+			tasks: [
+				{
+					id: "1F0BEC49C287D646"
+					type: "dimension"
+					dimension: "minecraft:overworld"
+				}
+			]
+		}
+		{
+			id: "38E2DDDB06CDA399"
+			x: 2.663d
+			y: 0.0d
+			shape: "none"
+			size: 1.7d
+			icon: {
+				id: "ftbquests:custom_icon"
+				count: 1
+				components: {
+					"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/planets/moon.png"
+				}
+			}
+			dependencies: ["4121BDE2FA93BA25"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "65E9F1C5767C97BD"
+					type: "dimension"
+					dimension: "ascension_worlds:moon"
+				}
+			]
+			rewards: [
+				{
+					id: "051440AF243D44A5"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_tank"
+					count: 1
+				}
+				{
+					id: "6D7D624581611C7C"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 12
+				}
+			]
+		}
+		{
+			id: "4110412AC1AE6C2E"
+			x: 3.24d
+			y: 4.627d
+			shape: "none"
+			size: 1.7d
+			icon: {
+				id: "ftbquests:custom_icon"
+				count: 1
+				components: {
+					"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/planets/nether.png"
+				}
+			}
+			dependencies: ["38E2DDDB06CDA399"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "4164234B755BEDAD"
+					type: "dimension"
+					dimension: "minecraft:the_nether"
+				}
+			]
+			rewards: [
+				{
+					id: "66B9C6351A3D6519"
+					type: "item"
+					item: "minecraft:golden_helmet"
+					count: 1
+				}
+				{
+					id: "0E494337BF576896"
+					type: "item"
+					item: "minecraft:golden_boots"
+					count: 1
+				}
+				{
+					id: "79C45DB4894D1FF4"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 2
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [
+		{
+			id: "277F32C3974D6DB2"
+			x: 0.0d
+			y: 0.0d
+			width: 24.0d
+			height: 24.0d
+			image: "ascension_compat_ftbquests:textures/quests/planets/chart.png"
+			order: 0
+		}
+		{
+			id: "76A7C41DD05F911A"
+			x: 2.663d
+			y: 0.0d
+			width: 2.4d
+			height: 2.4d
+			image: "ascension_compat_ftbquests:textures/quests/planets/ring.png"
+			order: 1
+		}
+		{
+			id: "0D88C0CE1F487FB3"
+			x: 2.663d
+			y: 0.0d
+			width: 3.0d
+			height: 3.0d
+			image: "ascension_compat_ftbquests:textures/quests/planets/halo.png"
+			order: 2
+			dependency: "38E2DDDB06CDA399"
+		}
+		{
+			id: "34751BF8414E78B3"
+			x: 3.24d
+			y: 4.627d
+			width: 2.4d
+			height: 2.4d
+			image: "ascension_compat_ftbquests:textures/quests/planets/ring.png"
+			order: 1
+		}
+		{
+			id: "4EE1DC9C212AA6C9"
+			x: 3.24d
+			y: 4.627d
+			width: 3.0d
+			height: 3.0d
+			image: "ascension_compat_ftbquests:textures/quests/planets/halo.png"
+			order: 2
+			dependency: "4110412AC1AE6C2E"
+		}
+		{
+			id: "20CBDF07225E0CC1"
+			x: 0.0d
+			y: 0.0d
+			width: 24.0d
+			height: 24.0d
+			image: "ascension_compat_ftbquests:textures/quests/planets/you_are_here.png"
+			order: 9
+		}
+	]
+}
