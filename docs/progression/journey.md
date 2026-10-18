@@ -173,10 +173,30 @@ The Planets page shows the point and the arrow, but a pilot should not have to s
 
 ### 5.4 Helium has no job (a bug under the economy's own rule)
 
-Sources exist (ore, Archive chests), uses do not. **Smallest honest fix:** the **helium lamp** (economy section 4): a
-light source made of helium that shows what is hidden, with a line only its light reveals on the Nether's carving.
-Bigger: make helium a ship fuel for the burner (a stronger lift in thin air, which would also soften 5.1). Needs a
-decision; the book gets a quest the day it has a job.
+Sources exist (ore, Archive chests), uses do not. Sanchit (2026-10-18) is weighing a **better tank** made with it, or a **fuel**.
+What was found, so the choice is made on facts:
+
+- **Supply is not the limit.** Moon only. The ore feature tries 32 veins of up to 6 per chunk between y -64 and 24 (iron-like
+  abundance), one raw helium per ore block (no Fortune bonus is set), and an Archive store chest rolls 1 to 4 on a third of its
+  rolls. It needs an iron pickaxe, so it opens after the Moon, not before.
+- **Demand today is only the build-paths draft:** eight epic components (Pickaxe, Caulfield's Warhammer, Giant's Belt, Recurve
+  Bow, Chain Vest, Seeker's Armguard, Last Whisper, Noonquiver) and the helium lamp. A fuel or a tank would be a second and third use.
+- **There is no rocket engine to feed**, and ADR-0015 says so on purpose ("no vacuum mechanics, no rocket engines"). A true rocket
+  engine would need a new ADR that supersedes it. What a ship has is **propellers turned by rotation**.
+- **The nearest thing in the installed mods is Simulated's Portable Engine** (Create: Aeronautics ships Simulated): it burns fuel
+  items to turn a shaft, shows "Burn time", and a blaze cake superheats it. That is the ship-friendly power source, so a
+  **helium fuel would be ship fuel**, not rocket fuel. It looks up an item's burn time through its own helper
+  (`getBurnTime(ItemStack)`), which on NeoForge is very likely the standard furnace-fuel data map; **not yet confirmed**, and it is
+  a one-file change plus a server check (a data map giving raw helium, or a crafted helium cell, a long burn time). A cost: a
+  furnace would burn the same item, so a crafted cell is cleaner than the raw crystal.
+- **The Hot Air Burner needs no fuel** (a coal block is only its crafting ingredient, the tag `aeronautics:burner_fire`), so
+  the balloon cannot be fed helium without code. **Levitite** (end stone powder, zinc, water, heat) is the lift material.
+- **A tank is code in `ascension-atmosphere`** (a second tank item with its own capacity), and it belongs inside **Oxygen v2**,
+  where tank tiers will be decided anyway. A grounded name: a **heliox** tank (the breathing mix divers use).
+
+**Recommendation:** do the fuel first (cheap, data only, and it makes ship range a real choice: coal is bulky, a helium cell is
+dense), after confirming on a server that the Portable Engine takes it; leave the tank to Oxygen v2. They do not exclude each
+other. Either way the book gets a quest the day it has a job.
 
 ### 5.5 Titanium has one job
 
