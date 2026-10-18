@@ -49,25 +49,44 @@ Armor, 90 Magic Resist) with its abilities used correctly, reading the numbers f
 - **Kit** is the weapon worn with a full set of legendary armour, whose pieces together add about +8 Attack
   Damage and +8 Lethality. It is what a player late in the game sees.
 
-| Weapon | Alone (s) | Kit (s) | Why it is where it is |
-|---|---|---|---|
-| Ragefang | 85 | 50 | Builds attack speed as it hits |
-| Spear of Shojin | 85 | 51 | True damage on every third hit |
-| Veigo's Blade | 85 | 47 | Bonus from the target's current health |
-| Mortal Reminder | 85 | 55 | Ignores 60% of Armor; wounds cut healing |
-| Divine Sunderer | 89 | 60 | Heals you |
-| Darken Blade | 95 | 64 | Shields you |
-| Heartwood of Pallas | 94 | 68 | Stacks, then a long-draw execute |
-| Galeforce | 94 | 64 | Dash and homing shot |
-| Darius's Axe | 105 | 66 | **Slower on purpose:** its shred (up to -60% Armor) makes everyone else's hits land |
-| Endless Hunger | 110 | 46 | **Slower on purpose:** Omnivamp sustains a long fight; it speeds up as your Attack Damage grows |
-| Wraithblade | 115 | 69 | **Slower on purpose:** the blink and 20 Lethality |
-| *netherite sword* | 230 | 109 | |
-| *a 14-damage boss weapon* | 131 | 79 | |
+The spread is wide on purpose (Sanchit, 2026-10-19): some weapons are strong, some middling, and the ones that
+carry utility are slower. Fastest to slowest is 2.07 times (the check allows 2.2), so no weapon is the only
+choice, and every legendary is still faster than a boss weapon (131 s alone).
 
-The fastest and slowest are 1.36 times apart alone (the check allows 1.5), so no one weapon is the only
-choice, and every legendary is 1.2 to 2.7 times faster than a boss weapon. Each weapon's written time is in
-`tools/check-balance.py`; the build fails if its data drifts more than 6% from it.
+| Tier | Weapon | Alone (s) | Kit (s) | Why it is where it is |
+|---|---|---|---|---|
+| Strong | Spear of Shojin | 65 | 43 | True damage on every third hit |
+| Strong | Veigo's Blade | 70 | 42 | Bonus from the target's current health |
+| Strong | Mortal Reminder | 75 | 51 | Ignores 60% of Armor; wounds cut healing |
+| Middle | Divine Sunderer | 90 | 60 | Heals you |
+| Middle | Darken Blade | 95 | 64 | Shields you |
+| Middle | Galeforce | 95 | 64 | Dash and homing shot |
+| Middle | Heartwood of Pallas | 101 | 71 | Stacks, then a long-draw execute |
+| Middle | Ragefang | 97 | 54 | Builds attack speed as it hits |
+| Slower | Endless Hunger | 120 | 48 | Omnivamp sustains a long fight; speeds up as your Attack Damage grows |
+| Slower | Darius's Axe | 121 | 72 | Its shred (up to -60% Armor) makes everyone else's hits land |
+| Slower | Wraithblade | 135 | 76 | The blink and 20 Lethality |
+| *Pair* | Ragefang, one in each hand | 71 | 45 | Both copies count |
+| *Pair* | Endless Hunger, one in each hand | 65 | 36 | Both copies count |
+| | *netherite sword* | 230 | 109 | |
+| | *a 14-damage boss weapon* | 131 | 79 | |
+
+Each weapon's written time is in `tools/check-balance.py`; the build fails if its data drifts more than 6% from
+it (8% for a pair).
+
+### 3a. Dual wield: Ragefang and Endless Hunger
+
+Carry one in each hand and **both count**. The tag `ascension_combat:dual_wield` marks them; for such a weapon
+the item data adds, in the off hand, every stat and its damage as extra Attack Damage, under ids of their own so
+two copies add up instead of one replacing the other. A swing carries both copies' damage; Endless Hunger's
+Omnivamp is 7% a hand, 14% as a pair; its attack-speed bonus follows the Attack Damage, so a pair speeds up.
+
+- **Who swings.** Better Combat swings the hands in turn (both are one-handed weapons in its data). For an
+  off-hand swing it swaps the hands, so each swing already uses the weapon in that hand and its ability.
+- **Speed is not doubled:** a swing is one weapon's speed. A pair is stronger because each swing hits for both.
+- **The cost is two weapons**, which means two builds. Alone each is middling (Ragefang) or slow (Endless Hunger).
+- **Assumed, not seen:** Better Combat's own dual-wield damage and speed multipliers (its server config) are
+  taken as 1.0. If they are not, a pair's time moves with them.
 
 **What changed to get there**
 - **Percent-of-health procs are capped** at once your Attack Damage a go (Veigo, Spear, Divine Sunderer, Darken
@@ -78,6 +97,7 @@ choice, and every legendary is 1.2 to 2.7 times faster than a boss weapon. Each 
   stub. Now +3% attack speed a hit up to double (it was +5% up to 5 attacks a second), 3 magic damage a hit
   (+0.1 per Attack Damage), and a base speed of 1.4.
 - **Endless Hunger** gains 1.2% attack speed per Attack Damage (it was 2%), so the kit stops doubling it.
+- **Ragefang is slower alone, stronger as a pair:** its ability does most of its work, so a single copy sits in the middle.
 
 **Armour, boots and off-hand are balanced by points**, one budget per slot: helmet 37, chestplate 57,
 leggings 47, boots 30, off-hand 37 (each two thirds of the first pass). A piece lands within 3 points of it.

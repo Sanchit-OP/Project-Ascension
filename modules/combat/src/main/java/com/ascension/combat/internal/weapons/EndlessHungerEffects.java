@@ -55,7 +55,8 @@ public final class EndlessHungerEffects {
             return;
         }
 
-        boolean holding = player.getMainHandItem().is(CombatContent.ENDLESS_HUNGER.get());
+        boolean holding = player.getMainHandItem().is(CombatContent.ENDLESS_HUNGER.get())
+                || player.getOffhandItem().is(CombatContent.ENDLESS_HUNGER.get());
         applyAttackSpeedFromDamage(player, holding);
         applyOmnivamp(player, holding);
     }

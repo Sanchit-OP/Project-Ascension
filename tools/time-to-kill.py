@@ -42,6 +42,7 @@ ENDLESS_AS_PER_AD = 0.012          # Endless Hunger: attack speed per point of A
 KIT_AD, KIT_LETHALITY = 8.0, 8.0
 RAGE_MAGIC, RAGE_SCALE, RAGE_PER_HIT, RAGE_CAP = 3.0, 0.1, 0.03, 1.0   # Ragefang's on-hit magic (flat, per Attack Damage), attack speed per hit, and its limit
 
+DUAL_WIELD = ['ragefang', 'endless_hunger']   # worn as a pair, one in each hand
 MELEE = ['veigos_blade', 'darius_axe', 'spear_of_shojin', 'divine_sunderer', 'darken_blade', 'ragefang',
          'endless_hunger', 'wraithblade']
 BOWS = ['mortal_reminder', 'heartwood_of_pallas', 'galeforce']
@@ -84,7 +85,7 @@ def entry(name, overrides=None):
     return e
 
 
-def fight(name, boss, kit, overrides=None):
+def fight(name, boss, kit, overrides=None, pair=False):
     """Seconds to kill, or infinity."""
     e = entry(name, overrides)
     stats = e.get('stats', {})
@@ -94,7 +95,8 @@ def fight(name, boss, kit, overrides=None):
 
     if name in MELEE:
         damage, speed = e['weapon']['damage'], e['weapon']['speed']
-        ad = damage + kit_ad
+        # Two copies (dual wield): each copy's damage adds, and a swing carries both. Better Combat swings the hands in turn.
+        ad = (2 * damage - 1 if pair else damage) + kit_ad
         next_swing, hits, last_burst, sunder_ready, spd = 0.0, 0, -99.0, 0.0, speed
         while boss.hp > 0 and t < MAX_SECONDS:
             if t >= next_swing:
@@ -164,12 +166,12 @@ def plain(damage, speed, kit, hp, armor, mr):
     return t
 
 
-def tune(name, target, hp, armor, mr, kit):
+def tune(name, target, hp, armor, mr, kit, pair=False):
     key = 'ad' if name in BOWS else 'damage'
     lo, hi = 0.5, 400.0
     for _ in range(40):
         mid = (lo + hi) / 2
-        if fight(name, Boss(hp, armor, mr), kit, {key: mid}) > target:
+        if fight(name, Boss(hp, armor, mr), kit, {key: mid}, pair) > target:
             lo = mid
         else:
             hi = mid
@@ -180,9 +182,10 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     if '--tune' in sys.argv:
         name, target = args[0], float(args[1])
+        pair = '--pair' in sys.argv
         hp, armor, mr = (float(args[2]), float(args[3]), float(args[4])) if len(args) >= 5 else (1000.0, 150.0, 90.0)
         print('%s: %s of %.1f takes %.0f s alone' % (name, 'attack damage' if name in BOWS else 'damage',
-                                                    tune(name, target, hp, armor, mr, False), target))
+                                                    tune(name, target, hp, armor, mr, False, pair), target))
         return
     hp, armor, mr = (float(args[0]), float(args[1]), float(args[2])) if len(args) >= 3 else (1000.0, 150.0, 90.0)
     print('Target: %.0f HP, %.0f Armor (takes %.0f%%), %.0f Magic Resist (takes %.0f%%)'
@@ -194,6 +197,10 @@ def main():
         a = fight(name, Boss(hp, armor, mr), False)
         k = fight(name, Boss(hp, armor, mr), True)
         print('%-26s %9.0f %9.0f' % (NAMES[name], a, k))
+    for name in DUAL_WIELD:
+        a = fight(name, Boss(hp, armor, mr), False, None, True)
+        k = fight(name, Boss(hp, armor, mr), True, None, True)
+        print('%-26s %9.0f %9.0f' % (NAMES[name] + ' (a pair)', a, k))
     for label, dmg, spd in (('(netherite sword)', 8.0, 1.6), ('(a boss weapon, 14 at 1.6)', 14.0, 1.6)):
         print('%-26s %9.0f %9.0f' % (label, plain(dmg, spd, False, hp, armor, mr), plain(dmg, spd, True, hp, armor, mr)))
 

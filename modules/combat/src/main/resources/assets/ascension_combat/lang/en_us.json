@@ -481,5 +481,7 @@
   "tooltip.ascension_combat.unending_despair.1": "Passive, Anguish: After 10 seconds in the same fight, you pulse every 2 seconds for 12 magic damage (+0.1 per point of Health) to enemies within 6 blocks, healing you for the same amount.",
   "tooltip.ascension_combat.zonias_hourglass.1": "Active, Stasis (30s cooldown): Right-click to freeze yourself for 3 seconds, untargetable but unable to move.",
   "tooltip.ascension_combat.steraks_harness.1": "Passive, Might: Gain Attack Damage equal to 10% of your max health.",
-  "tooltip.ascension_combat.steraks_harness.2": "Passive, Lifeline: Dropping below half health shields you for half your max health and gives 10% omnivamp for 10 seconds. 60 second cooldown."
+  "tooltip.ascension_combat.steraks_harness.2": "Passive, Lifeline: Dropping below half health shields you for half your max health and gives 10% omnivamp for 10 seconds. 60 second cooldown.",
+  "tooltip.ascension_combat.ragefang.3": "Dual wield: Carry one in each hand and both count: their stats and damage add up, and Better Combat swings the hands in turn.",
+  "tooltip.ascension_combat.endless_hunger.3": "Dual wield: Carry one in each hand and both count: their stats, damage and Omnivamp add up, and Better Combat swings the hands in turn."
 }

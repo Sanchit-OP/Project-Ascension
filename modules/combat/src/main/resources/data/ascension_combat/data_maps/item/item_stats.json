@@ -23,7 +23,7 @@
     },
     "ascension_combat:veigos_blade": {
       "weapon": {
-        "damage": 11.2,
+        "damage": 13.7,
         "speed": 1.6
       },
       "stats": {
@@ -32,7 +32,7 @@
     },
     "ascension_combat:darius_axe": {
       "weapon": {
-        "damage": 15.4,
+        "damage": 13.4,
         "speed": 1.0
       },
       "stats": {
@@ -41,7 +41,7 @@
     },
     "ascension_combat:spear_of_shojin": {
       "weapon": {
-        "damage": 12.8,
+        "damage": 16.7,
         "speed": 1.4
       },
       "stats": {
@@ -69,13 +69,13 @@
     },
     "ascension_combat:ragefang": {
       "weapon": {
-        "damage": 6.6,
+        "damage": 5.0,
         "speed": 1.4
       }
     },
     "ascension_combat:endless_hunger": {
       "weapon": {
-        "damage": 6.4,
+        "damage": 5.9,
         "speed": 4.0
       },
       "stats": {
@@ -84,7 +84,7 @@
     },
     "ascension_combat:wraithblade": {
       "weapon": {
-        "damage": 13.9,
+        "damage": 11.8,
         "speed": 1.6
       },
       "stats": {
@@ -94,12 +94,12 @@
     },
     "ascension_combat:mortal_reminder": {
       "stats": {
-        "attack_damage": 9.3
+        "attack_damage": 11.5
       }
     },
     "ascension_combat:heartwood_of_pallas": {
       "stats": {
-        "attack_damage": 12.4
+        "attack_damage": 11.4
       }
     },
     "ascension_combat:galeforce": {
