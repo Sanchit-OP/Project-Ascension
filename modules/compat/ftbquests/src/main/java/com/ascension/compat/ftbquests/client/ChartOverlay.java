@@ -96,13 +96,32 @@ public final class ChartOverlay {
         }
     }
 
+    /** Lets the texture manager unregister and close it, so it is never closed twice. */
     private static void release() {
         if (texture != null) {
-            texture.close();
+            Minecraft.getInstance().getTextureManager().release(TEXTURE);
         }
         texture = null;
         image = null;
         painted = null;
+    }
+
+    /** The layout the overlay is drawn from, or null if it could not be read. For the dev check. */
+    public static ChartLayout layout() {
+        return layout;
+    }
+
+    /** The overlay's alpha (0 to 255) at a pixel, or -1 if there is no overlay or the pixel is outside it. For the dev check. */
+    public static int alphaAt(int x, int y) {
+        if (image == null || x < 0 || y < 0 || x >= image.getWidth() || y >= image.getHeight()) {
+            return -1;
+        }
+        return image.getPixelRGBA(x, y) >>> 24;
+    }
+
+    /** Whether the texture the quest book would draw under {@link #TEXTURE} is the one we made. For the dev check. */
+    public static boolean isRegistered() {
+        return texture != null && Minecraft.getInstance().getTextureManager().getTexture(TEXTURE, null) == texture;
     }
 
     @SubscribeEvent

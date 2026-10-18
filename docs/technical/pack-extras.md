@@ -176,10 +176,12 @@ Once these run beside our mods, the **team** and **quest** design can start. Fac
   team runes and share-air could use the same team id. **Designed 2026-10-18 as a proposal, awaiting
   Sanchit: [`docs/progression/teams.md`](../progression/teams.md)** (who shares what, joining and
   leaving, what a solo player is).
+- **The quest book is built** (2026-10-18): pages, voice rules, the Planets chart and its live marker are in
+  [`docs/progression/quests.md`](../progression/quests.md). Quests add no skill points; the rewards are items.
 - **Quests can feed growth with no code.** Our milestones are advancements; an FTB Quests reward can
   run `/advancement grant @p only <id>`, and a quest task can be "have this advancement". So a
   quest chapter can award skill points, exactly as a boss kill does, from data.
 - **Quest files are text** (SNBT in `config/ftbquests/`), so quest lines can be written and reviewed
-  here, not only clicked together in the editor. They need a home in the repository and a way to
-  reach the pack; to be settled with the first chapter.
+  here, not only clicked together in the editor. **Settled 2026-10-18:** the source is `pack/quests/` (Python),
+  generated into `pack/config/ftbquests/quests/`, which `tools/sync-pack-config.py` copies into a game.
 - **No world is ever required** (ADR-0018): quests *reward* going somewhere, they never gate a path.

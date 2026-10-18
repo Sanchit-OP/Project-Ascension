@@ -1,10 +1,11 @@
 # The quest book
 
-> **Status: PROPOSAL (2026-10-18).** Nothing here is built. Written after Sanchit asked for quest pages that
-> teach, reward and point onward without giving the lore away, a special **Planets** page that looks like a
-> solar system and shows where you are (also while you are in space), and a book that looks like our pack.
-> Decisions for Sanchit are in section 9. Sections 2 to 4 are what FTB Quests already does (read from the
-> installed jar, `ftb-quests-neoforge-2101.1.36`), so we only build what it cannot.
+> **Status (2026-10-18): Q1 and Q2 BUILT, loaded by the real FTB Quests on a dedicated server, not yet seen in
+> a client** (section 10). Written after Sanchit asked for quest pages that teach, reward and point onward
+> without giving the lore away, a special **Planets** page that looks like a solar system and shows where you
+> are (also while you are in space), and a book that looks like our pack. His four answers are in section 9.
+> Sections 2 to 4 are what FTB Quests already does (read from the installed jar, `ftb-quests-neoforge-2101.1.36`),
+> so we only build what it cannot.
 
 ## 1. What the book is for
 
@@ -180,9 +181,9 @@ Sanchit's rule, these are built as one batch and tested together when he says.
 
 | | What | How it is checked |
 |---|---|---|
-| **Q1** | The compat jar, the theme and shapes, the art script, the generator and its checks, and the cover plus **First Days** as the first page | generator tests; the quest file loads on a dedicated server with no log errors; the book opens in a client |
-| **Q2** | The **chart contract** in `core`, worlds' source and packet, the static chart, and the **live marker** | projection unit tests; a client run that changes dimension and reads the overlay; a dedicated server |
-| **Q3** | Refactor pass | |
+| **Q1** | The compat jar, the theme and shapes, the art script, the generator and its checks, and **First Days** as the first page | generator tests; the quest file loads on a dedicated server with no log errors; the book opens in a client |
+| **Q2** | The static chart, the **Planets** page and the **live marker** (self-contained in the compat jar; the core contract and packet moved to Q5, section 9) | projection unit tests; a client run that changes dimension and reads the overlay; a dedicated server |
+| **Q3** | Refactor pass (ADR-0008 schedules one every third increment; due after Q2) | |
 | **Q4** | The rest of the first pages (The Road Up, The Moon, The Rot, Gear and Growth, Together) | the generator's checks; a read-through for spoilers against the guarded words |
 | **Q5** | The HUD chart in space (the HUD session) | a client run in the space dimension |
 
@@ -227,5 +228,25 @@ things genuinely need it).
 | | |
 |---|---|
 | Design | this page; section 9 answered 2026-10-18 |
-| FTB Quests | installed in the dev instance, boots (2026-10-18) |
-| Built | nothing for the book yet |
+| **Built (Q1, Q2)** | `ascension-compat-ftbquests` (theme, three quest shapes `ascension_star` / `ascension_nova` / `ascension_eye`, night-sky background tile, the chart, three planet spheres, ring, halo, icons, the marker); the generator, validator, art tool and their tests; two pages: **First Days** (11 quests) and **Planets** (Earth, the Moon, the Nether, with rumour rings, halos and the marker) |
+| Checked by machine | 19 Java tests (projection, painter, the layout file, and the generator's sample points replayed against the game's own projection), 36 Python tests (writer, ids, the real book, the chart, and a validator shown to catch each kind of mistake), `./gradlew build` runs the book check; **a dedicated server with the real FTB Quests loaded it first time: 1 chapter group, 2 chapters, 14 quests, 53 ids all known, 21 items all real, 0 failures** |
+| **Not yet seen** | everything a client draws: that our theme wins the stack, the three shapes, the chart and the spheres at book scale, the marker (the texture-by-name trick is read from bytecode, not seen), the text at book width, the reveal order. `QuestScreenChecks` is written to see all of it in one run (`dev-environment.md`) and waits for Sanchit's go |
+| Open | the refactor pass (Q3); the rest of the pages (Q4); the HUD chart in space with its core contract and packet (Q5); whether a late joiner can claim past rewards (`teams.md`); reward choices need reward tables, so the first pages give plain items |
+
+## 11. Writing a page
+
+A page is a Python module in `pack/quests/` with a `CHAPTER`, listed in `book.py`. The words and the
+tools are in `tools/quests/model.py`; `first_days.py` is the pattern.
+
+- **Quest:** a slug (never renamed once shipped), a place (x, y in book units; one unit is about one button),
+  a title, a subtitle, text as a list of short lines, an icon (an item or one of our pictures), dependencies,
+  tasks and rewards. `hide_until='complete'` hides it until what it depends on is done: use it for anything
+  that would spoil the next step.
+- **Tasks:** `checkmark()` (a lesson), `item(id, n)` (have it, not taken), `advancement(id)`,
+  `dimension(id)`, `structure(id)`. Our advancements carry the discoveries, the gates and the bosses, so
+  most real goals are an advancement. **Rewards:** `give(item, n)`; nothing that raises growth's 35 points.
+- **Three kinds, three shapes:** lesson `ascension_star`, goal `ascension_nova`, landmark `ascension_eye`.
+- **The voice:** section 1. A word in `guarded-words.txt` fails the build; add one the first time a draft
+  comes near saying what it should only point at.
+- **A world on the Planets page** is its planet file (`worlds`), a line in `planets.py` for what reveals it and
+  what its page says, and a rerun of both tools; its place on the chart is computed.

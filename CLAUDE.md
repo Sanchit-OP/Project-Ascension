@@ -91,7 +91,15 @@ the mark), your team (bosses, quest progress: an FTB Teams party, a solo player 
 you. `core`'s `TeamRegistry` says who is on which team (everyone is one team when nothing answers),
 `ascension-compat-ftbteams` answers it from FTB Teams, growth keeps a set of milestones per team, and
 teammates cannot hurt each other. Built, and seen on a dedicated server with stand-in players
-(`TeamChecks`); two real clients are not yet seen. The HUD's team list (T4) and the quest lines are next.
+(`TeamChecks`); two real clients are not yet seen. The HUD's team list (T4) is deferred.
+
+**The quest book (2026-10-18; `docs/progression/quests.md`):** the pages are written as readable Python under
+`pack/quests/` and generated into FTB Quests' files by `tools/generate-quests.py` (the build runs it with
+`--check`: our items and advancements must exist, no guarded story word, no dependency loop). The look and a
+live "you are here" marker on the **Planets** page (also between the worlds in space) are
+`ascension-compat-ftbquests`, with no compile dependency on Quests. Built: First Days (11 quests) and Planets;
+loaded by the real FTB Quests on a dedicated server; **not yet seen in a client**. The book says what and
+where, never why, and never gates a path.
 
 Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,
