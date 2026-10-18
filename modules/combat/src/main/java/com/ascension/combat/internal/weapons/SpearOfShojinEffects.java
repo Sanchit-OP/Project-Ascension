@@ -43,7 +43,7 @@ public final class SpearOfShojinEffects {
      */
     private static final int STACKS_TO_RESOLVE = 3;
 
-    private static final float TRUE_DAMAGE_MAX_HP_PERCENT = 0.02f;
+    private static final float TRUE_DAMAGE_MAX_HP_PERCENT = 0.005f;
     private static final long COMBO_WINDOW_TICKS = 60L;
 
     private SpearOfShojinEffects() {

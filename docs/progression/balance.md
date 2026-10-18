@@ -73,12 +73,14 @@ no cap), not its stats.
 | | *netherite sword* | 230 | 109 | |
 
 **What uncapped does against a late boss.** On the Wither (6500 HP, 180 Armor, 110 Magic Resist), alone, kit in
-brackets: Spear of Shojin 88 s (73), Veigo's Blade 197 (143), Divine Sunderer 197 (158), Galeforce 280 (208),
+brackets: Veigo's Blade 197 s (143), Divine Sunderer 197 (158), Spear of Shojin 204 (168), Galeforce 280 (208),
 Heartwood 318 (269), Darken Blade 338 (265), Mortal Reminder 679 (422), Ragefang 718 (397), Darius's Axe 764
-(464), Wraithblade 880 (531). The percent-of-health weapons pull far ahead the bigger the boss, and the Spear
-most of all: its bonus is **true** damage, which Armor and Magic Resist do not touch. Against the Warden the
-spread is mild (Veigo 56 s, Mortal Reminder 134). This is the cost of removing the caps, and it needs a decision
-before the later bosses are final.
+(464), Wraithblade 880 (531), Endless Hunger never within 15 minutes alone (344 with the kit; 500 as a pair).
+The Spear's true damage was the worst runaway (88 s) and has been cut to 0.5%, which puts it with Veigo and
+Sunderer. What is left is a split between weapons whose damage is a percent of the boss's health, which
+grow stronger as bosses grow, and weapons that deal flat damage (Darius, Ragefang, Wraithblade, Mortal
+Reminder, Endless Hunger), which take four times as long. Against the Warden the split is mild. Boss Armor and
+Magic Resist do not close it, because they cut flat and percent damage alike.
 
 Cataclysm's weapons, with their real speeds (read from its jar, 2026-10-19), take 160 to 320 seconds alone, so
 every legendary is 1.3 to 5 times faster than the best of them at the standard boss.
@@ -101,7 +103,7 @@ Omnivamp is 7% a hand, 14% as a pair; its attack-speed bonus follows the Attack 
 - **No caps (Sanchit, 2026-10-19).** A percent-of-health proc, Galeforce's missing-health shot and Hunt are all
   uncapped: a bigger boss takes more from them, and the later bosses carry more Armor and Magic Resist to answer
   it. To keep them from doing the whole job at the standard boss, the base percents are lower than the originals:
-  Veigo 3% of current health (was 8%), Spear 2% true (was 5%), Divine Sunderer 2% and 2% (was 4% and 4%), Darken
+  Veigo 3% of current health (was 8%), Spear 0.5% true (was 5%; it had to fall furthest, because true damage ignores Armor), Divine Sunderer 2% and 2% (was 4% and 4%), Darken
   Blade 2.5% (was 5%), each +0.05% per Attack Damage (was +0.1% to +0.2%). Ragefang's attack-speed ramp stops
   at 2.5 attacks a second (the original code's limit was 5).
 - **Ragefang was the outlier.** Its on-hit magic and attack-speed ramp did most of its work from a 1-damage
@@ -151,7 +153,7 @@ through `StatReader`, never from an attribute directly. Every coefficient is in 
 | Veigo's Blade, Wither | 3% of current health | +0.05% per Attack Damage |
 | Darken Blade, burst | 2.5% of max health, 6 shield | +0.05% and +0.5 shield per Attack Damage |
 | Divine Sunderer | 2% physical + 2% magic of max health | +0.05% each per Attack Damage |
-| Spear of Shojin | 2% of max health, true | +0.05% per Attack Damage |
+| Spear of Shojin | 0.5% of max health, true | +0.0125% per Attack Damage |
 | Ragefang, Rage | 3 magic per hit | +0.1 per Attack Damage |
 | Heartwood of Pallas | 3 magic per hit | +0.15 per Attack Damage |
 | Galeforce | 20% of missing health | +0.5% per Attack Damage |

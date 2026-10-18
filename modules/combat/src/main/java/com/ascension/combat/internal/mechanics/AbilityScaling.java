@@ -26,7 +26,7 @@ public final class AbilityScaling {
     /** Divine Sunderer: extra share of max health per Attack Damage, for each of its two halves (0.1%). */
     public static final float SUNDERER_MAX_HP_PER_AD = 0.0005f;
     /** Spear of Shojin: extra share of max health, as true damage, per Attack Damage (0.1%). */
-    public static final float SHOJIN_MAX_HP_PER_AD = 0.0005f;
+    public static final float SHOJIN_MAX_HP_PER_AD = 0.000125f;
     /** Galeforce: extra share of the target's missing health per Attack Damage (0.5%). */
     public static final float GALEFORCE_MISSING_HP_PER_AD = 0.005f;
     /** Heartwood of Pallas and Ragefang: extra flat magic damage per Attack Damage on each hit. */

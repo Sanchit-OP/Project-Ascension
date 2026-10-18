@@ -458,7 +458,7 @@
   "tooltip.ascension_combat.legendary": "Legendary",
   "tooltip.ascension_combat.veigos_blade.1": "On hit, Wither: Deals bonus physical damage equal to 3% of the target's current health, plus 0.05% for each point of your Attack Damage. No cap: the more health the target has, the harder it bites.",
   "tooltip.ascension_combat.darius_axe.1": "On hit, Cleave: Each hit shreds 5% of the target's Armor. Stacks up to 12 times (60%) and fades after 5 seconds without a hit.",
-  "tooltip.ascension_combat.spear_of_shojin.1": "On hit, Combo: Three hits within 3 seconds resolve as bonus true damage equal to 2% of the target's max health (+0.05% per Attack Damage). True damage ignores Armor and Magic Resist.",
+  "tooltip.ascension_combat.spear_of_shojin.1": "On hit, Combo: Three hits within 3 seconds resolve as bonus true damage equal to 0.5% of the target's max health (+0.0125% per Attack Damage). True damage ignores Armor and Magic Resist.",
   "tooltip.ascension_combat.divine_sunderer.1": "Active, Sunder (5s cooldown): Right-click to prime your next attack. It deals bonus damage equal to 2% of the target's max health as physical plus 2% as magic (each +0.05% per Attack Damage), and heals you for the amount dealt.",
   "tooltip.ascension_combat.darken_blade.1": "On hit, Darkin Burst: Hits alternate. Every second hit primes a burst, and the hit after it releases the burst as magic damage equal to 2.5% of the target's max health (+0.05% per Attack Damage). The burst also gives you a 6-point shield (+0.5 per Attack Damage). 8 second cooldown.",
   "tooltip.ascension_combat.ragefang.1": "On hit, Frenzy: Each hit adds 3% attack speed, up to 2.5 attacks a second. Stacks begin to fade after 1 second without a hit.",
