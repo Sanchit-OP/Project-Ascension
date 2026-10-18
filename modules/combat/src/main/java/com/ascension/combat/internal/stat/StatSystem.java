@@ -36,5 +36,11 @@ public final class StatSystem {
         // Vanilla names its effects' modifiers effect.<name>: Strength, Speed, Haste and the rest.
         StatSources.register(ResourceLocation.withDefaultNamespace("effect."),
                 Component.translatable("stat_source.ascension_combat.effects"));
+
+        // Enchantments give stats through minecraft:attributes effects whose ids start with
+        // ascension_combat:enchantment/ (docs/progression/enchantments.md, ADR-0022). Vanilla adds a
+        // /<slot> suffix to the id, so the prefix still matches.
+        StatSources.register(ResourceLocation.fromNamespaceAndPath("ascension_combat", "enchantment/"),
+                Component.translatable("stat_source.ascension_combat.enchantments"));
     }
 }

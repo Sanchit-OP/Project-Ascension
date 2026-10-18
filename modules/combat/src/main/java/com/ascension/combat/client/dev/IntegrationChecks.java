@@ -165,6 +165,17 @@ public final class IntegrationChecks {
         // ---- A hit lands through the defence curve with gear, a shard and a rune all counted
         server(5, IntegrationChecks::damageThroughDefence);
 
+        // ---- Enchantments are a stat source (ADR-0022): Protection IV on the chestplate, then taken off
+        server(5, IntegrationChecks::enchantChestplate);
+        client(10, () -> {
+            var me = Minecraft.getInstance().player;
+            StatBreakdown armor = StatReader.breakdown(me, CombatStats.ARMOR);
+            expect("the client sheet names Enchantments for Armor", sources(armor).contains("Enchantments"), true);
+            expect("the client sheet gives Protection IV +12 Armor", amountOf(armor, "Enchantments"), 12.0);
+            expect("no Armor is left under Other", sources(armor).contains("Other"), false);
+        });
+        server(5, IntegrationChecks::checkProtectionHit);
+
         // ---- An admin revoking a milestone closes a slot again, and the client sees it
         server(5, p -> revoke(p, MILESTONES.get(3)));
         client(10, () -> expect("the client sees the last shard row shut again", ClientRunePageCache.open().defence(), false));
@@ -246,6 +257,39 @@ public final class IntegrationChecks {
         player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
         player.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
         player.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
+    }
+
+    private static double armorBeforeEnchant;
+
+    private static void enchantChestplate(ServerPlayer player) {
+        armorBeforeEnchant = StatReader.value(player, CombatStats.ARMOR);
+        var protection = player.level().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
+                .getHolderOrThrow(net.minecraft.world.item.enchantment.Enchantments.PROTECTION);
+        player.getItemBySlot(EquipmentSlot.CHEST).enchant(protection, 4);
+        double armor = StatReader.value(player, CombatStats.ARMOR);
+        expect("Protection IV adds exactly 12 Armor", armor - armorBeforeEnchant, 12.0);
+        StatBreakdown breakdown = StatReader.breakdown(player, CombatStats.ARMOR);
+        expect("Armor names Enchantments with 12", amountOf(breakdown, "Enchantments"), 12.0);
+    }
+
+    /** One piece of Protection IV is 9% off every hit, after the curve at the new Armor. Then it is taken off. */
+    private static void checkProtectionHit(ServerPlayer player) {
+        var level = player.serverLevel();
+        var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.spawn(level, player.blockPosition().above(5),
+                net.minecraft.world.entity.MobSpawnType.COMMAND);
+        double armor = StatReader.value(player, CombatStats.ARMOR);
+        float before = player.getHealth();
+        player.invulnerableTime = 0;
+        player.hurt(level.damageSources().mobAttack(zombie), 20.0f);
+        double lost = before - player.getHealth();
+        double expected = 20.0 * com.ascension.combat.internal.mechanics.DefenseFormula.multiplier(armor) * (1.0 - 0.0225 * 4);
+        SCRIPT.log("   a 20 point hit at " + armor + " Armor with Protection IV took " + lost + "; expected " + expected);
+        expect("Protection IV's hit is the curve and then 9% off", Math.abs(lost - expected) < 0.05, true);
+        zombie.discard();
+        player.setHealth(player.getMaxHealth());
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        chest.remove(net.minecraft.core.component.DataComponents.ENCHANTMENTS);
+        expect("taking Protection off gives the Armor back", StatReader.value(player, CombatStats.ARMOR), armorBeforeEnchant);
     }
 
     /** The parts of Health and Armor add up to the totals, and growth and runes are each named. */

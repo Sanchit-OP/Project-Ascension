@@ -24,7 +24,8 @@ import net.minecraft.world.item.ItemStack;
  * <p>Naming, in order:
  * <ol>
  *   <li><b>Worn and held items, by name.</b> Each item is asked which modifiers it gives, so any
- *       mod's item is named correctly with no registration. The client can ask too: the local
+ *       mod's item is named correctly with no registration (except modifiers under a registered
+ *       source, such as an item's enchantments). The client can ask too: the local
  *       player's items and both data maps are synced.</li>
  *   <li><b>Registered sources</b> ({@link StatSources}): growth, runes, effects.</li>
  *   <li><b>"Other"</b> for the rest.</li>
@@ -82,7 +83,9 @@ public final class StatBreakdowns {
 
             Component name = stack.getHoverName();
             stack.forEachModifier(slot, (modifierAttribute, modifier) -> {
-                if (modifierAttribute.value() == attribute.value()) {
+                // An enchantment's modifiers come back from the item too, but belong to
+                // Enchantments, not to the item's name: a registered source wins.
+                if (modifierAttribute.value() == attribute.value() && StatSources.labelFor(modifier.id()).isEmpty()) {
                     names.putIfAbsent(modifier.id(), name);
                 }
             });
