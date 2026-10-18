@@ -1,12 +1,15 @@
 # Teams: who shares what
 
 > **Designed and decided 2026-10-18 ([ADR-0023](../decisions/0023-teams-are-ftb-teams-parties.md)).**
-> Sanchit chose all three recommendations in §8. **T1, T2 and T3 are built (2026-10-18)**: the `core`
-> contract and growth per team (T1, seen in the scripted client run with one team), the FTB Teams jar
-> with a one-time first-login line (T2), and friendly fire (T3). **T2 and T3 are built and compile, but
-> not yet seen in a game**: they wait for one combined session with two clients and a dedicated server
-> (§7), so no player has yet been on a real party. T4 (the HUD's team list) is not built. Without the FTB
-> Teams jar the game behaves as before (the whole server is one team). Facts about FTB Teams below were read from
+> Sanchit chose all three recommendations in §8. **T1, T2 and T3 are built and checked (2026-10-18)**: the
+> `core` contract and growth per team (T1), the FTB Teams jar with a one-time first-login line (T2), and
+> friendly fire (T3). **Seen on a dedicated server with stand-in players** (`TeamChecks`, 26 checks then 5
+> after a restart, all passing): real FTB Teams parties made and joined by FTB's own commands, a boss
+> paying only its team, the union both ways, keep-on-leave, friendly fire blocked for teammates and not for
+> strangers, the saved team state and the once-only line surviving a restart. **Not seen: two real
+> clients.** The stand-ins are real players in the player list but have no screen, so what no one has yet
+> looked at is FTB's My Team screen and button, and the line in a real chat. T4 (the HUD's team list) is not
+> built. Without the FTB Teams jar the game behaves as before (the whole server is one team). Facts about FTB Teams below were read from
 > the installed jar (`2101.1.11`), not remembered. Every number is a placeholder.
 
 ## 1. In short
@@ -129,12 +132,15 @@ claims their own rewards. That fits the owners in §1 without code:
 | Step | What | Checked by |
 |---|---|---|
 | **T1** | The `core` contract, the default provider, growth per team, unit tests for the union rule | **Built.** Scripted client run with no team mod: an old save loads, the team events award both ways. Not yet: a dedicated server, a reload of the new save format |
-| **T2** | The FTB Teams jar (`ascension-compat-ftbteams`), join and leave handling, the first-login line | **Built, not seen.** Dedicated server, **two clients**: a solo player's kill pays only them; the second joins their party and gets the points; leaves and keeps them; the line appears once. Restart the server: same |
-| **T3** | Friendly fire (allies wait for a rune that needs them) | **Built, not seen.** Two clients: a teammate's hit does no damage, a stranger's does; a stand-in team is never protected |
+| **T2** | The FTB Teams jar (`ascension-compat-ftbteams`), join and leave handling, the first-login line | **Built and seen with stand-in players on a dedicated server** (a solo player's kill pays only them; the second joins their party and gets the points; leaves and keeps them; the line appears once; a restart changes nothing). Two real clients: not yet |
+| **T3** | Friendly fire (allies wait for a rune that needs them) | **Seen with stand-in players on a dedicated server** (a teammate's hit does no damage, a stranger's and a former teammate's do). The stand-in team is never protected: unit-tested only |
 | **T4** | The team list for the HUD | The HUD session reads it |
 | **T5** | Refactor pass (ADR-0008) | No new features |
 
-**Two-client testing is still owed** (it has been since M1). T2 is where it stops being optional.
+**Two-client testing is still owed** (it has been since M1). The server rules are now seen with stand-in
+players (`modules/compat/ftbteams/.../dev/TeamChecks`, how to run it in `dev-environment.md`), which is
+everything T1 to T3 do. What a second real client adds is the My Team screen, the sidebar button, the chat
+line as a player sees it, and, later, T4.
 
 **Performance:** nothing ticks. A team lookup is a map read; the team list is sent only on a change;
 allies are found on the event that needs them, within a radius (ADR-0007).
