@@ -1,0 +1,42 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: FTB Quests"
+authors = "${mod_authors}"
+description = '''
+Dresses FTB Quests as the Ascension quest book: the night-sky-and-brass theme, our own quest shapes
+and chapter backdrops, and a "you are here" marker on the Planets page, on a world's surface and
+between the worlds in space.
+
+Optional. Without FTB Quests installed, this jar simply is not present.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# The integration target. Required, not optional: if FTB Quests is absent NeoForge should refuse to load
+# this rather than load it into a no-op (ADR-0003, as ascension-compat-chunky does). AFTER so this jar's
+# resource pack sits above Quests' own, which is what makes its theme file win (the loader stacks every
+# pack's copy and the last one applies).
+[[dependencies.${mod_id}]]
+modId = "ftbquests"
+type = "required"
+versionRange = "${ftbquests_version_range}"
+ordering = "AFTER"
+side = "BOTH"

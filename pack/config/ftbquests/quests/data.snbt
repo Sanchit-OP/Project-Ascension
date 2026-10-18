@@ -1,0 +1,5 @@
+{
+	version: 13
+	default_quest_shape: "ascension_star"
+	progression_mode: "flexible"
+}

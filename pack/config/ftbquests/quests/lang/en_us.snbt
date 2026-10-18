@@ -1,0 +1,48 @@
+{
+	"chapter.31FD0572AE70D319.title": "First Days"
+	"chapter.31FD0572AE70D319.chapter_subtitle": ["Earth. Learn the ground you stand on."]
+	"quest.738C3477565410E7.title": "Open the Ledger"
+	"quest.738C3477565410E7.quest_subtitle": "It keeps count, and it points"
+	"quest.738C3477565410E7.quest_desc": ["This book remembers what you do and points at what to do next.", "It will say where to look. It will not say why.", "Open it any time with J. Press the button below to carry on."]
+	"quest.4AF38B92DD4084D6.title": "Know your numbers"
+	"quest.4AF38B92DD4084D6.quest_subtitle": "Everything you carry has them"
+	"quest.4AF38B92DD4084D6.quest_desc": ["What you wear and hold changes your numbers: damage, armour, speed and more.", "Open your character sheet (H by default) to see each number and where it comes from.", "Growth (K) and runes (R) feed the same sheet."]
+	"quest.37F60931C7C6C5D2.title": "First iron"
+	"quest.37F60931C7C6C5D2.quest_subtitle": "Nothing starts without it"
+	"quest.37F60931C7C6C5D2.quest_desc": ["Smelt your first iron. Almost everything after this is built on it."]
+	"quest.4C6D7B1AFA4FB07C.title": "Keep some gold"
+	"quest.4C6D7B1AFA4FB07C.quest_subtitle": "It matters more than it looks"
+	"quest.4C6D7B1AFA4FB07C.quest_desc": ["Gather four gold ingots and keep them on you, not left in a chest.", "You will be glad of them before long. Where, you will see for yourself."]
+	"quest.1348BB42A5607EA0.title": "Titanium"
+	"quest.1348BB42A5607EA0.quest_subtitle": "The metal for leaving"
+	"quest.1348BB42A5607EA0.quest_desc": ["Titanium ore lies in the deeper rock. Smelt raw titanium into an ingot (a blast furnace is twice as fast).", "Three ingots, an iron plate and a wooden slab make the plain propeller bearing an airship needs."]
+	"quest.4121BDE2FA93BA25.title": "A breath of your own"
+	"quest.4121BDE2FA93BA25.quest_subtitle": "Where the air runs out"
+	"quest.4121BDE2FA93BA25.quest_desc": ["Some places have no air. Craft an oxygen tank and you carry your own.", "Your lungs hold about twenty seconds and refill wherever the air is good. A tank is drained first."]
+	"quest.20022FE6B8C4E2F9.title": "The valve"
+	"quest.20022FE6B8C4E2F9.quest_subtitle": "A tank only helps when it is open"
+	"quest.20022FE6B8C4E2F9.quest_desc": ["Use the tank to open its valve. It takes three seconds to pressurise, and you can carry two.", "Use it on another player to share your air with them."]
+	"quest.0AC0AFA737E77E30.title": "The dark below"
+	"quest.0AC0AFA737E77E30.quest_subtitle": "A city that is asleep"
+	"quest.0AC0AFA737E77E30.quest_desc": ["Far under the world there is a city, and everything in it is asleep.", "Go quietly. Bring good armour, food and a way back up."]
+	"quest.201C4FDECE7D7752.title": "A tendril"
+	"quest.201C4FDECE7D7752.quest_subtitle": "What the keeper leaves behind"
+	"quest.201C4FDECE7D7752.quest_desc": ["What waits in that city leaves a tendril behind when it falls.", "Keep it: a gateway will not wake without one."]
+	"quest.6DD35FA2DD71D1DF.title": "Earth's gate"
+	"quest.6DD35FA2DD71D1DF.quest_subtitle": "A frame of carved stone"
+	"quest.6DD35FA2DD71D1DF.quest_desc": ["Build a ring of inscribed gatestone, set a keystone in it, and wake it with a tendril.", "When it is lit, everyone on the server gains from it.", "A gate on its own has nowhere to lead yet."]
+	"quest.407F6003A93FC43F.title": "Look up"
+	"quest.407F6003A93FC43F.quest_subtitle": "The Planets page has changed"
+	"quest.407F6003A93FC43F.quest_desc": ["Open the Planets page. A world you had only heard of now has a name.", "The page also shows where you are, on the ground and between the worlds."]
+	"chapter.5B70CA1E5CE414C2.title": "Planets"
+	"chapter.5B70CA1E5CE414C2.chapter_subtitle": ["Where you are, and what you have found"]
+	"quest.64FEAAF9F93DFB90.title": "Earth"
+	"quest.64FEAAF9F93DFB90.quest_subtitle": "Home"
+	"quest.64FEAAF9F93DFB90.quest_desc": ["Where you start. Everything on this chart is measured from here.", "The marker follows you: on the ground, and between the worlds when you are in space."]
+	"quest.38E2DDDB06CDA399.title": "The Moon"
+	"quest.38E2DDDB06CDA399.quest_subtitle": "4,000 blocks east"
+	"quest.38E2DDDB06CDA399.quest_desc": ["A pale world with no air. Reach it by airship: up past the top of the sky, then east.", "Bring a tank, and a way home.", "Something lies buried under its surface."]
+	"quest.4110412AC1AE6C2E.title": "The Nether"
+	"quest.4110412AC1AE6C2E.quest_subtitle": "18,000 blocks south-east"
+	"quest.4110412AC1AE6C2E.quest_desc": ["A world of fire with no roof over it, far out to the south-east.", "Something in the air there harms you. Gold armour turns it away: wear it.", "Plan a long flight."]
+}

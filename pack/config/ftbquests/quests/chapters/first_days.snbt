@@ -1,0 +1,323 @@
+{
+	id: "31FD0572AE70D319"
+	group: ""
+	order_index: 0
+	filename: "first_days"
+	default_quest_shape: "ascension_star"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/first_days.png"
+		}
+	}
+	quests: [
+		{
+			id: "738C3477565410E7"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:book"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "7E1782A333A8E9ED"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "751E74778196D72A"
+					type: "item"
+					item: "minecraft:bread"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "4AF38B92DD4084D6"
+			x: 2.5d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:iron_sword"
+				count: 1
+			}
+			dependencies: ["738C3477565410E7"]
+			tasks: [
+				{
+					id: "35E342684453114C"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "18C642C3A2F41D9B"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "37F60931C7C6C5D2"
+			x: 0.0d
+			y: 2.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:iron_ingot"
+				count: 1
+			}
+			dependencies: ["738C3477565410E7"]
+			tasks: [
+				{
+					id: "7736D601BA85B308"
+					type: "advancement"
+					advancement: "minecraft:story/smelt_iron"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "478E2729121EAE1D"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "4C6D7B1AFA4FB07C"
+			x: 0.0d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:gold_ingot"
+				count: 1
+			}
+			dependencies: ["37F60931C7C6C5D2"]
+			tasks: [
+				{
+					id: "280C3149189FB8EA"
+					type: "item"
+					item: "minecraft:gold_ingot"
+					count: 4L
+				}
+			]
+			rewards: [
+				{
+					id: "104B17652D12FD03"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "1348BB42A5607EA0"
+			x: 2.5d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_worlds:titanium_ingot"
+				count: 1
+			}
+			dependencies: ["37F60931C7C6C5D2"]
+			tasks: [
+				{
+					id: "705EF5BC1DBDA112"
+					type: "item"
+					item: "ascension_worlds:titanium_ingot"
+					count: 3L
+				}
+			]
+			rewards: [
+				{
+					id: "59066E191E479DB9"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "4121BDE2FA93BA25"
+			x: 2.5d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_atmosphere:oxygen_tank"
+				count: 1
+			}
+			dependencies: ["1348BB42A5607EA0"]
+			tasks: [
+				{
+					id: "4391888D5B72B93C"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_tank"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "387EE4F3890522F9"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 4
+				}
+				{
+					id: "70E365700B0D1109"
+					type: "item"
+					item: "minecraft:coal"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "20022FE6B8C4E2F9"
+			x: 1.2d
+			y: 6.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:lever"
+				count: 1
+			}
+			dependencies: ["4121BDE2FA93BA25"]
+			tasks: [
+				{
+					id: "447A49A49B4CE75C"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "1DBAFD45262374D5"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "0AC0AFA737E77E30"
+			x: 5.0d
+			y: 3.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:sculk_catalyst"
+				count: 1
+			}
+			dependencies: ["4C6D7B1AFA4FB07C"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "13EF0BEF5E8C109F"
+					type: "advancement"
+					advancement: "ascension_combat:growth/discovery/ancient_city"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "2E5444AEA4951442"
+					type: "item"
+					item: "minecraft:golden_carrot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "201C4FDECE7D7752"
+			x: 5.0d
+			y: 5.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_worlds:warden_tendril"
+				count: 1
+			}
+			dependencies: ["0AC0AFA737E77E30"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "4B970739B48920A4"
+					type: "item"
+					item: "ascension_worlds:warden_tendril"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "41D45C7D6EF12CA0"
+					type: "item"
+					item: "minecraft:echo_shard"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "6DD35FA2DD71D1DF"
+			x: 5.0d
+			y: 7.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "ascension_worlds:inscribed_gatestone"
+				count: 1
+			}
+			dependencies: ["201C4FDECE7D7752"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "44BF1AD184B5C497"
+					type: "advancement"
+					advancement: "ascension_worlds:gates/overworld"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "2FE7F7AFD4A87244"
+					type: "item"
+					item: "minecraft:diamond"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "407F6003A93FC43F"
+			x: 3.8d
+			y: 6.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:spyglass"
+				count: 1
+			}
+			dependencies: ["4121BDE2FA93BA25"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "5DA92AD61D9F9B44"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "56F16486CD7A2A3B"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

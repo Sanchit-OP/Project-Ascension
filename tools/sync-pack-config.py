@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Copies the pack's shipped config (pack/config/**) into the test game, and updates saved keys.
 
-  python tools/sync-pack-config.py                 copy pack/config into run/client/config and the
+  python tools/sync-pack-config.py                 copy pack/config into run/client/config, run/server/config and the
                                                    CurseForge test instance's config
   python tools/sync-pack-config.py --options PATH  also rewrite the keys in an existing options.txt
                                                    (the game must be closed); a backup is kept
@@ -107,6 +107,29 @@ def merge_toml(source, destination):
     return changed
 
 
+# Folders the pack owns outright: what the pack does not ship is removed from the target, so a page that is
+# taken out of the quest book does not linger in a test game. (Anything edited there in the game is
+# overwritten too: the repo is the truth, see docs/progression/quests.md.)
+MANAGED = [os.path.join('ftbquests', 'quests')]
+
+
+def prune_managed(target_root):
+    removed = 0
+    for managed in MANAGED:
+        source_root = os.path.join(PACK_CONFIG, managed)
+        target = os.path.join(target_root, managed)
+        if not os.path.isdir(source_root) or not os.path.isdir(target):
+            continue
+        wanted = {os.path.relpath(os.path.join(f, n), source_root)
+                  for f, _, names in os.walk(source_root) for n in names}
+        for folder, _, names in os.walk(target):
+            for name in names:
+                if os.path.relpath(os.path.join(folder, name), target) not in wanted:
+                    os.remove(os.path.join(folder, name))
+                    removed += 1
+    return removed
+
+
 def copy_config(target_root):
     copied, merged = 0, 0
     for folder, _, files in os.walk(PACK_CONFIG):
@@ -122,7 +145,9 @@ def copy_config(target_root):
             else:
                 shutil.copyfile(source, destination)
                 copied += 1
-    print('%s: copied %d file(s), changed %d setting(s) in existing toml files' % (target_root, copied, merged))
+    removed = prune_managed(target_root)
+    print('%s: copied %d file(s), changed %d setting(s) in existing toml files%s'
+          % (target_root, copied, merged, ', removed %d stale quest file(s)' % removed if removed else ''))
 
 
 def rewrite_options(path):
@@ -159,6 +184,7 @@ def main():
     args = parser.parse_args()
 
     copy_config(os.path.join(ROOT, 'run', 'client', 'config'))
+    copy_config(os.path.join(ROOT, 'run', 'server', 'config'))
     copy_config(os.path.join(instance_dir(), 'config'))
     for path in args.options:
         rewrite_options(path)
