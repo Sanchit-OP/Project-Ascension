@@ -196,24 +196,36 @@ Sanchit's rule, these are built as one batch and tested together when he says.
 - **Quest progress is per world.** Changing the book after a world is played can strand progress if a
   quest's slug changes, which is why ids come from slugs and slugs are never renamed.
 
-## 9. Decisions for Sanchit
+## 9. Decisions (Sanchit, 2026-10-18)
 
-1. **How the quests are written:** generated from readable files in the repo, with the checks above
-   (recommended), or built in game with FTB's editor.
-2. **Quest rewards and skill points:** items, kits and chart knowledge only (recommended), or a few quests
-   also pay skill points on top of growth's 35.
-3. **Worlds you have not reached on the chart:** faint unnamed rings (recommended), or nothing until found.
-4. **What to build first:** the Planets page and its live marker, with the first page of quests (recommended),
-   or all the pages of quests first.
+All four taken as recommended:
+
+1. **How the quests are written:** generated from readable files in the repo, with the checks above.
+2. **Quest rewards and skill points:** items, kits and chart knowledge only. Quests add no skill points;
+   growth keeps its 35.
+3. **Worlds the player has not reached on the chart:** faint unnamed rings. (A world that is not built yet
+   shows nothing; the rings are for Moon and Planet 3 before they are reached, and later worlds as they are
+   laid out.)
+4. **Build first:** the Planets page and its live marker, with the first page of quests.
 
 Smaller defaults, taken unless he says otherwise: the book is called **The Ledger** in the cover text; the
 in-space chart is shown automatically in the space dimension and larger on a key; quest points are personal
 and kits are claimed by each member.
 
+### What changed in the plan once building started
+
+The first version of the chart is **self-contained in the compat jar**: the generator lays the page out from
+the planet files (`data/ascension_worlds/ascension_worlds/planet/*.json`) and also writes a small layout file
+(`chart.json`: the projection settings and where each planet is on the picture) that the client reads. The
+marker needs nothing from the server, because the client already knows which dimension it is in and where it
+stands. The `core` chart contract and the planet packet in section 6 are therefore **deferred to Q5**, when
+the HUD chart is a second thing that needs the same data (`worlds-api.md`: a contract is added when two
+things genuinely need it).
+
 ## 10. Status
 
 | | |
 |---|---|
-| Design | this page, awaiting section 9 |
+| Design | this page; section 9 answered 2026-10-18 |
 | FTB Quests | installed in the dev instance, boots (2026-10-18) |
 | Built | nothing for the book yet |
