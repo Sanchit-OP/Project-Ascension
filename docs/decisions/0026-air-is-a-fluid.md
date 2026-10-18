@@ -1,6 +1,6 @@
 # ADR-0026: Air is a fluid, and a dispenser holds the room
 
-- **Status:** Proposed (waiting on Sanchit's answers, 2026-10-19; see `docs/technical/oxygen-v2.md`)
+- **Status:** Accepted (Sanchit, 2026-10-19)
 - **Date:** 2026-10-19
 
 ## Context
@@ -19,9 +19,9 @@ machine, carried by Create's tanks and pipes, and spent by a block that holds a 
    (ADR-0003 rule 1 holds).
 3. **The powered Air Compressor is Tier 2** (`ascension-compat-create`, its first Java and first
    compile dependency): rotation in, air out. Right-click fills a held portable tank.
-4. **The old emitter and station stay** as the free "basic" versions so Tier 1 works alone;
-   `ascension-compat-create` removes their recipes in the pack, as it does for Create's backtank.
-   Item ids the quest book uses do not change.
+4. **Air depends on Create** (Sanchit's call): no free standalone air. The old emitter and station
+   lose their recipes and stay as hidden legacy blocks so existing worlds keep working; their ids
+   remain registered for the quest book until it is updated.
 5. **Ships:** the Sable side of `AnchorSpace` goes in `ascension-compat-sable`. Tier 1 learns
    nothing about Sable (ADR-0006, ADR-0016).
 6. **Level-2 tank** is its own item, made by a smithing upgrade that keeps charge and valve state,
@@ -37,4 +37,4 @@ machine, carried by Create's tanks and pipes, and spent by a block that holds a 
 
 - The compat-create jar needs a compile-time Create (same approach as `compat/sable`, `compat/jade`).
 - Existing worlds keep their emitters and stations untouched.
-- Open until Sanchit answers: see the questions in `oxygen-v2.md`.
+- A player with only the atmosphere jar can hold rooms with fluid from other mods' pumps but cannot make air.

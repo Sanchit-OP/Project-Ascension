@@ -35,14 +35,15 @@ cabin is just a closed room that happens to move.
 |---|---|---|
 | Air fluid | 1 | no bucket, pale-gas texture, checked in a tank, a pipe, a pump |
 | Air Dispenser | 1 | NeoForge fluid capability, accepts only air; shares the emitter's room code |
-| Oxygen Emitter | 1, kept | free "basic" room holder (a dispenser with endless air) |
-| Oxygen Refill Station | 1, kept | free "basic" tank filler, as today |
+| Oxygen Emitter | 1, legacy | no recipe; stays registered (hidden) so existing worlds keep working |
+| Oxygen Refill Station | 1, legacy | no recipe; same; its right-click job moves to the compressor |
 | Air Compressor | 2 `compat-create` | the new machine; first Java and compile dependency in that jar |
 | Level-2 tank | 1 | below |
 | Ship air | 2 `compat-sable` | `AnchorSpace` |
 
-Create's own recipes for the basic emitter and station are switched off by `compat-create` in the
-pack, so a Create player uses the Create chain and a player with only our jar still has air.
+**Decided by Sanchit 2026-10-19: air depends on Create.** There is no free standalone air. Tier 1 holds
+the fluid, the dispenser and the tank (no Create code), but only the Create-powered compressor makes air.
+The old emitter and refill station lose their recipes and stay as hidden legacy blocks.
 
 ## Level-2 tank
 
@@ -68,16 +69,10 @@ Server check class (`OxygenChecks`) covering: dispenser with air holds, empty do
 compressor output follows speed, upgrade keeps charge, ship cabin after a move, reload. Heap and
 tick cost go in `performance-log.md`. Few game launches: one combined client session.
 
-## Questions (recommendation first)
+## Answers (Sanchit, 2026-10-19)
 
-1. **Is the picture right?** Compressor makes air; dispenser holds the room; the emitter's room job moves to the dispenser. *Yes.*
-2. **No-Create story.** Keep the free emitter and station as the basic versions; the Create pack removes their recipes. *Yes.*
-3. **More energy, more area** as the rules above (air per second follows RPM; room cost follows size; short means unsealed). *Yes.*
-4. **Old emitter:** keep as the free basic version, not remove. *Keep.*
-5. **Level 2:** its own item, 8 helium, 2,400 mB, no level 3. *Yes.*
-6. **Fluid scale:** 1 unit = 1 mB, a filled-by-pipe tank and a filled-by-right-click tank are the same. *Yes.*
-7. **Doors:** no sealing hatch in v2; ships use full blocks, revisit after we fly one. *No hatch.*
-8. Share-air and the valve unchanged.
-
-Also: **naming.** You called it the oxygen station. I propose "Air Compressor" for the new Create
-machine so the old Refill Station keeps its name for the quest book. Fine?
+1. Picture right: yes.
+2/4. No free basic versions; air depends on Create. Old blocks kept hidden, no recipes.
+3. Air per second follows RPM; room cost follows size; short = unsealed.
+5. Level 2 is its own item, 8 helium, 2,400 mB, no level 3.
+6. 1 unit = 1 mB. 7. No hatch in v2. 8. Share-air and valve unchanged.
