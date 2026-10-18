@@ -194,9 +194,14 @@ in play rather than only in code:
 Added 2026-09-20, once Lifesteal/Omnivamp and Armor Pen/Magic Pen were promoted from scattered
 per-item constants into real attributes (§3) — before that promotion, a screen like this had
 nothing real to read for four of its eight rows. `client.CharacterSheetScreen`, this module's
-second `Screen`, opened by its own unbound-by-default keybind. Needs no network payload at all,
+second `Screen`, opened by its own keybind (V by default since 2026-10-18; it was unbound). Needs no network payload at all,
 unlike `RuneScreen`: every stat it shows is already `setSyncable(true)`, so the client's own copy
 of the local player already carries the same numbers the server does.
+
+**The three player screens lead to each other (2026-10-18).** Rune page (R), skill tree (K) and
+character sheet (V): while one is open, the other two's keys switch to them, and its own key closes
+it (`client.ScreenSwitch`). Seen working by the scripted client run. A player whose saved options
+already bind the sheet's key keeps their binding; the default only reaches new installs.
 
 Shows HP (current/max), Attack Damage, Attack Speed, Move Speed, Armor, Magic Resist, Omnivamp,
 and Lethality/Penetration as one combined line ("23/35%", Sanchit's own spec) — every base stat

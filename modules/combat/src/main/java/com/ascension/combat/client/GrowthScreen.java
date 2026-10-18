@@ -179,6 +179,9 @@ public final class GrowthScreen extends Screen {
             onClose();
             return true;
         }
+        if (ScreenSwitch.handle(this, keyCode, scanCode)) {
+            return true;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 

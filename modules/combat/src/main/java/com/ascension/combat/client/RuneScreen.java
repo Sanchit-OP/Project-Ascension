@@ -851,6 +851,10 @@ public final class RuneScreen extends Screen {
             return true;
         }
 
+        if (ScreenSwitch.handle(this, keyCode, scanCode)) {
+            return true;
+        }
+
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
