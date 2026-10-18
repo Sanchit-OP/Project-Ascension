@@ -142,15 +142,25 @@ the Protection problem comes back by another route.
 
 | Enchantment | Becomes | Per level | Top level | Units |
 |---|---|---|---|---|
-| Protection | +Armor, on each piece | +3 | IV: +12 a piece, +48 a set | 12 |
+| Protection | +Armor on each piece, **and** a small all-source damage reduction | +3 Armor, and 2.25% less damage | IV: +12 Armor a piece (+48 a set) and 9% a piece, **36% a full set** | 12 |
+| Projectile Protection | **more** Armor than Protection (arrows are Attack Damage hits), plus 2.25% less projectile damage | +4 Armor, 2.25% vs projectiles | IV: +16 Armor a piece | 16 |
+| Fire Protection | +Magic Resist, plus 2.25% less fire damage | +3 Magic Resist, 2.25% vs fire | IV: +12 Magic Resist a piece | 12 |
+| Blast Protection | +Magic Resist, plus 2.25% less explosion damage | +3 Magic Resist, 2.25% vs blasts | IV: +12 Magic Resist a piece | 12 |
 | Sharpness | +Attack Damage, held | +0.3 | V: +1.5 | 6 |
 | Power | +Attack Damage (arrows add the shooter's AD already) | +0.3 | V: +1.5 | 6 |
 | Breach | +Armor Penetration % | +4% | IV: 16% | 8 |
 
+**Sanchit, 2026-10-18 (decision 1).** Protection gives Armor *and* a small reduction on top, so a
+full Protection IV set takes 36% less from every source (vanilla's is 64%). Projectile Protection
+gives more Armor, because projectile hits are mostly Attack Damage. Fire and Blast give Magic Resist
+and the same small reduction against their own damage. Built as one enchantment each with two effects:
+`minecraft:attributes` for the stat and `minecraft:damage_protection` for the reduction (vanilla counts
+4% per point, so 2.25% is 0.5625 points a level). The armour exclusive set already stops two of them
+sharing a piece. The 36% is his number; plain 2% a level would give 32%.
+
 Notes on the choices:
-- **Protection:** the diamond set rises from 69 to 117 Armor (54% taken instead of 62%). That is a
-  visible step, not a wall. Fire, Blast and Projectile Protection keep a **small** vanilla-style
-  reduction (so the hazard identity stays) and are not stat sources.
+- **Protection:** the diamond set rises from 69 to 117 Armor (54% taken instead of 62%), then the 36%
+  takes it to about 35% of a hit. Still a step rather than vanilla's wall (about 22%).
 - **Sharpness as Attack Damage** is deliberate: it now makes items that "deal 50% of your Attack
   Damage" hit harder too, and growth, runes and enchantments add up in one number.
 - Smite and Bane stay situational (more against undead or arthropods) and keep a vanilla-style
@@ -236,8 +246,8 @@ I will check what ships with Cataclysm before saying any more.
 
 ## 11. Decisions for Sanchit
 
-1. **Protection becomes +Armor** (my recommendation) instead of staying a multiplier on top of the
-   curve.
+1. **Protection: ANSWERED.** +Armor plus a small reduction (36% on a full set); Projectile gives more
+   Armor; Fire and Blast give Magic Resist plus the reduction. See §3.3.
 2. **Sharpness and Power become +Attack Damage.** (recommended)
 3. **Mending:** keep, remove, or make it cost something (my recommendation: keep, but make it only
    repair slowly, because our items are expensive to rebuild).
