@@ -50,7 +50,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> VEIGOS_BLADE = ITEMS.register(
             "veigos_blade",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Second out the door, and half of the anti-tank family with {@link #VEIGOS_BLADE}
@@ -63,7 +63,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> DARIUS_AXE = ITEMS.register(
             "darius_axe",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Third out the door (combat-api.md section 6). No ability haste in this game, so the
@@ -76,7 +76,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> SPEAR_OF_SHOJIN = ITEMS.register(
             "spear_of_shojin",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Fourth out the door, and the first ranged weapon (combat-api.md section 6). A plain
@@ -90,7 +90,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> MORTAL_REMINDER = ITEMS.register(
             "mortal_reminder",
-            () -> new BowItem(new Item.Properties().durability(384)));
+            () -> new BowItem(legendary().durability(384)));
 
     /**
      * Fifth out the door, and the last piece of the anti-tank family alongside
@@ -104,7 +104,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> DIVINE_SUNDERER = ITEMS.register(
             "divine_sunderer",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Sixth out the door, and the second weapon to deal magic damage after {@link
@@ -118,7 +118,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> DARKEN_BLADE = ITEMS.register(
             "darken_blade",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Seventh out the door, and the third weapon to deal magic damage after
@@ -132,7 +132,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> RAGEFANG = ITEMS.register(
             "ragefang",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Eighth out the door (combat-api.md section 6), and `ORIGINAL` &mdash; no direct League
@@ -148,7 +148,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> ENDLESS_HUNGER = ITEMS.register(
             "endless_hunger",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Ninth out the door (combat-api.md section 6). Passive: flat armor penetration (lethality) on
@@ -163,7 +163,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> WRAITHBLADE = ITEMS.register(
             "wraithblade",
-            () -> new SwordItem(Tiers.DIAMOND, new Item.Properties()));
+            () -> new SwordItem(Tiers.DIAMOND, legendary()));
 
     /**
      * Tenth out the door, and the second ranged weapon after {@link #MORTAL_REMINDER}
@@ -183,7 +183,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> HEARTWOOD_OF_PALLAS = ITEMS.register(
             "heartwood_of_pallas",
-            () -> new BowItem(new Item.Properties().durability(384)));
+            () -> new BowItem(legendary().durability(384)));
 
     /**
      * Eleventh out the door, and the last ranged weapon (combat-api.md section 6). Revised by
@@ -198,7 +198,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> GALEFORCE = ITEMS.register(
             "galeforce",
-            () -> new BowItem(new Item.Properties().durability(384)));
+            () -> new BowItem(legendary().durability(384)));
 
     /**
      * Twelfth out the door, the first armor piece, and one of two Helmets (combat-api.md section
@@ -357,7 +357,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> ZONIAS_HOURGLASS = ITEMS.register(
             "zonias_hourglass",
-            () -> new Item(new Item.Properties()));
+            () -> new Item(legendary()));
 
     /**
      * Twenty-sixth out the door, and the last item in the catalog (combat-api.md section 6).
@@ -372,7 +372,7 @@ public final class CombatContent {
      */
     public static final Supplier<Item> STERAKS_HARNESS = ITEMS.register(
             "steraks_harness",
-            () -> new Item(new Item.Properties()));
+            () -> new Item(legendary()));
 
     /**
      * Not part of the catalog (section 6) &mdash; a debug-only weapon added 2026-09-19 to verify
@@ -387,6 +387,17 @@ public final class CombatContent {
             "test_magic_blade",
             () -> new SwordItem(Tiers.WOOD, new Item.Properties()
                     .attributes(SwordItem.createAttributes(Tiers.WOOD, 0.0f, -2.4f))));
+
+    /**
+     * What every catalog item shares, so the 26 read as legendary: epic rarity (the purple name),
+     * an enchantment glint that needs no enchantment, and fire resistance, so a lava mistake does
+     * not eat a build that cost three worlds and a boss. The tooltip says "Legendary" and what the
+     * item does ({@code client.stat.MechanicTooltips}).
+     */
+    private static Item.Properties legendary() {
+        return new Item.Properties().rarity(net.minecraft.world.item.Rarity.EPIC).fireResistant()
+                .component(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+    }
 
     private CombatContent() {
     }
@@ -417,7 +428,7 @@ public final class CombatContent {
                     List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, id))),
                     0.0f, 0.0f);
         });
-        return () -> new ArmorItem(material, type, new Item.Properties());
+        return () -> new ArmorItem(material, type, legendary());
     }
 
     public static void register(IEventBus modBus) {
