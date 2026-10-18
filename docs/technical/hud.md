@@ -90,6 +90,11 @@ effects and share-air are not drawn.
 
 ## 6. Build order
 
+**Done:** increment 1, the shell (2026-10-18): the contract in `core`, the `ascension-hud` module with `HudLayout` (anchors to positions, 8 tests), `HudLayer` and a client config (`enabled`, `opacity`). Core has 7 tests for the registry. Built and unit-tested; **not yet seen in a client**, and it draws nothing until an element is registered.
+
+**Next:** health, then the stat block, oxygen, runes.
+
+
 Shell and layout, health, stat panel, oxygen, runes (with delta sync), the rest; a refactor pass
 every third increment. Proof per ADR-0008: scripted screenshots at GUI scales 2 to 4, a dedicated
 server with two players, a relog, and a frame-cost reading in `performance-log.md`.
