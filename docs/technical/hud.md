@@ -15,9 +15,8 @@ colours, glyphs and stand-in font from the rune art kit).
 
 ## 2. Still open (Sanchit decides)
 
-- Does the stat column retire `CharacterSheetScreen` (V)? Recommendation: **yes for reading, no for
-  the hover sources**: the column shows numbers, a held key (default Alt) expands it with names and
-  what each number means; the sheet's per-stat source list moves into that expanded view.
+- Does the stat block retire `CharacterSheetScreen` (V)? The block is now deliberately simple, so
+  recommendation: **keep the sheet** for sources and names, reached from the block or key V.
 - Which runes' state is shown, and does a full stack make a sound? Recommendation: show only what the
   equipped page makes live; a soft tick on a stack topping out, off by default.
 - Does food stay visible? Recommendation: keep, as a short bar, not ten icons.
@@ -54,30 +53,40 @@ rune chips, a stat column with buff and debuff colours, a damage-reduction reado
 **What we should add (later):** food preview, a held-key expand, a low-health edge pulse.
 **What we leave alone:** the hotbar and the boss bar (Cataclysm draws its own), Jade, JEI.
 
-## 4. The proposed layout (see the mockups)
+## 4. The proposed layout (v2, after Sanchit's notes of 2026-10-18)
+
+Sanchit's direction: **premium, smooth, not pixel art; no bars for oxygen; a League-style stat block
+just left of the hotbar, simple and with no detail.** Sizes below are GUI units.
 
 | Element | Proposal |
 |---|---|
-| **Health** | One bar above the hotbar's left end, 100 GUI px wide, ticks every 100 HP, numbers **beside** it (text on a fill is unreadable). Pale trail = health just lost; gold strip on top = absorption, with `+N` above; red below 30%. Same bar from 20 to 1,000. |
-| **Level** | A small gem on the XP line with the number, always visible (levels are spent: enchanting, rune change, respec). |
-| **XP** | A thin line across the hotbar's top edge. |
-| **Food** | A short bar right of the hotbar, above the rune chips. |
-| **Armor, Magic Resist** | In the stat column. Vanilla's armour icons are hidden. Expanded view adds "-29% physical" and "-21% magic" from the defence curve. |
-| **Stat column** | Left edge, vertically centred: Attack Damage, Attack Speed, Armor, Magic Resist, Move Speed. Number coloured by stat; green when a buff lifts it, red when a debuff cuts it. Hold a key to expand it with names and sources. Lethality, Armor Penetration and Omnivamp appear only when non-zero. |
-| **Oxygen** | Absent in breathable air. Appears as one gauge when air is short: lungs (blue, first half) and tank (amber, second half), drained tank-first. The number appears only under about 10 s, and the screen edge reddens as it drops (the mockup `vacuum-scale3`). Pressurising and share-air get a mark on the gauge. |
-| **Runes** | A chip per equipped rune right of the hotbar, using the orrery's glyphs and path colours. Live runes are bright with a top rule; idle ones dim. Stacks are a number, charges fill a line along the chip's bottom, cooldowns sweep a dark cap down. |
-| **Unspent skill points** | A small mark on the level gem (not drawn in the mockups yet). |
-| **Item abilities, status effects, boss bar** | Not redesigned in the first pass; moved only if they collide. |
+| **Stat block** | Two columns of three, icon plus number only, in a glass panel bottom-aligned just **left of the hotbar** (League's block). Offence left (Attack Damage, Attack Speed, Omnivamp), defence right (Armor, Magic Resist, Move Speed). A buff turns the number green, a debuff red. No names, no expanded view, no key to hold. Details live in the tooltip and the character sheet. |
+| **Health** | One smooth bar above the hotbar, hotbar-wide, subtle tick every 100 HP, numbers centred on it in a clean face. Pale trail = health just lost; gold strip = absorption, `+N` above its right end; red below 30%. Same bar from 20 to 1,000. |
+| **Level** | A round badge on the bar's left end; its ring is the XP progress. Always visible (levels are spent). |
+| **Food** | A short capsule right of the health bar. |
+| **Oxygen** | **No bar.** A large **O₂** emblem rises above the hotbar only as air runs low: the outer ring is the lungs, an inner amber ring is the tank. It reddens and glows as it empties, shows seconds beneath only when low, and the screen edge reddens. In fine air in space it is a small quiet badge. Pressurising and share-air are marks on the emblem. |
+| **Runes** | Round glass discs right of the hotbar, the orrery's glyphs and path colours. Live = bright with a glow; idle = dim. Stacks are a number badge, a charge is a ring that fills, a cooldown is a sweep. |
+| **Armor, Magic Resist numbers** | In the stat block. Vanilla's armour icons are hidden. |
+| **Unspent skill points, item abilities, status effects, boss bar** | Not in the mockups yet; moved only if they collide. |
 
-Layout is in GUI pixels from the hotbar and the screen edges, so it holds at scales 2 to 4
-(`fight-scale2/3/4`) and on ultrawide. The mockups are 1920×1080; 4K needs the same check in game.
+**How we get "premium" in Minecraft** (decided in principle, to prove in a client): no mod is
+needed. Panels, rings, icons and glows are **high-resolution textures drawn smoothly** by our seeded
+generator (rounded 9-slice panels, ring and glow sprites, vector icons) and shown with linear
+filtering; the text uses a **bundled open-licence TTF** through Minecraft's own font system, so it is
+smooth rather than blocky; round gauges are drawn by a small number of textured fans or a shader,
+and the shader route is tested with Iris first. A helper mod would break ADR-0003 (Tier 1 takes no
+third-party dependency), so if one proves necessary it goes in a Tier 2 compat jar, optional.
+**Risk to check early:** the orrery and skill-tree screens are pixel-styled; the HUD will be smooth,
+so the two should be put side by side and Sanchit asked if the screens follow later.
 
-## 5. Mockups
+## 5. Mockups (v2)
 
-`design/hud/`: `calm-scale3`, `fight-scale3` (low health, absorption, three runes), `vacuum-scale3`
-(oxygen critical), `vacuum-ok-scale3` (lungs and tank full, no number), `expanded-scale3` (stat
-column opened), and `fight-scale2` / `fight-scale4`. Known gaps: the stand-in font is not Minecraft's;
-the rune cooldown chip is still too dark; skill points, status effects and share-air are not drawn.
+`design/hud/`, made by `tools/render-hud-mockups.py` (vector, drawn at 3x, stand-in font):
+`calm-scale3`, `fight-scale3` (low health, absorption, buffed stats, three runes), `vacuum-scale3`
+(O₂ critical, screen edge red), `vacuum-mid-scale3` (O₂ at 42%), `vacuum-ok-scale3` (the quiet
+badge), `fight-scale2` / `fight-scale4`. Known gaps: the rune glyphs are still the pixel art
+smoothed up, so they should be redrawn as vector; the real font is not chosen; skill points, status
+effects and share-air are not drawn.
 
 ## 6. Build order
 
