@@ -39,7 +39,7 @@
 		}
 		{
 			id: "4AF38B92DD4084D6"
-			x: 2.5d
+			x: 3.0d
 			y: 0.0d
 			shape: "ascension_star"
 			size: 0.9d
@@ -59,6 +59,32 @@
 					id: "18C642C3A2F41D9B"
 					type: "item"
 					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "1EAC31FF3592974E"
+			x: 5.5d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:obsidian"
+				count: 1
+			}
+			dependencies: ["4AF38B92DD4084D6"]
+			tasks: [
+				{
+					id: "3D592829AFC033ED"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "697056104432A820"
+					type: "item"
+					item: "minecraft:cooked_porkchop"
 					count: 6
 				}
 			]
@@ -92,6 +118,33 @@
 			]
 		}
 		{
+			id: "254E3200FDE479C6"
+			x: 3.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:diamond"
+				count: 1
+			}
+			dependencies: ["37F60931C7C6C5D2"]
+			tasks: [
+				{
+					id: "2082DA2E07B59CFE"
+					type: "advancement"
+					advancement: "minecraft:story/mine_diamond"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "31EE3C4EFAB110E4"
+					type: "item"
+					item: "minecraft:torch"
+					count: 32
+				}
+			]
+		}
+		{
 			id: "4C6D7B1AFA4FB07C"
 			x: 0.0d
 			y: 4.0d
@@ -119,15 +172,192 @@
 			]
 		}
 		{
+			id: "0AC0AFA737E77E30"
+			x: 0.0d
+			y: 6.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:sculk_catalyst"
+				count: 1
+			}
+			dependencies: ["4C6D7B1AFA4FB07C"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "13EF0BEF5E8C109F"
+					type: "advancement"
+					advancement: "ascension_combat:growth/discovery/ancient_city"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "2E5444AEA4951442"
+					type: "item"
+					item: "minecraft:golden_carrot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "194DE687782014EC"
+			x: 0.0d
+			y: 8.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:sculk_shrieker"
+				count: 1
+			}
+			dependencies: ["0AC0AFA737E77E30"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "7FC29017B33F8C6B"
+					type: "advancement"
+					advancement: "ascension_combat:growth/warden"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "18A9A8EDF48925D3"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "201C4FDECE7D7752"
+			x: 0.0d
+			y: 10.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_worlds:warden_tendril"
+				count: 1
+			}
+			dependencies: ["194DE687782014EC"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "4B970739B48920A4"
+					type: "item"
+					item: "ascension_worlds:warden_tendril"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "41D45C7D6EF12CA0"
+					type: "item"
+					item: "minecraft:echo_shard"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "31621D31797E9687"
+			x: -1.5d
+			y: 12.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_worlds:inscribed_gatestone"
+				count: 1
+			}
+			dependencies: ["201C4FDECE7D7752"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "0CB55912DB176DDD"
+					type: "item"
+					item: "ascension_worlds:inscribed_gatestone"
+					count: 28L
+				}
+			]
+			rewards: [
+				{
+					id: "13391056EA3AB820"
+					type: "item"
+					item: "minecraft:deepslate_bricks"
+					count: 32
+				}
+			]
+		}
+		{
+			id: "1370C106A85089AF"
+			x: 1.5d
+			y: 12.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_worlds:gateway_keystone"
+				count: 1
+			}
+			dependencies: ["201C4FDECE7D7752"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "3A52CFBFA790BC07"
+					type: "item"
+					item: "ascension_worlds:gateway_keystone"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "1931932E555668BF"
+					type: "item"
+					item: "minecraft:bone_block"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "6DD35FA2DD71D1DF"
+			x: 0.0d
+			y: 14.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "ascension_worlds:inscribed_gatestone"
+				count: 1
+			}
+			dependencies: ["31621D31797E9687", "1370C106A85089AF"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "44BF1AD184B5C497"
+					type: "advancement"
+					advancement: "ascension_worlds:gates/overworld"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "2FE7F7AFD4A87244"
+					type: "item"
+					item: "minecraft:diamond"
+					count: 2
+				}
+				{
+					id: "0AB7B30E6E288DD5"
+					type: "item"
+					item: "minecraft:spyglass"
+					count: 1
+				}
+			]
+		}
+		{
 			id: "1348BB42A5607EA0"
-			x: 2.5d
-			y: 2.0d
+			x: 3.0d
+			y: 4.0d
 			shape: "ascension_nova"
 			icon: {
 				id: "ascension_worlds:titanium_ingot"
 				count: 1
 			}
-			dependencies: ["37F60931C7C6C5D2"]
+			dependencies: ["254E3200FDE479C6"]
 			tasks: [
 				{
 					id: "705EF5BC1DBDA112"
@@ -147,8 +377,8 @@
 		}
 		{
 			id: "4121BDE2FA93BA25"
-			x: 2.5d
-			y: 4.0d
+			x: 3.0d
+			y: 6.0d
 			shape: "ascension_nova"
 			icon: {
 				id: "ascension_atmosphere:oxygen_tank"
@@ -180,8 +410,8 @@
 		}
 		{
 			id: "20022FE6B8C4E2F9"
-			x: 1.2d
-			y: 6.0d
+			x: 1.8d
+			y: 8.0d
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
@@ -205,95 +435,9 @@
 			]
 		}
 		{
-			id: "0AC0AFA737E77E30"
-			x: 5.0d
-			y: 3.0d
-			shape: "ascension_eye"
-			size: 1.2d
-			icon: {
-				id: "minecraft:sculk_catalyst"
-				count: 1
-			}
-			dependencies: ["4C6D7B1AFA4FB07C"]
-			hide_until_deps_complete: true
-			tasks: [
-				{
-					id: "13EF0BEF5E8C109F"
-					type: "advancement"
-					advancement: "ascension_combat:growth/discovery/ancient_city"
-					criterion: ""
-				}
-			]
-			rewards: [
-				{
-					id: "2E5444AEA4951442"
-					type: "item"
-					item: "minecraft:golden_carrot"
-					count: 8
-				}
-			]
-		}
-		{
-			id: "201C4FDECE7D7752"
-			x: 5.0d
-			y: 5.0d
-			shape: "ascension_nova"
-			icon: {
-				id: "ascension_worlds:warden_tendril"
-				count: 1
-			}
-			dependencies: ["0AC0AFA737E77E30"]
-			hide_until_deps_complete: true
-			tasks: [
-				{
-					id: "4B970739B48920A4"
-					type: "item"
-					item: "ascension_worlds:warden_tendril"
-					count: 1L
-				}
-			]
-			rewards: [
-				{
-					id: "41D45C7D6EF12CA0"
-					type: "item"
-					item: "minecraft:echo_shard"
-					count: 2
-				}
-			]
-		}
-		{
-			id: "6DD35FA2DD71D1DF"
-			x: 5.0d
-			y: 7.0d
-			shape: "ascension_eye"
-			size: 1.2d
-			icon: {
-				id: "ascension_worlds:inscribed_gatestone"
-				count: 1
-			}
-			dependencies: ["201C4FDECE7D7752"]
-			hide_until_deps_complete: true
-			tasks: [
-				{
-					id: "44BF1AD184B5C497"
-					type: "advancement"
-					advancement: "ascension_worlds:gates/overworld"
-					criterion: ""
-				}
-			]
-			rewards: [
-				{
-					id: "2FE7F7AFD4A87244"
-					type: "item"
-					item: "minecraft:diamond"
-					count: 2
-				}
-			]
-		}
-		{
 			id: "407F6003A93FC43F"
-			x: 3.8d
-			y: 6.0d
+			x: 4.2d
+			y: 8.0d
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
@@ -319,5 +463,16 @@
 		}
 	]
 	quest_links: [ ]
-	images: [ ]
+	images: [
+		{
+			id: "2920D76FE915CCFE"
+			x: 18.0d
+			y: 12.0d
+			width: 24.0d
+			height: 14.0625d
+			image: "ascension_compat_ftbquests:textures/quests/gate/plan.png"
+			order: 0
+			dependency: "0AC0AFA737E77E30"
+		}
+	]
 }

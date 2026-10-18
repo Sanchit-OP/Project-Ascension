@@ -37,6 +37,12 @@ OUR_NAMESPACES = ('ascension_',)
 
 MIN_SPACING = 0.75      # quests closer than this overlap on the page
 
+# What fits the book's panels. A page is read in a game screen, not a document: say less.
+TITLE_MAX = 30
+SUBTITLE_MAX = 44
+LINES_MAX = 5
+LINE_MAX = 160
+
 _ID = re.compile(r'^[a-z0-9_.-]+:[a-z0-9_./-]+$')
 
 
@@ -59,6 +65,12 @@ def _lang_keys():
 def _advancement_exists(namespace, path):
     pattern = os.path.join(ROOT, 'modules', '**', 'src', 'main', 'resources', 'data', namespace,
                            'advancement', *path.split('/')) + '.json'
+    return bool(glob.glob(pattern, recursive=True))
+
+
+def _structure_exists(namespace, path):
+    pattern = os.path.join(ROOT, 'modules', '**', 'src', 'main', 'resources', 'data', namespace,
+                           'worldgen', 'structure', *path.split('/')) + '.json'
     return bool(glob.glob(pattern, recursive=True))
 
 
@@ -169,6 +181,8 @@ class _Checker:
         placed = []
         for quest in chapter.quests:
             self._quest(chapter, quest, placed)
+        if chapter.quests and not any(not q.deps for q in chapter.quests):
+            self.problems.append(f'{where}: every quest depends on another, so the page has no way in')
 
     # -- a quest --------------------------------------------------------------------------------
 
@@ -176,11 +190,19 @@ class _Checker:
         q = f'{chapter.slug}.{quest.slug}'
         self._text(q + ' title', quest.title)
         self._text(q + ' subtitle', quest.subtitle)
+        if len(quest.title) > TITLE_MAX:
+            self.problems.append(f'{q}: title is {len(quest.title)} characters (the panel fits {TITLE_MAX})')
+        if len(quest.subtitle) > SUBTITLE_MAX:
+            self.problems.append(f'{q}: subtitle is {len(quest.subtitle)} characters (the panel fits {SUBTITLE_MAX})')
         if not quest.text:
             self.problems.append(f'{q}: no text')
+        if len(quest.text) > LINES_MAX:
+            self.problems.append(f'{q}: {len(quest.text)} lines of text (a quest says at most {LINES_MAX})')
         for line in quest.text:
             if not isinstance(line, str) or not line.strip():
                 self.problems.append(f'{q}: an empty line of text')
+            if isinstance(line, str) and len(line) > LINE_MAX:
+                self.problems.append(f'{q}: a line of {len(line)} characters (at most {LINE_MAX}): {line[:40]!r}...')
             self._text(q + ' text', line)
         self._icon(q + ' icon', quest.icon)
         if quest.shape and quest.shape not in self.shapes:
@@ -213,6 +235,10 @@ class _Checker:
                     self.problems.append(f'{q}: we have no advancement "{namespace}:{path}"')
             elif namespace == 'minecraft' and not path.startswith(VANILLA_ADVANCEMENT_ROOTS):
                 self.problems.append(f'{q}: "{namespace}:{path}" is not a vanilla advancement path')
+        elif task.kind == 'structure':
+            namespace, path = task.args['structure'].lstrip('#').split(':', 1)
+            if _our(namespace) and not _structure_exists(namespace, path):
+                self.problems.append(f'{q}: we have no structure "{namespace}:{path}"')
         elif task.kind == 'dimension':
             if task.args['dimension'] not in self.dimensions:
                 self.problems.append(f'{q}: unknown dimension "{task.args["dimension"]}"')

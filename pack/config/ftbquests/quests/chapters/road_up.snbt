@@ -1,0 +1,508 @@
+{
+	id: "66846420A805B305"
+	group: ""
+	order_index: 2
+	filename: "road_up"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/road_up.png"
+		}
+	}
+	quests: [
+		{
+			id: "778F5319036EB164"
+			x: 4.5d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "create:goggles"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "79E8EAC59407CFC1"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "151EBDB687521AD4"
+					type: "item"
+					item: "minecraft:iron_nugget"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "648F148F479CB269"
+			x: 4.5d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:andesite_alloy"
+				count: 1
+			}
+			dependencies: ["778F5319036EB164"]
+			tasks: [
+				{
+					id: "389B4B0473525282"
+					type: "advancement"
+					advancement: "create:andesite_alloy"
+					criterion: ""
+				}
+				{
+					id: "18E628A0915EE1A8"
+					type: "item"
+					item: "create:andesite_alloy"
+					count: 12L
+				}
+			]
+			rewards: [
+				{
+					id: "369594283CB5DE0B"
+					type: "item"
+					item: "minecraft:stripped_oak_log"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "5E1D45D61CAF85BB"
+			x: 4.5d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:andesite_casing"
+				count: 1
+			}
+			dependencies: ["648F148F479CB269"]
+			tasks: [
+				{
+					id: "448AB4106944DE75"
+					type: "advancement"
+					advancement: "create:andesite_casing"
+					criterion: ""
+				}
+				{
+					id: "05B8DBBEBAAEDEAF"
+					type: "item"
+					item: "create:andesite_casing"
+					count: 4L
+				}
+			]
+			rewards: [
+				{
+					id: "33E9EC1C749C7651"
+					type: "item"
+					item: "minecraft:lever"
+					count: 2
+				}
+				{
+					id: "2FBF5DFFA295B012"
+					type: "item"
+					item: "minecraft:redstone"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "077125400A53E565"
+			x: 4.5d
+			y: 6.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "create:water_wheel"
+				count: 1
+			}
+			dependencies: ["5E1D45D61CAF85BB"]
+			tasks: [
+				{
+					id: "448EEB81251F44A5"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "4A072D520C39D19C"
+					type: "item"
+					item: "minecraft:oak_planks"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "51560B86C08B0177"
+			x: 4.5d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:iron_sheet"
+				count: 1
+			}
+			dependencies: ["077125400A53E565"]
+			tasks: [
+				{
+					id: "7E03C8534FA4CA54"
+					type: "advancement"
+					advancement: "create:mechanical_press"
+					criterion: ""
+				}
+				{
+					id: "1362B43F1946D830"
+					type: "item"
+					item: "create:iron_sheet"
+					count: 9L
+				}
+			]
+			rewards: [
+				{
+					id: "46B90537D20EBCF6"
+					type: "item"
+					item: "minecraft:coal_block"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "7550C8791F5A44BF"
+			x: 1.5d
+			y: 10.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "aeronautics:propeller_bearing"
+				count: 1
+			}
+			dependencies: ["51560B86C08B0177", "1348BB42A5607EA0"]
+			tasks: [
+				{
+					id: "6AF7BE12E8F058CC"
+					type: "item"
+					item: "aeronautics:propeller_bearing"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "15B69C342FF498A7"
+					type: "item"
+					item: "create:shaft"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "6BE89277CA0B7E2D"
+			x: 1.5d
+			y: 12.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "aeronautics:andesite_propeller"
+				count: 1
+			}
+			dependencies: ["7550C8791F5A44BF"]
+			tasks: [
+				{
+					id: "2D7E7CC7DB876B84"
+					type: "advancement"
+					advancement: "aeronautics:for_every_action"
+					criterion: ""
+				}
+				{
+					id: "7E7E3689FE7732C9"
+					type: "advancement"
+					advancement: "aeronautics:in_thrust_we_trust"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "0EE171EA363208BE"
+					type: "item"
+					item: "minecraft:coal"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "7C3205BE963442F9"
+			x: 4.5d
+			y: 10.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "aeronautics:adjustable_burner"
+				count: 1
+			}
+			dependencies: ["51560B86C08B0177"]
+			tasks: [
+				{
+					id: "76C4ED5A57459168"
+					type: "advancement"
+					advancement: "aeronautics:head_in_the_clouds"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "736AC382D02F778A"
+					type: "item"
+					item: "minecraft:white_wool"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "61A35FA99BC1225C"
+			x: 4.5d
+			y: 12.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:feather"
+				count: 1
+			}
+			dependencies: ["7C3205BE963442F9"]
+			tasks: [
+				{
+					id: "36E295615058789E"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "7D3D05F6264CF906"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "0FFB162AEE1FB4B4"
+			x: 7.5d
+			y: 10.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:steering_wheel"
+				count: 1
+			}
+			dependencies: ["51560B86C08B0177"]
+			tasks: [
+				{
+					id: "214E665F41706B77"
+					type: "item"
+					item: "simulated:physics_assembler"
+					count: 1L
+				}
+				{
+					id: "3F1598885F40C5EA"
+					type: "item"
+					item: "simulated:steering_wheel"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "74096C19C5F92A6D"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "6AEB8BAD7F840F9A"
+			x: 7.5d
+			y: 12.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:altitude_sensor"
+				count: 1
+			}
+			dependencies: ["0FFB162AEE1FB4B4"]
+			tasks: [
+				{
+					id: "24D4B49213FF171D"
+					type: "item"
+					item: "simulated:altitude_sensor"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "2E66943F79151945"
+					type: "item"
+					item: "minecraft:paper"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "7CB0E909964F2247"
+			x: 11.0d
+			y: 10.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_atmosphere:oxygen_refill_station"
+				count: 1
+			}
+			dependencies: ["4121BDE2FA93BA25"]
+			tasks: [
+				{
+					id: "543401587415C402"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_refill_station"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "698462E7F34E4B88"
+					type: "item"
+					item: "minecraft:glass"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "69695F363B61AE01"
+			x: 11.0d
+			y: 12.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_atmosphere:oxygen_emitter"
+				count: 1
+			}
+			dependencies: ["7CB0E909964F2247"]
+			tasks: [
+				{
+					id: "06CAD77EA1BE3DB7"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_emitter"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "521245BFB5E7984F"
+					type: "item"
+					item: "minecraft:iron_block"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "5C38EACEAEF810ED"
+			x: 11.0d
+			y: 14.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:clock"
+				count: 1
+			}
+			dependencies: ["69695F363B61AE01"]
+			tasks: [
+				{
+					id: "0A566B270A607E08"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "3E09D2CA67B61A1B"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "2ED2CC995D088901"
+			x: 6.0d
+			y: 15.5d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:ender_eye"
+				count: 1
+			}
+			dependencies: ["6BE89277CA0B7E2D", "61A35FA99BC1225C", "6AEB8BAD7F840F9A", "5C38EACEAEF810ED"]
+			tasks: [
+				{
+					id: "080D92F7E4721FB5"
+					type: "dimension"
+					dimension: "ascension_worlds:space"
+				}
+			]
+			rewards: [
+				{
+					id: "0DC825999D1B3C6E"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_tank"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "5FABAE7A6489ABA1"
+			x: 3.5d
+			y: 18.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:map"
+				count: 1
+			}
+			dependencies: ["2ED2CC995D088901"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "24241DA8A26019B2"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "45057221EB8BA62B"
+					type: "item"
+					item: "minecraft:compass"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "4DE0EFD601D00710"
+			x: 8.5d
+			y: 18.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:end_rod"
+				count: 1
+			}
+			dependencies: ["2ED2CC995D088901"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "168AC8F3C0C9AE45"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "38D4AC72618D9160"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 12
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

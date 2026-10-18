@@ -1,0 +1,173 @@
+{
+	id: "6B55D454BF84A675"
+	group: ""
+	order_index: 6
+	filename: "together"
+	default_quest_shape: "ascension_star"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/together.png"
+		}
+	}
+	quests: [
+		{
+			id: "7E97FCFC0CB2DC8E"
+			x: 3.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:player_head"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "4A09C479ACECEE24"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "64CB6FB0ABAC23BC"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "18C5623AF0F0B611"
+			x: 0.0d
+			y: 2.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:clock"
+				count: 1
+			}
+			dependencies: ["7E97FCFC0CB2DC8E"]
+			tasks: [
+				{
+					id: "3BBD826198AD1139"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "096D23EC57739E32"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "777D5103B6FAC0E1"
+			x: 3.0d
+			y: 2.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:shield"
+				count: 1
+			}
+			dependencies: ["7E97FCFC0CB2DC8E"]
+			tasks: [
+				{
+					id: "387B5EE7FB48E57F"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "7E03220DC44B524A"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "1EFBD4D8CAEACCA9"
+			x: 6.0d
+			y: 2.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:writable_book"
+				count: 1
+			}
+			dependencies: ["7E97FCFC0CB2DC8E"]
+			tasks: [
+				{
+					id: "64B731965CE67425"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "081206A8DB55C465"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "260259C5187619CB"
+			x: 1.5d
+			y: 4.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:filled_map"
+				count: 1
+			}
+			dependencies: ["18C5623AF0F0B611"]
+			tasks: [
+				{
+					id: "02DB5F1BC1BE4A2E"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "44C7181E555B4AB7"
+					type: "item"
+					item: "minecraft:compass"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "5486899F38DD1418"
+			x: 4.5d
+			y: 4.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "ascension_atmosphere:oxygen_tank"
+				count: 1
+			}
+			dependencies: ["777D5103B6FAC0E1"]
+			tasks: [
+				{
+					id: "6C5DE32205C851E8"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "2A5F2534E4FD241A"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_tank"
+					count: 1
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

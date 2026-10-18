@@ -4,13 +4,28 @@ Adding a page is a new module with a CHAPTER, one line here, and `python tools/g
 The generator turns this into FTB Quests' files (pack/config/ftbquests/quests/) and the chart's layout
 file; the build fails if those are out of date or if anything in here is wrong.
 See docs/progression/quests.md.
+
+The order is the order of the player's journey: the ground (First Days), the signpost (Planets), the way up
+(The Road Up), the two worlds that exist (The Moon, The Rot), and then the two pages that are not a place
+(Gear and Growth, Together). A page's order index is not part of any id, so it can move freely; only a slug
+can never be renamed.
 """
 
 import first_days
+import gear_and_growth
 import planets
+import road_up
+import the_moon
+import the_rot
+import together
 from quests.model import Book
 
 BOOK = Book(chapters=[
     first_days.CHAPTER,
     planets.CHAPTER,
+    road_up.CHAPTER,
+    the_moon.CHAPTER,
+    the_rot.CHAPTER,
+    gear_and_growth.CHAPTER,
+    together.CHAPTER,
 ])

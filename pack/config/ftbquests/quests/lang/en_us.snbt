@@ -7,30 +7,45 @@
 	"quest.4AF38B92DD4084D6.title": "Know your numbers"
 	"quest.4AF38B92DD4084D6.quest_subtitle": "Everything you carry has them"
 	"quest.4AF38B92DD4084D6.quest_desc": ["What you wear and hold changes your numbers: damage, armour, speed and more.", "Open your character sheet (H by default) to see each number and where it comes from.", "Growth (K) and runes (R) feed the same sheet."]
+	"quest.1EAC31FF3592974E.title": "Dead doors"
+	"quest.1EAC31FF3592974E.quest_subtitle": "Obsidian will not open them"
+	"quest.1EAC31FF3592974E.quest_desc": ["The old portals are dead. Lighting an obsidian frame does nothing here.", "Other worlds are reached by air, and later by rings you wake yourself."]
 	"quest.37F60931C7C6C5D2.title": "First iron"
 	"quest.37F60931C7C6C5D2.quest_subtitle": "Nothing starts without it"
 	"quest.37F60931C7C6C5D2.quest_desc": ["Smelt your first iron. Almost everything after this is built on it."]
+	"quest.254E3200FDE479C6.title": "Diamonds"
+	"quest.254E3200FDE479C6.quest_subtitle": "Deep, and worth the dark"
+	"quest.254E3200FDE479C6.quest_desc": ["Titanium needs a diamond pickaxe, and the first gateway wants a handful more.", "Look near the bottom of the world. Take light, food and a bucket of water."]
 	"quest.4C6D7B1AFA4FB07C.title": "Keep some gold"
 	"quest.4C6D7B1AFA4FB07C.quest_subtitle": "It matters more than it looks"
 	"quest.4C6D7B1AFA4FB07C.quest_desc": ["Gather four gold ingots and keep them on you, not left in a chest.", "You will be glad of them before long. Where, you will see for yourself."]
+	"quest.0AC0AFA737E77E30.title": "The dark below"
+	"quest.0AC0AFA737E77E30.quest_subtitle": "A city that is asleep"
+	"quest.0AC0AFA737E77E30.quest_desc": ["Far under the world there is a city, and everything in it is asleep.", "Go quietly. Sneak, and put wool under your feet where you must cross open floor.", "Bring good armour, food and a way back up."]
+	"quest.194DE687782014EC.title": "The Warden"
+	"quest.194DE687782014EC.quest_subtitle": "It hears, and nothing else"
+	"quest.194DE687782014EC.quest_desc": ["It cannot see you. It hears your steps, your digging and your fall.", "Wear what you can afford to lose, and know where the way up is.", "The first time your team beats it, everyone on the team gains skill points."]
+	"quest.201C4FDECE7D7752.title": "A tendril"
+	"quest.201C4FDECE7D7752.quest_subtitle": "A gate will want one"
+	"quest.201C4FDECE7D7752.quest_desc": ["The Warden leaves a tendril behind when it falls, if a player struck the blow.", "Keep it: a gateway will not wake without one."]
+	"quest.31621D31797E9687.title": "Gatestone"
+	"quest.31621D31797E9687.quest_subtitle": "Carved, and veined with sculk"
+	"quest.31621D31797E9687.quest_desc": ["Eight polished deepslate and one piece of sculk make eight gatestones.", "The frame takes twenty-eight. Take sculk from the dark city with Silk Touch."]
+	"quest.1370C106A85089AF.title": "The keystone"
+	"quest.1370C106A85089AF.quest_subtitle": "Four diamonds and a compass"
+	"quest.1370C106A85089AF.quest_desc": ["Diamonds at the corners, echo shards above and below, sculk catalysts at the sides, a compass in the middle.", "It goes in the base of the ring."]
+	"quest.6DD35FA2DD71D1DF.title": "Earth's gate"
+	"quest.6DD35FA2DD71D1DF.quest_subtitle": "A frame of carved stone"
+	"quest.6DD35FA2DD71D1DF.quest_desc": ["Build the ring on level ground from the plan beside this page, and set the keystone in its base.", "Use a tendril on the keystone to wake it. When it is lit, everyone on the server gains from it.", "A gate on its own has nowhere to lead yet. Look at the Planets page."]
 	"quest.1348BB42A5607EA0.title": "Titanium"
 	"quest.1348BB42A5607EA0.quest_subtitle": "The metal for leaving"
-	"quest.1348BB42A5607EA0.quest_desc": ["Titanium ore lies in the deeper rock. Smelt raw titanium into an ingot (a blast furnace is twice as fast).", "Three ingots, an iron plate and a wooden slab make the plain propeller bearing an airship needs."]
+	"quest.1348BB42A5607EA0.quest_desc": ["Titanium ore lies in the deepest rock and needs a diamond pickaxe. Smelt the ore or the raw titanium it drops; a blast furnace is twice as fast.", "Three ingots, an iron sheet and a wooden slab make the plain propeller bearing an airship needs."]
 	"quest.4121BDE2FA93BA25.title": "A breath of your own"
 	"quest.4121BDE2FA93BA25.quest_subtitle": "Where the air runs out"
 	"quest.4121BDE2FA93BA25.quest_desc": ["Some places have no air. Craft an oxygen tank and you carry your own.", "Your lungs hold about twenty seconds and refill wherever the air is good. A tank is drained first."]
 	"quest.20022FE6B8C4E2F9.title": "The valve"
 	"quest.20022FE6B8C4E2F9.quest_subtitle": "A tank only helps when it is open"
 	"quest.20022FE6B8C4E2F9.quest_desc": ["Use the tank to open its valve. It takes three seconds to pressurise, and you can carry two.", "Use it on another player to share your air with them."]
-	"quest.0AC0AFA737E77E30.title": "The dark below"
-	"quest.0AC0AFA737E77E30.quest_subtitle": "A city that is asleep"
-	"quest.0AC0AFA737E77E30.quest_desc": ["Far under the world there is a city, and everything in it is asleep.", "Go quietly. Bring good armour, food and a way back up."]
-	"quest.201C4FDECE7D7752.title": "A tendril"
-	"quest.201C4FDECE7D7752.quest_subtitle": "What the keeper leaves behind"
-	"quest.201C4FDECE7D7752.quest_desc": ["What waits in that city leaves a tendril behind when it falls.", "Keep it: a gateway will not wake without one."]
-	"quest.6DD35FA2DD71D1DF.title": "Earth's gate"
-	"quest.6DD35FA2DD71D1DF.quest_subtitle": "A frame of carved stone"
-	"quest.6DD35FA2DD71D1DF.quest_desc": ["Build a ring of inscribed gatestone, set a keystone in it, and wake it with a tendril.", "When it is lit, everyone on the server gains from it.", "A gate on its own has nowhere to lead yet."]
 	"quest.407F6003A93FC43F.title": "Look up"
 	"quest.407F6003A93FC43F.quest_subtitle": "The Planets page has changed"
 	"quest.407F6003A93FC43F.quest_desc": ["Open the Planets page. A world you had only heard of now has a name.", "The page also shows where you are, on the ground and between the worlds."]
@@ -45,4 +60,209 @@
 	"quest.4110412AC1AE6C2E.title": "The Nether"
 	"quest.4110412AC1AE6C2E.quest_subtitle": "18,000 blocks south-east"
 	"quest.4110412AC1AE6C2E.quest_desc": ["A world of fire with no roof over it, far out to the south-east.", "Something in the air there harms you. Gold armour turns it away: wear it.", "Plan a long flight."]
+	"chapter.66846420A805B305.title": "The Road Up"
+	"chapter.66846420A805B305.chapter_subtitle": ["Earth to the top of the sky."]
+	"quest.778F5319036EB164.title": "The manual in your hand"
+	"quest.778F5319036EB164.quest_subtitle": "Create explains itself"
+	"quest.778F5319036EB164.quest_desc": ["Create teaches its own machines. Hold W over any Create item, in your inventory or in JEI, and a short animated guide plays.", "A ship is made of Create parts, so this is where the way up begins."]
+	"quest.648F148F479CB269.title": "Andesite alloy"
+	"quest.648F148F479CB269.quest_subtitle": "Where Create begins"
+	"quest.648F148F479CB269.quest_desc": ["Two andesite and two iron nuggets, set on a diagonal, make one alloy.", "Shafts, cogwheels, casings and nearly every part of a ship are made from it. You will want a dozen."]
+	"quest.5E1D45D61CAF85BB.title": "Casing"
+	"quest.5E1D45D61CAF85BB.quest_subtitle": "A log, wrapped in alloy"
+	"quest.5E1D45D61CAF85BB.quest_desc": ["Strip a log, then use andesite alloy on it. That is a casing.", "A ship's controls are built on casings: the physics assembler, the steering wheel, the sensors."]
+	"quest.077125400A53E565.title": "Spinning power"
+	"quest.077125400A53E565.quest_subtitle": "Water, wind or a hand crank"
+	"quest.077125400A53E565.quest_desc": ["Create machines run on spinning power. A water wheel in a stream is the simplest source; a windmill or a hand crank also works.", "Hold W over each to see how it is built."]
+	"quest.51560B86C08B0177.title": "Pressed iron"
+	"quest.51560B86C08B0177.quest_subtitle": "Sheets for everything"
+	"quest.51560B86C08B0177.quest_desc": ["A mechanical press flattens iron into sheets. It needs a casing, a shaft, an iron block and something to turn it.", "You need nine: one for the bearing, four for a propeller, four for a burner."]
+	"quest.7550C8791F5A44BF.title": "The bearing"
+	"quest.7550C8791F5A44BF.quest_subtitle": "Titanium turns the blades"
+	"quest.7550C8791F5A44BF.quest_desc": ["Three titanium ingots, an iron sheet and a wooden slab make the bearing that spins a propeller.", "The usual recipe asks for brass. Here, titanium does the job."]
+	"quest.6BE89277CA0B7E2D.title": "Thrust"
+	"quest.6BE89277CA0B7E2D.quest_subtitle": "Blades that push the sky"
+	"quest.6BE89277CA0B7E2D.quest_desc": ["A propeller is four iron sheets round an alloy. A wooden slab and a shaft make it an andesite propeller.", "Set it on the bearing and give it power. A ship has to carry its own: Simulated's portable engine is one way, and Ponder shows how."]
+	"quest.7C3205BE963442F9.title": "Lift"
+	"quest.7C3205BE963442F9.quest_subtitle": "Hot air holds it up"
+	"quest.7C3205BE963442F9.quest_desc": ["Envelopes are wool and sticks. Seal them into a shell, put a burner under it, and feed the burner a coal block.", "A burner is four iron sheets, two alloy, redstone and a coal block."]
+	"quest.61A35FA99BC1225C.title": "Thin air"
+	"quest.61A35FA99BC1225C.quest_subtitle": "Both lift and thrust fade as you climb"
+	"quest.61A35FA99BC1225C.quest_desc": ["Balloons and propellers push against air, and the air thins as you rise. By the top of the sky about a third is left.", "Build with more lift and more blades than seems fair."]
+	"quest.0FFB162AEE1FB4B4.title": "A helm"
+	"quest.0FFB162AEE1FB4B4.quest_subtitle": "One block wakes the hull"
+	"quest.0FFB162AEE1FB4B4.quest_desc": ["The physics assembler turns the blocks you built into one moving ship. The steering wheel turns it.", "Both are made on casings. Place the assembler where the hull begins and hold W over it."]
+	"quest.6AEB8BAD7F840F9A.title": "Know your height"
+	"quest.6AEB8BAD7F840F9A.quest_subtitle": "The sky ends at 320"
+	"quest.6AEB8BAD7F840F9A.quest_desc": ["An altitude sensor is paper, an iron sheet and a casing.", "The sky ends at height 320. Past it, the world lets go."]
+	"quest.7CB0E909964F2247.title": "A station to fill from"
+	"quest.7CB0E909964F2247.quest_subtitle": "Air, bottled"
+	"quest.7CB0E909964F2247.quest_desc": ["A refill station fills a tank from the air around it, so it works only where the air is good.", "Fill every tank before you leave. In space there is nothing to compress."]
+	"quest.69695F363B61AE01.title": "A room of air"
+	"quest.69695F363B61AE01.quest_subtitle": "Seal it, and it fills"
+	"quest.69695F363B61AE01.quest_desc": ["An oxygen emitter fills a sealed room with air. Any hole lets it out, so seal every gap.", "A refill station inside such a room works anywhere, even where there is no air outside."]
+	"quest.5C38EACEAEF810ED.title": "How far can you go?"
+	"quest.5C38EACEAEF810ED.quest_subtitle": "Count minutes of air"
+	"quest.5C38EACEAEF810ED.quest_desc": ["Space is airless. A tank lasts five minutes and you can carry two, plus twenty seconds in your lungs.", "Work out your ship's speed, then plan the trip in minutes, not blocks."]
+	"quest.2ED2CC995D088901.title": "Where the sky ends"
+	"quest.2ED2CC995D088901.quest_subtitle": "Past the top, space begins"
+	"quest.2ED2CC995D088901.quest_desc": ["Climb past the top of the sky in your ship and the world lets go. This is space, and it is empty.", "On foot you will get nowhere: only a ship can carry you past the top.", "Take two tanks. There is nothing to breathe."]
+	"quest.5FABAE7A6489ABA1.title": "Steer by the chart"
+	"quest.5FABAE7A6489ABA1.quest_subtitle": "The Planets page follows you"
+	"quest.5FABAE7A6489ABA1.quest_desc": ["Open the Planets page. A point shows where you are, with an arrow for the way you face.", "Worlds you know are named. Keep the arrow pointed at one and fly."]
+	"quest.4DE0EFD601D00710.title": "Coming down"
+	"quest.4DE0EFD601D00710.quest_subtitle": "A world will take your ship"
+	"quest.4DE0EFD601D00710.quest_desc": ["Fly near a world and your ship is carried down to it, crew and all.", "The first lies east of Earth, about four thousand blocks out."]
+	"chapter.119239C740926134.title": "The Moon"
+	"chapter.119239C740926134.chapter_subtitle": ["Four thousand blocks east, and no air."]
+	"quest.2596935EA8C47E7E.title": "Before you go"
+	"quest.2596935EA8C47E7E.quest_subtitle": "Pack for a world with no air"
+	"quest.2596935EA8C47E7E.quest_desc": ["Two tanks, full. Food, a pickaxe and light. Spare iron for more tanks.", "Fly east from Earth. When your ship nears the Moon it is carried down to the surface."]
+	"quest.5C3D3D153AB786FA.title": "Touchdown"
+	"quest.5C3D3D153AB786FA.quest_subtitle": "The first step is a long one"
+	"quest.5C3D3D153AB786FA.quest_desc": ["Open a tank's valve before anything else. It takes three seconds to pressurise.", "Landing here earns a skill point, once."]
+	"quest.297D57BAB99EB146.title": "No air"
+	"quest.297D57BAB99EB146.quest_subtitle": "Lungs, tanks and a room"
+	"quest.297D57BAB99EB146.quest_desc": ["Everything outside a sealed room is airless. Your lungs hold twenty seconds; a tank, five minutes.", "Build a room, seal it and put an emitter in it. A refill station inside works here too."]
+	"quest.39210A7B5E81204C.title": "Dust"
+	"quest.39210A7B5E81204C.quest_subtitle": "When you can see a dozen blocks"
+	"quest.39210A7B5E81204C.quest_desc": ["Dust storms roll through now and then, and sight drops to about a dozen blocks.", "They pass in about a minute. Stop, dig in or wait; do not wander blind."]
+	"quest.722D0E4EC6A99645.title": "Home in the sky"
+	"quest.722D0E4EC6A99645.quest_subtitle": "It does not move"
+	"quest.722D0E4EC6A99645.quest_desc": ["Earth hangs in the sky and stays where it is.", "Use it to find your way back to where you came down."]
+	"quest.2E6543415E341650.title": "The Lunar Archive"
+	"quest.2E6543415E341650.quest_subtitle": "A hall under the ground"
+	"quest.2E6543415E341650.quest_desc": ["Under the surface, at about -160, -256, with a tall pylon over it. The Moon's middle is 0, 0.", "A great hall of things to read. Bring light, and take your time."]
+	"quest.466ABCF1B5C89196.title": "Moon stone"
+	"quest.466ABCF1B5C89196.quest_subtitle": "It builds rings, and looks the part"
+	"quest.466ABCF1B5C89196.quest_desc": ["Anorthosite and lunar basalt both build gateway frames; every kind of frame block accepts them.", "Haul some home: a ring of Moon stone matches the one waiting here."]
+	"quest.29A74F9C723843DD.title": "Tall visitors"
+	"quest.29A74F9C723843DD.quest_subtitle": "Do not meet their eyes"
+	"quest.29A74F9C723843DD.quest_desc": ["The Moon's Endermen are taller and older than Earth's. Looking at one is an invitation.", "A carved pumpkin on your head hides your eyes from them."]
+	"quest.0B06D6440EF28094.title": "The Ruined Citadel"
+	"quest.0B06D6440EF28094.quest_subtitle": "A broken fortress to the east"
+	"quest.0B06D6440EF28094.quest_desc": ["About eight hundred blocks east of the Moon's middle, at 800, 0. Two things guard it.", "Bring the best armour you have, food, and a way home."]
+	"quest.569547F61537E838.title": "The Ender Golem"
+	"quest.569547F61537E838.quest_subtitle": "A huge guardian"
+	"quest.569547F61537E838.quest_desc": ["Keep moving, and fight where you have room. It is tougher here than anywhere else it is found.", "The first time your team beats it, everyone on the team gains skill points."]
+	"quest.5220A441989488BD.title": "The ring on the plain"
+	"quest.5220A441989488BD.quest_subtitle": "Dark, and it will not break"
+	"quest.5220A441989488BD.quest_desc": ["On the plain, about a hundred and sixty blocks west of the Moon's middle, at -160, 0, a ring of pale stone stands dark.", "It cannot be broken, and it will not wake without a key."]
+	"quest.28A5D61491BF79D5.title": "The Ender Guardian"
+	"quest.28A5D61491BF79D5.quest_subtitle": "When the first falls, it wakes"
+	"quest.28A5D61491BF79D5.quest_desc": ["It rises when the golem falls, and it drops a gateway key.", "Take the key. It fits the Moon's ring and nothing else."]
+	"quest.7A22FAD6FD73A041.title": "Wake the ring"
+	"quest.7A22FAD6FD73A041.quest_subtitle": "Key to the keystone"
+	"quest.7A22FAD6FD73A041.quest_desc": ["Use the key on the keystone at the ring's foot. When it lights, everyone on the server gains skill points.", "Watch your hand."]
+	"quest.110AEBAD91F0BDF5.title": "Two rings"
+	"quest.110AEBAD91F0BDF5.quest_subtitle": "The way home, and the way back"
+	"quest.110AEBAD91F0BDF5.quest_desc": ["With Earth's ring and the Moon's both lit, stepping into either offers the other.", "Ships are still how you reach worlds that have no lit ring."]
+	"quest.2D0C3B663FFEF051.title": "Look out"
+	"quest.2D0C3B663FFEF051.quest_subtitle": "Another world is named"
+	"quest.2D0C3B663FFEF051.quest_desc": ["Open the Planets page. Another world is named, and it is far.", "The Rot page says what to bring."]
+	"chapter.10B8BC825CD966BD.title": "The Rot"
+	"chapter.10B8BC825CD966BD.chapter_subtitle": ["Far to the south-east. Wear gold."]
+	"quest.0F23110ACAED0FB7.title": "Wear gold"
+	"quest.0F23110ACAED0FB7.quest_subtitle": "This is what the gold was for"
+	"quest.0F23110ACAED0FB7.quest_desc": ["The air of the Nether harms you. A single piece of gold armour, worn in any slot, keeps it off.", "Four ingots make boots, and you kept four. Netherite armour counts too, and gold calms piglins."]
+	"quest.0C182BF32B0A65C1.title": "A long flight"
+	"quest.0C182BF32B0A65C1.quest_subtitle": "Eighteen thousand blocks, south-east"
+	"quest.0C182BF32B0A65C1.quest_desc": ["The Nether lies about eighteen thousand blocks south-east of Earth. Count the trip in minutes of air: a tank is five minutes and you can carry two.", "Light a ring there and you need not fly back."]
+	"quest.15259A25C4DAE739.title": "Landing on the Nether"
+	"quest.15259A25C4DAE739.quest_subtitle": "No roof, and a floor of fire"
+	"quest.15259A25C4DAE739.quest_desc": ["The sky is open here, and the ground is lava seas, cliffs and caves.", "Wear your gold. Landing earns a skill point, once."]
+	"quest.7C1C09F41D6FFF4C.title": "Oh, shiny"
+	"quest.7C1C09F41D6FFF4C.quest_subtitle": "Gold buys peace"
+	"quest.7C1C09F41D6FFF4C.quest_desc": ["Piglins strike anyone who is not wearing gold. Wear it and they leave you alone.", "Drop a gold ingot where one can see it and it stops to pick it up. Throw gold at it and it trades."]
+	"quest.191B8593F00B3F7A.title": "A Bastion"
+	"quest.191B8593F00B3F7A.quest_subtitle": "A stronghold of gold"
+	"quest.191B8593F00B3F7A.quest_desc": ["Bastions hold gold, a great many piglins, and chests worth the trouble.", "Bring a shield and more gold than you think. The template that upgrades diamond to netherite can turn up in their chests."]
+	"quest.31F9484F519E46ED.title": "Ancient debris"
+	"quest.31F9484F519E46ED.quest_subtitle": "Dark, heavy, and deep"
+	"quest.31F9484F519E46ED.quest_desc": ["It hides deep in the rock below the lava and needs a diamond pickaxe.", "Smelt it to scrap."]
+	"quest.413E95468D637561.title": "Netherite"
+	"quest.413E95468D637561.quest_subtitle": "The top of the ladder"
+	"quest.413E95468D637561.quest_desc": ["Four scrap and four gold make one ingot.", "At a smithing table, an ingot and an upgrade template turn diamond gear into netherite. Netherite armour keeps the rot off as gold does."]
+	"quest.4DAD69B2010D5E85.title": "The gate ruin"
+	"quest.4DAD69B2010D5E85.quest_subtitle": "A ring in the teal forest"
+	"quest.4DAD69B2010D5E85.quest_desc": ["Find the warped forest, the teal one. A ring stands in it, within about a mile of the world's middle.", "It cannot be broken, and it will not wake without this world's own key."]
+	"quest.07B5127DA531673B.title": "Old halls"
+	"quest.07B5127DA531673B.quest_subtitle": "Half-buried, and not empty"
+	"quest.07B5127DA531673B.quest_desc": ["Broken halls lie scattered across the wastes and the red forests.", "Their chests hold old things and enchanted books. Take what you can carry."]
+	"quest.7F9491C9236F235B.title": "The Netherite Monstrosity"
+	"quest.7F9491C9236F235B.quest_subtitle": "A smith that never stopped"
+	"quest.7F9491C9236F235B.quest_desc": ["It works a forge in the soul sand valleys, and it hits like a falling building.", "It drops this world's key. The first time your team beats it, everyone on the team gains skill points."]
+	"quest.2B156EEB7C1A6EE2.title": "Wake the ring"
+	"quest.2B156EEB7C1A6EE2.quest_subtitle": "Key to the keystone"
+	"quest.2B156EEB7C1A6EE2.quest_desc": ["Use the key on the keystone. When it lights, everyone on the server gains skill points.", "With Earth's ring lit as well, you can walk home."]
+	"quest.51FB851648C16C6D.title": "A Nether Fortress"
+	"quest.51FB851648C16C6D.quest_subtitle": "Long bridges of dark brick"
+	"quest.51FB851648C16C6D.quest_desc": ["Blazes spawn in fortresses, and so do wither skeletons.", "Bring fire resistance, a bow, and a way out."]
+	"quest.0D96F37AEBC7B1E3.title": "Blaze rods"
+	"quest.0D96F37AEBC7B1E3.quest_subtitle": "Fuel, brewing, and more"
+	"quest.0D96F37AEBC7B1E3.quest_desc": ["Blazes drop rods. Keep a few: Create's blaze burner is made from a blaze and needs netherrack to hold it."]
+	"quest.21D9B7848ED84479.title": "A blaze, kept"
+	"quest.21D9B7848ED84479.quest_subtitle": "A burner that never goes out"
+	"quest.21D9B7848ED84479.quest_desc": ["Make an empty blaze burner, then use it on a blaze. Hold W over it for how.", "A mixer set over a lit burner is hot enough to make brass."]
+	"quest.04BF3DEDB6B04093.title": "Brass"
+	"quest.04BF3DEDB6B04093.quest_subtitle": "Create's next tier"
+	"quest.04BF3DEDB6B04093.quest_desc": ["Copper and zinc, mixed over a lit burner, make brass.", "Brass is the upgrade: stronger casings, finer controls, better propellers."]
+	"quest.1AA1B3155D4F8627.title": "A propeller that tips itself"
+	"quest.1AA1B3155D4F8627.quest_subtitle": "Brass, and a little quartz"
+	"quest.1AA1B3155D4F8627.quest_desc": ["A smart propeller makes thrust when spun and tips itself to face upward.", "It needs brass and quartz. Hold W over it in JEI to see the rest."]
+	"quest.77D678A9C6557137.title": "Ignis"
+	"quest.77D678A9C6557137.quest_subtitle": "Optional, and no easier"
+	"quest.77D678A9C6557137.quest_desc": ["A second fire fights in an arena of its own, somewhere in this world.", "The first time your team beats it, everyone on the team gains skill points."]
+	"chapter.4FC237B40A7ED679.title": "Gear and Growth"
+	"chapter.4FC237B40A7ED679.chapter_subtitle": ["What you wear, earn and choose."]
+	"quest.5358EC9AFB8263A5.title": "Armour counts"
+	"quest.5358EC9AFB8263A5.quest_subtitle": "Any armour feeds your numbers"
+	"quest.5358EC9AFB8263A5.quest_desc": ["Iron, diamond, gold and any other mod's armour all feed your numbers: Armor, Magic Resist and Health.", "Open the sheet (H) to see what each piece gives."]
+	"quest.55A609B2C0273FF0.title": "Enchanting"
+	"quest.55A609B2C0273FF0.quest_subtitle": "It counts toward your numbers"
+	"quest.55A609B2C0273FF0.quest_desc": ["Enchant something. What it adds is listed on its tooltip, and it counts toward your numbers.", "Bookshelves around the table make it stronger. Lapis is the cost."]
+	"quest.757321B50E1B3012.title": "Tomes"
+	"quest.757321B50E1B3012.quest_subtitle": "Unmake an enchantment, or move it"
+	"quest.757321B50E1B3012.quest_desc": ["A Tome of Scrapping wipes an item's enchantments at an anvil. A Tome of Extraction moves them onto a book in a crafting grid.", "Both are a book, lapis and a pinch of stone: flint for scrapping, an amethyst shard for extraction."]
+	"quest.3FA0DF670A7A9B34.title": "One key for abilities"
+	"quest.3FA0DF670A7A9B34.quest_subtitle": "Z"
+	"quest.3FA0DF670A7A9B34.quest_desc": ["Some items carry an ability. Z uses the one you wear or hold.", "Its cooldown shows on the item itself."]
+	"quest.494C69CF09D79CDC.title": "Skill points"
+	"quest.494C69CF09D79CDC.quest_subtitle": "Earned, never farmed"
+	"quest.494C69CF09D79CDC.quest_desc": ["Nothing here comes from kills or hours played. Bosses, lit rings and new kinds of place each give points, once.", "Open the web with K."]
+	"quest.6597430D4FA93FBC.title": "The web"
+	"quest.6597430D4FA93FBC.quest_subtitle": "Four directions, no dead ends"
+	"quest.6597430D4FA93FBC.quest_desc": ["Power, Fury, Guard and Wayfarer shade into one another. Every node costs a point and must touch one you already hold.", "Change your mind anywhere out of a fight, for twenty levels. Every point comes back."]
+	"quest.61DDD3B3B5319005.title": "Firsts"
+	"quest.61DDD3B3B5319005.quest_subtitle": "A hundred cities, one point"
+	"quest.61DDD3B3B5319005.quest_desc": ["The first time you find each kind of place, you gain a point: a deep city, a mansion, a monument, a fortress, a bastion, and more.", "A second one of the same kind gives nothing, so go somewhere new."]
+	"quest.52B80A7ACBC831E3.title": "The rune page"
+	"quest.52B80A7ACBC831E3.quest_subtitle": "R"
+	"quest.52B80A7ACBC831E3.quest_desc": ["Pick a path, a keystone and two small runes. They change how you fight, not how strong you are.", "Open the page with R. Nothing is kept until you press Save."]
+	"quest.41A77052D72ABFB2.title": "Rune chalk"
+	"quest.41A77052D72ABFB2.quest_subtitle": "The price of a change"
+	"quest.41A77052D72ABFB2.quest_desc": ["Removing or replacing a rune costs one chalk and a few levels. Filling an empty slot is free.", "Amethyst and calcite make chalk, and both come from geodes."]
+	"quest.498ABEBD565DB4A4.title": "More room"
+	"quest.498ABEBD565DB4A4.quest_subtitle": "The page grows as you do"
+	"quest.498ABEBD565DB4A4.quest_desc": ["Your team's first boss kill or lit ring opens a second path. The next three open the shards, one at a time.", "A locked slot says what opens it."]
+	"chapter.6B55D454BF84A675.title": "Together"
+	"chapter.6B55D454BF84A675.chapter_subtitle": ["Friends make the road shorter."]
+	"quest.7E97FCFC0CB2DC8E.title": "A party"
+	"quest.7E97FCFC0CB2DC8E.quest_subtitle": "Friends share a team"
+	"quest.7E97FCFC0CB2DC8E.quest_desc": ["Open the team screen from the button beside your inventory, make a party and invite your friends.", "A boss one of you beats counts for all of you, and so do the quests."]
+	"quest.18C5623AF0F0B611.title": "Catching up"
+	"quest.18C5623AF0F0B611.quest_subtitle": "Join late, miss nothing"
+	"quest.18C5623AF0F0B611.quest_desc": ["Join a party and you receive what it already holds: its boss kills and its lit rings.", "The party receives what you hold. Leaving takes nothing back."]
+	"quest.777D5103B6FAC0E1.title": "No friendly fire"
+	"quest.777D5103B6FAC0E1.quest_subtitle": "Swing wide"
+	"quest.777D5103B6FAC0E1.quest_desc": ["Party members cannot hurt each other: not with swords, arrows, fuses or pets.", "Anyone else can, wherever the server allows fighting."]
+	"quest.1EFBD4D8CAEACCA9.title": "One book, many hands"
+	"quest.1EFBD4D8CAEACCA9.quest_subtitle": "A task done is done for all"
+	"quest.1EFBD4D8CAEACCA9.quest_desc": ["A quest one of you finishes counts for the whole party.", "Each of you claims your own rewards."]
+	"quest.260259C5187619CB.title": "The map"
+	"quest.260259C5187619CB.quest_subtitle": "M"
+	"quest.260259C5187619CB.quest_desc": ["Press M for the map. Your party shows on it, however far away they are."]
+	"quest.5486899F38DD1418.title": "A breath for a friend"
+	"quest.5486899F38DD1418.quest_subtitle": "Use a tank on a player"
+	"quest.5486899F38DD1418.quest_desc": ["Use an oxygen tank on another player to fill their lungs from it.", "It is a rescue, not a refill: their lungs only, and only as much as they can hold."]
 }

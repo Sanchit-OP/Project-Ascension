@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.join(ROOT, 'pack', 'quests'))
 
 from quests import chart, emit, validate  # noqa: E402
 from quests.model import (Book, Chapter, Quest, advancement, checkmark, dimension, give, item,  # noqa: E402
-                          item_icon, object_id, picture)
+                          item_icon, object_id, picture, structure)
 from quests.snbt import Long, dumps  # noqa: E402
 
 
@@ -248,6 +248,25 @@ class ValidatorCatchesTest(unittest.TestCase):
 
     def test_a_duplicate_slug(self):
         self.assertIn('duplicate quest', self.problems(_book(_quest('a'), _quest('a', x=3))))
+
+    def test_text_that_does_not_fit_the_panel(self):
+        self.assertIn('title is', self.problems(_book(_quest('a', title='T' * 31))))
+        self.assertIn('subtitle is', self.problems(_book(_quest('a', subtitle='s' * 45))))
+        self.assertIn('lines of text', self.problems(_book(_quest('a', text=['x'] * 6))))
+        self.assertIn('a line of', self.problems(_book(_quest('a', text=['y' * 161]))))
+        self.assertEqual([], validate.check(_book(_quest('a', title='T' * 30, subtitle='s' * 44,
+                                                          text=['y' * 160] * 5))))
+
+    def test_a_structure_of_ours_that_does_not_exist(self):
+        self.assertIn('we have no structure',
+                      self.problems(_book(_quest('a', tasks=[structure('ascension_worlds:no_such_place')]))))
+        self.assertEqual([], validate.check(_book(
+            _quest('a', tasks=[structure('ascension_worlds:lunar_archive')]))))
+        self.assertEqual([], validate.check(_book(_quest('a', tasks=[structure('minecraft:mineshaft')]))))
+
+    def test_a_page_with_no_way_in(self):
+        text = self.problems(_book(_quest('a', deps=['b']), _quest('b', x=2, deps=['a'])))
+        self.assertIn('no way in', text)
 
 
 if __name__ == '__main__':

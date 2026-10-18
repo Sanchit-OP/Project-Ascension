@@ -1,0 +1,291 @@
+{
+	id: "4FC237B40A7ED679"
+	group: ""
+	order_index: 5
+	filename: "gear_and_growth"
+	default_quest_shape: "ascension_star"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/gear_and_growth.png"
+		}
+	}
+	quests: [
+		{
+			id: "5358EC9AFB8263A5"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:iron_chestplate"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "1F9D0E7ABE9C59B2"
+					type: "advancement"
+					advancement: "minecraft:story/obtain_armor"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "6E15A4E8B809B661"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "55A609B2C0273FF0"
+			x: 0.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:enchanting_table"
+				count: 1
+			}
+			dependencies: ["5358EC9AFB8263A5"]
+			tasks: [
+				{
+					id: "253048CD40A40DBF"
+					type: "advancement"
+					advancement: "minecraft:story/enchant_item"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "251308EF415C4B6C"
+					type: "item"
+					item: "minecraft:lapis_lazuli"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "757321B50E1B3012"
+			x: 0.0d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_combat:tome_of_extraction"
+				count: 1
+			}
+			dependencies: ["55A609B2C0273FF0"]
+			tasks: [
+				{
+					id: "4AEF7ED3BC281F0C"
+					type: "item"
+					item: "ascension_combat:tome_of_scrapping"
+					count: 1L
+				}
+				{
+					id: "335E510DB2AA407F"
+					type: "item"
+					item: "ascension_combat:tome_of_extraction"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "60ED899E2CA4BD1D"
+					type: "item"
+					item: "minecraft:book"
+					count: 3
+				}
+				{
+					id: "68653EEA02E22CA7"
+					type: "item"
+					item: "minecraft:lapis_lazuli"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "3FA0DF670A7A9B34"
+			x: 0.0d
+			y: 6.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:blaze_powder"
+				count: 1
+			}
+			dependencies: ["757321B50E1B3012"]
+			tasks: [
+				{
+					id: "5ADED7E9D2B023CF"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "5BFBD40A1BCE143C"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "494C69CF09D79CDC"
+			x: 4.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:experience_bottle"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "1294D51B167DC338"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "43397F8A89A12589"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "6597430D4FA93FBC"
+			x: 4.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:amethyst_cluster"
+				count: 1
+			}
+			dependencies: ["494C69CF09D79CDC"]
+			tasks: [
+				{
+					id: "0E73C41571FEFA50"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "09AD2CE820189A82"
+					type: "item"
+					item: "minecraft:experience_bottle"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "61DDD3B3B5319005"
+			x: 4.0d
+			y: 4.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:spyglass"
+				count: 1
+			}
+			dependencies: ["6597430D4FA93FBC"]
+			tasks: [
+				{
+					id: "6AB06DF141CBD242"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "3EB955F8CB8D2639"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "52B80A7ACBC831E3"
+			x: 8.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:amethyst_shard"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "1C8ABF1122CEFA0F"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "406A800811A589EB"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "41A77052D72ABFB2"
+			x: 8.0d
+			y: 2.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_combat:rune_chalk"
+				count: 1
+			}
+			dependencies: ["52B80A7ACBC831E3"]
+			tasks: [
+				{
+					id: "50666902A7D9BF49"
+					type: "item"
+					item: "ascension_combat:rune_chalk"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "045D60B5DABA452D"
+					type: "item"
+					item: "minecraft:experience_bottle"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "498ABEBD565DB4A4"
+			x: 8.0d
+			y: 4.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:ender_eye"
+				count: 1
+			}
+			dependencies: ["41A77052D72ABFB2"]
+			tasks: [
+				{
+					id: "14444210A03F7B96"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "26D9CA7D4DCCF513"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

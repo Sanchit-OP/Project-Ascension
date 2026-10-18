@@ -12,10 +12,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
@@ -30,8 +34,10 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
  *
  * <p>The question it answers is the one the generator cannot: <i>did the real FTB Quests accept these
  * files?</i> Every {@code id} in the generated chapter files must be an object the loaded quest file knows
- * (a file Quests could not read, or an object it dropped, shows up as an id it does not recognise), and
- * every item a task or reward names must be a real item rather than Quests' "missing item" stand-in.
+ * (a file Quests could not read, or an object it dropped, shows up as an id it does not recognise), every
+ * item a task or reward names must be a real item rather than Quests' "missing item" stand-in, and every
+ * advancement, dimension and structure a task waits for must exist in the running game (Quests takes any id
+ * and then waits forever for one that is misspelt).
  *
  * <p>Quests is reached by reflection, on purpose: this jar has no compile dependency on it (so a change
  * inside Quests cannot break the build), and a dev check that names Quests' classes by string needs
@@ -44,6 +50,9 @@ public final class QuestChecks {
     private static final Pattern ID = Pattern.compile("\\bid:\\s*\"([0-9A-F]{16})\"");
     private static final Pattern DEPENDENCIES = Pattern.compile("dependencies:\\s*\\[([^\\]]*)]");
     private static final Pattern QUOTED_ID = Pattern.compile("\"[0-9A-F]{16}\"");
+    private static final Pattern ADVANCEMENT = Pattern.compile("\\badvancement:\\s*\"([^\"]+)\"");
+    private static final Pattern DIMENSION = Pattern.compile("\\bdimension:\\s*\"([^\"]+)\"");
+    private static final Pattern STRUCTURE = Pattern.compile("\\bstructure:\\s*\"([^\"#]+)\"");
 
     /** Ticks to wait after the server starts: Quests loads its file as the server comes up. */
     private static final int SETTLE_TICKS = 60;
@@ -91,6 +100,9 @@ public final class QuestChecks {
         Path quests = FMLPaths.CONFIGDIR.get().resolve("ftbquests").resolve("quests");
         Path chapters = quests.resolve("chapters");
         Set<String> expected = new HashSet<>();
+        Set<String> advancements = new TreeSet<>();
+        Set<String> dimensions = new TreeSet<>();
+        Set<String> structures = new TreeSet<>();
         int chapterFiles = 0;
         int dependenciesInFiles = 0;
         try (Stream<Path> list = Files.list(chapters)) {
@@ -101,6 +113,9 @@ public final class QuestChecks {
                 while (m.find()) {
                     expected.add(m.group(1));
                 }
+                collect(ADVANCEMENT, text, advancements);
+                collect(DIMENSION, text, dimensions);
+                collect(STRUCTURE, text, structures);
                 Matcher deps = DEPENDENCIES.matcher(text);
                 while (deps.find()) {
                     Matcher each = QUOTED_ID.matcher(deps.group(1));
@@ -153,6 +168,49 @@ public final class QuestChecks {
         REPORT.expect("every item a task or reward names is a real item (" + stacks + " checked)"
                 + (missing.isEmpty() ? "" : " (missing: " + missing.subList(0, Math.min(5, missing.size())) + ")"),
                 missing.isEmpty());
+        checkWhatTasksWaitFor(advancements, dimensions, structures);
+    }
+
+    private static void collect(Pattern pattern, String text, Set<String> into) {
+        Matcher m = pattern.matcher(text);
+        while (m.find()) {
+            into.add(m.group(1));
+        }
+    }
+
+    /**
+     * Quests accepts any id for these and then waits for something that can never happen, so a misspelt one is
+     * a quest nobody can finish. Each is looked up in the running game.
+     */
+    private static void checkWhatTasksWaitFor(Set<String> advancements, Set<String> dimensions,
+                                              Set<String> structures) {
+        List<String> noAdvancement = new ArrayList<>();
+        for (String id : advancements) {
+            if (server.getAdvancements().get(ResourceLocation.parse(id)) == null) {
+                noAdvancement.add(id);
+            }
+        }
+        REPORT.expect("every advancement a task waits for exists (" + advancements.size() + " checked)"
+                + (noAdvancement.isEmpty() ? "" : " (missing: " + noAdvancement + ")"), noAdvancement.isEmpty());
+
+        List<String> noDimension = new ArrayList<>();
+        for (String id : dimensions) {
+            if (server.getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(id))) == null) {
+                noDimension.add(id);
+            }
+        }
+        REPORT.expect("every dimension a task waits for is loaded (" + dimensions.size() + " checked)"
+                + (noDimension.isEmpty() ? "" : " (missing: " + noDimension + ")"), noDimension.isEmpty());
+
+        var structureRegistry = server.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        List<String> noStructure = new ArrayList<>();
+        for (String id : structures) {
+            if (!structureRegistry.containsKey(ResourceLocation.parse(id))) {
+                noStructure.add(id);
+            }
+        }
+        REPORT.expect("every structure a task waits for exists (" + structures.size() + " checked)"
+                + (noStructure.isEmpty() ? "" : " (missing: " + noStructure + ")"), noStructure.isEmpty());
     }
 
     /** The item a task or reward is about, or null if the object has none. */

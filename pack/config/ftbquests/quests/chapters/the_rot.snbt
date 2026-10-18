@@ -1,0 +1,495 @@
+{
+	id: "10B8BC825CD966BD"
+	group: ""
+	order_index: 4
+	filename: "the_rot"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/the_rot.png"
+		}
+	}
+	quests: [
+		{
+			id: "0F23110ACAED0FB7"
+			x: 1.5d
+			y: 0.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:golden_boots"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "1FE26110EC77AAFF"
+					type: "item"
+					item: "minecraft:golden_boots"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "6347352DFAD8C22A"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "0C182BF32B0A65C1"
+			x: 4.5d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:clock"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "1F7084365558C28C"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "0C1C36BF86F998A9"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 12
+				}
+			]
+		}
+		{
+			id: "15259A25C4DAE739"
+			x: 3.0d
+			y: 2.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:netherrack"
+				count: 1
+			}
+			dependencies: ["0F23110ACAED0FB7", "0C182BF32B0A65C1"]
+			tasks: [
+				{
+					id: "179753F2321F6224"
+					type: "advancement"
+					advancement: "ascension_worlds:discovery/nether"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "0581B26BC028505C"
+					type: "item"
+					item: "minecraft:golden_carrot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "7C1C09F41D6FFF4C"
+			x: 0.0d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:gold_ingot"
+				count: 1
+			}
+			dependencies: ["15259A25C4DAE739"]
+			hide_until_deps_visible: true
+			tasks: [
+				{
+					id: "0A20996D7D057820"
+					type: "advancement"
+					advancement: "minecraft:nether/distract_piglin"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "3341E35D28789EAC"
+					type: "item"
+					item: "minecraft:gold_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "191B8593F00B3F7A"
+			x: 0.0d
+			y: 6.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:gilded_blackstone"
+				count: 1
+			}
+			dependencies: ["7C1C09F41D6FFF4C"]
+			hide_until_deps_visible: true
+			tasks: [
+				{
+					id: "1CD40C6826BD420F"
+					type: "advancement"
+					advancement: "ascension_combat:growth/discovery/bastion"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "3CD81CFC3186F9E9"
+					type: "item"
+					item: "minecraft:shield"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "31F9484F519E46ED"
+			x: 0.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:ancient_debris"
+				count: 1
+			}
+			dependencies: ["191B8593F00B3F7A"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "2E896FA467550780"
+					type: "advancement"
+					advancement: "minecraft:nether/obtain_ancient_debris"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "4A49612C5F82C417"
+					type: "item"
+					item: "minecraft:cooked_porkchop"
+					count: 12
+				}
+			]
+		}
+		{
+			id: "413E95468D637561"
+			x: 0.0d
+			y: 10.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:netherite_ingot"
+				count: 1
+			}
+			dependencies: ["31F9484F519E46ED"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "51810590AC7F6B1E"
+					type: "item"
+					item: "minecraft:netherite_ingot"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "78AD8D2FE9AA02F8"
+					type: "item"
+					item: "minecraft:gold_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "4DAD69B2010D5E85"
+			x: 3.0d
+			y: 4.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:warped_nylium"
+				count: 1
+			}
+			dependencies: ["15259A25C4DAE739"]
+			hide_until_deps_visible: true
+			tasks: [
+				{
+					id: "733D9952EB06DBA5"
+					type: "advancement"
+					advancement: "ascension_worlds:discovery/nether_gate"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "0D2517472A8BB30E"
+					type: "item"
+					item: "minecraft:cooked_porkchop"
+					count: 12
+				}
+			]
+		}
+		{
+			id: "07B5127DA531673B"
+			x: 3.0d
+			y: 6.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_worlds:colony_mural"
+				count: 1
+			}
+			dependencies: ["4DAD69B2010D5E85"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "77E8778218111911"
+					type: "structure"
+					structure: "ascension_worlds:nether_colony"
+				}
+			]
+			rewards: [
+				{
+					id: "6E05CF9E08F05B8B"
+					type: "item"
+					item: "minecraft:lapis_lazuli"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "7F9491C9236F235B"
+			x: 3.0d
+			y: 8.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:netherite_block"
+				count: 1
+			}
+			dependencies: ["07B5127DA531673B"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "6D430531BD18C0FC"
+					type: "advancement"
+					advancement: "ascension_compat_cataclysm:growth/netherite_monstrosity"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "05C560270F3DA07C"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 3
+				}
+			]
+		}
+		{
+			id: "2B156EEB7C1A6EE2"
+			x: 3.0d
+			y: 10.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "ascension_worlds:gateway_keystone"
+				count: 1
+			}
+			dependencies: ["7F9491C9236F235B"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "6ACE888C8D766FB7"
+					type: "advancement"
+					advancement: "ascension_worlds:gates/the_nether"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "6B363F898DE9E01F"
+					type: "item"
+					item: "minecraft:diamond"
+					count: 3
+				}
+			]
+		}
+		{
+			id: "51FB851648C16C6D"
+			x: 6.0d
+			y: 4.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:nether_bricks"
+				count: 1
+			}
+			dependencies: ["15259A25C4DAE739"]
+			hide_until_deps_visible: true
+			tasks: [
+				{
+					id: "1F7CE31102C1D64B"
+					type: "advancement"
+					advancement: "ascension_combat:growth/discovery/nether_fortress"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "4118F399DF4C37BB"
+					type: "item"
+					item: "minecraft:arrow"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "0D96F37AEBC7B1E3"
+			x: 6.0d
+			y: 6.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:blaze_rod"
+				count: 1
+			}
+			dependencies: ["51FB851648C16C6D"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "7E320F04BF709948"
+					type: "advancement"
+					advancement: "minecraft:nether/obtain_blaze_rod"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "787F8C7C8D4EF6E0"
+					type: "item"
+					item: "minecraft:netherrack"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "21D9B7848ED84479"
+			x: 6.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:blaze_burner"
+				count: 1
+			}
+			dependencies: ["0D96F37AEBC7B1E3"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "386D0838967A4F24"
+					type: "item"
+					item: "create:blaze_burner"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "3E459CC74D622C76"
+					type: "item"
+					item: "minecraft:copper_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "04BF3DEDB6B04093"
+			x: 6.0d
+			y: 10.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "create:brass_ingot"
+				count: 1
+			}
+			dependencies: ["21D9B7848ED84479"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "4177FF71802D82D4"
+					type: "advancement"
+					advancement: "create:brass"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "78BF8C3D710E0014"
+					type: "item"
+					item: "minecraft:quartz"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "1AA1B3155D4F8627"
+			x: 6.0d
+			y: 12.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "aeronautics:smart_propeller"
+				count: 1
+			}
+			dependencies: ["04BF3DEDB6B04093"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "0359A015D39B922F"
+					type: "item"
+					item: "aeronautics:smart_propeller"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "656A3537FEC6559C"
+					type: "item"
+					item: "minecraft:quartz"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "77D678A9C6557137"
+			x: 9.0d
+			y: 6.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:magma_block"
+				count: 1
+			}
+			dependencies: ["51FB851648C16C6D"]
+			hide_until_deps_complete: true
+			optional: true
+			tasks: [
+				{
+					id: "7EC26DB9E750B12F"
+					type: "advancement"
+					advancement: "ascension_compat_cataclysm:growth/ignis"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "62F85433579B0C3C"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 3
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

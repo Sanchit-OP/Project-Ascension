@@ -14,7 +14,8 @@ Writes, under modules/compat/ftbquests/src/main/resources/assets/:
       planets/{earth,moon,nether}.png        a lit sphere for each world (from the planet files' colours)
       planets/ring.png                       the faint ring of a world not yet known
       planets/halo.png                       the teal halo of a world that has been visited
-      icons/{first_days,planets}.png         chapter icons
+      icons/{first_days,planets,road_up,the_moon,the_rot,gear_and_growth,together}.png   chapter icons
+      gate/plan.png                          Earth's gate: a view, a key and every layer (from gateway.json)
 
 The look is the orrery's: a night sky in a brass frame (tools/generate-rune-art.py), and teal, which is
 the network's colour (tools/generate-gateway-art.py), is spent only on worlds and gates.
@@ -477,6 +478,243 @@ def write_icons(size=64):
     draw.ellipse((wx - w, wy - w, wx + w, wy + w), fill=TEAL[3] + (255,), outline=TEAL[5] + (255,), width=int(1.2 * k))
     save(downsample(image, size), os.path.join(NS, 'icons', 'planets.png'))
 
+    # The Road Up: a hot-air balloon rising.
+    image, draw, k, c, r = _icon_base(size)
+    top = c - r * 0.60
+    bw = r * 0.44
+    rim_y = top + bw * 1.15                      # where the round top ends and the taper begins
+    neck_y = top + bw * 2.35
+    neck = r * 0.13
+    draw.ellipse((c - bw, top, c + bw, top + bw * 2), fill=BRASS[3] + (255,), outline=BRASS[2] + (255,), width=int(1.3 * k))
+    draw.polygon([(c - bw * 0.97, rim_y), (c + bw * 0.97, rim_y), (c + neck, neck_y), (c - neck, neck_y)],
+                 fill=BRASS[3] + (255,))
+    draw.line((c - bw * 0.97, rim_y, c - neck, neck_y), fill=BRASS[2] + (255,), width=int(1.3 * k))
+    draw.line((c + bw * 0.97, rim_y, c + neck, neck_y), fill=BRASS[2] + (255,), width=int(1.3 * k))
+    for f in (-0.5, 0.5):                         # the panels of the envelope
+        draw.line((c + f * bw * 0.9, top + bw * 0.25, c + f * neck * 1.0, neck_y), fill=BRASS[1] + (255,), width=int(0.9 * k))
+    draw.line((c, top + bw * 0.05, c, neck_y), fill=BRASS[1] + (255,), width=int(0.9 * k))
+    basket = neck_y + r * 0.22
+    draw.line((c - neck, neck_y, c - r * 0.16, basket), fill=BRASS[2] + (255,), width=int(1.0 * k))
+    draw.line((c + neck, neck_y, c + r * 0.16, basket), fill=BRASS[2] + (255,), width=int(1.0 * k))
+    draw.rectangle((c - r * 0.17, basket, c + r * 0.17, basket + r * 0.13), fill=BRASS[1] + (255,),
+                   outline=BRASS[2] + (255,), width=int(1.0 * k))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'road_up.png'))
+
+    # The Moon: a crescent over a crater.
+    image, draw, k, c, r = _icon_base(size)
+    m = r * 0.58
+    draw.ellipse((c - m, c - m, c + m, c + m), fill=BRASS[3] + (255,))
+    cut = Image.new('RGBA', image.size, (0, 0, 0, 0))
+    cd = ImageDraw.Draw(cut)
+    off = m * 0.55
+    cd.ellipse((c - m + off, c - m - off * 0.15, c + m + off, c + m - off * 0.15), fill=SKY[1] + (255,))
+    image = Image.alpha_composite(image, cut)
+    draw = ImageDraw.Draw(image)
+    draw.ellipse((c - r * 0.47, c + r * 0.05, c - r * 0.37, c + r * 0.15), fill=BRASS[1] + (255,))
+    draw.ellipse((c - r * 0.40, c - r * 0.28, c - r * 0.32, c - r * 0.20), fill=BRASS[1] + (255,))
+    draw.ellipse((c + r * 0.26, c - r * 0.50, c + r * 0.31, c - r * 0.45), fill=BRASS[3] + (255,))
+    draw.ellipse((c + r * 0.50, c + r * 0.14, c + r * 0.54, c + r * 0.18), fill=BRASS[2] + (255,))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'the_moon.png'))
+
+    # The Rot: a flame, the colour of the fire world.
+    image, draw, k, c, r = _icon_base(size)
+    outer = [(c, c - r * 0.62), (c + r * 0.20, c - r * 0.30), (c + r * 0.44, c + r * 0.02), (c + r * 0.40, c + r * 0.34),
+             (c + r * 0.20, c + r * 0.55), (c, c + r * 0.60), (c - r * 0.20, c + r * 0.55), (c - r * 0.40, c + r * 0.34),
+             (c - r * 0.44, c + r * 0.02), (c - r * 0.20, c - r * 0.22), (c - r * 0.12, c - r * 0.42)]
+    draw.polygon(outer, fill=(210, 76, 24, 255), outline=(255, 190, 80, 255))
+    inner = [(c, c - r * 0.20), (c + r * 0.15, c + r * 0.06), (c + r * 0.18, c + r * 0.34), (c, c + r * 0.50),
+             (c - r * 0.18, c + r * 0.34), (c - r * 0.14, c + r * 0.06)]
+    draw.polygon(inner, fill=(255, 190, 80, 255))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'the_rot.png'))
+
+    # Gear and Growth: a cogwheel with a spark at the centre.
+    image, draw, k, c, r = _icon_base(size)
+    teeth, body, hole = 8, r * 0.46, r * 0.17
+    pts = []
+    for i in range(teeth * 4):
+        a = 2 * math.pi * i / (teeth * 4)
+        out = body * 1.32 if (i % 4) in (1, 2) else body
+        pts.append((c + out * math.cos(a), c + out * math.sin(a)))
+    draw.polygon(pts, fill=BRASS[2] + (255,), outline=BRASS[3] + (255,))
+    draw.ellipse((c - body * 0.62, c - body * 0.62, c + body * 0.62, c + body * 0.62), fill=SKY[1] + (255,),
+                 outline=BRASS[1] + (255,), width=int(1.2 * k))
+    draw.ellipse((c - hole, c - hole, c + hole, c + hole), fill=BRASS[3] + (255,))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'gear_and_growth.png'))
+
+    # Together: two rings, joined.
+    image, draw, k, c, r = _icon_base(size)
+    ring = r * 0.36
+    for dx, colour in ((-r * 0.22, BRASS[2]), (r * 0.22, BRASS[3])):
+        draw.ellipse((c + dx - ring, c - ring, c + dx + ring, c + ring), outline=colour + (255,), width=int(2.2 * k))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'together.png'))
+
+
+# ----------------------------------------------------------------------------------------------
+# The Earth gate's plan, drawn from the frame's own data so the picture cannot disagree with the game
+# ----------------------------------------------------------------------------------------------
+
+GATE_FRAME = os.path.join(ROOT, 'modules', 'worlds', 'src', 'main', 'resources', 'data', 'ascension_worlds',
+                          'ascension_worlds', 'gateway_frame', 'gateway.json')
+GATE_TAGS = os.path.join(ROOT, 'modules', 'worlds', 'src', 'main', 'resources', 'data', 'ascension_worlds', 'tags',
+                         'block')
+
+# One colour and one name for each kind of cell. The letters are the ones in gateway.json; 'd' is the same family
+# as 'D' (the Moon's copy uses a different block for it, the rule accepts the same ones).
+GATE_KINDS = {
+    'D': ('Dark stone', (62, 72, 104), 'gateway_frame_dark'),
+    'P': ('Pale stone', (228, 222, 202), 'gateway_frame_pale'),
+    'I': ('Pillar', (204, 170, 104), 'gateway_frame_pillar'),
+    '_': ('Step (a slab)', (112, 126, 156), 'gateway_frame_step'),
+    'C': ('Accent', (200, 116, 72), 'gateway_frame_accent'),
+    'G': ('Inscribed gatestone', (58, 202, 190), None),
+    'K': ('Keystone', (176, 255, 246), None),
+    'O': ('The opening: leave empty', (22, 52, 60), None),
+}
+GATE_NAMES = {
+    'gateway_frame_dark': 'deepslate bricks or tiles, polished deepslate or blackstone, smooth basalt',
+    'gateway_frame_pale': 'quartz, calcite, polished diorite',
+    'gateway_frame_pillar': 'bone block, quartz pillar, polished basalt',
+    'gateway_frame_step': 'deepslate, tile or blackstone slabs',
+    'gateway_frame_accent': 'chiseled deepslate, stone bricks, tuff bricks or quartz',
+}
+
+
+def _gate_cells():
+    """{(x, y, z): kind} for every cell of the frame, kind in GATE_KINDS (spaces are skipped)."""
+    with open(GATE_FRAME, encoding='utf-8') as handle:
+        data = json.load(handle)
+    cells = {}
+    for y, layer in enumerate(data['layers']):
+        for z, row in enumerate(layer):
+            for x, char in enumerate(row):
+                if char == ' ':
+                    continue
+                cells[(x, y, z)] = 'D' if char == 'd' else char
+    return cells, len(data['layers']), max(len(r) for layer in data['layers'] for r in layer), \
+        max(len(layer) for layer in data['layers'])
+
+
+def _shade(rgb, f):
+    return tuple(max(0, min(255, int(v * f))) for v in rgb)
+
+
+def _gate_view(cells, h, w, d, cell):
+    """The ring as it stands, seen from the front a little to the side and above: faces in three shades."""
+    k = 3
+    c = cell * k
+    ox, oy = int(c * 0.42), int(c * 0.26)           # how far one step of depth moves up and right
+    width = w * c + d * ox + 4 * k
+    height = h * c + d * oy + 4 * k
+    image = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    for z in range(d - 1, -1, -1):
+        for y in range(h):
+            for x in range(w):
+                kind = cells.get((x, y, z))
+                if kind is None or kind == 'O':
+                    continue
+                rgb = GATE_KINDS[kind][1]
+                fx = 2 * k + x * c + z * ox
+                fy = height - 2 * k - (y + 1) * c - z * oy
+                front = [(fx, fy), (fx + c, fy), (fx + c, fy + c), (fx, fy + c)]
+                top = [(fx, fy), (fx + ox, fy - oy), (fx + c + ox, fy - oy), (fx + c, fy)]
+                side = [(fx + c, fy), (fx + c + ox, fy - oy), (fx + c + ox, fy + c - oy), (fx + c, fy + c)]
+                edge = _shade(rgb, 0.45) + (255,)
+                draw.polygon(top, fill=_shade(rgb, 1.18) + (255,), outline=edge)
+                draw.polygon(side, fill=_shade(rgb, 0.62) + (255,), outline=edge)
+                draw.polygon(front, fill=rgb + (255,), outline=edge)
+    return downsample_to(image, (width // k, height // k))
+
+
+def downsample_to(image, size):
+    return image.resize(size, Image.LANCZOS)
+
+
+def _gate_layers(cells, h, w, d, cell, columns, font):
+    """Every layer from the bottom, seen from above with the front toward the bottom of each tile."""
+    tile_w, tile_h = w * cell, d * cell
+    label = 16
+    gap = 12
+    rows = (h + columns - 1) // columns
+    width = columns * (tile_w + gap) - gap
+    height = rows * (tile_h + label + gap) - gap
+    image = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    for y in range(h):
+        col, row = y % columns, y // columns
+        left = col * (tile_w + gap)
+        top = row * (tile_h + label + gap) + label
+        draw.text((left, top - label + 1), 'Layer %d' % (y + 1) + ('  (bottom)' if y == 0 else '  (top)' if y == h - 1 else ''),
+                  font=font, fill=BRASS[3] + (255,))
+        draw.rectangle((left - 1, top - 1, left + tile_w, top + tile_h), outline=BRASS[0] + (255,), fill=SKY[0] + (255,))
+        for z in range(d):
+            for x in range(w):
+                kind = cells.get((x, y, z))
+                if kind is None:
+                    continue
+                px = left + x * cell
+                py = top + (d - 1 - z) * cell
+                rgb = GATE_KINDS[kind][1]
+                draw.rectangle((px, py, px + cell - 1, py + cell - 1), fill=rgb + (255,),
+                               outline=_shade(rgb, 0.5) + (255,))
+    return image
+
+
+def _wrap(draw, text, font, limit):
+    """Greedy word wrap to a pixel width."""
+    lines, line = [], ''
+    for word in text.split():
+        trial = (line + ' ' + word).strip()
+        if line and draw.textlength(trial, font=font) > limit:
+            lines.append(line)
+            line = word
+        else:
+            line = trial
+    if line:
+        lines.append(line)
+    return lines
+
+
+def write_gate_plan():
+    cells, h, w, d = _gate_cells()
+    font = _font(15)
+    small = _font(13)
+    tiny = _font(12)
+
+    width, height = 1024, 600
+    canvas = Image.new('RGBA', (width, height), SKY[0] + (255,))
+    draw = ImageDraw.Draw(canvas)
+    draw.rectangle((3, 3, width - 4, height - 4), outline=BRASS[1] + (255,), width=2)
+    draw.rectangle((9, 9, width - 10, height - 10), outline=BRASS[0] + (255,), width=1)
+
+    draw.text((24, 16), "THE RING  -  %d wide, %d deep, %d high" % (w, d, h), font=_font(20), fill=BRASS[3] + (255,))
+    draw.text((24, 42), "Layers run from the ground up. Each tile is seen from above; the front is the bottom of the tile.",
+              font=tiny, fill=BRASS[2] + (255,))
+
+    view = _gate_view(cells, h, w, d, 12)
+    canvas.alpha_composite(view, (24, 70))
+
+    # The key: one swatch per kind of cell, with what Earth builds it from.
+    ky = 70 + view.size[1] + 10
+    for char in ('D', 'P', 'I', '_', 'C', 'G', 'K', 'O'):
+        name, rgb, tag = GATE_KINDS[char]
+        draw.rectangle((24, ky, 38, ky + 12), fill=rgb + (255,), outline=_shade(rgb, 0.5) + (255,))
+        draw.text((46, ky - 2), name, font=small, fill=BRASS[3] + (255,))
+        if tag:
+            lines = _wrap(draw, GATE_NAMES[tag], tiny, 300)
+            for i, line in enumerate(lines):
+                draw.text((46, ky + 12 + 13 * i), line, font=tiny, fill=BRASS[2] + (200,))
+            ky += 19 + 13 * len(lines)
+        else:
+            ky += 17
+
+    sheet_left = 24 + max(view.size[0], 330) + 24
+    layers = _gate_layers(cells, h, w, d, 9, 4, font=tiny)
+    canvas.alpha_composite(layers, (sheet_left, 76))
+
+    save(canvas, os.path.join(NS, 'gate', 'plan.png'), blur=False)
+    return canvas.size
+
 
 # ----------------------------------------------------------------------------------------------
 # The theme: Quests' own file with our colours, stacked over its stock one (the last pack wins)
@@ -603,6 +841,7 @@ def main():
     write_ring()
     write_halo()
     write_icons()
+    write_gate_plan()
     print('quest art written under', os.path.relpath(ASSETS, ROOT))
 
 
