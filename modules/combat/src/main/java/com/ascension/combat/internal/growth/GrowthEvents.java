@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.growth;
 
+import com.ascension.combat.internal.rune.RuneUnlocks;
 import java.util.List;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.Component;
@@ -25,6 +26,9 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
  *   <li>Respawn: a new body carries only base values, so growth is applied again, then full health.</li>
  *   <li>{@code /reload}: every player refreshed against the reloaded advancements.</li>
  * </ul>
+ *
+ * <p>Wherever a team milestone is gained or lost, the rune page is told too: its slots open with
+ * the milestone count ({@link RuneUnlocks}).
  */
 final class GrowthEvents {
 
@@ -63,6 +67,9 @@ final class GrowthEvents {
         }
 
         PlayerGrowth.refresh(player, true);
+        if (shared) {
+            RuneUnlocks.milestonesChanged(player);
+        }
         int points = worth.stream().mapToInt(GrowthMilestone::points).sum();
         if (points > 0) {
             player.sendSystemMessage(Component.translatable(
@@ -75,6 +82,7 @@ final class GrowthEvents {
                 && event.getEntity() instanceof ServerPlayer player
                 && !PlayerGrowth.milestonesFor(player.server, event.getAdvancement().id()).isEmpty()) {
             PlayerGrowth.refresh(player, false);
+            RuneUnlocks.milestonesChanged(player);
         }
     }
 
@@ -107,7 +115,10 @@ final class GrowthEvents {
             return;
         }
         GrowthDataCheck.run(event.getPlayerList().getServer());
-        event.getPlayerList().getPlayers().forEach(player -> PlayerGrowth.refresh(player, false));
+        event.getPlayerList().getPlayers().forEach(player -> {
+            PlayerGrowth.refresh(player, false);
+            RuneUnlocks.milestonesChanged(player);
+        });
     }
 
     private static void onServerStarted(ServerStartedEvent event) {
