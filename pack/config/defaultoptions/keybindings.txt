@@ -1,0 +1,10 @@
+key_key.ascension_combat.open_character_sheet:key.keyboard.h
+key_key.ascension_combat.activate_armor_ability:key.keyboard.z
+key_key.ftbquests.quests:key.keyboard.j
+key_key.keybindatlas.open_keyboard:key.keyboard.b
+key_key.cataclysm.helmet_ability:key.keyboard.n
+key_key.saveToolbarActivator:key.keyboard.unknown
+key_key.loadToolbarActivator:key.keyboard.unknown
+key_key.socialInteractions:key.keyboard.unknown
+key_iris.keybind.reload:key.keyboard.unknown
+key_iris.keybind.toggleShaders:key.keyboard.unknown

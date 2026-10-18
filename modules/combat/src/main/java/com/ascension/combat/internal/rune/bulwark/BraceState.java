@@ -13,6 +13,11 @@ public final class BraceState {
     private long endsAt = -1L;
 
     /** Whether a brace may begin: the cooldown is over and none is under way. */
+    /** The game tick it can be started again. For display. */
+    public long cooldownUntil() {
+        return cooldownUntil;
+    }
+
     public boolean ready(long now) {
         return now >= cooldownUntil && endsAt < 0L;
     }

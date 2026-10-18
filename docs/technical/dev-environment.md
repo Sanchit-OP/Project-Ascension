@@ -165,7 +165,8 @@ leaving it on.
 real server inside it, and prints `PASS` / `FAIL` lines tagged `[integration]`. No one has to click.
 It takes about three minutes a part, and opens a game window.
 
-1. Copy the test world: `run/server/runes-test` to `run/client/saves/runes-test`.
+1. Copy a **fresh** test world: `run/server/runes-test` to `run/client/saves/runes-test` (replace the old
+   copy; a run leaves its changes in the world, and the next part one then fails on the leftovers).
 2. Create an empty file `run/client/integration-checks.txt` (**part one**), then `./gradlew runDevClient`.
    It opens the world by itself, earns milestones, wears netherite, dies and respawns, respecs, takes
    a hit, writes `run/client/integration-state.txt`, and quits (which saves the world).
@@ -178,10 +179,34 @@ stat under "Enchantments", the data enchantments are offered by the table, trade
 grows the lungs. **Wait for the previous client to close before starting the next run**: two clients at once
 starve each other and make timing checks fail for no reason (seen 2026-10-18, 13 false failures).
 
-The trigger file is deleted when it is read, so it arms one run. Add a check there whenever two of
+The trigger file is deleted when it is read, so it arms one run. The screen-link check presses the
+character sheet's own default key, not a fixed one, because the pack moves it (`pack/config/defaultoptions`).
+A dev client also hides FTB Library's "Hello from FTB Library!" (`client/dev/DevChatFilter`): the mod
+sends it only in a development environment, so players of the finished pack never see it. Add a check there whenever two of
 the three systems meet somewhere new; a unit test cannot see these (ADR-0008). The checks on 2026-10-18
 found two real faults: discovery advancements that gave every player nine free points, and a respawn
 that healed before gear's Health was back.
+
+### The scripted team run (a dedicated server with stand-in players)
+
+`ascension-compat-ftbteams`' `TeamChecks` plays the team rules (`docs/progression/teams.md`) on a
+dedicated server with three stand-in players, real `ServerPlayer`s with no client behind them (the
+connection is `FakeConnection`, which tells NeoForge it can carry any payload). It uses FTB Teams' own
+commands, the real advancements and the real damage event, prints `PASS` / `FAIL` lines tagged
+`[team-checks]`, and stops the server. No game window opens.
+
+1. In `run/server/server.properties` set `level-name` to a throwaway name (and put it back afterwards),
+   and copy a world there, for example `run/server/runes-test` to `run/server/team-test` (delete its
+   `playerdata` and `advancements` folders for a clean start). The dev server defaults to creative; the
+   stand-ins switch themselves to survival.
+2. Create an empty `run/server/team-checks.txt` (**part one**), then `./gradlew runDevServer`. About two
+   minutes. It leaves one stand-in missing a milestone his party holds.
+3. When the server has stopped, create `run/server/team-checks-2.txt` (**part two**) and run it again:
+   the party and the saved team state are read back from disk.
+4. `grep "team-checks\]" run/server/logs/latest.log`; the last line is `RESULT: N checks, M failures`.
+
+What it cannot see is anything a client draws or sends: FTB's My Team screen and button, the chat line as
+a player reads it, and the HUD's team list when it exists. Those wait for a real client.
 
 ### Use `runDevServer`, not a module's own `runServer`
 

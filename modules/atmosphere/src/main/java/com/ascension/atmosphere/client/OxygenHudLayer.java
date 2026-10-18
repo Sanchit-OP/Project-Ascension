@@ -3,6 +3,7 @@ package com.ascension.atmosphere.client;
 import com.ascension.atmosphere.internal.AtmosphereTuning;
 import com.ascension.atmosphere.internal.OxygenLevel;
 import com.ascension.atmosphere.internal.net.OxygenSyncPayload;
+import com.ascension.core.api.client.HudRegistry;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -50,6 +51,11 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
     public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.options.hideGui) {
+            return;
+        }
+        // A HUD host draws the oxygen emblem instead (ADR-0024); this plain bar is the fallback for
+        // when none is installed, so a player never sees both.
+        if (HudRegistry.hostPresent()) {
             return;
         }
         if (!ClientOxygenState.shouldRender()) {

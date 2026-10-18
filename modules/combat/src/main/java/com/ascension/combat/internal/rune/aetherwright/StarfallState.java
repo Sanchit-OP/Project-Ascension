@@ -17,6 +17,11 @@ public final class StarfallState {
     private Vec3 where;
 
     /** Whether a star may be called now: the cooldown is over and none is already falling. */
+    /** The game tick it can be called again. For display. */
+    public long cooldownUntil() {
+        return cooldownUntil;
+    }
+
     public boolean ready(long now) {
         return now >= cooldownUntil && strikeAt < 0L;
     }

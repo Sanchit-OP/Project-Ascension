@@ -1,10 +1,13 @@
 package com.ascension.core;
 
 import com.ascension.core.internal.WorldEnvironments;
+import com.ascension.core.internal.client.HudElements;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,5 +50,9 @@ public final class AscensionCore {
      */
     private void onLoadComplete(FMLLoadCompleteEvent event) {
         WorldEnvironments.get().freeze();
+        // The HUD contract (ADR-0024) is client-only; a dedicated server never builds it.
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            HudElements.get().freeze();
+        }
     }
 }

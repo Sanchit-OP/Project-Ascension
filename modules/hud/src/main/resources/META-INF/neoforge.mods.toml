@@ -1,0 +1,43 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension HUD"
+authors = "${mod_authors}"
+description = '''
+The HUD: layout, theme and frame for what sits on the player's screen.
+
+Other mods contribute elements (a gauge, a stat block, a badge) through the HUD registry in
+Ascension Core, and this mod decides where they go, at what scale and opacity. Nothing needs to
+extend our classes.
+
+Standalone: depends only on NeoForge and Ascension Core. With no elements registered it draws
+nothing. One client config switch turns the whole thing off.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+# Tier 0, and the only Ascension module this one depends on (ADR-0011, ADR-0024). It carries the
+# HUD element contract, so that other modules can add to the HUD without knowing this one exists.
+[[dependencies.${mod_id}]]
+modId = "ascension_core"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "BEFORE"
+side = "BOTH"

@@ -20,7 +20,8 @@ public final class ClientOxygenState {
 
     private static volatile OxygenSyncPayload current =
             new OxygenSyncPayload(AtmosphereTuning.LUNG_CAPACITY, AtmosphereTuning.LUNG_CAPACITY,
-                    true, 0.0f, false, false, 0);
+                    true, 0.0f, false, false, 0,
+                    AtmosphereTuning.LUNG_CAPACITY, AtmosphereTuning.LUNG_CAPACITY);
 
     private ClientOxygenState() {
     }
@@ -32,7 +33,8 @@ public final class ClientOxygenState {
     /** Reset on disconnect, so a stale bar cannot survive into the next session. */
     public static void clear() {
         current = new OxygenSyncPayload(AtmosphereTuning.LUNG_CAPACITY, AtmosphereTuning.LUNG_CAPACITY,
-                    true, 0.0f, false, false, 0);
+                    true, 0.0f, false, false, 0,
+                    AtmosphereTuning.LUNG_CAPACITY, AtmosphereTuning.LUNG_CAPACITY);
     }
 
     public static OxygenSyncPayload current() {

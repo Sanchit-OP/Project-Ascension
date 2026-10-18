@@ -14,6 +14,16 @@ public final class PlatingState {
     private long windowEnds;
 
     /** Whether hits are being softened now. */
+    /** The game tick it can start again. For display. */
+    public long cooldownUntil() {
+        return cooldownUntil;
+    }
+
+    /** The game tick its window closes. For display. */
+    public long windowEnds() {
+        return windowEnds;
+    }
+
     public boolean active(long now) {
         return hitsLeft > 0 && now < windowEnds;
     }
