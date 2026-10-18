@@ -83,6 +83,7 @@ public final class AscensionCombat {
         RuneRegistries.register(modBus);
         RuneContent.register(modBus);
         container.registerConfig(ModConfig.Type.SERVER, RuneConfig.SPEC);
+        container.registerConfig(ModConfig.Type.SERVER, com.ascension.combat.internal.mechanics.TeamConfig.SPEC, "ascension_combat-teams-server.toml");
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> RuneCommands.register(event.getDispatcher()));
 
         // The one place non-client code names a client class (same isolation AtmosphereNetwork
@@ -97,6 +98,8 @@ public final class AscensionCombat {
         // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before
         // any per-weapon lethality/penetration effect that also touches the ARMOR reduction
         // category, per PhysicalDamage's own javadoc on EventPriority ordering.
+        // Teammates cannot hurt each other: first of all, so a cancelled hit does nothing else.
+        com.ascension.combat.internal.mechanics.TeamFire.register(NeoForge.EVENT_BUS);
         PhysicalDamage.register(NeoForge.EVENT_BUS);
         OmnivampHealing.register(NeoForge.EVENT_BUS);
 

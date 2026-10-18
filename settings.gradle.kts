@@ -33,4 +33,5 @@ include(":modules:compat:endermanoverhaul")
 include(":modules:compat:bettercombat")
 include(":modules:compat:distanthorizons")
 include(":modules:compat:sable")
+include(":modules:compat:ftbteams")
 // include(":modules:compat:curios")  // next, once Curios is installed in the test instance
