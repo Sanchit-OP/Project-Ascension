@@ -112,6 +112,7 @@
   "stat_source.ascension_combat.runes": "Runes",
   "stat_source.ascension_combat.growth": "Growth",
   "stat_source.ascension_combat.enchantments": "Enchantments",
+  "tooltip.ascension_combat.damage_reduction": "-%s%% damage taken (%s)",
   "enchantment.ascension_combat.keen_edge": "Keen Edge",
   "enchantment.ascension_combat.leech": "Leech",
   "enchantment.ascension_combat.warding": "Warding",
