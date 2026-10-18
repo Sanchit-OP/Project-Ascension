@@ -50,7 +50,7 @@ public final class AbilityScaling {
     public static final float PERCENT_PROC_CAP_PER_AD = 1.0f;
     /** The same cap for the two missing-health bonuses, which fire rarely: Galeforce's shot and Hunt. */
     public static final float GALEFORCE_CAP_PER_AD = 3.0f;
-    public static final float HUNT_CAP_PER_AD = 5.0f;
+    public static final float HUNT_CAP_PER_AD = 7.0f;
 
     private AbilityScaling() {
     }

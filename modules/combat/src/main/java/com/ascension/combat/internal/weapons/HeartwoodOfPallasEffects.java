@@ -124,7 +124,7 @@ public final class HeartwoodOfPallasEffects {
      * execute deals {@code stacks / STACK_PERCENT_DIVISOR} of the target's missing HP, so this is
      * "how many stacks equal a 100% missing-HP execute" -- 100 means 10 stacks is a 10% execute.
      */
-    private static final float STACK_PERCENT_DIVISOR = 100.0f;
+    private static final float STACK_PERCENT_DIVISOR = 100.0f / 1.5f;   // 1.5% of the missing health per stack
 
     private HeartwoodOfPallasEffects() {
     }

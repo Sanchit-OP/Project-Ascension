@@ -33,11 +33,12 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 STATS = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'data', 'ascension_combat',
                      'data_maps', 'item', 'item_stats.json')
 
-STEP = 0.05
+STEP = 0.01
 MAX_SECONDS = 900.0
 MAX_SWINGS_PER_SECOND = 8.0
 CAP_PER_AD = 1.0
-GALE_CAP, HUNT_CAP = 3.0, 5.0      # Galeforce's and Hunt's missing-health bonuses, in Attack Damage
+GALE_CAP, HUNT_CAP = 3.0, 7.0      # Galeforce's and Hunt's missing-health bonuses, in Attack Damage
+HUNT_PER_STACK = 0.015           # Heartwood's Hunt: share of the target's missing health per stack
 ENDLESS_AS_PER_AD = 0.012          # Endless Hunger: attack speed per point of Attack Damage
 KIT_AD, KIT_LETHALITY = 8.0, 8.0
 RAGE_MAGIC, RAGE_SCALE, RAGE_PER_HIT, RAGE_CAP = 3.0, 0.1, 0.03, 1.0   # Ragefang's on-hit magic (flat, per Attack Damage), attack speed per hit, and its limit
@@ -143,7 +144,7 @@ def fight(name, boss, kit, overrides=None, pair=False):
                     magic = 3.0 + 0.15 * ad
                     if t >= hunt_ready and hunt_stacks > 0:
                         hunt_ready, took = t + 15.0, 1.75
-                        magic += min((boss.max_hp - boss.hp) * hunt_stacks / 100.0, HUNT_CAP * ad)
+                        magic += min((boss.max_hp - boss.hp) * hunt_stacks * HUNT_PER_STACK, HUNT_CAP * ad)
                         hunt_stacks = 0
                     else:
                         hunt_stacks += 1

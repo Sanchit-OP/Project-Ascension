@@ -4,7 +4,7 @@
 Weapons are balanced by time to kill, not points: a weapon's worth is mostly its ability, which no stat
 sum can say. Each legendary weapon must kill the standard boss (1000 HP, 150 Armor, 90 Magic Resist) in
 its written number of seconds, give or take 6%, and the fastest and slowest may not be further apart than
-2.2 times, so nobody runs one weapon. A weapon that carries utility (Darius's shred, Endless Hunger's
+1.8 times, so nobody runs one weapon. A weapon that carries utility (Darius's shred, Endless Hunger's
 sustain, Wraithblade's blink) is slower on purpose.
 
 Armour, boots and the off-hand are balanced by points: every stat is worth some points and every slot has
@@ -34,17 +34,17 @@ ttk = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ttk)
 
 # Seconds to kill the standard boss alone, written down: the design, not an output.
-# Wide on purpose (Sanchit, 2026-10-19): some weapons are strong, some are middling, the ones that carry
-# utility are slower, and the two dual-wield weapons are slow alone and strong as a pair.
+# Narrower than the first spread (Sanchit, 2026-10-19: lessen the split): strong weapons are a little
+# faster, the ones that carry utility for a team (Darius's shred, Mortal Reminder's anti-heal) a little
+# slower, and the two dual-wield weapons are slow alone and strong as a pair.
 TTK_TARGET = {
-    'spear_of_shojin': 65, 'veigos_blade': 70, 'mortal_reminder': 75,
-    'divine_sunderer': 90, 'darken_blade': 95, 'galeforce': 95, 'heartwood_of_pallas': 100,
-    'ragefang': 97, 'endless_hunger': 120,
-    'darius_axe': 120, 'wraithblade': 135,
+    'spear_of_shojin': 70, 'veigos_blade': 75, 'divine_sunderer': 85, 'darken_blade': 90, 'galeforce': 90,
+    'heartwood_of_pallas': 93, 'ragefang': 95, 'mortal_reminder': 100, 'darius_axe': 110, 'wraithblade': 110,
+    'endless_hunger': 120,
 }
-PAIR_TARGET = {'ragefang': 71, 'endless_hunger': 65}   # worn one in each hand
+PAIR_TARGET = {'ragefang': 71, 'endless_hunger': 62}   # worn one in each hand
 TTK_TOLERANCE = 0.06
-TTK_SPREAD = 2.2
+TTK_SPREAD = 1.8
 BOSS = (1000.0, 150.0, 90.0)
 
 # Points per unit of a defensive piece's stats. Omnivamp and Penetration are set by hand, not scored.
