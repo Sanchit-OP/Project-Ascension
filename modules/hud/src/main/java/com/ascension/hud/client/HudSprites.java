@@ -52,17 +52,21 @@ final class HudSprites {
 
     /** The dark track, full width. */
     static void barTrack(GuiGraphics g, int x, int y, int w, int h, float opacity) {
-        barRow(g, BAR_TRACK, x, y, w, h, 1.0f, 1.0f, 1.0f, opacity);
+        barRow(g, BAR_TRACK, x, y, w, h, x, x + w, 1.0f, 1.0f, 1.0f, opacity);
     }
 
     /** The gold rim, drawn last over everything. */
     static void barFrame(GuiGraphics g, int x, int y, int w, int h, float opacity) {
-        barRow(g, BAR_FRAME, x, y, w, h, 1.0f, 1.0f, 1.0f, opacity);
+        barRow(g, BAR_FRAME, x, y, w, h, x, x + w, 1.0f, 1.0f, 1.0f, opacity);
     }
 
     /**
      * A coloured part of the bar between two fractions of its width. The fill is drawn full width
-     * and clipped, so the left end stays rounded and the cut edge is straight.
+     * but cropped, so the left end stays rounded and the cut edge is straight.
+     *
+     * <p>Cropped by drawing less of the sprite, not with a scissor: in 1.21.1 the scissor ignores
+     * the pose, and every element is drawn translated into place, so a scissor lands in the wrong
+     * part of the screen and hides the fill entirely.
      */
     static void barFill(GuiGraphics g, int x, int y, int w, int h, float from, float to,
                         int rgb, float opacity) {
@@ -71,24 +75,43 @@ final class HudSprites {
         if (x1 <= x0) {
             return;
         }
-        g.enableScissor(x0, y, x1, y + h);
-        barRow(g, BAR_FILL, x, y, w, h,
+        barRow(g, BAR_FILL, x, y, w, h, x0, x1,
                 ((rgb >> 16) & 0xFF) / 255.0f, ((rgb >> 8) & 0xFF) / 255.0f, (rgb & 0xFF) / 255.0f, opacity);
-        g.disableScissor();
     }
 
-    private static void barRow(GuiGraphics g, int row, int x, int y, int w, int h,
+    /**
+     * Draws one row of the bar sheet across {@code [x, x + w)}, showing only {@code [clip0, clip1)}.
+     *
+     * <p>The two caps are 4 texels to the unit, so cropping them is exact. The middle is the same
+     * from left to right, so it is simply stretched over whatever is visible of it.
+     */
+    private static void barRow(GuiGraphics g, int row, int x, int y, int w, int h, int clip0, int clip1,
                                float r, float gr, float b, float a) {
         g.setColor(r, gr, b, a);
         com.mojang.blaze3d.systems.RenderSystem.enableBlend();
         int v = row * BAR_ROW;
-        g.blit(BAR, x, y, CAP_UNITS, h, 0, v, BAR_CAP, BAR_ROW, BAR_SHEET_W, BAR_SHEET_H);
-        int mid = w - 2 * CAP_UNITS;
-        if (mid > 0) {
-            g.blit(BAR, x + CAP_UNITS, y, mid, h, BAR_CAP, v, BAR_MID, BAR_ROW, BAR_SHEET_W, BAR_SHEET_H);
+
+        // Left cap.
+        int lx0 = Math.max(x, clip0);
+        int lx1 = Math.min(x + CAP_UNITS, clip1);
+        if (lx1 > lx0) {
+            g.blit(BAR, lx0, y, lx1 - lx0, h, (lx0 - x) * 4, v, (lx1 - lx0) * 4, BAR_ROW,
+                    BAR_SHEET_W, BAR_SHEET_H);
         }
-        g.blit(BAR, x + w - CAP_UNITS, y, CAP_UNITS, h, BAR_CAP + BAR_MID, v, BAR_CAP, BAR_ROW,
-                BAR_SHEET_W, BAR_SHEET_H);
+        // Middle.
+        int mx0 = Math.max(x + CAP_UNITS, clip0);
+        int mx1 = Math.min(x + w - CAP_UNITS, clip1);
+        if (mx1 > mx0) {
+            g.blit(BAR, mx0, y, mx1 - mx0, h, BAR_CAP, v, BAR_MID, BAR_ROW, BAR_SHEET_W, BAR_SHEET_H);
+        }
+        // Right cap.
+        int rx = x + w - CAP_UNITS;
+        int rx0 = Math.max(rx, clip0);
+        int rx1 = Math.min(x + w, clip1);
+        if (rx1 > rx0) {
+            g.blit(BAR, rx0, y, rx1 - rx0, h, BAR_CAP + BAR_MID + (rx0 - rx) * 4, v, (rx1 - rx0) * 4, BAR_ROW,
+                    BAR_SHEET_W, BAR_SHEET_H);
+        }
         g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
