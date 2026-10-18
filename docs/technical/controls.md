@@ -5,8 +5,19 @@ at the last count, from vanilla and eleven mods. This page says which keys the p
 which collide, what we unbind so players have room for the keys they actually want, and which
 tools give players a better screen for changing them.
 
-**Status, 2026-10-18: audited and proposed; the tools are not installed yet** (waiting for
-Sanchit's go-ahead to download; see "The tools").
+**Status, 2026-10-18: the tools are installed and the defaults are applied** (Sanchit's go-ahead).
+The key map itself is provisional: he will check it with player testing, and it is one text file to
+change (`pack/config/defaultoptions/keybindings.txt`).
+
+**Seen:** in a dev client with no saved keys, Default Options reports "applied 10 defaults (10 keys
+were reconfigured)" and the audit shows all ten as the pack's defaults, **both as the current key and
+as the Reset key**. Keybind Atlas, Controlling, Searchables and Balm load beside the rest of the pack.
+**Not seen by eye:** the Atlas screen and Controlling's search bar.
+
+**What is left on a default key, on purpose:** Create's three Left Alt keys (modifier, tool belt,
+tool menu), Cataclysm's own weapon-ability and boots-ability pair on V, Create's Ponder key on W (it
+only acts over an item in a screen), and Tab, which is both the player list and Create Simulated's
+rotate mode (not yet tried in play; unbind Simulated's if it fights).
 
 ## The audit
 
@@ -79,6 +90,17 @@ All checked for 1.21.1 on NeoForge on 2026-10-18.
 | **Keybind Atlas** | `1.4.0` | 416 KB | A map of the keyboard and mouse: every key colour-coded as bound, free or hidden; hover for the action and the mod it comes from; an edit mode to rebind from the map. |
 | **Controlling** + **Searchables** | `19.0.5` + `1.0.2` | 78 KB + 77 KB | A search bar and a "show conflicts only" filter on the normal Controls list, and a view of which keys are still free. |
 | **Default Options** + **Balm** | `21.1.8` + `21.0.66` | 106 KB + 784 KB | Ships our default keys and options: a **fresh install starts with them**, a player's own changes persist through updates. This is what makes "unbound by default, bind it back if you want" work. |
+
+**How the defaults reach a player.** Default Options applies `keybindings.txt` to a **fresh install**
+and to any binding **not yet in the player's `options.txt`** (a newly added mod's keys). A key already
+saved there keeps the player's value, which is what makes it safe to update. So a test game that
+already has an `options.txt` needs its saved keys moved too:
+`python tools/sync-pack-config.py --options <options.txt>` does it, moving a key only if it still
+holds the old default (a key the player changed is reported and kept). On 2026-10-18 it moved four keys
+in the Ascension Dev instance (creative hotbar save and load, social interactions, Cataclysm's helmet
+ability), left Sanchit's own choices alone (ability on C, runes on `[`, sheet on `,`), and kept a
+backup beside `options.txt`. His ability key on C will meet Ok Zoomer's zoom, also C by default; the
+shipped default is Z, so only his own binding clashes.
 
 Default Options keeps the pack's defaults in `config/defaultoptions/` (`keybindings.txt`,
 `options.txt`). It is written by running `/defaultoptions saveAll` in a game set up the way we want, or
