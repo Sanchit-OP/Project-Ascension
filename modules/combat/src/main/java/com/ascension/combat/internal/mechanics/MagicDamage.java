@@ -90,9 +90,54 @@ public final class MagicDamage {
      */
     public static float applyStandalone(LivingEntity target, DamageSource source, float rawAmount) {
         float mitigated = mitigate(rawAmount, target, source.getEntity());
-        target.hurt(source, mitigated);
+        hurtSettled(target, source, mitigated);
         notifyDealt(source.getEntity(), target, mitigated);
         return mitigated;
+    }
+
+    /**
+     * The one hit {@link #hurtSettled} is delivering right now, so {@link PhysicalDamage} can leave it
+     * alone. Server thread only, set and cleared inside one call, never kept past it.
+     */
+    private static DamageSource settled;
+
+    /**
+     * Whether {@code source} is a hit whose defence has already been paid.
+     *
+     * <p>A magic hit of ours (a rune's strike, Unending Despair's pulse) is cut by Magic Resist before it is
+     * dealt. Its damage type is magic, so without this the shared defence would cut it a second time
+     * when the hit lands. Compared by identity: only the source object being delivered is settled.
+     */
+    public static boolean isSettled(DamageSource source) {
+        return source == settled;
+    }
+
+    /**
+     * Hurts {@code target} with an amount whose defence is already settled: no further Armor or Magic Resist
+     * is applied by {@link PhysicalDamage}. For a caller that has done its own mitigation, or that means a
+     * cost rather than an attack (a penalty on the wearer, say).
+     */
+    public static void hurtSettled(LivingEntity target, DamageSource source, float amount) {
+        DamageSource previous = settled;
+        settled = source;
+        try {
+            target.hurt(source, amount);
+        } finally {
+            settled = previous;
+        }
+    }
+
+    /**
+     * The fraction of a magic hit that gets through {@code target}'s Magic Resist, after the attacker's
+     * Magic Penetration. 1.0 when the target has none. The one place this is worked out: weapon procs
+     * ({@link #apply}) and incoming magic hits ({@link PhysicalDamage}) both read it.
+     */
+    public static double passThrough(LivingEntity target, Entity attacker) {
+        AttributeInstance magicResist = target.getAttribute(CombatAttributes.MAGIC_RESIST);
+        if (magicResist == null) {
+            return 1.0;
+        }
+        return DefenseFormula.multiplier(magicResist.getValue() * (1.0 - penetrationPercent(attacker)));
     }
 
     private static float mitigate(float rawAmount, LivingEntity target, Entity attacker) {
@@ -106,13 +151,7 @@ public final class MagicDamage {
     }
 
     private static float mitigateBoosted(float rawAmount, LivingEntity target, Entity attacker) {
-        AttributeInstance magicResist = target.getAttribute(CombatAttributes.MAGIC_RESIST);
-        if (magicResist == null) {
-            return rawAmount;
-        }
-
-        double resist = magicResist.getValue() * (1.0 - penetrationPercent(attacker));
-        return (float) (rawAmount * DefenseFormula.multiplier(resist));
+        return (float) (rawAmount * passThrough(target, attacker));
     }
 
     private static double penetrationPercent(Entity attacker) {

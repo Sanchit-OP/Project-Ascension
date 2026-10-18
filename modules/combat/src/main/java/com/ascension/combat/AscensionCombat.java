@@ -106,6 +106,7 @@ public final class AscensionCombat {
         // Teammates cannot hurt each other: first of all, so a cancelled hit does nothing else.
         com.ascension.combat.internal.mechanics.TeamFire.register(NeoForge.EVENT_BUS);
         PhysicalDamage.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.internal.dev.DamageChecks.register(NeoForge.EVENT_BUS);
         OmnivampHealing.register(NeoForge.EVENT_BUS);
 
         VeigosBladeEffects.register(NeoForge.EVENT_BUS);

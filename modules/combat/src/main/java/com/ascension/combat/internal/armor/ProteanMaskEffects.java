@@ -5,6 +5,7 @@ import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatAttributes;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.CombatStackState;
+import com.ascension.combat.internal.mechanics.MagicDamage;
 import com.ascension.core.api.CombatStateRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -118,6 +119,8 @@ public final class ProteanMaskEffects {
             return;
         }
 
-        player.hurt(player.damageSources().magic(), player.getMaxHealth() * BACKFIRE_MAX_HEALTH_PERCENT);
+        // A price the mask charges, not an attack: Magic Resist does not soften it (it is magic-typed, so
+        // the shared defence would otherwise cut it).
+        MagicDamage.hurtSettled(player, player.damageSources().magic(), player.getMaxHealth() * BACKFIRE_MAX_HEALTH_PERCENT);
     }
 }

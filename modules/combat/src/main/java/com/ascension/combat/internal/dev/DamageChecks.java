@@ -1,0 +1,257 @@
+package com.ascension.combat.internal.dev;
+
+import com.ascension.combat.internal.CombatAttributes;
+import com.ascension.combat.internal.mechanics.DamageKinds;
+import com.ascension.combat.internal.mechanics.MagicDamage;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.WitherSkull;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+/**
+ * A development aid, dormant unless a file named {@code damage-checks.txt} sits in the game directory:
+ * on a dedicated server it plays the physical-or-magic rule (docs/technical/damage-kinds.md) through
+ * the real damage event, prints {@code PASS} or {@code FAIL} lines tagged {@code [damage-checks]}, and
+ * stops the server. No client and no player are involved: the target is a pig given a known Armor and
+ * Magic Resist, hurt directly with the damage sources the game's own mobs use.
+ *
+ * <p>The target starts with Magic Resist 100 and Armor 0 (a hit that gets through the Magic Resist is
+ * halved) and then the other way round (Armor 100, Magic Resist 0). So for each kind of attack the
+ * numbers say which defence it met: a blast halved by Magic Resist and not by Armor is a magic hit.
+ */
+public final class DamageChecks {
+
+    private static final String TRIGGER = "damage-checks.txt";
+    private static final float HIT = 20.0f;
+    private static final float TOLERANCE = 0.02f;
+
+    private static MinecraftServer server;
+    private static int settle;
+    private static boolean armed;
+    private static boolean finished;
+    private static int checks;
+    private static int failures;
+
+    private DamageChecks() {
+    }
+
+    public static void register(IEventBus gameBus) {
+        Path trigger = FMLPaths.GAMEDIR.get().resolve(TRIGGER);
+        if (!Files.exists(trigger)) {
+            return;
+        }
+        try {
+            Files.deleteIfExists(trigger);
+        } catch (IOException e) {
+            return;
+        }
+        armed = true;
+        gameBus.addListener((ServerStartedEvent event) -> server = event.getServer());
+        gameBus.addListener(DamageChecks::onTick);
+    }
+
+    private static void onTick(ServerTickEvent.Post event) {
+        if (!armed || finished || server == null || ++settle < 200) {
+            return;
+        }
+        finished = true;
+        try {
+            run(server.overworld());
+        } catch (RuntimeException e) {
+            fail("the checks threw " + e);
+            e.printStackTrace();
+        }
+        log("RESULT: " + checks + " checks, " + failures + " failures");
+        server.halt(false);
+    }
+
+    private static void run(ServerLevel level) {
+        Zombie zombie = EntityType.ZOMBIE.create(level);
+        Pig pig = EntityType.PIG.create(level);
+        if (zombie == null || pig == null) {
+            fail("could not make the stand-in mobs");
+            return;
+        }
+        pig.moveTo(level.getSharedSpawnPos().getX() + 0.5, level.getSharedSpawnPos().getY() + 1.0,
+                level.getSharedSpawnPos().getZ() + 0.5);
+        level.addFreshEntity(pig);
+        pig.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100000.0);
+
+        var damage = level.damageSources();
+        Entity warden = EntityType.WARDEN.create(level);
+        WitherSkull witherSkull = EntityType.WITHER_SKULL.create(level);
+        Arrow arrow = EntityType.ARROW.create(level);
+
+        log("--- the tags");
+        var damageTypes = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
+        for (ResourceKey<DamageType> key : List.of(
+                DamageTypes.EXPLOSION, DamageTypes.SONIC_BOOM, DamageTypes.LAVA, DamageTypes.ON_FIRE, DamageTypes.LIGHTNING_BOLT,
+                DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC, DamageTypes.WITHER, DamageTypes.WITHER_SKULL, DamageTypes.DRAGON_BREATH)) {
+            Holder<DamageType> type = damageTypes.getHolderOrThrow(key);
+            expect(key.location() + " is magic", type.is(DamageKinds.MAGIC), true);
+        }
+        for (ResourceKey<DamageType> key : List.of(
+                DamageTypes.MOB_ATTACK, DamageTypes.PLAYER_ATTACK, DamageTypes.ARROW, DamageTypes.MOB_PROJECTILE, DamageTypes.THORNS,
+                DamageTypes.FALL, DamageTypes.DROWN, DamageTypes.STARVE, DamageTypes.GENERIC, DamageTypes.CACTUS)) {
+            Holder<DamageType> type = damageTypes.getHolderOrThrow(key);
+            expect(key.location() + " is not magic", type.is(DamageKinds.MAGIC), false);
+        }
+
+        // ---- Magic Resist 100, Armor 0: a magic hit is halved, a physical one is not -----------------
+        log("--- Magic Resist 100, Armor 0");
+        setStat(pig, CombatAttributes.MAGIC_RESIST, 100.0);
+        setStat(pig, CombatAttributes.ARMOR, 0.0);
+        hit("a zombie's fist (physical)", pig, damage.mobAttack(zombie), HIT);
+        if (warden != null) {
+            hit("the Warden's fist (physical)", pig, damage.mobAttack((LivingEntity) warden), HIT);
+            hit("the Warden's sonic boom (magic)", pig, damage.sonicBoom(warden), HIT / 2);
+        }
+        hit("a Creeper's blast (magic)", pig, damage.explosion(null, zombie), HIT / 2);
+        hit("burning (magic)", pig, damage.onFire(), HIT / 2);
+        hit("lava (magic)", pig, damage.lava(), HIT / 2);
+        hit("standing in fire (magic)", pig, damage.inFire(), HIT / 2);
+        hit("lightning (magic)", pig, damage.lightningBolt(), HIT / 2);
+        hit("poison or a potion (magic)", pig, damage.magic(), HIT / 2);
+        hit("a witch's potion (magic)", pig, damage.indirectMagic(zombie, zombie), HIT / 2);
+        hit("the Wither's decay (magic)", pig, damage.wither(), HIT / 2);
+        hit("the dragon's breath (magic)", pig, damage.source(DamageTypes.DRAGON_BREATH, zombie), HIT / 2);
+        if (witherSkull != null) {
+            hit("a Wither skull (magic)", pig, damage.witherSkull(witherSkull, zombie), HIT / 2);
+        }
+        if (arrow != null) {
+            // Every arrow carries its shooter's Attack Damage on top (PhysicalDamage.applyArrowAttackDamage).
+            hit("a skeleton's arrow (physical, plus the shooter's Attack Damage)", pig, damage.arrow(arrow, zombie),
+                    HIT + (float) zombie.getAttributeValue(Attributes.ATTACK_DAMAGE));
+        }
+        hit("a fall (neither)", pig, damage.fall(), HIT);
+        hit("starving (neither)", pig, damage.starve(), HIT);
+
+        // ---- The other way round: Armor 100, Magic Resist 0 ------------------------------------------
+        log("--- Armor 100, Magic Resist 0");
+        setStat(pig, CombatAttributes.MAGIC_RESIST, 0.0);
+        setStat(pig, CombatAttributes.ARMOR, 100.0);
+        hit("a zombie's fist (physical) is halved by Armor", pig, damage.mobAttack(zombie), HIT / 2);
+        hit("a Creeper's blast (magic) ignores Armor", pig, damage.explosion(null, zombie), HIT);
+        hit("lava (magic) ignores Armor", pig, damage.lava(), HIT);
+        hit("the sonic boom (magic) ignores Armor", pig, damage.sonicBoom(zombie), HIT);
+
+        // ---- Our own magic hits are cut once, not twice ----------------------------------------------
+        log("--- our own magic hits");
+        setStat(pig, CombatAttributes.MAGIC_RESIST, 100.0);
+        setStat(pig, CombatAttributes.ARMOR, 0.0);
+        pig.setHealth(pig.getMaxHealth());
+        float before = pig.getHealth();
+        pig.invulnerableTime = 0;
+        MagicDamage.applyStandalone(pig, damage.magic(), HIT);
+        expectNear("a rune's or an item's magic strike is cut by Magic Resist once, not twice", before - pig.getHealth(), HIT / 2);
+        pig.setHealth(pig.getMaxHealth());
+        before = pig.getHealth();
+        pig.invulnerableTime = 0;
+        MagicDamage.hurtSettled(pig, damage.magic(), HIT);
+        expectNear("a cost the wearer pays (Protean Mask's backfire) is not softened", before - pig.getHealth(), HIT);
+
+        // ---- Magic Penetration cuts the resist --------------------------------------------------------
+        log("--- Magic Penetration");
+        zombie.getAttribute(CombatAttributes.MAGIC_PENETRATION_PERCENT).setBaseValue(0.5);
+        hit("a blast from a 50% Magic Penetration attacker meets Magic Resist 50", pig, damage.explosion(null, zombie),
+                (float) (HIT * Math.pow(0.5, 0.5)));
+        zombie.getAttribute(CombatAttributes.MAGIC_PENETRATION_PERCENT).setBaseValue(0.0);
+
+        // ---- Cataclysm, when it is in the game --------------------------------------------------------
+        log("--- Cataclysm");
+        EntityType<?> fireball = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.fromNamespaceAndPath("cataclysm", "ignis_fireball"));
+        if (!BuiltInRegistries.ENTITY_TYPE.containsKey(ResourceLocation.fromNamespaceAndPath("cataclysm", "ignis_fireball"))) {
+            log("SKIP Cataclysm is not loaded");
+        } else {
+            Entity ignisFireball = fireball.create(level);
+            expect("Ignis' fireball is in the magic-attack list", ignisFireball != null && ignisFireball.getType().is(DamageKinds.MAGIC_ATTACK), true);
+            if (ignisFireball != null) {
+                hit("Ignis' fireball (generic projectile type, magic by its entity)", pig, damage.mobProjectile(ignisFireball, zombie), HIT / 2);
+            }
+            if (arrow != null) {
+                hit("the same projectile type from an arrow stays physical", pig, damage.mobProjectile(arrow, zombie),
+                        HIT + (float) zombie.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            }
+            var flameStrike = ResourceLocation.fromNamespaceAndPath("cataclysm", "flame_strike");
+            damageTypes.getHolder(ResourceKey.create(Registries.DAMAGE_TYPE, flameStrike))
+                    .ifPresentOrElse(
+                            type -> expect("Cataclysm's flame strike type is magic", type.is(DamageKinds.MAGIC), true),
+                            () -> fail("Cataclysm's flame_strike damage type is missing"));
+            var golem = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.fromNamespaceAndPath("cataclysm", "ender_golem")).create(level);
+            if (golem instanceof LivingEntity livingGolem) {
+                hit("the Ender Golem's fist (physical)", pig, damage.mobAttack(livingGolem), HIT);
+            }
+        }
+
+        pig.discard();
+    }
+
+    // ------------------------------------------------------------------------------------------
+
+    private static void setStat(LivingEntity entity, DeferredHolder<Attribute, Attribute> stat, double value) {
+        entity.getAttribute(stat).setBaseValue(value);
+    }
+
+    /** Hurts the pig with one hit from full health and checks how much of it landed. */
+    private static void hit(String what, Pig pig, DamageSource source, float expected) {
+        pig.setHealth(pig.getMaxHealth());
+        pig.invulnerableTime = 0;
+        float before = pig.getHealth();
+        pig.hurt(source, HIT);
+        expectNear(what + ": " + expected + " of " + HIT, before - pig.getHealth(), expected);
+    }
+
+    private static void expectNear(String what, float actual, float expected) {
+        checks++;
+        if (Math.abs(actual - expected) <= TOLERANCE * Math.max(1.0f, expected)) {
+            log("PASS " + what + " (got " + String.format("%.2f", actual) + ")");
+        } else {
+            failures++;
+            log("FAIL " + what + " (got " + String.format("%.2f", actual) + ")");
+        }
+    }
+
+    private static void expect(String what, boolean actual, boolean expected) {
+        checks++;
+        if (actual == expected) {
+            log("PASS " + what);
+        } else {
+            failures++;
+            log("FAIL " + what + " (got " + actual + ")");
+        }
+    }
+
+    private static void fail(String message) {
+        checks++;
+        failures++;
+        log("FAIL " + message);
+    }
+
+    private static void log(String message) {
+        System.out.println("[damage-checks] " + message);
+    }
+}

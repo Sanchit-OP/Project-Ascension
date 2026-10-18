@@ -86,6 +86,11 @@ free points, and a respawn healed before worn gear's Health was back. Rune slots
 team's boss and gate milestones (`api.growth.GrowthProgress`, default `progressive`), and growth is
 named on the stat sheet. `tools/check-data.py` (every build) fails on the first fault's spelling.
 
+**Physical or magic (2026-10-19; `docs/technical/damage-kinds.md`):** every hit is cut by Armor (physical) or Magic Resist (magic),
+decided by the *attack*, not the mob: a Warden's fist is physical and its sonic boom magic, a Creeper's blast is magic. Two data tags
+(`#ascension_combat:magic` for damage types, `magic_attack` for projectiles that share a generic type) decide it, and Cataclysm's
+attacks are sorted in its compat jar. Seen on a dedicated server (`damage-checks.txt`, 48 checks), not in a client.
+
 **Teams (ADR-0023, 2026-10-18; `docs/progression/teams.md`):** progress has three owners: the world (gates,
 the mark), your team (bosses, quest progress: an FTB Teams party, a solo player being a party of one) and
 you. `core`'s `TeamRegistry` says who is on which team (everyone is one team when nothing answers),
