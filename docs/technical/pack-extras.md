@@ -10,7 +10,21 @@ Every entry was checked on **2026-10-18** against the build that exists for **Mi
 NeoForge**, from Modrinth's API or FTB's own maven. A project listing "NeoForge" and "1.21.1"
 separately does not mean the pairing exists (see the Zoomify row).
 
-**Status: proposed, waiting for Sanchit's go-ahead to download.** Nothing below is installed yet.
+**Status, 2026-10-18: installed in the Ascension Dev instance** (Sanchit's go-ahead): Iris, Ok Zoomer,
+FTB Quests, FTB Library, FTB Teams and Architectury. Every file was checked against the hash its
+source publishes before it was copied. **FTB XMod Compat was left out:** Quests lists it as optional
+and it wants JEI 19.53 where we run 19.51; add it when JEI is updated. The optional extras below
+were not decided.
+
+**Booted and checked, headless and in a dev client:** the dev server loads Library, Quests, Teams,
+Architectury and Ok Zoomer with no new errors, answers `/ftbteams list`, and skips Iris (the dev mirror
+sees it is client-only). The dev client loads Iris beside Sodium 0.8.13, Distant Horizons and
+ImmediatelyFast (Iris binds Distant Horizons' events, ImmediatelyFast switches its Iris compat on), and
+the scripted combat integration run still passes **55 of 55** with all six present. Not yet seen by
+eye: a shader pack (none is installed; Iris only loads the pack files in `shaderpacks/`), our skies
+and ships under shaders, Quests' screens, and Ok Zoomer's default key against ours. Sodium logs that it
+force-disables its own sky mixins because Iris asks it to: Iris draws the sky, so check our custom
+skies first.
 
 ## The set
 
