@@ -52,14 +52,27 @@ that the Moon's raw helium joins, so an empty tag just makes it uncraftable). Ho
 (10 minutes). Charge and valve state carry over. It counts toward the two-tanks-carried limit and
 reads through `TankOxygenSource`, so the HUD rings need no new field. No level 3.
 
-## Ships: what I do not know yet
+## Ships: what the spike found (increment E, read from Sable 2.0.5's jar, not run)
 
-Sable keeps a ship's blocks in a plot of the same level (ADR-0016), so a dispenser on a ship is
-indexed like any block. Missing: translating a player's position into the plot (`AnchorSpace`,
-nobody registers it). Not yet checked: how Sable reports edits inside a plot, and what happens
-to the index when a ship is assembled (blocks move in bulk, no events), disassembled, carried to
-space or reloaded. Increment E starts with a small spike that finds this out before any design
-is trusted, and I will report what it finds.
+- **Position to plot:** `Sable.HELPER.getAllIntersecting(level, box)` lists ships near a point and
+  each ship's `logicalPose().transformPositionInverse(world)` is the point in the ship's own plot
+  (assumed from the names; **unverified**: the first ship ride will say). A point already in the plot
+  grid (`isInPlotGrid`) is used as it is, in case a rider's position is plot-space.
+- **Assembly and loading:** blocks move in bulk with no block events. Sable calls a
+  `SubLevelObserver.onSubLevelAdded` for every ship that appears in a level, so `ShipAir` asks the
+  atmosphere api to recompute every room then, and again 40 ticks later for chunks that load late.
+  (`BlockSubLevelAssemblyListener` exists, but it is a block interface and blocks are Tier 1.)
+- **Block edits inside a plot:** I assume the place/break events carry plot positions like any
+  other; **unverified**. A wall changed by anything that raises no event is the same known gap as
+  on land (it fails safe).
+- **Moving and turning:** rooms are stored in plot coordinates, which do not change when the ship
+  moves; only the position lookup above uses the pose.
+- **Carry to space (ADR-0015):** blocks are reloaded in the other level, so each dispenser's
+  `onLoad` registers it there and the observer refreshes. Its air is in its saved data. **Unverified.**
+- **Known limit:** where two ships overlap the lookup returns the first. Rooms are never shared.
+- **Changed API (noted per the freeze rule):** `AnchorSpace` gained a default
+  `toLocal(ServerLevel, Vec3)` because a ship space needs the level; and `api.AtmosphereAnchors`
+  (register a space, ask for a refresh) is new. Old implementers are unaffected.
 
 ## Increments
 

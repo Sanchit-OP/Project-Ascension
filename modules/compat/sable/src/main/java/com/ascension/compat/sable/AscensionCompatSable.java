@@ -1,6 +1,7 @@
 package com.ascension.compat.sable;
 
 import com.ascension.compat.sable.internal.SableCommands;
+import com.ascension.compat.sable.internal.ShipAir;
 import com.ascension.compat.sable.internal.ShipVoyages;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public final class AscensionCompatSable {
 
     public AscensionCompatSable() {
         ShipVoyages.register();
+        ShipAir.register();
         SableCommands.register();
         LOGGER.info("Ascension Compat: Sable loaded");
     }

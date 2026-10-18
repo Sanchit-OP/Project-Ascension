@@ -82,6 +82,12 @@ public final class SealedVolumeEvents {
         });
     }
 
+    /** Recompute every room in the level a tick from now (see AtmosphereAnchors.refresh). */
+    public static void scheduleRecomputeAll(ServerLevel level) {
+        level.getServer().execute(() -> announce(level,
+                level.getData(AtmosphereAttachments.SEALED_VOLUMES).recomputeAll(level)));
+    }
+
     /**
      * Tell nearby players what happened to their room.
      *

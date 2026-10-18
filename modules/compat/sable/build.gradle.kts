@@ -10,6 +10,8 @@ dependencies {
     // The Tier 1 module this bridges -- ADR-0003 rule 1 (never the reverse). Ships cross the same
     // planet boundaries worlds already draws for players.
     implementation(project(":modules:worlds"))
+    // Air aboard ships (ADR-0026): registers a ship space with atmosphere's api package only.
+    implementation(project(":modules:atmosphere"))
     // Compile-only, never bundled: this jar's own neoforge.mods.toml requires Sable, so NeoForge
     // never loads it without the real thing (ADR-0006).
     compileOnly("maven.modrinth:sable:$sableVersion")
@@ -22,6 +24,7 @@ dependencies {
 
 evaluationDependsOn(":modules:core")
 evaluationDependsOn(":modules:worlds")
+evaluationDependsOn(":modules:atmosphere")
 
 neoForge {
     mods {
@@ -30,6 +33,9 @@ neoForge {
         }
         register("ascension_worlds") {
             sourceSet(project(":modules:worlds").sourceSets["main"])
+        }
+        register("ascension_atmosphere") {
+            sourceSet(project(":modules:atmosphere").sourceSets["main"])
         }
     }
 }

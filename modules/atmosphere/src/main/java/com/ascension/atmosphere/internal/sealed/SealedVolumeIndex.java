@@ -163,6 +163,24 @@ public final class SealedVolumeIndex {
         return changed && volumes.containsKey(key);
     }
 
+    /** Recompute every emitter, for bulk changes that raise no block events. */
+    public Changes recomputeAll(ServerLevel level) {
+        long[] all = emitters.toLongArray();
+        List<BlockPos> broken = new ArrayList<>();
+        List<BlockPos> restored = new ArrayList<>();
+        for (long key : all) {
+            BlockPos emitter = BlockPos.of(key);
+            boolean wasSealed = volumes.containsKey(key);
+            boolean nowSealed = update(level, emitter).sealed();
+            if (wasSealed && !nowSealed) {
+                broken.add(emitter);
+            } else if (!wasSealed && nowSealed) {
+                restored.add(emitter);
+            }
+        }
+        return new Changes(broken, restored);
+    }
+
     public boolean isSupplied(BlockPos emitter) {
         return !starved.contains(emitter.asLong());
     }

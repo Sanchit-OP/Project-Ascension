@@ -42,6 +42,14 @@ versionRange = "[0.1.0,)"
 ordering = "AFTER"
 side = "BOTH"
 
+# Air aboard ships (ADR-0026) registers a ship space with the atmosphere api.
+[[dependencies.${mod_id}]]
+modId = "ascension_atmosphere"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "AFTER"
+side = "BOTH"
+
 # Required, and pinned: the ship transfer uses Sable's internal save and load, so a Sable version
 # this was not read against must not load it (see sable_version_range in gradle.properties).
 [[dependencies.${mod_id}]]

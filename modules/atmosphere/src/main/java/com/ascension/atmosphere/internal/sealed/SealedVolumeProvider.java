@@ -1,6 +1,9 @@
 package com.ascension.atmosphere.internal.sealed;
 
+import com.ascension.atmosphere.api.AnchorSpace;
 import com.ascension.atmosphere.api.Atmosphere;
+import com.ascension.atmosphere.api.AtmosphereAnchors;
+import net.minecraft.core.BlockPos;
 import com.ascension.atmosphere.api.AtmosphereContext;
 import com.ascension.atmosphere.api.AtmosphereProvider;
 import com.ascension.atmosphere.api.AtmospherePriority;
@@ -24,9 +27,18 @@ public final class SealedVolumeProvider implements AtmosphereProvider {
         if (index.isEmpty()) {
             return Optional.empty();
         }
-        return index.isPressurised(context.blockPos())
-                ? Optional.of(Atmosphere.BREATHABLE)
-                : Optional.empty();
+        if (index.isPressurised(context.blockPos())) {
+            return Optional.of(Atmosphere.BREATHABLE);
+        }
+        // A room inside a ship is stored in the ship's own space: ask whoever owns the ship where
+        // this point is in it (ADR-0026). Usually no spaces are registered, so this is one empty loop.
+        for (AnchorSpace space : AtmosphereAnchors.spaces()) {
+            Optional<BlockPos> local = space.toLocal(context.level(), context.position());
+            if (local.isPresent() && index.isPressurised(local.get())) {
+                return Optional.of(Atmosphere.BREATHABLE);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
