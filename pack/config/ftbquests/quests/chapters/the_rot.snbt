@@ -460,6 +460,36 @@
 			]
 		}
 		{
+			id: "2C0A43DAD9B7C8BF"
+			x: 9.0d
+			y: 4.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:nether_star"
+				count: 1
+			}
+			dependencies: ["51FB851648C16C6D"]
+			hide_until_deps_complete: true
+			optional: true
+			tasks: [
+				{
+					id: "4FADF1BEDF81816F"
+					type: "advancement"
+					advancement: "ascension_combat:growth/wither"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "3D3036034C215CBC"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 3
+				}
+			]
+		}
+		{
 			id: "77D678A9C6557137"
 			x: 9.0d
 			y: 6.0d

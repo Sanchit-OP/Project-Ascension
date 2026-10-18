@@ -115,6 +115,7 @@ CHAPTER = Chapter(
             deps=['keep_some_gold'], hide_until='complete',
             text=[
                 'Far under the world there is a city, and everything in it is asleep.',
+                'It lies inside the deep dark: caves lined with sculk, near the bottom of the world.',
                 'Go quietly. Sneak, and put wool under your feet where you must cross open floor.',
                 'Bring good armour, food and a way back up.',
             ],

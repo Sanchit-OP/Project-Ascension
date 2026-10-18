@@ -4,7 +4,7 @@
 > client once by the scripted run: it works, with a few things still unconfirmed** (sections 10 and 12). Written after Sanchit asked for quest pages that teach, reward and point onward
 > without giving the lore away, a special **Planets** page that looks like a solar system and shows where you
 > are (also while you are in space), and a book that looks like our pack. His four answers are in section 9.
-> **Update, same evening: Q3 (the refactor pass) is done and Q4 (the five remaining pages) is built: 7 pages, 84 quests,
+> **Update, same evening: Q3 (the refactor pass) is done and Q4 (the five remaining pages) is built: 7 pages, 85 quests,
 > loaded by the real FTB Quests on a dedicated server (10 checks, 0 failures). The new pages have not been seen in a client.**
 > What the book taught us about the whole game is in [`journey.md`](journey.md); where this work stopped is section 13.
 > Sections 2 to 4 are what FTB Quests already does (read from the installed jar, `ftb-quests-neoforge-2101.1.36`),
@@ -315,22 +315,20 @@ what the game still needs. Both are done to the point below; the context was ful
 chapter icons, the gate plan picture, the validator's new rules and the server check's new checks (`d7c1b55`); the
 no-consume check and the journey document (the commit after it).
 
-**What the book is now:** 7 pages, 84 quests (First Days 16, Planets 3, The Road Up 17, The Moon 15, The Rot 17, Gear and
+**What the book is now:** 7 pages, 85 quests (First Days 16, Planets 3, The Road Up 17, The Moon 15, The Rot 18, Gear and
 Growth 10, Together 6). Step quests wait for the real mods' own advancements where they exist. The server check passes 10 of
-10: 280 ids, 81 of 81 dependencies, 117 items real (including Create's, Simulated's and Aeronautics'), 30 advancements, 4
+10: 283 ids, 82 of 82 dependencies, 118 items real (including Create's, Simulated's and Aeronautics'), 31 advancements, 4
 dimensions and 2 structures exist, and no item task consumes what a player holds.
 
 **Still to do, in this order:**
 
-1. **Small content fixes found at the end, not yet made:** a "The Wither" quest on The Rot (`ascension_combat:growth/wither`,
-   after the fortress; three skulls on a T of soul sand), and a line on "The dark below" saying the city lies inside the Deep
-   Dark (sculk-covered caves near the bottom of the world).
+1. ~~Small content fixes~~ **Done (2026-10-18):** an optional "The Wither" quest on The Rot (after the fortress) and a line on "The dark below" saying the city lies inside the Deep Dark. Server check 10 of 10 again.
 2. **Update `QuestScreenChecks`** for the new pages and fix its three findings from section 12 (the space stop at (4000, 0)
    lands on the Moon, so use (4600, 0); close the quest panel before photographing; the window size call has no effect).
    Photograph every page, and the gate plan page. **Needs Sanchit's go to launch the client**; one batched run, then record
    the photographs in `design/quest-book/` and what they show.
 3. **Reward tables** (choice of one from three): the generator does not write them yet (format in `journey.md` 5.8). Only
    worth it once there is gear to choose between (build paths).
-4. Update `CLAUDE.md`'s quest-book paragraph (it still says two pages and 14 quests) and `docs/technical/architecture.md`.
+4. ~~Update `CLAUDE.md` and `docs/technical/architecture.md`~~ **Done (2026-10-18).**
 5. The decisions in `journey.md` section 5, which are Sanchit's to pick (a real ship test, range and air, helium's job, the
    build paths, the HUD chart, the ship cabin bridge).

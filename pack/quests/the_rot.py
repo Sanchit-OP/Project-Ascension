@@ -238,6 +238,20 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:quartz', 16)],
         ),
         Quest(
+            slug='the_wither', x=9, y=4,
+            title='The Wither',
+            subtitle='Optional, and it fights back from range',
+            icon=item_icon('minecraft:nether_star'), shape=LANDMARK, size=1.2,
+            deps=['fortress'], hide_until='complete', optional=True,
+            text=[
+                'Wither skeletons drop skulls, rarely. Three skulls on a T of four soul sand call it.',
+                'Fight it in a tunnel with a low roof. Bring a shield, and milk to cure the withering.',
+                'The first time your team beats it, everyone on the team gains skill points.',
+            ],
+            tasks=[advancement('ascension_combat:growth/wither')],
+            rewards=[give('minecraft:golden_apple', 3)],
+        ),
+        Quest(
             slug='ignis', x=9, y=6,
             title='Ignis',
             subtitle='Optional, and no easier',

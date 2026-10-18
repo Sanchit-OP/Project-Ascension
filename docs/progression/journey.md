@@ -81,7 +81,7 @@ source and no job is a bug (`resource-economy.md` principle 1).
 | Planets | 3 | Earth, the Moon and the Nether on a chart, with a live "you are here" |
 | The Road Up | 17 | Create from nothing, the ship's parts (waiting on Create's and Aeronautics' own advancements), air for the trip, the sky's edge |
 | The Moon | 15 | Packing, landing, no air, dust, the Archive, the fortress and its two guardians, the ring, two rings lit |
-| The Rot | 17 | Gold, the long flight, the ring in the teal forest, the smith, wealth (piglins, bastion, netherite), fire (blazes, brass, a smarter propeller) |
+| The Rot | 18 | Gold, the long flight, the ring in the teal forest, the smith, wealth (piglins, bastion, netherite), fire (blazes, brass, a smarter propeller) |
 | Gear and Growth | 10 | Armour, enchanting, tomes, abilities; points and the web; runes, chalk, slots |
 | Together | 6 | Parties, catching up, no friendly fire, one shared book, the map, a breath for a friend |
 
@@ -183,7 +183,7 @@ forge chain on Gear and Growth with real choice rewards (reward tables, below).
 - Reward choices ("one of three") need FTB reward tables. The generator does not write them yet; the format was read from
   the jar (`reward_tables/<name>.snbt`, a table has `loot_size` and weighted `rewards`, a choice reward names it by
   `table_id`).
-- The Wither is a growth milestone and has no quest yet.
+- The Wither now has a quest (optional, after the fortress). Its advancement is a growth milestone, so the first team kill gives points.
 
 ### 5.9 First minutes
 

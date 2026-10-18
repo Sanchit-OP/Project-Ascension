@@ -21,7 +21,7 @@
 	"quest.4C6D7B1AFA4FB07C.quest_desc": ["Gather four gold ingots and keep them on you, not left in a chest.", "You will be glad of them before long. Where, you will see for yourself."]
 	"quest.0AC0AFA737E77E30.title": "The dark below"
 	"quest.0AC0AFA737E77E30.quest_subtitle": "A city that is asleep"
-	"quest.0AC0AFA737E77E30.quest_desc": ["Far under the world there is a city, and everything in it is asleep.", "Go quietly. Sneak, and put wool under your feet where you must cross open floor.", "Bring good armour, food and a way back up."]
+	"quest.0AC0AFA737E77E30.quest_desc": ["Far under the world there is a city, and everything in it is asleep.", "It lies inside the deep dark: caves lined with sculk, near the bottom of the world.", "Go quietly. Sneak, and put wool under your feet where you must cross open floor.", "Bring good armour, food and a way back up."]
 	"quest.194DE687782014EC.title": "The Warden"
 	"quest.194DE687782014EC.quest_subtitle": "It hears, and nothing else"
 	"quest.194DE687782014EC.quest_desc": ["It cannot see you. It hears your steps, your digging and your fall.", "Wear what you can afford to lose, and know where the way up is.", "The first time your team beats it, everyone on the team gains skill points."]
@@ -210,6 +210,9 @@
 	"quest.1AA1B3155D4F8627.title": "A propeller that tips itself"
 	"quest.1AA1B3155D4F8627.quest_subtitle": "Brass, and a little quartz"
 	"quest.1AA1B3155D4F8627.quest_desc": ["A smart propeller makes thrust when spun and tips itself to face upward.", "It needs brass and quartz. Hold W over it in JEI to see the rest."]
+	"quest.2C0A43DAD9B7C8BF.title": "The Wither"
+	"quest.2C0A43DAD9B7C8BF.quest_subtitle": "Optional, and it fights back from range"
+	"quest.2C0A43DAD9B7C8BF.quest_desc": ["Wither skeletons drop skulls, rarely. Three skulls on a T of four soul sand call it.", "Fight it in a tunnel with a low roof. Bring a shield, and milk to cure the withering.", "The first time your team beats it, everyone on the team gains skill points."]
 	"quest.77D678A9C6557137.title": "Ignis"
 	"quest.77D678A9C6557137.quest_subtitle": "Optional, and no easier"
 	"quest.77D678A9C6557137.quest_desc": ["A second fire fights in an arena of its own, somewhere in this world.", "The first time your team beats it, everyone on the team gains skill points."]
