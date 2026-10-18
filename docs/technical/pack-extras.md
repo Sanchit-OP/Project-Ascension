@@ -121,8 +121,9 @@ Once these run beside our mods, the **team** and **quest** design can start. Fac
   go to every player on the server, late joiners included (ADR-0021; `TeamGrowthState` says it is
   "the whole server until Ascension has teams"). FTB Teams is the natural source of a real team.
   A Tier-2 `ascension-compat-ftbteams` could make those milestones per team, and Bulwark's
-  team runes and share-air could use the same team id. **Sanchit decides** whether a team shares
-  growth, and what a solo player is.
+  team runes and share-air could use the same team id. **Designed 2026-10-18 as a proposal, awaiting
+  Sanchit: [`docs/progression/teams.md`](../progression/teams.md)** (who shares what, joining and
+  leaving, what a solo player is).
 - **Quests can feed growth with no code.** Our milestones are advancements; an FTB Quests reward can
   run `/advancement grant @p only <id>`, and a quest task can be "have this advancement". So a
   quest chapter can award skill points, exactly as a boss kill does, from data.
