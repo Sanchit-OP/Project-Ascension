@@ -17,6 +17,8 @@ Tier 1   ascension-atmosphere      Breathable zones + oxygen.  <- flagship, reus
          ascension-gear            Suit modules, hazard protection.
          ascension-progression     Team capability state, gating.
          ascension-combat          Stats, items, rune paths.   (data-driven)
+         ascension-hud             Layout, theme and frame of the HUD; elements come from
+                                   the other modules through a contract in core (ADR-0022)
            |
 Tier 2   ascension-compat-sable    Airships carry their crew to space and back (ADR-0015)
          ascension-compat-create   Connector
@@ -60,6 +62,7 @@ modules/
   atmosphere/
   worlds/
   combat/
+  hud/
   gear/
   progression/
   compat/
@@ -83,6 +86,7 @@ run/                          dev client/server, gitignored
 | `ascension-worlds` | **M2 done** (2026-09-06); M3 in progress. Earth + Moon, full orbit/descent/return loop, real Moon terrain, per-planet weather, plus a reusable `fixed_position` structure placement type (2026-09-21) for pinning sourced structures to a planet and `random_spread_keep_clear` (2026-10-10) for keeping scattered ones (craters, wild citadels) clear of several fixed ones at once, the gateway network as data-driven walk-through multiblock frames (2026-10-06, `gateway-frame-format.md`), dormant vanilla Nether/End portals (ADR-0014), sky bodies drawn from client resources (Earth over the Moon, 2026-10-06, `worlds-api.md`), and the Lunar Archive: its lore as a synced datapack registry, `archive_entry`, read from plinths and tablets, and since 2026-10-10 the building itself generating on the Moon (`internal/archive/`, `lunar-archive-format.md`). [`plans/m2-worlds.md`](../../plans/m2-worlds.md), [`plans/m3-vertical-slice.md`](../../plans/m3-vertical-slice.md) |
 | `ascension-gear`, `ascension-progression` | Not started |
 | `ascension-combat` | **Built.** [ADR-0012](../decisions/0012-ascension-combat-module.md) plus [`combat-api.md`](combat-api.md); 19 items, physical/magic/true damage, armor/magic-resist, rune pages. This table was stale until 2026-09-21 — five commits landed it after the ADR was accepted, never reflected here. |
+| `ascension-hud` | **Decided, not built** ([ADR-0022](../decisions/0022-the-hud-is-its-own-module.md), 2026-10-18). Design in [`hud.md`](hud.md). |
 | `ascension-compat-curios` | Designed, not built. A tank slot that opens the valve (ADR-0009 §4). |
 | `ascension-compat-chunky` | **Built and confirmed live 2026-09-06** (M2.6 lever #2). Walks the planet registry in `Planet.order()` on server start and pre-generates each one's surface, one at a time, chained through Chunky's own completion callback. Reads `ascension-worlds`' planet registry directly rather than through an event — the original per-arrival-event design was retired the same day it shipped, once the proactive server-start approach replaced it. Compiles against Chunky's real API (Modrinth maven); confirmed running for real in a live client via a Spark profile. **Off by default since 2026-10-10** (`[pregeneration] background` in its server config): a fresh server crashed while it ran, because generated chunks were not unloaded while Chunky worked and the heap filled. That cause is not found yet (`plans/m3-vertical-slice.md`, the Chunky bug). Fixed the same day: it took Chunky's end-of-task event, which also fires on a pause or cancel, for a finished task, so pausing one planet started the next; it now moves on only when a task's chunks have run out. A governor (`PregenGovernor`) pauses our task while ticks are over 40 ms, so it never lags players. |
 | `ascension-compat-create` | **Built** (2026-09-07). Disables Create's Copper/Netherite Backtank and Diving Helmet recipes and hides them from recipe viewers — a wearable pressurised-air tank is exactly `ascension-atmosphere`'s own oxygen tank under a different name. Pure datapack, no Java integration. |
