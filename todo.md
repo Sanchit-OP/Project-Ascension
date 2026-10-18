@@ -139,6 +139,12 @@ change; doors and hatches that seal (see "Airlocks need solid blocks" above). Wi
 ship-speed limit on reaching the Nether goes away. **The quest book's "A long flight" and "Share your air" lines change when it
 lands.** Also queued by Sanchit: helium as a better tank or as a fuel (undecided; build paths also use helium).
 
+**Sanchit's Oxygen v2 list (2026-10-19), written up as `plans/session-prompts/8-oxygen-v2.md`:** (1) redraw the tank, the refill
+station and the room block (they use vanilla textures today); (2) helium as the upgrade material for a level-2 tank that holds more
+(the fuel half is done, ADR-0025); (3) the oxygen station becomes a Create-powered machine, more rotation giving more air and more
+area; (4) air becomes a fluid Create's tanks and pipes can carry, with a new Air Dispenser (fed by a mechanical pump) that
+pressurises the room instead of the station; (5) the same working aboard a ship. His session starts from that prompt.
+
 ## Missing documentation
 
 - Quest and onboarding design — FTB Quests appears in the mod list with no design behind it. In
