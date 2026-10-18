@@ -36,6 +36,8 @@ public final class OxygenElement implements HudElement {
     private static final int BLUE = 0x46C8FF;
     private static final int AMBER = 0xFFB23A;
     private static final int RED = 0xFF5A64;
+    /** The tank ring: amber, apart from the lungs' blue, so the two read as two things. */
+    private static final int AMBER_TANK = 0xFFB23A;
 
     private Component secondsText = Component.empty();
     private int cachedSeconds = Integer.MIN_VALUE;
@@ -116,7 +118,15 @@ public final class OxygenElement implements HudElement {
             theme.edgeGlow(g, RED, (0.45f + 0.4f * pulse) * opacity);
         }
         theme.glow(g, cx, cy, BIG + 24, colour, (mode == Mode.CRITICAL ? 0.35f + 0.3f * pulse : 0.2f) * opacity);
-        theme.ringBadge(g, cx - BIG / 2, cy - BIG / 2, BIG, share, colour, opacity);
+        // Outer ring: the lungs. Inner ring, when a tank is carried: the tank.
+        int tankCapacity = state.capacity() - state.lungCapacity();
+        float lungShare = OxygenEmblem.share(state.lungUnits(), state.lungCapacity());
+        theme.ringBadge(g, cx - BIG / 2, cy - BIG / 2, BIG, tankCapacity > 0 ? lungShare : share, colour, opacity);
+        if (tankCapacity > 0) {
+            int inner = BIG - 12;
+            theme.ring(g, cx - inner / 2, cy - inner / 2, inner,
+                    OxygenEmblem.share(state.units() - state.lungUnits(), tankCapacity), AMBER_TANK, opacity);
+        }
         drawO2(g, font, cx, cy, 1.4f, colour, opacity);
 
         // The line under the emblem: what the player needs to know right now.

@@ -109,9 +109,15 @@ public final class RuneChipsElement implements HudElement {
             theme.ringBadge(g, x, 0, CHIP, ring, colour, live ? opacity : opacity * 0.7f);
 
             // The rune's own glyph, dimmed when idle.
-            g.setColor(1.0f, 1.0f, 1.0f, (live ? 1.0f : 0.45f) * opacity);
-            RuneKit.blit(g, ClientRuneHud.sprite(i), cx - GLYPH / 2, cy - GLYPH / 2, GLYPH, GLYPH);
-            g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+            int glyph = ClientRuneHud.glyph(i);
+            if (glyph >= 0) {
+                RuneGlyphs.draw(g, glyph, cx - GLYPH / 2, cy - GLYPH / 2, GLYPH, colour, (live ? 1.0f : 0.5f) * opacity);
+            } else {
+                // A rune without a smooth glyph yet keeps the orrery's own.
+                g.setColor(1.0f, 1.0f, 1.0f, (live ? 1.0f : 0.45f) * opacity);
+                RuneKit.blit(g, ClientRuneHud.sprite(i), cx - GLYPH / 2, cy - GLYPH / 2, GLYPH, GLYPH);
+                g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+            }
 
             if (number >= 0) {
                 Component text = numberText(theme, i, number);

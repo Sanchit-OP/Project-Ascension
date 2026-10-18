@@ -107,9 +107,21 @@ Built and seen in a client (2026-10-18), each photographed at GUI scales 2 to 4:
    Stacks and charges fill a ring and carry a number; a cooldown refills its ring; a window drains it.
 6. **Skill points note** (combat): gold, above the health row, only while points are unspent.
 
-**Not yet:** the lungs-and-tank split on the oxygen emblem (the server sends one total today);
-per-element config (position, scale, visibility); item abilities, status effects and the boss bar are
-left as vanilla; a dedicated-server check with two players; a relog check; the frame-cost reading.
+7. **Lungs and tank** on the oxygen emblem (atmosphere): the outer ring is the lungs, an inner amber ring
+   is the tank, once the player carries one (`OxygenSyncPayload` now carries the lungs' share).
+8. **Config** (`config/ascension_hud-client.toml`): `enabled`, `opacity`, `scale` (0.6 to 1.6) and
+   `hiddenElements` (a list of element ids). Hiding the health row gives vanilla's hearts back.
+9. **Smooth rune glyphs** for the chips (`tools/generate-hud-rune-glyphs.py`), tinted by path.
+
+**Left alone on purpose, with reasons:** the **hotbar** (it is the player's inventory strip and other mods
+hook it), the **boss bar** (Cataclysm and FTB draw their own at the top centre, clear of everything here),
+**status effects** (vanilla's top-right, clear of everything here) and **item abilities** (they already show
+their cooldown on the item itself, `AbilityCooldownDecorator`). Revisit if they collide in play.
+
+**Not yet:** position offsets per element (only global scale and per-element hiding); a dedicated-server check
+with **two players** (the server boots and registers the packet, but a second client has not been used); a
+relog check by script; the frame-cost reading in `performance-log.md` (needs Spark with the HUD on and off);
+smooth glyphs for runes that have no state to show (they have no chip).
 
 ## 7. How it is checked
 

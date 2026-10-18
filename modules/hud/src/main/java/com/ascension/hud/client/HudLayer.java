@@ -32,6 +32,17 @@ public final class HudLayer implements LayeredDraw.Layer {
     private int[] xs = new int[0];
     private int[] ys = new int[0];
 
+    /** Which elements the config hides; recomputed only when its list changes. */
+    private boolean[] hidden = new boolean[0];
+    private java.util.List<? extends String> hiddenSource;
+    private int hiddenFor = -1;
+
+    /**
+     * Whether the player has hidden the health row. Then vanilla's hearts must stay, or there would
+     * be no health on screen at all; {@link HudClient} reads this before cancelling them.
+     */
+    static volatile boolean vitalsHidden;
+
     @Override
     public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -46,16 +57,20 @@ public final class HudLayer implements LayeredDraw.Layer {
         }
         ensureCapacity(total);
 
+        refreshHidden(total);
+        float scale = HudConfig.INSTANCE.scale.get().floatValue();
+
         int count = 0;
         for (int i = 0; i < total; i++) {
             HudElement element = elements.get(i);
-            if (!element.visible()) {
+            if (hidden[i] || !element.visible()) {
                 continue;
             }
             shown[count] = element;
             anchors[count] = element.anchor();
-            widths[count] = element.width();
-            heights[count] = element.height();
+            // Laid out at its scaled size, so a larger HUD still lines up along the hotbar.
+            widths[count] = Math.round(element.width() * scale);
+            heights[count] = Math.round(element.height() * scale);
             count++;
         }
         if (count == 0) {
@@ -70,11 +85,28 @@ public final class HudLayer implements LayeredDraw.Layer {
         for (int i = 0; i < count; i++) {
             graphics.pose().pushPose();
             graphics.pose().translate(xs[i], ys[i], 0);
-            DefaultTheme.INSTANCE.origin(xs[i], ys[i]);
+            graphics.pose().scale(scale, scale, 1.0f);
+            DefaultTheme.INSTANCE.origin(xs[i], ys[i], scale);
             shown[i].render(graphics, DefaultTheme.INSTANCE, partialTick, opacity);
             graphics.pose().popPose();
             shown[i] = null;
         }
+    }
+
+    /** Rebuilds the hidden flags if the config list, or the set of elements, changed. */
+    private void refreshHidden(int total) {
+        java.util.List<? extends String> list = HudConfig.INSTANCE.hiddenElements.get();
+        if (list == hiddenSource && total == hiddenFor) {
+            return;
+        }
+        if (hidden.length < total) {
+            hidden = new boolean[total];
+        }
+        com.ascension.hud.internal.HudVisibility.compute(HudRegistry.ids(), list, hidden);
+        hiddenSource = list;
+        hiddenFor = total;
+        int vitals = HudRegistry.ids().indexOf(HudClient.VITALS_ID);
+        vitalsHidden = vitals >= 0 && hidden[vitals];
     }
 
     private void ensureCapacity(int n) {

@@ -22,7 +22,7 @@ public final class HudLayout {
     /** Space between neighbours. */
     static final int GAP = 4;
 
-    /** Height of the row the {@link HudAnchor#ABOVE_HOTBAR} elements occupy; the centre anchor clears it. */
+    /** Height assumed for the row above the hotbar when nothing is on it; the centre anchor clears it. */
     static final int ROW_HEIGHT = 14;
 
     /** Margin from a screen corner. */
@@ -47,6 +47,19 @@ public final class HudLayout {
         Arrays.fill(used, 0);
         int left = (screenW - HOTBAR_WIDTH) / 2;
         int right = left + HOTBAR_WIDTH;
+
+        // How tall the stack on the row above the hotbar is, so the centre anchor can clear all of
+        // it, not a guess at one row: the health row, and the skill points note when it is there.
+        int aboveStack = ROW_HEIGHT;
+        int stacked = 0;
+        for (int i = 0; i < count; i++) {
+            if (anchors[i] == HudAnchor.ABOVE_HOTBAR) {
+                stacked += heights[i] + GAP;
+            }
+        }
+        if (stacked > 0) {
+            aboveStack = stacked - GAP;
+        }
         for (int i = 0; i < count; i++) {
             HudAnchor anchor = anchors[i];
             int w = widths[i];
@@ -73,7 +86,7 @@ public final class HudLayout {
                 }
                 case CENTER_ABOVE_HOTBAR -> {
                     x = (screenW - w) / 2;
-                    y = screenH - HOTBAR_HEIGHT - GAP - ROW_HEIGHT - GAP - h - offset;
+                    y = screenH - HOTBAR_HEIGHT - GAP - aboveStack - GAP - h - offset;
                     used[slot] += h + GAP;
                 }
                 case TOP_LEFT -> {

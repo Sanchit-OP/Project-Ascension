@@ -22,6 +22,7 @@ public final class ClientRuneHud {
     private static List<RuneHudEntry> entries = List.of();
     private static long[] totals = new long[0];
     private static ResourceLocation[] sprites = new ResourceLocation[0];
+    private static int[] glyphs = new int[0];
 
     private ClientRuneHud() {
     }
@@ -29,15 +30,18 @@ public final class ClientRuneHud {
     public static void update(List<RuneHudEntry> next, long now) {
         long[] nextTotals = new long[next.size()];
         ResourceLocation[] nextSprites = new ResourceLocation[next.size()];
+        int[] nextGlyphs = new int[next.size()];
         for (int i = 0; i < next.size(); i++) {
             RuneHudEntry entry = next.get(i);
             nextSprites[i] = ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID,
                     "rune/" + entry.rune().getPath());
+            nextGlyphs[i] = RuneGlyphs.indexOf(entry.rune().getPath());
             nextTotals[i] = totalFor(entry, now);
         }
         entries = next;
         totals = nextTotals;
         sprites = nextSprites;
+        glyphs = nextGlyphs;
     }
 
     /** Keeps the length already known if the entry is the same one still running; else measures it now. */
@@ -55,6 +59,7 @@ public final class ClientRuneHud {
         entries = List.of();
         totals = new long[0];
         sprites = new ResourceLocation[0];
+        glyphs = new int[0];
     }
 
     public static int size() {
@@ -67,6 +72,11 @@ public final class ClientRuneHud {
 
     public static long total(int i) {
         return totals[i];
+    }
+
+    /** The cell of this chip's smooth glyph, or -1 to use the orrery's pixel one. */
+    public static int glyph(int i) {
+        return glyphs[i];
     }
 
     public static ResourceLocation sprite(int i) {

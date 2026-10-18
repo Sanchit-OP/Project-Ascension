@@ -65,6 +65,19 @@ adds no packets of its own. Teardown hooks to disconnect.
 - The character sheet (V) is not decided here. Whether the stat column retires it is a separate
   question to Sanchit (prompt 6).
 
+## Built (2026-10-18)
+
+The contract in `core` grew to what the first elements needed, and no more: `HudElement` (anchor, size,
+visible, render), `HudAnchor`, `HudRegistry`, and **`HudTheme`**, which the host hands every element each
+frame (panel, divider, icons, ring badge, ring, glow, screen-edge glow, the two typefaces). Elements draw
+with the theme and never ship their own look, so the whole HUD is one family and a different host could
+restyle all of it. `HudIcon` is the icon vocabulary and may only be appended to.
+
+Elements by owner: the health row is `ascension-hud`'s (vanilla state only); the stat block, rune chips and
+skill-points note are combat's; the oxygen emblem is atmosphere's. Each registers through core and works
+with or without a host (atmosphere keeps its plain bar as the fallback). Neither combat nor atmosphere
+depends on the HUD module.
+
 ## Alternatives rejected
 
 **Registry in `core`, elements drawn by their owners, layout split between them.** Each module

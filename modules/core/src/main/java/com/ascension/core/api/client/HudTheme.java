@@ -29,6 +29,12 @@ public interface HudTheme {
      */
     void ringBadge(GuiGraphics graphics, int x, int y, int size, float fraction, int rgb, float opacity);
 
+    /**
+     * Only a ring, no disc: {@code fraction} of the way round clockwise from the top, in a box of
+     * {@code size} units. For a second ring inside a {@link #ringBadge}, such as a tank inside lungs.
+     */
+    void ring(GuiGraphics graphics, int x, int y, int size, float fraction, int rgb, float opacity);
+
     /** A soft round glow centred at ({@code cx}, {@code cy}), {@code radius} units across, in {@code rgb}. */
     void glow(GuiGraphics graphics, int cx, int cy, int radius, int rgb, float strength);
 

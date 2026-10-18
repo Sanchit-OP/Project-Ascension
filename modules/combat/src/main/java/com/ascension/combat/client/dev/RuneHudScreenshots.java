@@ -68,6 +68,21 @@ public final class RuneHudScreenshots {
         add(14, () -> shoot("runes-4"));
         add(30, () -> resizeFor(2));
         add(14, () -> shoot("runes-2"));
+        // The whole HUD together at scale 3: oxygen running low and nearly gone (the atmosphere
+        // module's own debug commands), then the config: everything bigger, then one element hidden.
+        add(30, () -> resizeFor(3));
+        add(5, () -> command("ascension atmosphere debug vacuum"));
+        add(5, () -> command("ascension atmosphere debug oxygen 70"));
+        add(14, () -> shoot("all-warning-3"));
+        add(8, () -> command("ascension atmosphere debug oxygen 24"));
+        add(14, () -> shoot("all-critical-3"));
+        add(4, () -> command("ascension atmosphere debug clear"));
+        add(30, () -> hudConfig("scale", 1.35));
+        add(14, () -> shoot("all-scaled-3"));
+        add(2, () -> hudConfig("scale", 1.0));
+        add(2, () -> hudHide("ascension_combat:rune_chips"));
+        add(14, () -> shoot("all-hidden-3"));
+        add(2, () -> hudHide(null));
         add(10, () -> {
             holding = false;
             Minecraft mc = Minecraft.getInstance();
@@ -86,6 +101,47 @@ public final class RuneHudScreenshots {
         mc.options.guiScale().set(guiScale);
         GLFW.glfwSetWindowSize(mc.getWindow().getWindow(), 1600, 900);
         mc.resizeDisplay();
+    }
+
+    /** Runs a command as the player, with full permission, on the singleplayer server. */
+    private static void command(String command) {
+        MinecraftServer server = Minecraft.getInstance().getSingleplayerServer();
+        if (server == null) {
+            return;
+        }
+        server.execute(() -> {
+            ServerPlayer player = player(server);
+            if (player != null) {
+                server.getCommands().performPrefixedCommand(player.createCommandSourceStack().withPermission(4), command);
+            }
+        });
+    }
+
+    /**
+     * Sets a number in the HUD module's client config. Combat does not depend on the HUD, so this
+     * reaches it by name, which is fine for a dev script and keeps the dependency out of the build.
+     */
+    private static void hudConfig(String field, double value) {
+        try {
+            Class<?> config = Class.forName("com.ascension.hud.internal.HudConfig");
+            Object instance = config.getField("INSTANCE").get(null);
+            Object entry = config.getField(field).get(instance);
+            entry.getClass().getMethod("set", Object.class).invoke(entry, value);
+        } catch (ReflectiveOperationException e) {
+            System.out.println("[rune-hud-screenshots] could not set HUD config " + field + ": " + e);
+        }
+    }
+
+    /** Hides one HUD element by id in the HUD module's client config, or none when {@code id} is null. */
+    private static void hudHide(String id) {
+        try {
+            Class<?> config = Class.forName("com.ascension.hud.internal.HudConfig");
+            Object instance = config.getField("INSTANCE").get(null);
+            Object entry = config.getField("hiddenElements").get(instance);
+            entry.getClass().getMethod("set", Object.class).invoke(entry, id == null ? List.of() : List.of(id));
+        } catch (ReflectiveOperationException e) {
+            System.out.println("[rune-hud-screenshots] could not set hidden elements: " + e);
+        }
     }
 
     private static void shoot(String name) {

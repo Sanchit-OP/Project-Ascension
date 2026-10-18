@@ -204,6 +204,18 @@ final class HudSprites {
         g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
+    /** Only the ring, with its faint full track behind it, at {@code size} units. */
+    static void ring(GuiGraphics g, int x, int y, int size, float fraction, int rgb, float opacity) {
+        com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+        ringFrame(g, x, y, size, RING_FRAMES - 1, 1.0f, 1.0f, 1.0f, 0.11f * opacity);
+        int frame = Math.round(Math.max(0.0f, Math.min(1.0f, fraction)) * (RING_FRAMES - 1));
+        if (frame > 0) {
+            ringFrame(g, x, y, size, frame, ((rgb >> 16) & 0xFF) / 255.0f, ((rgb >> 8) & 0xFF) / 255.0f,
+                    (rgb & 0xFF) / 255.0f, opacity);
+        }
+        g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
     /** A soft round glow in {@code rgb}, {@code size} units across, centred on ({@code cx}, {@code cy}). */
     static void glow(GuiGraphics g, int cx, int cy, int size, int rgb, float strength) {
         com.mojang.blaze3d.systems.RenderSystem.enableBlend();

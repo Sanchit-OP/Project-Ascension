@@ -522,3 +522,5 @@ first:
 9. **The tree's centre:** the mark (the glyphs and the eye), or a neutral emblem? Needed by G5.
 10. **Later ideas:** relics in handcrafted sites, claimed once per player, and the Archive's tablets
     granting points. **Later**, or now?
+
+> **On the HUD (2026-10-18):** unspent skill points show as a small gold note above the health row, with the key that opens the tree; see `docs/technical/hud.md`.

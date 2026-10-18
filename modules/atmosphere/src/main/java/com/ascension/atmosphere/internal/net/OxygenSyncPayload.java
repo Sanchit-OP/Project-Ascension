@@ -21,6 +21,8 @@ import net.minecraft.resources.ResourceLocation;
  * @param suffocating     inside the failure window
  * @param refilling       lungs are below capacity and topping up in breathable air
  * @param pressurisingSeconds seconds until a freshly opened tank starts delivering, or zero
+ * @param lungUnits       of {@code units}, the part held in the lungs; the rest is carried (tanks)
+ * @param lungCapacity    of {@code capacity}, the part the lungs can hold; the rest is carried capacity
  */
 public record OxygenSyncPayload(
         int units,
@@ -29,7 +31,9 @@ public record OxygenSyncPayload(
         float drainPerSecond,
         boolean suffocating,
         boolean refilling,
-        int pressurisingSeconds) implements CustomPacketPayload {
+        int pressurisingSeconds,
+        int lungUnits,
+        int lungCapacity) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<OxygenSyncPayload> TYPE =
             new CustomPacketPayload.Type<>(
@@ -53,6 +57,8 @@ public record OxygenSyncPayload(
         buffer.writeBoolean(payload.suffocating);
         buffer.writeBoolean(payload.refilling);
         buffer.writeVarInt(payload.pressurisingSeconds);
+        buffer.writeVarInt(payload.lungUnits);
+        buffer.writeVarInt(payload.lungCapacity);
     }
 
     private static OxygenSyncPayload read(RegistryFriendlyByteBuf buffer) {
@@ -63,6 +69,8 @@ public record OxygenSyncPayload(
                 buffer.readFloat(),
                 buffer.readBoolean(),
                 buffer.readBoolean(),
+                buffer.readVarInt(),
+                buffer.readVarInt(),
                 buffer.readVarInt());
     }
 
@@ -87,6 +95,8 @@ public record OxygenSyncPayload(
                 || suffocating != other.suffocating
                 || refilling != other.refilling
                 || pressurisingSeconds != other.pressurisingSeconds
+                || lungUnits != other.lungUnits
+                || lungCapacity != other.lungCapacity
                 || Math.abs(drainPerSecond - other.drainPerSecond) > 0.001f;
     }
 }

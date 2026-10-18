@@ -24,6 +24,10 @@ public final class HudClient {
     private static final ResourceLocation HOST_ID =
             ResourceLocation.fromNamespaceAndPath(AscensionHud.MOD_ID, "hud");
 
+    /** The health row's id, which the config can hide. */
+    static final ResourceLocation VITALS_ID =
+            ResourceLocation.fromNamespaceAndPath(AscensionHud.MOD_ID, "vitals");
+
     /** Holds only health numbers; never a player (ADR-0007). */
     private static final VitalsElement VITALS = new VitalsElement();
 
@@ -34,7 +38,7 @@ public final class HudClient {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         HudRegistry.declareHost(HOST_ID);
-        HudRegistry.register(ResourceLocation.fromNamespaceAndPath(AscensionHud.MOD_ID, "vitals"), VITALS);
+        HudRegistry.register(VITALS_ID, VITALS);
         // Dormant unless its trigger file is in the game directory.
         com.ascension.hud.client.dev.HudScreenshots.register(net.neoforged.neoforge.common.NeoForge.EVENT_BUS);
     }
@@ -53,7 +57,7 @@ public final class HudClient {
      */
     @SubscribeEvent
     public static void onRenderGuiLayer(RenderGuiLayerEvent.Pre event) {
-        if (!HudConfig.INSTANCE.enabled.getAsBoolean()) {
+        if (!HudConfig.INSTANCE.enabled.getAsBoolean() || HudLayer.vitalsHidden) {
             return;
         }
         ResourceLocation name = event.getName();

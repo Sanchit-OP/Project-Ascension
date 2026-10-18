@@ -54,6 +54,17 @@ class HudLayoutTest {
     }
 
     @Test
+    void centreAnchorClearsEverythingStackedAboveTheHotbar() {
+        // The health row (26 tall) and the skill points note (12 tall) are both on the row above the
+        // hotbar; the oxygen emblem, centred, must sit above both, not through the note.
+        place(new HudAnchor[] {HudAnchor.CENTER_ABOVE_HOTBAR, HudAnchor.ABOVE_HOTBAR, HudAnchor.ABOVE_HOTBAR},
+                new int[] {40, 182, 92}, new int[] {40, 26, 12}, 480, 270);
+        int stackTop = y[2];
+        int emblemBottom = y[0] + 40;
+        assertEquals(stackTop - HudLayout.GAP, emblemBottom);
+    }
+
+    @Test
     void anchorsDoNotShareAStack() {
         place(new HudAnchor[] {HudAnchor.HOTBAR_LEFT, HudAnchor.HOTBAR_RIGHT},
                 new int[] {50, 20}, new int[] {20, 20}, 480, 270);

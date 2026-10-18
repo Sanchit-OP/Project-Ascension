@@ -279,7 +279,10 @@ public final class OxygenTracker {
                 state.suffocationTicks() > 0,
                 state.lungUnits() < lungCapacity,
                 // Rounded up, so a countdown never shows "0s" while it is still running.
-                Math.ceilDiv(state.pressurisingTicks(), 20));
+                Math.ceilDiv(state.pressurisingTicks(), 20),
+                // The lungs' own share, so the HUD can show lungs and tank as two rings.
+                state.lungUnits(),
+                lungCapacity);
 
         boolean changed = payload.differsFrom(state.lastSynced());
         boolean reconcileDue =
