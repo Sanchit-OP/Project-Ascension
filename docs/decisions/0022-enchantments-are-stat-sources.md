@@ -1,6 +1,6 @@
 # ADR-0022: Enchantments are stat sources, as data
 
-- **Status:** Proposed, 2026-10-18. Becomes Accepted when Sanchit answers `enchantments.md` §11.
+- **Status:** Accepted, 2026-10-18. Sanchit answered `enchantments.md` §11 in full.
 - **Date:** 2026-10-18
 
 ## Context
@@ -20,8 +20,9 @@ vanilla armour our curve replaced.
    "Enchantments", so the sheet and the HUD name where the stat came from.
 3. Vanilla's Protection, Sharpness, Power and Breach are reworked this way. Hazard enchantments
    (Fire, Blast, Projectile Protection) and utility ones stay vanilla.
-4. Planets and bosses may *reward* an enchantment, never require one (ADR-0018).
-5. A full enchanted set is sized against growth and items using growth's unit yardstick.
+4. No boss, planet or tablet rewards enchantments for now; they come from the table, villagers and loot.
+5. Sizes are placeholders with no cap yet; the balancing and stats session sets the ceiling.
+6. Protection also gives a small all-source reduction (36% on a full set), unlike a pure stat.
 
 ## Consequences
 

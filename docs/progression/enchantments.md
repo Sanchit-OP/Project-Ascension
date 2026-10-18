@@ -3,7 +3,7 @@
 > **Draft 1, 2026-10-18, branch `combat-enchantments`.** Nothing here is built. The audit (§2) is
 > read from the 1.21.1 data and from our code; the rows marked **measure** still need a measured hit
 > in a running game (ADR-0008) before anyone trusts them. Every number is a placeholder to tune by
-> playing. Decisions for Sanchit are in §11. The structural choice is
+> playing. All six decisions in §11 are answered (2026-10-18). The structural choice is
 > [ADR-0022](../decisions/0022-enchantments-are-stat-sources.md) (Proposed).
 >
 > Sanchit, 2026-10-18: *"we need to work on how the enchantments are gonna work. I feel like maybe we
@@ -256,7 +256,7 @@ I will check what ships with Cataclysm before saying any more.
 4. **Size: ANSWERED.** No cap now. Use the numbers above as placeholders; the balancing and stats
    session after this one sets the real ceiling (§3.2's 25 units is only a starting guess).
 5. **Rewards: ANSWERED.** No. Table, villagers and loot only (§5).
-6. **Cost:** stay with XP levels and lapis.
+6. **Cost: ANSWERED.** Stay with XP levels and lapis.
 
 ## 12. Build order (ADR-0008: each increment seen in a client; a refactor pass every third)
 
