@@ -86,6 +86,15 @@ public final class CharacterSheetScreen extends Screen {
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (CombatKeybinds.isOpenCharacterSheetKey(keyCode, scanCode)) {
+            this.onClose();
+            return true;
+        }
+        return ScreenSwitch.handle(this, keyCode, scanCode) || super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 

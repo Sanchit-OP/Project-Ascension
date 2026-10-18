@@ -19,8 +19,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * an entity &mdash; confirming this key was never really armor-specific, just "whatever's equipped
  * with an active you'd rather press a dedicated button for."
  *
- * <p>Unbound by default ({@link InputConstants#UNKNOWN}) &mdash; Sanchit binds it himself in
- * Controls rather than this claiming a key that might already mean something else to him.
+ * <p>The ability key is unbound by default ({@link InputConstants#UNKNOWN}) &mdash; Sanchit binds it
+ * himself in Controls rather than this claiming a key that might already mean something else to him.
+ * The three screens have keys: R for runes, K for growth (see {@code GrowthKeybind}), V for the
+ * character sheet. While one is open the others' keys switch to them ({@code ScreenSwitch}).
  *
  * <p>{@link RegisterKeyMappingsEvent} fires on the mod bus, client side only; the tick poll that
  * actually reads {@link KeyMapping#consumeClick()} runs on the game bus ({@link
@@ -56,7 +58,7 @@ public final class CombatKeybinds {
 
     private static final KeyMapping OPEN_CHARACTER_SHEET = new KeyMapping(
             "key.ascension_combat.open_character_sheet",
-            InputConstants.UNKNOWN.getValue(),
+            InputConstants.KEY_V,
             CATEGORY);
 
     private CombatKeybinds() {
@@ -65,6 +67,11 @@ public final class CombatKeybinds {
     /** Whether a key press is the Open Rune Page key, so the rune screen can close on the key that opened it. */
     public static boolean isOpenRunePageKey(int keyCode, int scanCode) {
         return OPEN_RUNE_PAGE.matches(keyCode, scanCode);
+    }
+
+    /** Whether a key press is the Open Character Sheet key (V by default; vanilla's C is a creative hotbar key). */
+    public static boolean isOpenCharacterSheetKey(int keyCode, int scanCode) {
+        return OPEN_CHARACTER_SHEET.matches(keyCode, scanCode);
     }
 
     public static void register(IEventBus modBus) {

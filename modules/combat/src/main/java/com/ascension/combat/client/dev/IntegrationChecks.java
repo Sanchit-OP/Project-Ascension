@@ -171,6 +171,9 @@ public final class IntegrationChecks {
         server(5, p -> award(p, MILESTONES.get(3)));
         client(10, () -> expect("and open again", ClientRunePageCache.open().defence(), true));
 
+        // ---- The three screens lead to each other by their keys, and a screen's own key closes it
+        client(5, IntegrationChecks::screensLink);
+
         // ---- Leave a state for part two: netherite on, health at an odd number
         server(30, IntegrationChecks::leaveState);
         server(20, p -> summary());
@@ -280,6 +283,41 @@ public final class IntegrationChecks {
         ServerPlayer fresh = player.server.getPlayerList().respawn(player, false, Entity.RemovalReason.KILLED);
         fresh.connection.player = fresh;
         SCRIPT.log("   died and respawned");
+    }
+
+    private static void screensLink() {
+        Minecraft mc = Minecraft.getInstance();
+        // The dev client's saved options bind these keys elsewhere; check the defaults a new player gets.
+        for (net.minecraft.client.KeyMapping mapping : mc.options.keyMappings) {
+            if (mapping.getName().startsWith("key.ascension_combat.open_")) {
+                mapping.setKey(mapping.getDefaultKey());
+            }
+        }
+        net.minecraft.client.KeyMapping.resetMapping();
+        mc.setScreen(null);
+        mc.setScreen(new com.ascension.combat.client.CharacterSheetScreen());
+        expect("the character sheet opens", screenName(mc), "CharacterSheetScreen");
+        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_R);
+        expect("R in the character sheet opens the runes", screenName(mc), "RuneScreen");
+        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_K);
+        expect("K in the runes opens the skill tree", screenName(mc), "GrowthScreen");
+        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_V);
+        expect("V in the skill tree opens the character sheet", screenName(mc), "CharacterSheetScreen");
+        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_V);
+        expect("V in the character sheet closes it", screenName(mc), "(none)");
+        mc.setScreen(new com.ascension.combat.client.RuneScreen());
+        press(mc, com.mojang.blaze3d.platform.InputConstants.KEY_R);
+        expect("R in the runes closes them", screenName(mc), "(none)");
+    }
+
+    private static void press(Minecraft mc, int key) {
+        if (mc.screen != null) {
+            mc.screen.keyPressed(key, 0, 0);
+        }
+    }
+
+    private static String screenName(Minecraft mc) {
+        return mc.screen == null ? "(none)" : mc.screen.getClass().getSimpleName();
     }
 
     private static void respecAndRetake(ServerPlayer player) {
