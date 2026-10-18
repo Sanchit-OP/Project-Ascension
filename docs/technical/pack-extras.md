@@ -105,6 +105,39 @@ The client:
 The server: boots with the FTB set, clients without Iris and Ok Zoomer can still join (both are
 client-only), and the dev mirror (`syncDevMods`) skips the client-only jars on the server.
 
+## A map that shows the team (researched 2026-10-18, awaiting Sanchit's go-ahead to install)
+
+Sanchit: a minimap that works with FTB Teams so team members see each other, in the world too, even far
+away; use a mod, do not build it. Everything below was read from the mods' own changelogs, Modrinth
+and FTB's maven, for **Minecraft 1.21.1 on NeoForge**.
+
+| Option | Teammates on the map | Far away | FTB Teams | Verdict |
+|---|---|---|---|---|
+| **FTB Chunks** `2101.1.22` (655,807 bytes, maven.ftb.dev) | Player heads on the minimap and the full map | **Any range**, not only inside the entity tracking range (its changelog) | **Built on it.** A team setting "Location Visibility" (default Allies: teammates and allied teams only; Public shows you to everyone) and a server setting that overrides it | **Recommended.** Also gives claims, a full-screen map and in-world waypoint dots visible at any range |
+| Xaero's Minimap `26.6.0` + World Map `1.47.0` | Only players the game has loaded nearby | No, not without a tracker add-on | No (its party tracker is Open Parties and Claims, which replaces FTB Teams) | A better-looking map, but not a team map |
+| JourneyMap `+` JourneyMap Teams (Apache-2.0, 212 KB) | Colours teammates' icons by team colour, and can hide non-teammates | Nothing found that shows far players | Lists FTB Teams as supported | Possible; unclear at range |
+| Open Parties and Claims | Party heads on Xaero's maps | Yes | **Replaces** FTB Teams with its own party system | Rejected: we chose FTB Teams (ADR-0023) |
+
+**FTB Chunks needs** Architectury, FTB Library and FTB Teams, all already in the instance (it was built
+against slightly older patch versions of each). **Two minimaps clash:** its own can be switched off in the
+client config if a player prefers another.
+
+**It brings claims with it.** Players can claim chunks and keep them loaded; the team's claim, PvP and
+explosion rules are team properties. That is the "claims and base protection" decision `teams.md` left
+open, answered by default: they exist unless the server config limits them (to be read from
+`ftbchunks-world.snbt` once installed).
+
+**Seeing a teammate as a character, far away, in the 3D world** is a different thing from a map marker,
+and the map does not do it: the game stops sending players beyond its tracking range. The one mod found
+for it is **SeeU** `0.9.5` (133,405 bytes, Modrinth; needed on the server too): it draws distant players
+(pose, armour, held item, name) beyond that range and works beside Distant Horizons. Caveats: it is under
+`1.0`, it shows every player, not only the team (each player can opt out of being shown), its licence
+allows an unmodified build in a pack with credit and a link, and it has not been tried beside our
+entity-culling mods. **Not part of the recommendation** until Sanchit says that is what he meant.
+
+Left out on purpose: Locator Bar and Wayfarer (a direction bar of players, nothing team-aware), Ping Wheel
+(pings, a separate wish).
+
 ## Chat noise (2026-10-18)
 
 Two lines kept appearing in the chat of the dev client. **"Distant Horizons: Chunky detected"** is real

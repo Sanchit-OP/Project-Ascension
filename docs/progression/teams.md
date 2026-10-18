@@ -87,10 +87,9 @@ parties are invite-only unless set to free to join), and it is exactly the catch
   timer, heals no one and triggers no rune, and it covers a teammate's arrows, pets and fuses. Only a
   real team is protected: with no team mod the stand-in team is never covered, so pvp is the server's
   `pvp` setting, as is fighting another team.
-- **The HUD** can show teammates' health in the corner, League-style, and an oxygen warning on a
-  teammate you could rescue. That needs one small synced list of "who is on my team", sent when it
-  changes, never per tick. It is the HUD session's to draw (`plans/session-prompts/6-hud-overhaul.md`);
-  this design provides the list.
+- **The HUD: not for the team yet** (Sanchit, 2026-10-18). Teammates are seen on a map mod instead
+  (`pack-extras.md`, "A map that shows the team": FTB Chunks, built on FTB Teams, shows teammates at any
+  range). A team list for the HUD (T4) is deferred until it is asked for.
 - **Not team-bound:** share-air, the mark, return locations, who can use a gate.
 
 ## 6. Quests
@@ -134,7 +133,7 @@ claims their own rewards. That fits the owners in §1 without code:
 | **T1** | The `core` contract, the default provider, growth per team, unit tests for the union rule | **Built.** Scripted client run with no team mod: an old save loads, the team events award both ways. Not yet: a dedicated server, a reload of the new save format |
 | **T2** | The FTB Teams jar (`ascension-compat-ftbteams`), join and leave handling, the first-login line | **Built and seen with stand-in players on a dedicated server** (a solo player's kill pays only them; the second joins their party and gets the points; leaves and keeps them; the line appears once; a restart changes nothing). Two real clients: not yet |
 | **T3** | Friendly fire (allies wait for a rune that needs them) | **Seen with stand-in players on a dedicated server** (a teammate's hit does no damage, a stranger's and a former teammate's do). The stand-in team is never protected: unit-tested only |
-| **T4** | The team list for the HUD | The HUD session reads it |
+| **T4** | The team list for the HUD | **Deferred** (Sanchit, 2026-10-18: not needed yet; a map mod shows teammates) |
 | **T5** | Refactor pass (ADR-0008) | No new features |
 
 **Two-client testing is still owed** (it has been since M1). The server rules are now seen with stand-in
@@ -159,8 +158,8 @@ on first login pointing a new player at the team screen.
 
 ## 9. Not in this design
 
-- **Claims and base protection** (FTB Chunks): what a co-op server wants next. It adds a map that
-  overlaps Xaero's, so it is a separate decision.
+- **Claims and base protection** (FTB Chunks): what a co-op server wants next. The map mod that shows the
+  team (`pack-extras.md`) brings them, so they are a consequence of installing it, not a separate build.
 - **The quest lines themselves.** This page says who owns what; the chapters come next.
 - **Allied parties** (FTB Teams can ally two teams): their members are not allies in v1.
 - **A per-world supply station** unless §6's check says it is needed.
