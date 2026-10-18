@@ -13,7 +13,32 @@ final class DefaultTheme implements HudTheme {
 
     static final DefaultTheme INSTANCE = new DefaultTheme();
 
+    /** Where the element being drawn has been moved to, so a full-screen effect can undo it. */
+    private int originX;
+    private int originY;
+
     private DefaultTheme() {
+    }
+
+    /** Set by the layer before each element draws. */
+    void origin(int x, int y) {
+        originX = x;
+        originY = y;
+    }
+
+    @Override
+    public void ringBadge(GuiGraphics graphics, int x, int y, int size, float fraction, int rgb, float opacity) {
+        HudSprites.ringBadge(graphics, x, y, size, fraction, rgb, opacity);
+    }
+
+    @Override
+    public void glow(GuiGraphics graphics, int cx, int cy, int radius, int rgb, float strength) {
+        HudSprites.glow(graphics, cx, cy, radius, rgb, strength);
+    }
+
+    @Override
+    public void edgeGlow(GuiGraphics graphics, int rgb, float strength) {
+        HudSprites.edge(graphics, -originX, -originY, graphics.guiWidth(), graphics.guiHeight(), rgb, strength);
     }
 
     @Override

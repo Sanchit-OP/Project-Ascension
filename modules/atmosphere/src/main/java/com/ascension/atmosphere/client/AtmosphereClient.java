@@ -1,10 +1,12 @@
 package com.ascension.atmosphere.client;
 
 import com.ascension.atmosphere.AscensionAtmosphere;
+import com.ascension.core.api.client.HudRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -24,6 +26,17 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 public final class AtmosphereClient {
 
     private AtmosphereClient() {
+    }
+
+    /**
+     * Gives the HUD the oxygen emblem (ADR-0022). If a HUD host is installed it draws the emblem
+     * and {@link OxygenHudLayer} stays quiet; if not, that plain bar is still here.
+     */
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        HudRegistry.register(
+                ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "oxygen"),
+                new OxygenElement());
     }
 
     /**

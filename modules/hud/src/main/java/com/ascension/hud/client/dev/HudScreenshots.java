@@ -90,6 +90,23 @@ public final class HudScreenshots {
             add(8, () -> state(0.3f, 4.0f, 5, 27, true));
             add(4, () -> shoot("hit-" + scale));
         }
+        // Oxygen, by the atmosphere module's own debug commands: running down, nearly gone, and
+        // climbing back in good air.
+        add(40, () -> resizeFor(3));
+        add(20, () -> state(1.0f, 0.0f, 20, 27, false));
+        add(5, () -> command("ascension atmosphere debug vacuum"));
+        add(5, () -> command("ascension atmosphere debug oxygen 70"));
+        add(14, () -> shoot("o2-warning-3"));
+        add(12, () -> command("ascension atmosphere debug oxygen 24"));
+        add(14, () -> shoot("o2-critical-3"));
+        add(4, () -> command("ascension atmosphere debug clear"));
+        add(3, () -> command("ascension atmosphere debug oxygen 30"));
+        add(14, () -> shoot("o2-quiet-3"));
+        add(30, () -> resizeFor(2));
+        add(5, () -> command("ascension atmosphere debug vacuum"));
+        add(3, () -> command("ascension atmosphere debug oxygen 24"));
+        add(14, () -> shoot("o2-critical-2"));
+        add(4, () -> command("ascension atmosphere debug clear"));
         add(10, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.guiScale().set(guiScaleBefore);
@@ -137,6 +154,21 @@ public final class HudScreenshots {
             player.giveExperienceLevels(level - player.experienceLevel);
             if (regeneration) {
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 400, 1));
+            }
+        });
+    }
+
+    /** Runs a command as the player, with full permission, on the singleplayer server. */
+    private static void command(String command) {
+        Minecraft mc = Minecraft.getInstance();
+        MinecraftServer server = mc.getSingleplayerServer();
+        if (server == null || mc.player == null) {
+            return;
+        }
+        server.execute(() -> {
+            ServerPlayer player = server.getPlayerList().getPlayer(mc.player.getUUID());
+            if (player != null) {
+                server.getCommands().performPrefixedCommand(player.createCommandSourceStack().withPermission(4), command);
             }
         });
     }

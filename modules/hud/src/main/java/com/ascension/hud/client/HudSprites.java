@@ -22,6 +22,8 @@ final class HudSprites {
     private static final ResourceLocation RING = texture("ring.png");
     private static final ResourceLocation FOOD = texture("food.png");
     private static final ResourceLocation PANEL = texture("panel.png");
+    private static final ResourceLocation GLOW = texture("glow.png");
+    private static final ResourceLocation EDGE = texture("edge.png");
     private static final ResourceLocation ICONS = texture("icons.png");
 
     /** Bar sheet: three rows of 32 texels, each [left cap 16 | middle 8 | right cap 16]. */
@@ -199,6 +201,24 @@ final class HudSprites {
         g.setColor(((rgb >> 16) & 0xFF) / 255.0f, ((rgb >> 8) & 0xFF) / 255.0f, (rgb & 0xFF) / 255.0f, opacity);
         g.blit(ICONS, x, y, size, size, index * ICON_TEXELS, 0, ICON_TEXELS, ICON_TEXELS,
                 ICON_TEXELS * ICON_COUNT, ICON_TEXELS);
+        g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    /** A soft round glow in {@code rgb}, {@code size} units across, centred on ({@code cx}, {@code cy}). */
+    static void glow(GuiGraphics g, int cx, int cy, int size, int rgb, float strength) {
+        com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+        g.setColor(((rgb >> 16) & 0xFF) / 255.0f, ((rgb >> 8) & 0xFF) / 255.0f, (rgb & 0xFF) / 255.0f,
+                Math.max(0.0f, Math.min(1.0f, strength)));
+        g.blit(GLOW, cx - size / 2, cy - size / 2, size, size, 0, 0, 128, 128, 128, 128);
+        g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    /** The screen-edge tint, stretched over a screen of {@code w} by {@code h} units whose top-left is at ({@code x}, {@code y}). */
+    static void edge(GuiGraphics g, int x, int y, int w, int h, int rgb, float strength) {
+        com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+        g.setColor(((rgb >> 16) & 0xFF) / 255.0f, ((rgb >> 8) & 0xFF) / 255.0f, (rgb & 0xFF) / 255.0f,
+                Math.max(0.0f, Math.min(1.0f, strength)));
+        g.blit(EDGE, x, y, w, h, 0, 0, 256, 256, 256, 256);
         g.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }

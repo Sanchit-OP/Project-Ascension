@@ -23,6 +23,21 @@ public interface HudTheme {
      */
     void icon(GuiGraphics graphics, HudIcon icon, int x, int y, int size, int rgb, float opacity);
 
+    /**
+     * A dark round badge of {@code size} units with a ring round its edge filled {@code fraction}
+     * (0 to 1) clockwise from the top, in {@code rgb}. Inside is the caller's to draw.
+     */
+    void ringBadge(GuiGraphics graphics, int x, int y, int size, float fraction, int rgb, float opacity);
+
+    /** A soft round glow centred at ({@code cx}, {@code cy}), {@code radius} units across, in {@code rgb}. */
+    void glow(GuiGraphics graphics, int cx, int cy, int radius, int rgb, float strength);
+
+    /**
+     * Tints the edges of the whole screen, for a warning that must not be missed. Whatever the
+     * element's own position, this covers the screen. {@code strength} is 0 to 1.
+     */
+    void edgeGlow(GuiGraphics graphics, int rgb, float strength);
+
     /** Text in the HUD's strong face, for numbers that matter. Cache the result; do not call per frame. */
     Component bold(String text);
 

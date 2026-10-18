@@ -70,6 +70,7 @@ public final class HudLayer implements LayeredDraw.Layer {
         for (int i = 0; i < count; i++) {
             graphics.pose().pushPose();
             graphics.pose().translate(xs[i], ys[i], 0);
+            DefaultTheme.INSTANCE.origin(xs[i], ys[i]);
             shown[i].render(graphics, DefaultTheme.INSTANCE, partialTick, opacity);
             graphics.pose().popPose();
             shown[i] = null;

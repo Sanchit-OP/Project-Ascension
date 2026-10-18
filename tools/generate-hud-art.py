@@ -14,6 +14,8 @@ Sheets:
   panel.png  a glass panel with a gold rim, 40 x 40: corners 16, middle 8 (nine-slice)
   icons.png  six stat icons in a row, 48 px each: attack damage, attack speed, armor,
              magic resist, move speed, omnivamp (white; the game tints them)
+  glow.png   a soft round glow, 128 px, white (tinted by the game)
+  edge.png   a screen-edge vignette, 256 px square, white (tinted by the game)
   ring.png   64 frames of a ring filling clockwise from the top, 8 x 8, each 72 px
 """
 import json
@@ -190,6 +192,34 @@ def icon_sheet():
     return sheet
 
 
+def glow_sheet():
+    n = 128
+    img = Image.new('RGBA', (n, n))
+    px = img.load()
+    for y in range(n):
+        for x in range(n):
+            r = math.hypot((x + 0.5 - n / 2) / (n / 2), (y + 0.5 - n / 2) / (n / 2))
+            a = max(0.0, 1.0 - r)
+            a = a * a * (3 - 2 * a)  # smoothstep falloff
+            px[x, y] = (255, 255, 255, int(255 * a))
+    return img
+
+
+def edge_sheet():
+    n = 256
+    img = Image.new('RGBA', (n, n))
+    px = img.load()
+    for y in range(n):
+        for x in range(n):
+            dx = abs((x + 0.5) / n - 0.5) * 2
+            dy = abs((y + 0.5) / n - 0.5) * 2
+            r = math.hypot(dx, dy) / math.sqrt(2)
+            e = max(0.0, min(1.0, (max(dx, dy) * 0.6 + r * 0.4 - 0.55) / 0.45))
+            a = e * e * (3 - 2 * e)
+            px[x, y] = (255, 255, 255, int(255 * a))
+    return img
+
+
 def save(name, img):
     path = os.path.join(OUT, name)
     img.save(path)
@@ -203,6 +233,8 @@ def main():
     save('badge.png', badge_sheet())
     save('food.png', food_icon())
     save('ring.png', ring_sheet())
+    save('glow.png', glow_sheet())
+    save('edge.png', edge_sheet())
     save('panel.png', panel_sheet())
     save('icons.png', icon_sheet())
     print('wrote', OUT)
