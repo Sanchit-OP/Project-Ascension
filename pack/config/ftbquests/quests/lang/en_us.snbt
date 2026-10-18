@@ -118,12 +118,12 @@
 	"quest.6AEB8BAD7F840F9A.title": "Know your height"
 	"quest.6AEB8BAD7F840F9A.quest_subtitle": "The sky ends at 320"
 	"quest.6AEB8BAD7F840F9A.quest_desc": ["An altitude sensor is paper, an iron sheet and a casing.", "The sky ends at height 320. Past it, the world lets go."]
-	"quest.7CB0E909964F2247.title": "A station to fill from"
-	"quest.7CB0E909964F2247.quest_subtitle": "Air, bottled"
-	"quest.7CB0E909964F2247.quest_desc": ["A refill station fills a tank from the air around it, so it works only where the air is good.", "Fill every tank before you leave. In space there is nothing to compress."]
+	"quest.7CB0E909964F2247.title": "A machine that makes air"
+	"quest.7CB0E909964F2247.quest_subtitle": "Spin it, and it breathes out"
+	"quest.7CB0E909964F2247.quest_desc": ["An air compressor turns a spinning shaft into air. The faster it spins, the more air it makes.", "Use a tank on it to fill the tank. Fill every tank before you leave: in space nothing makes air."]
 	"quest.69695F363B61AE01.title": "A room of air"
 	"quest.69695F363B61AE01.quest_subtitle": "Seal it, and it fills"
-	"quest.69695F363B61AE01.quest_desc": ["An oxygen emitter fills a sealed room with air. Any hole lets it out, so seal every gap.", "A refill station inside such a room works anywhere, even where there is no air outside."]
+	"quest.69695F363B61AE01.quest_desc": ["An air dispenser keeps a sealed room breathable while it has air. Pipe air to it from a compressor and a tank.", "Any hole lets the air out, so seal every gap. A bigger room needs more air every second."]
 	"quest.5C38EACEAEF810ED.title": "How far can you go?"
 	"quest.5C38EACEAEF810ED.quest_subtitle": "Count minutes of air"
 	"quest.5C38EACEAEF810ED.quest_desc": ["Space is airless. A tank lasts five minutes and you can carry two, plus twenty seconds in your lungs.", "Work out your ship's speed, then plan the trip in minutes, not blocks."]
@@ -301,7 +301,7 @@
 	"quest.5C3D3D153AB786FA.quest_desc": ["Open a tank's valve before anything else. It takes three seconds to pressurise.", "Landing here earns a skill point, once."]
 	"quest.297D57BAB99EB146.title": "No air"
 	"quest.297D57BAB99EB146.quest_subtitle": "Lungs, tanks and a room"
-	"quest.297D57BAB99EB146.quest_desc": ["Everything outside a sealed room is airless. Your lungs hold twenty seconds; a tank, five minutes.", "Build a room, seal it and put an emitter in it. A refill station inside works here too."]
+	"quest.297D57BAB99EB146.quest_desc": ["Everything outside a sealed room is airless. Your lungs hold twenty seconds; a tank, five minutes.", "Build a room, seal it and put an air dispenser in it, fed with air by pipes. Fill your tanks at a compressor."]
 	"quest.39210A7B5E81204C.title": "Dust"
 	"quest.39210A7B5E81204C.quest_subtitle": "When you can see a dozen blocks"
 	"quest.39210A7B5E81204C.quest_desc": ["Dust storms roll through now and then, and sight drops to about a dozen blocks.", "They pass in about a minute. Stop, dig in or wait; do not wander blind."]

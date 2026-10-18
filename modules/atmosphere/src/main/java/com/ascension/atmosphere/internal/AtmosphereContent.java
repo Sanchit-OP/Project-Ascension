@@ -213,9 +213,9 @@ public final class AtmosphereContent {
 
     private static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(OXYGEN_EMITTER_ITEM.get());
+            // The emitter and the refill station are legacy (ADR-0026): registered so old rooms
+            // keep working, but no recipe and no creative tab entry.
             event.accept(AIR_DISPENSER_ITEM.get());
-            event.accept(OXYGEN_REFILL_STATION_ITEM.get());
         }
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             // Full, not empty. A crafted tank starts empty on purpose, but an empty one in the

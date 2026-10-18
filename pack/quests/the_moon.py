@@ -51,11 +51,11 @@ CHAPTER = Chapter(
             slug='air', x=0, y=4,
             title='No air',
             subtitle='Lungs, tanks and a room',
-            icon=item_icon('ascension_atmosphere:oxygen_emitter'), shape=LESSON, size=0.9,
+            icon=item_icon('ascension_atmosphere:air_dispenser'), shape=LESSON, size=0.9,
             deps=['touchdown'], hide_until='complete',
             text=[
                 'Everything outside a sealed room is airless. Your lungs hold twenty seconds; a tank, five minutes.',
-                'Build a room, seal it and put an emitter in it. A refill station inside works here too.',
+                'Build a room, seal it and put an air dispenser in it, fed with air by pipes. Fill your tanks at a compressor.',
             ],
             tasks=[checkmark()],
             rewards=[give('minecraft:iron_ingot', 8)],

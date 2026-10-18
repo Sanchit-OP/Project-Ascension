@@ -73,7 +73,7 @@
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
-				id: "ascension_atmosphere:oxygen_emitter"
+				id: "ascension_atmosphere:air_dispenser"
 				count: 1
 			}
 			dependencies: ["5C3D3D153AB786FA"]

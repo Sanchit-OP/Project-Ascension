@@ -347,7 +347,7 @@
 			y: 10.0d
 			shape: "ascension_nova"
 			icon: {
-				id: "ascension_atmosphere:oxygen_refill_station"
+				id: "ascension_compat_create:air_compressor"
 				count: 1
 			}
 			dependencies: ["4121BDE2FA93BA25"]
@@ -355,7 +355,7 @@
 				{
 					id: "543401587415C402"
 					type: "item"
-					item: "ascension_atmosphere:oxygen_refill_station"
+					item: "ascension_compat_create:air_compressor"
 					count: 1L
 				}
 			]
@@ -374,7 +374,7 @@
 			y: 12.0d
 			shape: "ascension_nova"
 			icon: {
-				id: "ascension_atmosphere:oxygen_emitter"
+				id: "ascension_atmosphere:air_dispenser"
 				count: 1
 			}
 			dependencies: ["7CB0E909964F2247"]
@@ -382,7 +382,7 @@
 				{
 					id: "06CAD77EA1BE3DB7"
 					type: "item"
-					item: "ascension_atmosphere:oxygen_emitter"
+					item: "ascension_atmosphere:air_dispenser"
 					count: 1L
 				}
 			]

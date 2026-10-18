@@ -120,7 +120,7 @@ See the register or the linked doc for reasoning:
 
 Captured during M1.6 testing; none block v0.1.
 
-- **Emitter becomes a three-block Create chain** — generator (rotation or addon electricity)
+- **(Built 2026-10-19 as Oxygen v2, see `docs/technical/oxygen-v2.md`; kept for history.) Emitter becomes a three-block Create chain** — generator (rotation or addon electricity)
   feeds a buffer tank, tank feeds a pressuriser that holds the volume. Direct generator-to-
   pressuriser is the cheap early setup. Belongs in `ascension-compat-create` (Tier 2); the
   standalone emitter stays so the module works with no Create installed. Design recorded in
@@ -130,7 +130,14 @@ Captured during M1.6 testing; none block v0.1.
 - **No general block-change event** means external world edits are not seen until something else
   near the volume changes. Fails safe, but worth revisiting if it bites.
 
-## Oxygen v2 (Sanchit, 2026-10-18: starting soon)
+## Oxygen v2 (Sanchit, 2026-10-18; built 2026-10-19 on branch `atmosphere-v2`, not merged)
+
+**Status:** A look, B fluid and Air Dispenser, C Create Air Compressor, D helium tank, E ship space, F book and docs are built
+and compile; **none has been run in a game or on a dedicated server.** Open: `OxygenChecks` (server check), the unverified Sable
+assumptions in `oxygen-v2.md` (plot transform direction, edit events in plots, carry to space), the compressor's spinning-shaft
+visual (it is a plain block model now), and the book's flight lines ("A long flight", "Share your air"), left alone until a
+ship has been seen to hold air. Sanchit's answers 2026-10-19: air depends on Create, old emitter and station are legacy, no hatch in v2.
+
 
 First item, decided: **a ship is a closed space, so the Oxygen Emitter aboard a ship pressurises it.** Today that is unbuilt and
 unseen (journey.md, "Decided by Sanchit"). Needs: the Sable side of `AtmosphereAnchor.Region` / `AnchorSpace` (the seam exists in

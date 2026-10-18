@@ -300,6 +300,14 @@ Emitter block pressurises the enclosed space via a **bounded** flood fill:
 - Invalidated **only** by block changes inside the emitter's bounds, tracked by `SectionPos`.
 - Never recomputed on a schedule (ADR-0007 rule 5).
 
+## 7c. Built 2026-10-19 (Oxygen v2, ADR-0026)
+
+The three parts became: the **Air Compressor** (Tier 2, `ascension-compat-create`: rotation in, air fluid out), an air **fluid** and
+the **Air Dispenser** (Tier 1: takes air through the standard fluid capability, holds its sealed room while it has air, spends
+1 mB/s per 16 blocks of room), and a level-2 **helium tank**. New api: `AirFluid`, `AtmosphereAnchors`, and
+`AnchorSpace.toLocal(ServerLevel, Vec3)`. The emitter and refill station are legacy blocks without recipes. Read
+`docs/technical/oxygen-v2.md`. Section 7b below is the original plan, kept for history.
+
 ## 7b. The emitter is a placeholder
 
 **Recorded 2026-09-05.** The Oxygen Emitter as built is a single block that pressurises a room

@@ -63,7 +63,7 @@ source and no job is a bug (`resource-economy.md` principle 1).
 | **Inscribed gatestone, keystone** | Crafted from Deep Dark materials | The gate's frame | Nothing more | Done |
 | **Moon stone** (anorthosite, lunar basalt and their bricks) | The Moon | Building; every frame tag accepts it (an Earth gate in Moon stone matches the Moon's ruin) | Nothing | Cosmetic. The Moon page nudges it with one quest |
 | **Archive tablets, the Forge Record** | Archive and colony chests, the Monstrosity | Read in place (the story) | Nothing | Done |
-| **Oxygen tank, emitter, refill station** | Iron, glass, redstone | The whole space loop: tanks for trips, an emitter's sealed room is breathable and a refill station works inside it | Ship cabins (5.2) | Done, with one gap |
+| **Oxygen tank, helium tank, Air Compressor, Air Dispenser** | Iron, glass, Create parts; helium for the level-2 tank (Oxygen v2, ADR-0026) | A Create-powered compressor makes air, fills tanks by right-click, and fills pipes and tanks; an Air Dispenser holds a sealed room from that air. The old emitter and refill station are legacy (no recipe) | Ship cabins (5.2) | Built 2026-10-19, **not yet run in a game** |
 | **Rune chalk** | Amethyst and calcite (geodes) | Removing or replacing a rune (with 3 levels) | Nothing | Done |
 | **Tomes of Scrapping and Extraction** | A book, lapis, flint or amethyst | Wiping or moving enchantments | Nothing | Done |
 | **Our five enchantments + Soulbound** | **Chests only** (Archive, colony). Soulbound is also tradeable and random loot; the five (`own` tag) are **not** in the table, trades or random loot | Gear stats | The book could point at the chests | **Works, but only by chest luck.** Worth a decision (5.8) |
@@ -112,9 +112,9 @@ Each of these changed a quest or is a fact a later session needs.
   usable pair is Earth and the Moon, after the Moon's two bosses.
 - **Space is always a vacuum.** A tank is 5 minutes (1,200 units at 4 a second), lungs 20 seconds, and a player may carry
   **two** tanks. At the design's 60 blocks a second that is about 37,000 blocks of flight, and the Nether is 18,000 out.
-- **The refill station only works where the air is breathable**, so in space it cannot refill. A sealed room with an
-  emitter is breathable, but there is **no bridge that makes a ship's cabin a sealed room** (nothing in
-  `ascension-compat-sable` touches atmosphere).
+- **Air now comes from Create (Oxygen v2, ADR-0026):** an Air Compressor fills tanks, and an Air Dispenser fed by pipes
+  holds a sealed room. `ascension-compat-sable` now registers a ship space (position to the ship's plot) and recomputes
+  rooms when a ship appears; **never seen on a real ship**, so the book's flight lines still describe tanks only.
 - **Quest rewards are claimed per player** (`QuestKey` is a player and a reward). So a player who joins a party late should
   be able to claim what the party already earned. **Read from the jar, not seen.**
 - **FTB item tasks do not consume by default**, and the server check now proves none of ours does.

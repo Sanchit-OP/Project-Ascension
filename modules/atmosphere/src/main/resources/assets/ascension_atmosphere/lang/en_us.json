@@ -2,11 +2,11 @@
   "death.attack.ascension_atmosphere.no_oxygen": "%1$s ran out of air",
   "death.attack.ascension_atmosphere.no_oxygen.player": "%1$s ran out of air while fighting %2$s",
 
-  "block.ascension_atmosphere.oxygen_emitter": "Oxygen Emitter",
+  "block.ascension_atmosphere.oxygen_emitter": "Oxygen Emitter (old)",
   "block.ascension_atmosphere.air_dispenser": "Air Dispenser",
   "block.ascension_atmosphere.air_dispenser.status": "Air %1$s / %2$s mB — holding %3$s blocks (needs %4$s mB/s)",
   "fluid_type.ascension_atmosphere.air": "Air",
-  "block.ascension_atmosphere.oxygen_refill_station": "Oxygen Refill Station",
+  "block.ascension_atmosphere.oxygen_refill_station": "Oxygen Refill Station (old)",
 
   "item.ascension_atmosphere.oxygen_tank": "Oxygen Tank",
   "item.ascension_atmosphere.oxygen_tank_helium": "Helium Oxygen Tank",

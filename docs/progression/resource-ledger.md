@@ -15,6 +15,8 @@ Excused by the rules, with the reason. This list should only get shorter.
 
 No survival source, on purpose. The rules say why.
 
+- **Oxygen Emitter (old)** (`ascension_atmosphere:oxygen_emitter`): Legacy (ADR-0026): air now comes from the Create Air Compressor and the Air Dispenser. Kept registered so rooms in existing worlds keep working; not in the creative tab.
+- **Oxygen Refill Station (old)** (`ascension_atmosphere:oxygen_refill_station`): Legacy (ADR-0026): the Air Compressor fills tanks now. Kept registered for existing worlds; not in the creative tab.
 - **Test Magic Blade [DEBUG]** (`ascension_combat:test_magic_blade`): The combat session's test item for magic damage, not a player item.
 - **Archive Orrery** (`ascension_worlds:archive_orrery`): Unbreakable: the Archive's orrery, its centrepiece.
 - **Archive Plinth** (`ascension_worlds:archive_plinth`): Unbreakable: the Lunar Archive holds its tablets on these, and the story reads them in place.
@@ -27,7 +29,6 @@ No survival source, on purpose. The rules say why.
 
 **Oxygen Tank** · `ascension_atmosphere:oxygen_tank`
 - From: Crafting: Iron Ingot + Glass
-- Used: Crafting into Oxygen Emitter, Oxygen Refill Station
 - Used: Tank Upgrade into Helium Oxygen Tank
 
 **Helium Oxygen Tank** · `ascension_atmosphere:oxygen_tank_helium`
@@ -38,11 +39,11 @@ No survival source, on purpose. The rules say why.
 **Air Dispenser** · `ascension_atmosphere:air_dispenser`
 - From: Crafting: Iron Ingot + Glass + Hopper
 
-**Oxygen Emitter** · `ascension_atmosphere:oxygen_emitter`
-- From: Crafting: Oxygen Tank + Redstone Block + Iron Ingot
+**Oxygen Emitter (old)** · `ascension_atmosphere:oxygen_emitter`
+- From: *nothing yet*
 
-**Oxygen Refill Station** · `ascension_atmosphere:oxygen_refill_station`
-- From: Crafting: Oxygen Tank + Piston + Iron Ingot
+**Oxygen Refill Station (old)** · `ascension_atmosphere:oxygen_refill_station`
+- From: *nothing yet*
 
 ## ascension-combat
 
