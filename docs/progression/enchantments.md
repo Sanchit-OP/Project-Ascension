@@ -251,8 +251,7 @@ I will check what ships with Cataclysm before saying any more.
 2. **Sharpness and Power: ANSWERED.** +Attack Damage, 0.5 a level (V = +2.5), the larger option.
    That is 10 units, above the 3 to 5 proposed in §3.2; Sanchit accepts it, and a balancing and stats
    session at the end of this one will retune everything. Mark all numbers as placeholders until then.
-3. **Mending:** keep, remove, or make it cost something (my recommendation: keep, but make it only
-   repair slowly, because our items are expensive to rebuild).
+3. **Mending: ANSWERED.** Keep, at half vanilla's repair rate (data only).
 4. **How much** may a full enchant set give: my proposal is about 25 units (§3.2).
 5. **Boss and planet enchantments:** each boss teaches one enchantment from its book (reward, never a
    requirement). Yes or no?
