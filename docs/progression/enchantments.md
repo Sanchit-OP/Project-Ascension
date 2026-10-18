@@ -329,6 +329,30 @@ In main hand                        When worn
 should appear with every level; I have **not** seen this. A description page for each would need a Tier 2
 `ascension-compat-jei` jar and is not built.
 
+### 9.1 Tooltip audit of every enchantment (2026-10-18, from the data, not seen in a client)
+
+What an enchanted item's tooltip shows today: our stat lines (`7 +2 Attack Damage`), a `-X% damage taken
+(name)` line for any enchantment with a damage-protection effect, and vanilla's own lines for attributes we
+have no stat for. Everything else shows only the enchantment's name.
+
+| Group | Enchantments | What shows | Verdict |
+|---|---|---|---|
+| Stat sources | Protection, Projectile, Fire, Blast Protection, Sharpness, Power, Breach, Keen Edge, Leech, Warding, Vitality, Fleet | the stat on the item's own line; Protection family also the reduction line | fine |
+| **Misleading** | Respiration | vanilla's "Oxygen Bonus" attribute line, but the real effect is **+10 s of lungs a level** (atmosphere module) | **fix**: hide the vanilla line, say "+30 s lung capacity" |
+| **Misleading** | Feather Falling | `-12% damage taken`, but it is falls only | **fix**: say which damage (falls) |
+| **Nothing shown** | Soulbound | name only; nothing says it keeps the item on death | **add** a description |
+| **Nothing shown** | Mending | name only; now repairs at half rate | **add** a description |
+| **Nothing shown** | Smite, Bane of Arthropods, Impaling, Density | name only; the damage is vanilla's situational bonus | add a short description |
+| Vanilla attribute lines | Efficiency, Depth Strider, Sweeping Edge, Swift Sneak, Aqua Affinity, Fire/Blast's burning time and knockback | vanilla draws them where it draws enchantment attributes | fine |
+| Name only, self-explaining | Looting, Fortune, Silk Touch, Unbreaking, Knockback, Punch, Fire Aspect, Flame, Infinity, Multishot, Piercing, Quick Charge, Loyalty, Riptide, Channeling, Lure, Luck of the Sea, Thorns, Frost Walker, Soul Speed, Wind Burst, curses | players know these | leave |
+| **Books** | every enchanted book | only the names; no stat preview | **add**: a book shows what each enchantment gives at its level |
+
+**Proposed mechanism, one for all of the above:** a grey description line under an enchantment's name, read
+from the lang file by key (`enchantment.<namespace>.<name>.desc`, with the level's number filled in where
+there is one). Data-driven, so another mod's enchantment gains a line by adding a key, and we write keys
+only for the ones in the table marked fix or add. On a book it also shows the stat preview.
+Not built: waiting for Sanchit's go.
+
 ## 10. Other mods' enchantments
 
 Cataclysm and others add enchantments. Their files are not ours to edit; a Tier-2 compat jar (or an
