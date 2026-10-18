@@ -1,5 +1,9 @@
 # Session prompt 5: the rune HUD
 
+> **Superseded 2026-10-18 by `6-hud-overhaul.md`.** Sanchit wants the whole HUD redone, of which the
+> rune HUD is one part. Start from prompt 6. This file stays for its notes on the rune state and
+> how to sync it.
+
 Paste everything below the line into a new Claude Code session opened on this repository.
 
 ---
