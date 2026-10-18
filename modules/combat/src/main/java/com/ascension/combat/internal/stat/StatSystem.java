@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.stat;
 
+import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.api.stat.StatSources;
 import com.ascension.combat.internal.mobs.MobStats;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,9 @@ import net.neoforged.bus.api.IEventBus;
  * {@code AscensionCombat} makes for all of it.
  */
 public final class StatSystem {
+
+    /** The path prefix of every modifier id an enchantment gives (ADR-0022); the sheet and tooltips read it. */
+    public static final String ENCHANTMENT_PREFIX = "enchantment/";
 
     private StatSystem() {
     }
@@ -40,7 +44,7 @@ public final class StatSystem {
         // Enchantments give stats through minecraft:attributes effects whose ids start with
         // ascension_combat:enchantment/ (docs/progression/enchantments.md, ADR-0022). Vanilla adds a
         // /<slot> suffix to the id, so the prefix still matches.
-        StatSources.register(ResourceLocation.fromNamespaceAndPath("ascension_combat", "enchantment/"),
+        StatSources.register(ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, ENCHANTMENT_PREFIX),
                 Component.translatable("stat_source.ascension_combat.enchantments"));
     }
 }

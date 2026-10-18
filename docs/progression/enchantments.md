@@ -284,11 +284,31 @@ considered and left out; they can return later without changing anything else he
   Mending) need one pass over the list. The usual fix: the enchantment is allowed, but they are in the
   same `exclusive_set`.
 
-## 9. Tooltips
+## 9. Tooltips and JEI
 
-Show an enchantment's stat as a League-style line in the same colour as its stat (`StatTooltips`),
-and fold vanilla's enchantment names into one block. Vanilla's own "Protection IV" line still reads
-fine on its own, so we only add the numbers to it. This is the last increment.
+**Built in increment 8 (compiles and builds; not yet seen in a client, by Sanchit's rule of testing in
+batches).** An enchantment's part of a stat is added after the item's own number in the enchantment colour
+(light purple), on the same line, so the line reads like Sanchit's example:
+
+```
+Diamond Sword                       Diamond Chestplate (Protection IV)
+In main hand                        When worn
+7 +2 Attack Damage                  +28 +12 Armor          (item's own, then the enchantment's)
+1.6 Attack Speed                    +20 Magic Resist
+```
+
+- The weapon's own attack line (white) takes the extra: `7 +2 Attack Damage` is a diamond sword at 7 with
+  Sharpness IV's +2.
+- A stat the item already shows takes the extra on that line. A stat only the enchantment gives (Warding on
+  a helmet with no Magic Resist of its own) is its own line, in the stat's colour.
+- The extra is found by the modifier id prefix `ascension_combat:enchantment/` (`StatSystem.ENCHANTMENT_PREFIX`),
+  the same prefix the "Enchantments" source on the sheet uses. Vanilla's enchantment names ("Sharpness IV")
+  still print below as vanilla draws them, so the line says how much and the name says which.
+- Percent and speed stats print with their own units (`+9% Move Speed`) through the same `StatText`.
+
+**JEI:** no code of ours. JEI builds its enchanted-book list from the enchantment registry, so our five
+should appear with every level; I have **not** seen this. A description page for each would need a Tier 2
+`ascension-compat-jei` jar and is not built.
 
 ## 10. Other mods' enchantments
 
@@ -320,7 +340,7 @@ I will check what ships with Cataclysm before saying any more.
 | 5 | **Our new enchantments** (five built) | each shows its stat, and is offered by the table, trades and loot |
 | 6 | **Refactor pass** | |
 | 7 | **Sources** (our two structures' chests) | built; rolled on a dedicated server, not yet seen in a client |
-| 8 | **Tooltips and JEI** | |
+| 8 | **Tooltips and JEI** | tooltips built; not yet seen in a client; JEI is the registry's own list |
 | 9 | **Refactor pass** | |
 
 Each increment is also checked on a dedicated server (the registry is synced), after a reload, and

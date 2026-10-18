@@ -1,13 +1,16 @@
 package com.ascension.combat.client.stat;
 
+import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.api.stat.CombatStat;
 import com.ascension.combat.api.stat.CombatStats;
 import com.ascension.combat.internal.stat.ItemStatModifiers;
 import com.ascension.combat.internal.stat.StatDataMaps;
+import com.ascension.combat.internal.stat.StatSystem;
 import com.ascension.combat.internal.stat.StatText;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.ChatFormatting;
@@ -111,12 +114,19 @@ public final class StatTooltips {
                 .anyMatch(line -> line.modifier().amount() != 0.0 && statFor(line.attribute()) != null);
     }
 
+    /** One stat's share from enchantments in one slot group, folded into the item's own line for that stat. */
+    private record Key(CombatStat stat, AttributeModifier.Operation operation) {
+    }
+
     private static List<Component> block(Map<EquipmentSlotGroup, List<Line>> bySlot, @Nullable Player player, TooltipFlag flag) {
         List<Component> block = new ArrayList<>();
         bySlot.forEach((slot, lines) -> {
             List<Component> weapon = new ArrayList<>();
             List<Line> stats = new ArrayList<>();
             List<Component> others = new ArrayList<>();
+            Map<Key, Double> enchanted = new LinkedHashMap<>();
+            List<CombatStat> weaponStats = new ArrayList<>();
+            List<Double> weaponValues = new ArrayList<>();
 
             for (Line line : lines) {
                 AttributeModifier modifier = line.modifier();
@@ -124,37 +134,79 @@ public final class StatTooltips {
                     continue;
                 }
 
-                if (modifier.id().equals(Item.BASE_ATTACK_DAMAGE_ID) && is(line.attribute(), Attributes.ATTACK_DAMAGE)) {
-                    weapon.add(weaponLine(CombatStats.ATTACK_DAMAGE, modifier.amount() + base(player, Attributes.ATTACK_DAMAGE, ItemStatModifiers.BARE_HAND_DAMAGE)));
+                CombatStat stat = statFor(line.attribute());
+                if (stat != null && isEnchantment(modifier)) {
+                    enchanted.merge(new Key(stat, modifier.operation()), modifier.amount(), Double::sum);
+                } else if (modifier.id().equals(Item.BASE_ATTACK_DAMAGE_ID) && is(line.attribute(), Attributes.ATTACK_DAMAGE)) {
+                    weaponStats.add(CombatStats.ATTACK_DAMAGE);
+                    weaponValues.add(modifier.amount() + base(player, Attributes.ATTACK_DAMAGE, ItemStatModifiers.BARE_HAND_DAMAGE));
                 } else if (modifier.id().equals(Item.BASE_ATTACK_SPEED_ID) && is(line.attribute(), Attributes.ATTACK_SPEED)) {
-                    weapon.add(weaponLine(CombatStats.ATTACK_SPEED, modifier.amount() + base(player, Attributes.ATTACK_SPEED, ItemStatModifiers.BARE_HAND_SPEED)));
-                } else if (statFor(line.attribute()) != null) {
+                    weaponStats.add(CombatStats.ATTACK_SPEED);
+                    weaponValues.add(modifier.amount() + base(player, Attributes.ATTACK_SPEED, ItemStatModifiers.BARE_HAND_SPEED));
+                } else if (stat != null) {
                     stats.add(line);
                 } else {
                     others.add(line.attribute().value().toComponent(modifier, flag));
                 }
             }
 
-            if (weapon.isEmpty() && stats.isEmpty() && others.isEmpty()) {
+            // The weapon's own attack, with what its enchantments add after it: "7 +2 Attack Damage".
+            for (int i = 0; i < weaponStats.size(); i++) {
+                CombatStat stat = weaponStats.get(i);
+                Double extra = enchanted.remove(new Key(stat, AttributeModifier.Operation.ADD_VALUE));
+                weapon.add(weaponLine(stat, weaponValues.get(i), extra));
+            }
+
+            List<StatLine> statLines = new ArrayList<>();
+            for (Line line : stats) {
+                CombatStat stat = statFor(line.attribute());
+                Double extra = enchanted.remove(new Key(stat, line.modifier().operation()));
+                statLines.add(new StatLine(stat, line.modifier().operation(), line.modifier().amount(), extra));
+            }
+            // Enchantment stats with no line of the item's own to join are lines in their own right.
+            enchanted.forEach((key, amount) -> statLines.add(new StatLine(key.stat(), key.operation(), amount, null)));
+
+            if (weapon.isEmpty() && statLines.isEmpty() && others.isEmpty()) {
                 return;
             }
 
             block.add(Component.translatable(slotKey(slot)).withStyle(ChatFormatting.GRAY));
             block.addAll(weapon);
-            stats.sort(Comparator.comparingInt(line -> CombatStats.all().indexOf(statFor(line.attribute()))));
-            for (Line line : stats) {
-                CombatStat stat = statFor(line.attribute());
-                block.add(Component.literal(StatText.modifier(stat, line.modifier().operation(), line.modifier().amount()) + " ")
-                        .append(stat.displayName())
-                        .withStyle(style -> style.withColor(TextColor.fromRgb(stat.color()))));
+            statLines.sort(Comparator.comparingInt(line -> CombatStats.all().indexOf(line.stat())));
+            for (StatLine line : statLines) {
+                block.add(Component.literal(StatText.modifier(line.stat(), line.operation(), line.amount()))
+                        .append(extra(line.stat(), line.operation(), line.extra()))
+                        .append(" ")
+                        .append(line.stat().displayName())
+                        .withStyle(style -> style.withColor(TextColor.fromRgb(line.stat().color()))));
             }
             block.addAll(others);
         });
         return block;
     }
 
-    private static Component weaponLine(CombatStat stat, double value) {
-        return Component.literal(StatText.value(stat, value) + " ").append(stat.displayName()).withStyle(ChatFormatting.WHITE);
+    private record StatLine(CombatStat stat, AttributeModifier.Operation operation, double amount, @Nullable Double extra) {
+    }
+
+    /** What an item's enchantments add to a stat, after the item's own number, in the enchantment colour; nothing when none. */
+    private static Component extra(CombatStat stat, AttributeModifier.Operation operation, @Nullable Double amount) {
+        if (amount == null || amount == 0.0) {
+            return Component.empty();
+        }
+        return Component.literal(" " + StatText.modifier(stat, operation, amount)).withStyle(ChatFormatting.LIGHT_PURPLE);
+    }
+
+    /** A modifier given by an enchantment: its id is under {@code ascension_combat:enchantment/} (ADR-0022). */
+    private static boolean isEnchantment(AttributeModifier modifier) {
+        return modifier.id().getNamespace().equals(AscensionCombat.MOD_ID) && modifier.id().getPath().startsWith(StatSystem.ENCHANTMENT_PREFIX);
+    }
+
+    private static Component weaponLine(CombatStat stat, double value, @Nullable Double extra) {
+        return Component.literal(StatText.value(stat, value))
+                .append(extra(stat, AttributeModifier.Operation.ADD_VALUE, extra))
+                .append(" ")
+                .append(stat.displayName())
+                .withStyle(ChatFormatting.WHITE);
     }
 
     /** The holder's own value, or a bare hand's when the holder is unknown, as at game start. */
