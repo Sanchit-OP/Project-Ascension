@@ -86,6 +86,13 @@ free points, and a respawn healed before worn gear's Health was back. Rune slots
 team's boss and gate milestones (`api.growth.GrowthProgress`, default `progressive`), and growth is
 named on the stat sheet. `tools/check-data.py` (every build) fails on the first fault's spelling.
 
+**Teams (ADR-0023, 2026-10-18; `docs/progression/teams.md`):** progress has three owners: the world (gates,
+the mark), your team (bosses, quest progress: an FTB Teams party, a solo player being a party of one) and
+you. `core`'s `TeamRegistry` says who is on which team (everyone is one team when nothing answers),
+`ascension-compat-ftbteams` answers it from FTB Teams, growth keeps a set of milestones per team, and
+teammates cannot hurt each other. Built, and seen on a dedicated server with stand-in players
+(`TeamChecks`); two real clients are not yet seen. The HUD's team list (T4) and the quest lines are next.
+
 Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,
 sable (`docs/technical/architecture.md` has the table).
