@@ -1,5 +1,8 @@
 package com.ascension.combat.internal.armor;
 
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.CombatAttributes;
@@ -146,6 +149,7 @@ public final class SterakHarnessEffects {
         }
 
         float shield = player.getMaxHealth() * SHIELD_MAX_HEALTH_PERCENT;
+        Presence.burst(player, SoundEvents.SHIELD_BLOCK, 1.0f, 0.8f, ParticleTypes.HEART, 6, 0.5);
         Shield.grant(player, shield);
         player.getData(CombatAttachments.STERAKS_LIFESTEAL).arm();
         player.getCooldowns().addCooldown(CombatContent.STERAKS_HARNESS.get(), COOLDOWN_TICKS);

@@ -1,5 +1,8 @@
 package com.ascension.combat.internal.armor;
 
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.Shield;
@@ -56,6 +59,7 @@ public final class GargoyleStoneplateEffects {
                 .count();
 
         float shield = Math.min(MAX_SHIELD, nearbyEnemies * SHIELD_PER_NEARBY_ENEMY);
+        Presence.burst(player, SoundEvents.IRON_GOLEM_REPAIR, 1.0f, 0.7f, ParticleTypes.CRIT, 25, 0.6);
         Shield.grant(player, shield);
         player.getCooldowns().addCooldown(CombatContent.GARGOYLE_STONEPLATE.get(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }

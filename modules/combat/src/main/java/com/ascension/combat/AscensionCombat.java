@@ -97,6 +97,7 @@ public final class AscensionCombat {
             com.ascension.combat.client.stat.StatTooltips.register(NeoForge.EVENT_BUS);
             com.ascension.combat.client.stat.EnchantmentTooltips.register(NeoForge.EVENT_BUS);
             com.ascension.combat.client.stat.MechanicTooltips.register(NeoForge.EVENT_BUS);
+            com.ascension.combat.client.LegendaryBeams.register(NeoForge.EVENT_BUS);
         }
 
         // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before

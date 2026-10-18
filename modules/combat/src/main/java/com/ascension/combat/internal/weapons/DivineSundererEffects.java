@@ -1,5 +1,8 @@
 package com.ascension.combat.internal.weapons;
 
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
@@ -67,6 +70,7 @@ public final class DivineSundererEffects {
             return;
         }
 
+        Presence.burst(player, SoundEvents.BEACON_ACTIVATE, 0.8f, 1.8f, ParticleTypes.END_ROD, 14, 0.5);
         player.getData(CombatAttachments.DIVINE_SUNDERER_PRIMED).arm();
         player.getCooldowns().addCooldown(stack.getItem(), ItemAbilities.cooldown(player, COOLDOWN_TICKS));
     }

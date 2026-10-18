@@ -1,5 +1,8 @@
 package com.ascension.combat.internal.armor;
 
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
@@ -60,6 +63,7 @@ public final class RocketbeltEffects {
             return;
         }
 
+        Presence.burst(player, SoundEvents.FIREWORK_ROCKET_BLAST, 0.9f, 0.8f, ParticleTypes.FLAME, 25, 0.4);
         Blink.forward(player, DASH_DISTANCE);
 
         long now = player.level().getGameTime();

@@ -1,5 +1,8 @@
 package com.ascension.combat.internal.weapons;
 
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
@@ -127,6 +130,7 @@ public final class GaleforceEffects {
         }
 
         LivingEntity target = findTarget(player, level);
+        Presence.burst(player, SoundEvents.FIREWORK_ROCKET_LAUNCH, 0.8f, 1.2f, ParticleTypes.CLOUD, 20, 0.4);
         Blink.forward(player, DASH_DISTANCE);
         fireHomingShot(player, level, stack, ammo, target);
 
