@@ -19,6 +19,7 @@ include(":modules:core")
 include(":modules:atmosphere")
 include(":modules:worlds")
 include(":modules:combat")
+include(":modules:hud")
 // include(":modules:progression")    // M3
 // include(":modules:gear")           // M4
 
