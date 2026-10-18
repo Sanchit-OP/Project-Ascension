@@ -19,14 +19,14 @@ import org.jetbrains.annotations.Nullable;
 public final class AbilityScaling {
 
     /** Veigo's Blade: extra share of the target's current health per point of Attack Damage (0.2%). */
-    public static final float VEIGO_CURRENT_HP_PER_AD = 0.002f;
+    public static final float VEIGO_CURRENT_HP_PER_AD = 0.0005f;
     /** Darken Blade: extra share of the target's max health per Attack Damage (0.1%), and shield per point. */
-    public static final float DARKEN_MAX_HP_PER_AD = 0.001f;
+    public static final float DARKEN_MAX_HP_PER_AD = 0.0005f;
     public static final float DARKEN_SHIELD_PER_AD = 0.5f;
     /** Divine Sunderer: extra share of max health per Attack Damage, for each of its two halves (0.1%). */
-    public static final float SUNDERER_MAX_HP_PER_AD = 0.001f;
+    public static final float SUNDERER_MAX_HP_PER_AD = 0.0005f;
     /** Spear of Shojin: extra share of max health, as true damage, per Attack Damage (0.1%). */
-    public static final float SHOJIN_MAX_HP_PER_AD = 0.001f;
+    public static final float SHOJIN_MAX_HP_PER_AD = 0.0005f;
     /** Galeforce: extra share of the target's missing health per Attack Damage (0.5%). */
     public static final float GALEFORCE_MISSING_HP_PER_AD = 0.005f;
     /** Heartwood of Pallas and Ragefang: extra flat magic damage per Attack Damage on each hit. */
@@ -40,24 +40,7 @@ public final class AbilityScaling {
     public static final float GARGOYLE_PER_ENEMY_PER_ARMOR = 0.05f;
     public static final float GARGOYLE_CAP_PER_ARMOR = 0.4f;
 
-    /**
-     * The most a percent-of-health proc may deal in one go, as a multiple of the wielder's Attack
-     * Damage (Sanchit, 2026-10-19). Without it a bigger boss would never slow Veigo's Blade, Divine
-     * Sunderer, the Spear or Darken Blade: they take a share of the target's health, so a boss with
-     * five times the health took five times the damage, and the item that works best is the one that
-     * ignores the boss's size.
-     */
-    public static final float PERCENT_PROC_CAP_PER_AD = 1.0f;
-    /** The same cap for the two missing-health bonuses, which fire rarely: Galeforce's shot and Hunt. */
-    public static final float GALEFORCE_CAP_PER_AD = 3.0f;
-    public static final float HUNT_CAP_PER_AD = 7.0f;
-
     private AbilityScaling() {
-    }
-
-    /** {@code bonus}, held to {@link #PERCENT_PROC_CAP_PER_AD} times the attacker's Attack Damage. */
-    public static float capped(float bonus, @Nullable Entity attacker) {
-        return Math.min(bonus, PERCENT_PROC_CAP_PER_AD * attackDamage(attacker));
     }
 
     /** The Attack Damage of whoever dealt a hit, 0 for anything that is not a living entity. */

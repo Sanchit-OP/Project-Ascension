@@ -18,7 +18,8 @@ The formulas (all from the code):
   Lethality comes off Armor after percent Penetration; Armor never goes below 0.
   Melee: every swing at full charge, so damage is the weapon's Attack Damage figure.
   Arrows: a full draw's 6 base damage plus the shooter's whole Attack Damage, as physical damage.
-  Percent-of-health procs are held to 1 x the wielder's Attack Damage a go (AbilityScaling).
+  Percent-of-health procs are uncapped (Sanchit, 2026-10-19): a bigger boss takes more from them, and
+  the later bosses carry more Armor and Magic Resist to answer it.
   Each ability's bonus is added where its class adds it (before Armor, after it, or true).
 Assumed: the target stands still, every swing lands, a bow's full draw takes 1 s, a player lands at most
 8 swings a second. A real fight is slower, which lengthens every figure and the weapons that need
@@ -36,12 +37,14 @@ STATS = os.path.join(ROOT, 'modules', 'combat', 'src', 'main', 'resources', 'dat
 STEP = 0.01
 MAX_SECONDS = 900.0
 MAX_SWINGS_PER_SECOND = 8.0
-CAP_PER_AD = 1.0
-GALE_CAP, HUNT_CAP = 3.0, 7.0      # Galeforce's and Hunt's missing-health bonuses, in Attack Damage
+VEIGO_PCT, VEIGO_PER_AD = 0.03, 0.0005        # Veigo's Blade: share of the target's current health, and per Attack Damage
+SPEAR_PCT, SPEAR_PER_AD = 0.02, 0.0005        # Spear of Shojin: true damage, share of max health
+SUNDER_PCT, SUNDER_PER_AD = 0.02, 0.0005      # Divine Sunderer: each half
+DARKEN_PCT, DARKEN_PER_AD = 0.025, 0.0005      # Darken Blade: magic burst
 HUNT_PER_STACK = 0.015           # Heartwood's Hunt: share of the target's missing health per stack
 ENDLESS_AS_PER_AD = 0.012          # Endless Hunger: attack speed per point of Attack Damage
 KIT_AD, KIT_LETHALITY = 8.0, 8.0
-RAGE_MAGIC, RAGE_SCALE, RAGE_PER_HIT, RAGE_CAP = 3.0, 0.1, 0.03, 1.0   # Ragefang's on-hit magic (flat, per Attack Damage), attack speed per hit, and its limit
+RAGE_MAGIC, RAGE_SCALE, RAGE_PER_HIT, RAGE_LIMIT = 3.0, 0.1, 0.03, 2.5   # ... and the total attack speed it may reach   # Ragefang's on-hit magic (flat, per Attack Damage), attack speed per hit, and its limit
 
 DUAL_WIELD = ['ragefang', 'endless_hunger']   # worn as a pair, one in each hand
 MELEE = ['veigos_blade', 'darius_axe', 'spear_of_shojin', 'divine_sunderer', 'darken_blade', 'ragefang',
@@ -103,26 +106,25 @@ def fight(name, boss, kit, overrides=None, pair=False):
             if t >= next_swing:
                 hits += 1
                 raw, true_bonus, magic_bonus = ad, 0.0, 0.0
-                cap = CAP_PER_AD * ad
                 if name == 'veigos_blade':
-                    raw += min(boss.hp * (0.08 + 0.002 * ad), cap)
+                    raw += boss.hp * (VEIGO_PCT + VEIGO_PER_AD * ad)
                 elif name == 'spear_of_shojin' and hits % 3 == 0:
-                    true_bonus = min(boss.max_hp * (0.05 + 0.001 * ad), cap)
+                    true_bonus = boss.max_hp * (SPEAR_PCT + SPEAR_PER_AD * ad)
                 elif name == 'divine_sunderer' and t >= sunder_ready:
                     sunder_ready = t + 5.0
-                    share = min(boss.max_hp * (0.04 + 0.001 * ad), cap)
+                    share = boss.max_hp * (SUNDER_PCT + SUNDER_PER_AD * ad)
                     raw += share
                     magic_bonus = share
                 elif name == 'darken_blade' and hits % 2 == 0 and t - last_burst >= 8.0:
                     last_burst = t
-                    magic_bonus = min(boss.max_hp * (0.05 + 0.001 * ad), cap)
+                    magic_bonus = boss.max_hp * (DARKEN_PCT + DARKEN_PER_AD * ad)
                 elif name == 'ragefang':
                     magic_bonus = (RAGE_MAGIC + RAGE_SCALE * ad) * (2 if hits % 3 == 0 else 1)
                 boss.hp -= boss.physical(raw, leth) + boss.magic(magic_bonus) + true_bonus
                 if name == 'darius_axe':
                     boss.shred = min(12, boss.shred + 1)
                 if name == 'ragefang':
-                    spd = speed * (1 + min(RAGE_CAP, RAGE_PER_HIT * hits))
+                    spd = min(speed * (1 + RAGE_PER_HIT * hits), RAGE_LIMIT)
                 if name == 'endless_hunger':
                     spd = speed * (1 + ENDLESS_AS_PER_AD * ad)
                 next_swing = t + 1.0 / min(spd, MAX_SWINGS_PER_SECOND)
@@ -134,7 +136,7 @@ def fight(name, boss, kit, overrides=None, pair=False):
             if name == 'galeforce' and t >= dash_ready:
                 dash_ready = t + 8.0
                 missing = boss.max_hp - boss.hp
-                raw = 6.0 + ad + min(missing * (0.20 + 0.005 * ad), GALE_CAP * ad)
+                raw = 6.0 + ad + missing * (0.20 + 0.005 * ad)
                 boss.hp -= boss.physical(raw, leth)
             if t >= busy_until:
                 raw, magic = 6.0 + ad, 0.0
@@ -144,7 +146,7 @@ def fight(name, boss, kit, overrides=None, pair=False):
                     magic = 3.0 + 0.15 * ad
                     if t >= hunt_ready and hunt_stacks > 0:
                         hunt_ready, took = t + 15.0, 1.75
-                        magic += min((boss.max_hp - boss.hp) * hunt_stacks * HUNT_PER_STACK, HUNT_CAP * ad)
+                        magic += (boss.max_hp - boss.hp) * hunt_stacks * HUNT_PER_STACK
                         hunt_stacks = 0
                     else:
                         hunt_stacks += 1

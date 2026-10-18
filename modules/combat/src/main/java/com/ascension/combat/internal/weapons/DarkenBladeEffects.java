@@ -37,7 +37,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 public final class DarkenBladeEffects {
 
     /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final float MAGIC_MAX_HP_PERCENT = 0.05f;
+    private static final float MAGIC_MAX_HP_PERCENT = 0.025f;
 
     private static final float SHIELD_AMOUNT = 6.0f;
     private static final int PROC_COOLDOWN_TICKS = 160;
@@ -76,7 +76,6 @@ public final class DarkenBladeEffects {
         LivingEntity target = event.getEntity();
         float rawMagicBonus = target.getMaxHealth()
                 * (MAGIC_MAX_HP_PERCENT + AbilityScaling.DARKEN_MAX_HP_PER_AD * AbilityScaling.attackDamage(attacker));
-        rawMagicBonus = AbilityScaling.capped(rawMagicBonus, attacker);
         MagicDamage.apply(event, rawMagicBonus);
 
         Presence.burst(attacker, SoundEvents.WITHER_SHOOT, 0.6f, 1.5f, ParticleTypes.SOUL_FIRE_FLAME, 15, 0.5);

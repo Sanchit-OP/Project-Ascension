@@ -53,7 +53,7 @@ public final class RagefangEffects {
      */
     private static final float ATTACK_SPEED_PERCENT_PER_HIT = 0.03f;
 
-    private static final double ATTACK_SPEED_SHADOW_LIMIT = 2.8;
+    private static final double ATTACK_SPEED_SHADOW_LIMIT = 2.5;
     private static final long DECAY_GRACE_TICKS = 20L;
     private static final long DECAY_RAMP_TICKS = 60L;
     private static final float ON_HIT_MAGIC_DAMAGE = 3.0f;

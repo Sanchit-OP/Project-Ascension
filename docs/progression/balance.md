@@ -53,30 +53,35 @@ The spread is narrower than the first try (Sanchit, 2026-10-19: lessen the split
 slowest is 1.7 times (the check allows 1.8). Weapons that carry **utility for a team** are tuned lower: Darius's
 Axe (its shred helps everyone's hits) and Mortal Reminder (anti-heal). Wraithblade is brought back up from the
 bottom. Heartwood of Pallas was lifted through its ability (1.5% of missing health a stack, up from 1%, and a
-higher cap), not its stats.
+no cap), not its stats.
 
 | Tier | Weapon | Alone (s) | Kit (s) | Why it is where it is |
 |---|---|---|---|---|
-| Strong | Spear of Shojin | 71 | 45 | True damage on every third hit |
-| Strong | Veigo's Blade | 75 | 43 | Bonus from the target's current health |
-| Middle | Divine Sunderer | 86 | 57 | Heals you |
+| Strong | Spear of Shojin | 71 | 49 | True damage on every third hit |
+| Strong | Veigo's Blade | 76 | 49 | Bonus from the target's current health |
+| Middle | Divine Sunderer | 85 | 60 | Heals you |
 | Middle | Darken Blade | 89 | 61 | Shields you |
-| Middle | Galeforce | 89 | 63 | Dash and homing shot |
-| Middle | Heartwood of Pallas | 93 | 64 | Stacks, then a long-draw execute |
-| Middle | Ragefang | 95 | 52 | Builds attack speed as it hits |
+| Middle | Galeforce | 89 | 64 | Dash and homing shot |
+| Middle | Heartwood of Pallas | 84 | 64 | Stacks, then a long-draw execute |
+| Middle | Ragefang | 95 | 53 | Builds attack speed as it hits |
 | Utility | Mortal Reminder | 99 | 62 | Ignores 60% of Armor; **anti-heal for the team** |
 | Utility | Darius's Axe | 110 | 67 | **Shred (up to -60% Armor) for the team** |
 | Utility | Wraithblade | 110 | 66 | The blink and 20 Lethality |
 | Slow alone | Endless Hunger | 119 | 43 | Omnivamp sustains a long fight; speeds up as your Attack Damage grows |
-| *Pair* | Ragefang, one in each hand | 71 | 44 | Both copies count |
+| *Pair* | Ragefang, one in each hand | 68 | 44 | Both copies count |
 | *Pair* | Endless Hunger, one in each hand | 62 | 30 | Both copies count |
 | | *netherite sword* | 230 | 109 | |
 
-Cataclysm's weapons, with their real speeds (read from its jar, 2026-10-19), take 160 to 320 seconds alone, so
-every legendary is 1.3 to 5 times faster than the best of them.
+**What uncapped does against a late boss.** On the Wither (6500 HP, 180 Armor, 110 Magic Resist), alone, kit in
+brackets: Spear of Shojin 88 s (73), Veigo's Blade 197 (143), Divine Sunderer 197 (158), Galeforce 280 (208),
+Heartwood 318 (269), Darken Blade 338 (265), Mortal Reminder 679 (422), Ragefang 718 (397), Darius's Axe 764
+(464), Wraithblade 880 (531). The percent-of-health weapons pull far ahead the bigger the boss, and the Spear
+most of all: its bonus is **true** damage, which Armor and Magic Resist do not touch. Against the Warden the
+spread is mild (Veigo 56 s, Mortal Reminder 134). This is the cost of removing the caps, and it needs a decision
+before the later bosses are final.
 
-Each weapon's written time is in `tools/check-balance.py`; the build fails if its data drifts more than 6% from
-it (8% for a pair).
+Cataclysm's weapons, with their real speeds (read from its jar, 2026-10-19), take 160 to 320 seconds alone, so
+every legendary is 1.3 to 5 times faster than the best of them at the standard boss.
 
 ### 3a. Dual wield: Ragefang and Endless Hunger
 
@@ -93,12 +98,14 @@ Omnivamp is 7% a hand, 14% as a pair; its attack-speed bonus follows the Attack 
   taken as 1.0. If they are not, a pair's time moves with them.
 
 **What changed to get there**
-- **Percent-of-health procs are capped** at once your Attack Damage a go (Veigo, Spear, Divine Sunderer, Darken
-  Blade); Galeforce's shot at 3 times and Hunt at 5 times. Before this a boss with five times the health took
-  five times the damage, and the weapons that took a share of it never slowed down: Spear took 24 seconds on
-  1000 HP and on 5000. Now they scale like the rest.
+- **No caps (Sanchit, 2026-10-19).** A percent-of-health proc, Galeforce's missing-health shot and Hunt are all
+  uncapped: a bigger boss takes more from them, and the later bosses carry more Armor and Magic Resist to answer
+  it. To keep them from doing the whole job at the standard boss, the base percents are lower than the originals:
+  Veigo 3% of current health (was 8%), Spear 2% true (was 5%), Divine Sunderer 2% and 2% (was 4% and 4%), Darken
+  Blade 2.5% (was 5%), each +0.05% per Attack Damage (was +0.1% to +0.2%). Ragefang's attack-speed ramp stops
+  at 2.5 attacks a second (the original code's limit was 5).
 - **Ragefang was the outlier.** Its on-hit magic and attack-speed ramp did most of its work from a 1-damage
-  stub. Now +3% attack speed a hit up to double (it was +5% up to 5 attacks a second), 3 magic damage a hit
+  stub. Now +3% attack speed a hit up to 2.5 attacks a second (it was +5% up to 5), 3 magic damage a hit
   (+0.1 per Attack Damage), and a base speed of 1.4.
 - **Endless Hunger** gains 1.2% attack speed per Attack Damage (it was 2%), so the kit stops doubling it.
 - **Ragefang is slower alone, stronger as a pair:** its ability does most of its work, so a single copy sits in the middle.
@@ -141,10 +148,10 @@ through `StatReader`, never from an attribute directly. Every coefficient is in 
 
 | Ability | Base | Gains |
 |---|---|---|
-| Veigo's Blade, Wither | 8% of current health | +0.2% per Attack Damage, never more than your Attack Damage |
-| Darken Blade, burst | 5% of max health, 6 shield | +0.1% and +0.5 shield per Attack Damage |
-| Divine Sunderer | 4% physical + 4% magic of max health | +0.1% each per Attack Damage |
-| Spear of Shojin | 5% of max health, true | +0.1% per Attack Damage |
+| Veigo's Blade, Wither | 3% of current health | +0.05% per Attack Damage |
+| Darken Blade, burst | 2.5% of max health, 6 shield | +0.05% and +0.5 shield per Attack Damage |
+| Divine Sunderer | 2% physical + 2% magic of max health | +0.05% each per Attack Damage |
+| Spear of Shojin | 2% of max health, true | +0.05% per Attack Damage |
 | Ragefang, Rage | 3 magic per hit | +0.1 per Attack Damage |
 | Heartwood of Pallas | 3 magic per hit | +0.15 per Attack Damage |
 | Galeforce | 20% of missing health | +0.5% per Attack Damage |

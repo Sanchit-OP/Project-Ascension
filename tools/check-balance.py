@@ -39,10 +39,10 @@ spec.loader.exec_module(ttk)
 # slower, and the two dual-wield weapons are slow alone and strong as a pair.
 TTK_TARGET = {
     'spear_of_shojin': 70, 'veigos_blade': 75, 'divine_sunderer': 85, 'darken_blade': 90, 'galeforce': 90,
-    'heartwood_of_pallas': 93, 'ragefang': 95, 'mortal_reminder': 100, 'darius_axe': 110, 'wraithblade': 110,
+    'heartwood_of_pallas': 84, 'ragefang': 95, 'mortal_reminder': 100, 'darius_axe': 110, 'wraithblade': 110,
     'endless_hunger': 120,
 }
-PAIR_TARGET = {'ragefang': 71, 'endless_hunger': 62}   # worn one in each hand
+PAIR_TARGET = {'ragefang': 68, 'endless_hunger': 62}   # worn one in each hand
 TTK_TOLERANCE = 0.06
 TTK_SPREAD = 1.8
 BOSS = (1000.0, 150.0, 90.0)

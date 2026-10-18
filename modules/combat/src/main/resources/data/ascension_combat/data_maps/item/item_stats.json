@@ -23,7 +23,7 @@
     },
     "ascension_combat:veigos_blade": {
       "weapon": {
-        "damage": 12.3,
+        "damage": 10.1,
         "speed": 1.6
       },
       "stats": {
@@ -41,7 +41,7 @@
     },
     "ascension_combat:spear_of_shojin": {
       "weapon": {
-        "damage": 15.0,
+        "damage": 7.1,
         "speed": 1.4
       },
       "stats": {
@@ -50,7 +50,7 @@
     },
     "ascension_combat:divine_sunderer": {
       "weapon": {
-        "damage": 19.5,
+        "damage": 16.0,
         "speed": 1.2
       },
       "stats": {
@@ -60,7 +60,7 @@
     },
     "ascension_combat:darken_blade": {
       "weapon": {
-        "damage": 20.0,
+        "damage": 18.1,
         "speed": 1.4
       },
       "stats": {
@@ -69,7 +69,7 @@
     },
     "ascension_combat:ragefang": {
       "weapon": {
-        "damage": 4.3,
+        "damage": 5.3,
         "speed": 1.4
       }
     },
@@ -104,7 +104,7 @@
     },
     "ascension_combat:galeforce": {
       "stats": {
-        "attack_damage": 15.7,
+        "attack_damage": 9.3,
         "move_speed": 8
       }
     },

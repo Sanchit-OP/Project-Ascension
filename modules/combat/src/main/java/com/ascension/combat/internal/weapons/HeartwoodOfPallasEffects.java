@@ -239,8 +239,7 @@ public final class HeartwoodOfPallasEffects {
             int stacksConsumed = corruption.stacks();
             corruption.clear();
             float missingHealth = target.getMaxHealth() - target.getHealth();
-            float executeDamage = Math.min(missingHealth * (stacksConsumed / STACK_PERCENT_DIVISOR),
-                    AbilityScaling.HUNT_CAP_PER_AD * AbilityScaling.attackDamage(source.getEntity()));
+            float executeDamage = missingHealth * (stacksConsumed / STACK_PERCENT_DIVISOR);
             if (executeDamage > 0.0f) {
                 MagicDamage.apply(event, executeDamage);
             }
