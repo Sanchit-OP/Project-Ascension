@@ -2,7 +2,7 @@
 
 Status: **design and mockups, 2026-10-18; nothing built.** Branch `combat-hud`.
 Brief: [`plans/session-prompts/6-hud-overhaul.md`](../../plans/session-prompts/6-hud-overhaul.md).
-Decision: [ADR-0022](../decisions/0022-the-hud-is-its-own-module.md), `ascension-hud` is a Tier 1
+Decision: [ADR-0024](../decisions/0024-the-hud-is-its-own-module.md), `ascension-hud` is a Tier 1
 module depending only on `core`; other modules contribute elements through a contract in `core`.
 Mockups: [`design/hud/`](../../design/hud/), made by `tools/render-hud-mockups.py` (seeded, our own
 colours, glyphs and stand-in font from the rune art kit).

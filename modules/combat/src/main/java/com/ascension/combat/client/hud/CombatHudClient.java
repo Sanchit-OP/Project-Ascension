@@ -10,7 +10,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 
 /**
- * Gives the HUD combat's elements (ADR-0022). Registers through core's contract only, so combat
+ * Gives the HUD combat's elements (ADR-0024). Registers through core's contract only, so combat
  * works the same whether or not a HUD host is installed.
  */
 @EventBusSubscriber(modid = AscensionCombat.MOD_ID, value = Dist.CLIENT)

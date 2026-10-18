@@ -5,7 +5,7 @@ plugins {
 description = "The HUD: layout, theme and frame. Other modules contribute elements through core."
 
 dependencies {
-    // Tier 0, and the only Ascension module a Tier 1 module may depend on (ADR-0011, ADR-0022).
+    // Tier 0, and the only Ascension module a Tier 1 module may depend on (ADR-0011, ADR-0024).
     implementation(project(":modules:core"))
 }
 

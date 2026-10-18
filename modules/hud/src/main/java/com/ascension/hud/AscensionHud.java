@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Entry point for {@code ascension_hud} (ADR-0022).
+ * Entry point for {@code ascension_hud} (ADR-0024).
  *
  * <p>Owns the layout, theme and frame of the HUD. What is drawn comes from elements that other
  * modules register through {@code HudRegistry} in {@code ascension_core}; this module never

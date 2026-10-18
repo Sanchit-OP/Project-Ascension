@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * Add something to the HUD, or say that you are the HUD.
  *
- * <p>The meeting point ADR-0022 describes: modules that own state register a {@link HudElement},
+ * <p>The meeting point ADR-0024 describes: modules that own state register a {@link HudElement},
  * a HUD host (today {@code ascension-hud}) reads the list and lays it out, and neither needs to
  * know the other exists. Any third-party mod may do either.
  *

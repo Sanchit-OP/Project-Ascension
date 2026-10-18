@@ -33,7 +33,7 @@ versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "CLIENT"
 
-# Tier 0, and the only Ascension module this one depends on (ADR-0011, ADR-0022). It carries the
+# Tier 0, and the only Ascension module this one depends on (ADR-0011, ADR-0024). It carries the
 # HUD element contract, so that other modules can add to the HUD without knowing this one exists.
 [[dependencies.${mod_id}]]
 modId = "ascension_core"

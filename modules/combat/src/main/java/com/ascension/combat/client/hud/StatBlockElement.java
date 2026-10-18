@@ -25,7 +25,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * sheet and in item tooltips.
  *
  * <p>Registered with the HUD through {@code core}'s contract, so combat never depends on the HUD
- * module; with no HUD host installed it is simply never drawn (ADR-0022). Reads every stat through
+ * module; with no HUD host installed it is simply never drawn (ADR-0024). Reads every stat through
  * {@link StatReader} (ADR-0019). A number is green for three seconds after a buff lifts it and red
  * after a debuff cuts it.
  *

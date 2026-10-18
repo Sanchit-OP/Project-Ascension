@@ -5,7 +5,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 /**
  * Client configuration.
  *
- * <p>The master switch is how a pack that wants vanilla's HUD back gets it (ADR-0022): off, this
+ * <p>The master switch is how a pack that wants vanilla's HUD back gets it (ADR-0024): off, this
  * mod draws nothing and cancels nothing. Per-element visibility, position and scale come with the
  * elements themselves.
  */

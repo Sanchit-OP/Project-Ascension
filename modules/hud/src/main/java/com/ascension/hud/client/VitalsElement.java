@@ -20,7 +20,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  *
  * <p>Replaces vanilla's hearts, food and experience bar (the layers are cancelled in
  * {@link HudClient}). Ships in {@code ascension-hud} because it needs nothing but vanilla state,
- * so the HUD works with only {@code core} present (ADR-0022).
+ * so the HUD works with only {@code core} present (ADR-0024).
  *
  * <p>Reads the local player's own cached fields each frame and keeps only numbers: no player is
  * stored (ADR-0007). Allocates nothing per frame; the numbers beside the bar are drawn from

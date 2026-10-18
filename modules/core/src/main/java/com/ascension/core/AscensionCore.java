@@ -50,7 +50,7 @@ public final class AscensionCore {
      */
     private void onLoadComplete(FMLLoadCompleteEvent event) {
         WorldEnvironments.get().freeze();
-        // The HUD contract (ADR-0022) is client-only; a dedicated server never builds it.
+        // The HUD contract (ADR-0024) is client-only; a dedicated server never builds it.
         if (FMLEnvironment.dist == Dist.CLIENT) {
             HudElements.get().freeze();
         }

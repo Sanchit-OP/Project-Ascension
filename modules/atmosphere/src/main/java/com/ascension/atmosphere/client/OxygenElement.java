@@ -20,7 +20,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * that drains, going red and pulsing when it is nearly gone, and the screen edge reddening with it.
  * In fine air it is a small quiet badge, and in breathable air with full lungs it is not there.
  *
- * <p>Registered through {@code core}'s HUD contract (ADR-0022), so atmosphere never depends on the
+ * <p>Registered through {@code core}'s HUD contract (ADR-0024), so atmosphere never depends on the
  * HUD module; without a host, {@link OxygenHudLayer} draws its plain bar instead. Reads only
  * {@link ClientOxygenState}, the cached mirror of what the server said (ADR-0007): no world access,
  * and the text is rebuilt only when a value changes.

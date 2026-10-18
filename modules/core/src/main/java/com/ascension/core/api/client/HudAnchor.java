@@ -6,7 +6,7 @@ package com.ascension.core.api.client;
  *
  * <p>Several elements may share an anchor; the host stacks them away from the hotbar in
  * {@link HudElement#order()} order. Which anchors a host honours, and where it puts them, is the
- * host's decision (ADR-0022).
+ * host's decision (ADR-0024).
  */
 public enum HudAnchor {
     /** Just left of the hotbar, bottom-aligned with it. Stacks further left. */

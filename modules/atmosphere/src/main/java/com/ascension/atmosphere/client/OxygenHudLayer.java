@@ -53,7 +53,7 @@ public final class OxygenHudLayer implements LayeredDraw.Layer {
         if (minecraft.player == null || minecraft.options.hideGui) {
             return;
         }
-        // A HUD host draws the oxygen emblem instead (ADR-0022); this plain bar is the fallback for
+        // A HUD host draws the oxygen emblem instead (ADR-0024); this plain bar is the fallback for
         // when none is installed, so a player never sees both.
         if (HudRegistry.hostPresent()) {
             return;

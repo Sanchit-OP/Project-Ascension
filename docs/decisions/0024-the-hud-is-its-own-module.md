@@ -1,8 +1,10 @@
-# ADR-0022: The HUD is its own Tier 1 module, `ascension-hud`
+# ADR-0024: The HUD is its own Tier 1 module, `ascension-hud`
 
 - **Status:** Accepted, 2026-10-18 (Sanchit chose this option over a registry living in `core` alone,
   and over combat owning everything)
 - **Date:** 2026-10-18
+- **Number:** 0024. It was written as 0022 and renumbered when the enchantments work took 0022 on `main` and the
+  teams ADR took 0023; nothing else changed.
 - **Builds on:** [ADR-0003](0003-modular-architecture-and-compatibility-policy.md),
   [ADR-0007](0007-performance-contract.md), [ADR-0011](0011-tier-1-modules-share-contracts-through-core.md)
 

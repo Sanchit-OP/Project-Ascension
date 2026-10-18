@@ -29,7 +29,7 @@ public final class AtmosphereClient {
     }
 
     /**
-     * Gives the HUD the oxygen emblem (ADR-0022). If a HUD host is installed it draws the emblem
+     * Gives the HUD the oxygen emblem (ADR-0024). If a HUD host is installed it draws the emblem
      * and {@link OxygenHudLayer} stays quiet; if not, that plain bar is still here.
      */
     @SubscribeEvent

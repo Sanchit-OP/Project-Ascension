@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 /**
  * One thing on the player's screen: a gauge, a stat block, a badge.
  *
- * <p>The contract of ADR-0022. A module that owns some state (oxygen, runes, stats) registers an
+ * <p>The contract of ADR-0024. A module that owns some state (oxygen, runes, stats) registers an
  * element through {@link HudRegistry}; whichever HUD host is installed decides where it goes, how
  * big the frame is and whether it is shown at all. The element only knows how to draw itself.
  *

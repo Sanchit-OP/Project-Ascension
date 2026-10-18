@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 /**
- * The look of the HUD, handed to every element each frame by the host (ADR-0022): the panel behind
+ * The look of the HUD, handed to every element each frame by the host (ADR-0024): the panel behind
  * a group of things, the typeface, the icons. An element draws with these instead of its own, so
  * the whole HUD stays one family and a different host can restyle all of it.
  *
