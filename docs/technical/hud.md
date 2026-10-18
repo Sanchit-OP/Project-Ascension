@@ -60,10 +60,10 @@ just left of the hotbar, simple and with no detail.** Sizes below are GUI units.
 
 | Element | Proposal |
 |---|---|
-| **Stat block** | Two columns of three, icon plus number only, in a glass panel bottom-aligned just **left of the hotbar** (League's block). Offence left (Attack Damage, Attack Speed, Omnivamp), defence right (Armor, Magic Resist, Move Speed). A buff turns the number green, a debuff red. No names, no expanded view, no key to hold. Details live in the tooltip and the character sheet. |
-| **Health** | One smooth bar above the hotbar, hotbar-wide, subtle tick every 100 HP, numbers centred on it in a clean face. Pale trail = health just lost; gold strip = absorption, `+N` above its right end; red below 30%. Same bar from 20 to 1,000. |
+| **Stat block** | Two columns of three, icon plus number only, in a glass panel bottom-aligned just **left of the hotbar** (League's block). Offence left (Attack Damage, Attack Speed, Omnivamp), defence right (Armor, Magic Resist, Move Speed, shown as a boot). A buff turns the number green, a debuff red. No names, no expanded view, no key to hold. Details live in the tooltip and the character sheet. |
+| **Health** | One smooth bar above the hotbar, a subtle tick every 100 HP, numbers above its left end. **Green is health now, always, even when low.** After it, left to right: **white = shield**, **grey = health about to regenerate** (shown only when known, e.g. a Regeneration effect's remaining heals), **red = health just lost**, fading out. `+N` labels above the right end. Same bar from 20 to 1,000. |
 | **Level** | A round badge on the bar's left end; its ring is the XP progress. Always visible (levels are spent). |
-| **Food** | A short capsule right of the health bar. |
+| **Hunger** | A round badge at the bar's right end, mirroring the level badge. Its ring is the food level; it glows green at 18+ (natural regeneration allowed) and reddens when low, so a player sees at a glance why they are or are not healing. |
 | **Oxygen** | **No bar.** A large **O₂** emblem rises above the hotbar only as air runs low: the outer ring is the lungs, an inner amber ring is the tank. It reddens and glows as it empties, shows seconds beneath only when low, and the screen edge reddens. In fine air in space it is a small quiet badge. Pressurising and share-air are marks on the emblem. |
 | **Runes** | Round glass discs right of the hotbar, the orrery's glyphs and path colours. Live = bright with a glow; idle = dim. Stacks are a number badge, a charge is a ring that fills, a cooldown is a sweep. |
 | **Armor, Magic Resist numbers** | In the stat block. Vanilla's armour icons are hidden. |
