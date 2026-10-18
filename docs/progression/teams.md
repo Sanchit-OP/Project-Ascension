@@ -1,8 +1,9 @@
 # Teams: who shares what
 
-> **Designed 2026-10-18, a proposal.** Sanchit has not answered §8 yet; until he does, nothing is built
-> and the game behaves as it does today (the whole server is one team). Facts about FTB Teams below were
-> read from the installed jar (`2101.1.11`), not remembered. Every number is a placeholder.
+> **Designed and decided 2026-10-18 ([ADR-0023](../decisions/0023-teams-are-ftb-teams-parties.md)).**
+> Sanchit chose all three recommendations in §8. **Nothing is built yet**: until T1 lands, the game
+> behaves as it does today (the whole server is one team). Facts about FTB Teams below were read from
+> the installed jar (`2101.1.11`), not remembered. Every number is a placeholder.
 
 ## 1. In short
 
@@ -132,13 +133,11 @@ allies are found on the event that needs them, within a radius (ADR-0007).
 
 ## 8. Decisions
 
-**Needed from Sanchit** (recommendation first):
+**Answered by Sanchit, 2026-10-18:**
 
-1. **Bosses pay the killer's team, not the whole server?** Gates stay the world's.
-   Or: keep the whole server as one team and skip all of this.
-2. **Joining gives you the party's milestones and gives it yours; leaving keeps everything you hold?**
-   Or: leaving takes the party's points with you.
-3. **Teammates cannot hurt each other (setting, on by default)?** Or: leave PvP to the server's setting.
+1. **Bosses pay the killer's team, not the whole server.** Gates stay the world's.
+2. **Joining gives you the party's milestones and gives it yours; leaving keeps everything you hold.**
+3. **Teammates cannot hurt each other** (a setting, on by default).
 
 **Defaults I will use unless he says otherwise:** no party size limit (`max_party_size` 0), limited
 lives off (FTB's hardcore-style option), teams of other parties are not allies, and a one-time message

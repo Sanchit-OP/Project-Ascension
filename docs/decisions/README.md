@@ -49,3 +49,4 @@ forgets it.
 | [0020](0020-rune-pages.md) | Rune pages: three keystones, two rows, shards, a cost to change, and runes as data | Accepted |
 | [0021](0021-player-growth.md) | Player growth comes from milestones, kept as advancements and applied as attribute modifiers | Accepted |
 | [0022](0022-the-hud-is-its-own-module.md) | The HUD is its own Tier 1 module, `ascension-hud`, with a contract in `core` | Accepted |
+| [0023](0023-teams-are-ftb-teams-parties.md) | Teams are FTB Teams parties; progress has three owners (world, team, you) | Accepted |
