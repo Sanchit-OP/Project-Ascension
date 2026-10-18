@@ -4,14 +4,11 @@ Voice rules (docs/progression/quests.md section 1): say what and where, never wh
 has already been shown; practical hints, in plain words; no answers. The build fails on a guarded word
 (pack/quests/guarded-words.txt).
 
-Shapes: lesson = ascension_star, goal = ascension_nova, landmark = ascension_eye.
+Shapes: LESSON, GOAL and LANDMARK (tools/quests/model.py).
 """
 
-from quests.model import (Chapter, Quest, advancement, checkmark, give, item, item_icon, picture)
-
-LESSON = 'ascension_star'
-GOAL = 'ascension_nova'
-LANDMARK = 'ascension_eye'
+from quests.model import (GOAL, LANDMARK, LESSON, Chapter, Quest, advancement, checkmark, give, item, item_icon,
+                          picture)
 
 CHAPTER = Chapter(
     slug='first_days',

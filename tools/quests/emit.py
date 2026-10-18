@@ -10,7 +10,6 @@ Layout, as FTB Quests 2101.1.36 loads it (read from the jar's BaseQuestFile, not
 An id is `object_id(kind, slug)`. Nothing here depends on a running game.
 """
 
-from quests import chart
 from quests.model import object_id
 from quests.snbt import Long, dumps
 
@@ -44,41 +43,37 @@ def _resolve(ref, chapter_slug):
     return _qid(chapter_slug, ref)
 
 
-def _task(chapter, quest, index, task):
-    out = {'id': object_id('task', f'{chapter.slug}.{quest.slug}.{index}')}
-    if task.kind == 'checkmark':
-        out['type'] = 'checkmark'
-    elif task.kind == 'item':
-        out['type'] = 'item'
-        out['item'] = task.args['item']
-        out['count'] = Long(task.args['count'])
-    elif task.kind == 'advancement':
-        out['type'] = 'advancement'
-        out['advancement'] = task.args['advancement']
-        out['criterion'] = ''
-    elif task.kind == 'dimension':
-        out['type'] = 'dimension'
-        out['dimension'] = task.args['dimension']
-    elif task.kind == 'structure':
-        out['type'] = 'structure'
-        out['structure'] = task.args['structure']
-    else:
-        raise ValueError(f'unknown task kind {task.kind!r} in {chapter.slug}.{quest.slug}')
+# What each kind of task or reward writes, after its id. One line per kind: a new kind is a new line here
+# (and a constructor in model.py), nothing else.
+_TASK_FIELDS = {
+    'checkmark': lambda a: {'type': 'checkmark'},
+    'item': lambda a: {'type': 'item', 'item': a['item'], 'count': Long(a['count'])},
+    'advancement': lambda a: {'type': 'advancement', 'advancement': a['advancement'], 'criterion': ''},
+    'dimension': lambda a: {'type': 'dimension', 'dimension': a['dimension']},
+    'structure': lambda a: {'type': 'structure', 'structure': a['structure']},
+}
+
+_REWARD_FIELDS = {
+    'item': lambda a: {'type': 'item', 'item': a['item'], 'count': a['count']},
+    'xp_levels': lambda a: {'type': 'xp_levels', 'xp_levels': a['xp_levels']},
+}
+
+
+def _written(table, what, kind, args, object_kind, chapter, quest, index):
+    """{'id': ...} followed by the fields the table gives for this kind."""
+    if kind not in table:
+        raise ValueError(f'unknown {what} kind {kind!r} in {chapter.slug}.{quest.slug}')
+    out = {'id': object_id(object_kind, f'{chapter.slug}.{quest.slug}.{index}')}
+    out.update(table[kind](args))
     return out
+
+
+def _task(chapter, quest, index, task):
+    return _written(_TASK_FIELDS, 'task', task.kind, task.args, 'task', chapter, quest, index)
 
 
 def _reward(chapter, quest, index, reward):
-    out = {'id': object_id('reward', f'{chapter.slug}.{quest.slug}.{index}')}
-    if reward.kind == 'item':
-        out['type'] = 'item'
-        out['item'] = reward.args['item']
-        out['count'] = reward.args['count']
-    elif reward.kind == 'xp_levels':
-        out['type'] = 'xp_levels'
-        out['xp_levels'] = reward.args['xp_levels']
-    else:
-        raise ValueError(f'unknown reward kind {reward.kind!r} in {chapter.slug}.{quest.slug}')
-    return out
+    return _written(_REWARD_FIELDS, 'reward', reward.kind, reward.args, 'reward', chapter, quest, index)
 
 
 def _quest(chapter, quest):
@@ -175,7 +170,3 @@ def all_files(book):
     for index, chapter in enumerate(book.chapters):
         files[f'chapters/{chapter.slug}.snbt'] = chapter_text(chapter, index)
     return files
-
-
-def chart_layout_text():
-    return chart.layout_text()

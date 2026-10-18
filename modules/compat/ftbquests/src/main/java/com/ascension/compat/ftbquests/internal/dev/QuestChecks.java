@@ -40,7 +40,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public final class QuestChecks {
 
     private static final String TRIGGER = "quest-checks.txt";
-    private static final String TAG = "[quest-checks] ";
+    private static final CheckReport REPORT = new CheckReport("quest-checks");
     private static final Pattern ID = Pattern.compile("\\bid:\\s*\"([0-9A-F]{16})\"");
     private static final Pattern DEPENDENCIES = Pattern.compile("dependencies:\\s*\\[([^\\]]*)]");
     private static final Pattern QUOTED_ID = Pattern.compile("\"[0-9A-F]{16}\"");
@@ -50,20 +50,12 @@ public final class QuestChecks {
 
     private static MinecraftServer server;
     private static int ticks = -1;
-    private static int checks;
-    private static int failures;
 
     private QuestChecks() {
     }
 
     public static void register(IEventBus gameBus) {
-        Path trigger = FMLPaths.GAMEDIR.get().resolve(TRIGGER);
-        if (!Files.exists(trigger)) {
-            return;
-        }
-        try {
-            Files.deleteIfExists(trigger);
-        } catch (IOException e) {
+        if (!CheckReport.consumeTrigger(TRIGGER)) {
             return;
         }
         gameBus.addListener((ServerStartedEvent event) -> {
@@ -81,16 +73,16 @@ public final class QuestChecks {
         try {
             run();
         } catch (Throwable t) {
-            fail("the check itself threw " + t);
+            REPORT.fail("the check itself threw " + t);
         }
-        print("RESULT: " + checks + " checks, " + failures + " failures");
+        REPORT.finish();
         server.halt(false);
     }
 
     private static void run() throws ReflectiveOperationException, IOException {
         Class<?> fileClass = Class.forName("dev.ftb.mods.ftbquests.quest.ServerQuestFile");
         Optional<?> loaded = (Optional<?>) fileClass.getMethod("getInstance").invoke(null);
-        expect("FTB Quests has a loaded quest file", loaded.isPresent());
+        REPORT.expect("FTB Quests has a loaded quest file", loaded.isPresent());
         if (loaded.isEmpty()) {
             return;
         }
@@ -118,7 +110,7 @@ public final class QuestChecks {
                 }
             }
         }
-        expect("there are generated chapter files (" + chapterFiles + ") and ids in them (" + expected.size() + ")",
+        REPORT.expect("there are generated chapter files (" + chapterFiles + ") and ids in them (" + expected.size() + ")",
                 chapterFiles > 0 && !expected.isEmpty());
 
         Method getBase = file.getClass().getMethod("getBase", long.class);
@@ -128,12 +120,12 @@ public final class QuestChecks {
                 unknown.add(id);
             }
         }
-        expect("every id in the chapter files is an object Quests loaded"
+        REPORT.expect("every id in the chapter files is an object Quests loaded"
                 + (unknown.isEmpty() ? "" : " (not loaded: " + unknown.subList(0, Math.min(8, unknown.size())) + ")"),
                 unknown.isEmpty());
 
         Collection<?> chapterList = (Collection<?>) file.getClass().getMethod("getAllChapters").invoke(file);
-        expect("Quests loaded the same number of chapters as there are files (" + chapterList.size() + ")",
+        REPORT.expect("Quests loaded the same number of chapters as there are files (" + chapterList.size() + ")",
                 chapterList.size() == chapterFiles);
 
         List<String> missing = new ArrayList<>();
@@ -156,9 +148,9 @@ public final class QuestChecks {
                 missing.add(String.valueOf(object));
             }
         }
-        expect("every dependency in the files was kept when Quests loaded them (" + dependenciesLoaded + " of "
+        REPORT.expect("every dependency in the files was kept when Quests loaded them (" + dependenciesLoaded + " of "
                 + dependenciesInFiles + ")", dependenciesLoaded == dependenciesInFiles && dependenciesInFiles > 0);
-        expect("every item a task or reward names is a real item (" + stacks + " checked)"
+        REPORT.expect("every item a task or reward names is a real item (" + stacks + " checked)"
                 + (missing.isEmpty() ? "" : " (missing: " + missing.subList(0, Math.min(5, missing.size())) + ")"),
                 missing.isEmpty());
     }
@@ -179,25 +171,5 @@ public final class QuestChecks {
         } catch (InvocationTargetException | NoSuchMethodException e) {
             return ItemStack.EMPTY;
         }
-    }
-
-    private static void expect(String what, boolean ok) {
-        checks++;
-        if (ok) {
-            print("PASS " + what);
-        } else {
-            failures++;
-            print("FAIL " + what);
-        }
-    }
-
-    private static void fail(String what) {
-        checks++;
-        failures++;
-        print("FAIL " + what);
-    }
-
-    private static void print(String line) {
-        System.out.println(TAG + line);
     }
 }

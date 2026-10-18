@@ -25,7 +25,7 @@ ROOT = os.path.abspath(os.path.join(HERE, '..'))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(ROOT, 'pack', 'quests'))
 
-from quests import emit, validate  # noqa: E402
+from quests import chart, emit, validate  # noqa: E402
 
 QUEST_DIR = os.path.join(ROOT, 'pack', 'config', 'ftbquests', 'quests')
 LAYOUT = os.path.join(ROOT, 'modules', 'compat', 'ftbquests', 'src', 'main', 'resources', 'assets',
@@ -35,7 +35,7 @@ LAYOUT = os.path.join(ROOT, 'modules', 'compat', 'ftbquests', 'src', 'main', 're
 def expected_files():
     from book import BOOK  # noqa: E402  (imported late so a syntax error in a page reports as one)
     files = {os.path.join(QUEST_DIR, *rel.split('/')): text for rel, text in emit.all_files(BOOK).items()}
-    files[LAYOUT] = emit.chart_layout_text()
+    files[LAYOUT] = chart.layout_text()
     return BOOK, files
 
 

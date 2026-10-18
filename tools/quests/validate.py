@@ -82,136 +82,171 @@ def _shapes_available():
     return shapes
 
 
-def check(book):
-    """Returns a list of problems (empty when the book is sound)."""
-    problems = []
-    lang = _lang_keys()
-    guarded = _guarded()
-    shapes = _shapes_available()
-    planet_dims = {p.surface for p in chart.load_planets()}
-    dimensions = VANILLA_DIMENSIONS | planet_dims | {chart.SPACE}
+class _Checker:
+    """One run over one book. Each method looks at one kind of thing and adds to `problems`."""
 
-    chapter_slugs = [c.slug for c in book.chapters]
-    if len(set(chapter_slugs)) != len(chapter_slugs):
-        problems.append(f'duplicate chapter slugs: {chapter_slugs}')
+    def __init__(self, book):
+        self.book = book
+        self.problems = []
+        self.lang = _lang_keys()
+        self.guarded = _guarded()
+        self.shapes = _shapes_available()
+        self.dimensions = VANILLA_DIMENSIONS | {p.surface for p in chart.load_planets()} | {chart.SPACE}
+        self.quests = {}            # 'chapter.slug' -> (chapter, quest)
 
-    quests = {}
-    for chapter in book.chapters:
-        for quest in chapter.quests:
-            key = f'{chapter.slug}.{quest.slug}'
-            if key in quests:
-                problems.append(f'duplicate quest {key}')
-            quests[key] = (chapter, quest)
+    # -- the whole book -------------------------------------------------------------------------
 
-    def ref(chapter, reference):
+    def run(self):
+        chapter_slugs = [c.slug for c in self.book.chapters]
+        if len(set(chapter_slugs)) != len(chapter_slugs):
+            self.problems.append(f'duplicate chapter slugs: {chapter_slugs}')
+        self._index_quests()
+        for chapter in self.book.chapters:
+            self._chapter(chapter)
+        self._dependency_loops()
+        return self.problems
+
+    def _index_quests(self):
+        for chapter in self.book.chapters:
+            for quest in chapter.quests:
+                key = f'{chapter.slug}.{quest.slug}'
+                if key in self.quests:
+                    self.problems.append(f'duplicate quest {key}')
+                self.quests[key] = (chapter, quest)
+
+    # -- small questions ------------------------------------------------------------------------
+
+    @staticmethod
+    def _ref(chapter, reference):
         return reference if '.' in reference else f'{chapter.slug}.{reference}'
 
-    def text_ok(where, text):
-        for word in guarded:
+    def _text(self, where, text):
+        for word in self.guarded:
             if re.search(r'(?<![A-Za-z])' + re.escape(word) + r'(?![A-Za-z])', text, re.IGNORECASE):
-                problems.append(f'{where}: uses the guarded word "{word}": {text!r}')
+                self.problems.append(f'{where}: uses the guarded word "{word}": {text!r}')
 
-    def texture_ok(where, path):
+    def _texture(self, where, path):
         if path in DYNAMIC_TEXTURES:
             return
         if not os.path.exists(os.path.join(COMPAT_ASSETS, *path.split('/'))):
-            problems.append(f'{where}: picture {path} is missing from the compat jar')
+            self.problems.append(f'{where}: picture {path} is missing from the compat jar')
 
-    def item_ok(where, item_id):
+    def _item(self, where, item_id):
         if not _ID.match(item_id):
-            problems.append(f'{where}: "{item_id}" is not an item id')
+            self.problems.append(f'{where}: "{item_id}" is not an item id')
             return
         namespace, path = item_id.split(':', 1)
-        if _our(namespace) and f'item.{namespace}.{path}' not in lang and f'block.{namespace}.{path}' not in lang:
-            problems.append(f'{where}: we have no item "{item_id}"')
+        if (_our(namespace) and f'item.{namespace}.{path}' not in self.lang
+                and f'block.{namespace}.{path}' not in self.lang):
+            self.problems.append(f'{where}: we have no item "{item_id}"')
 
-    def icon_ok(where, icon):
+    def _icon(self, where, icon):
         if isinstance(icon, Icon):
             if icon.item:
-                item_ok(where, icon.item)
+                self._item(where, icon.item)
             if icon.texture:
-                texture_ok(where, icon.texture)
+                self._texture(where, icon.texture)
 
-    for chapter in book.chapters:
+    # -- a page ---------------------------------------------------------------------------------
+
+    def _chapter(self, chapter):
         where = f'chapter {chapter.slug}'
-        text_ok(where + ' title', chapter.title)
-        text_ok(where + ' subtitle', chapter.subtitle)
-        icon_ok(where + ' icon', chapter.icon)
-        if chapter.shape not in shapes:
-            problems.append(f'{where}: no quest shape "{chapter.shape}"')
+        self._text(where + ' title', chapter.title)
+        self._text(where + ' subtitle', chapter.subtitle)
+        self._icon(where + ' icon', chapter.icon)
+        if chapter.shape not in self.shapes:
+            self.problems.append(f'{where}: no quest shape "{chapter.shape}"')
 
         for image in chapter.images:
-            texture_ok(f'{where} image {image.slug}', image.texture)
-            if image.shown_after and ref(chapter, image.shown_after) not in quests:
-                problems.append(f'{where} image {image.slug}: shown after "{image.shown_after}", which is not a quest')
+            self._texture(f'{where} image {image.slug}', image.texture)
+            if image.shown_after and self._ref(chapter, image.shown_after) not in self.quests:
+                self.problems.append(
+                    f'{where} image {image.slug}: shown after "{image.shown_after}", which is not a quest')
         slugs = [i.slug for i in chapter.images]
         if len(set(slugs)) != len(slugs):
-            problems.append(f'{where}: duplicate image slugs')
+            self.problems.append(f'{where}: duplicate image slugs')
 
         placed = []
         for quest in chapter.quests:
-            q = f'{chapter.slug}.{quest.slug}'
-            text_ok(q + ' title', quest.title)
-            text_ok(q + ' subtitle', quest.subtitle)
-            if not quest.text:
-                problems.append(f'{q}: no text')
-            for line in quest.text:
-                if not isinstance(line, str) or not line.strip():
-                    problems.append(f'{q}: an empty line of text')
-                text_ok(q + ' text', line)
-            icon_ok(q + ' icon', quest.icon)
-            if quest.shape and quest.shape not in shapes:
-                problems.append(f'{q}: no quest shape "{quest.shape}"')
-            if not quest.tasks:
-                problems.append(f'{q}: a quest with no task can never be completed')
-            for dep in quest.deps:
-                if ref(chapter, dep) not in quests:
-                    problems.append(f'{q}: depends on "{dep}", which is not a quest')
-                if ref(chapter, dep) == q:
-                    problems.append(f'{q}: depends on itself')
+            self._quest(chapter, quest, placed)
 
-            for task in quest.tasks:
-                if task.kind == 'item':
-                    item_ok(q + ' task', task.args['item'])
-                elif task.kind == 'advancement':
-                    namespace, path = task.args['advancement'].split(':', 1)
-                    if _our(namespace):
-                        if not _advancement_exists(namespace, path):
-                            problems.append(f'{q}: we have no advancement "{namespace}:{path}"')
-                    elif namespace == 'minecraft' and not path.startswith(VANILLA_ADVANCEMENT_ROOTS):
-                        problems.append(f'{q}: "{namespace}:{path}" is not a vanilla advancement path')
-                elif task.kind == 'dimension':
-                    if task.args['dimension'] not in dimensions:
-                        problems.append(f'{q}: unknown dimension "{task.args["dimension"]}"')
-            for reward in quest.rewards:
-                if reward.kind == 'item':
-                    item_ok(q + ' reward', reward.args['item'])
-                    if reward.args['count'] < 1:
-                        problems.append(f'{q}: a reward of nothing')
+    # -- a quest --------------------------------------------------------------------------------
 
-            for other_x, other_y, other in placed:
-                if abs(quest.x - other_x) < MIN_SPACING and abs(quest.y - other_y) < MIN_SPACING:
-                    problems.append(f'{q}: sits on top of {other} ({quest.x},{quest.y})')
-            placed.append((quest.x, quest.y, quest.slug))
+    def _quest(self, chapter, quest, placed):
+        q = f'{chapter.slug}.{quest.slug}'
+        self._text(q + ' title', quest.title)
+        self._text(q + ' subtitle', quest.subtitle)
+        if not quest.text:
+            self.problems.append(f'{q}: no text')
+        for line in quest.text:
+            if not isinstance(line, str) or not line.strip():
+                self.problems.append(f'{q}: an empty line of text')
+            self._text(q + ' text', line)
+        self._icon(q + ' icon', quest.icon)
+        if quest.shape and quest.shape not in self.shapes:
+            self.problems.append(f'{q}: no quest shape "{quest.shape}"')
+        if not quest.tasks:
+            self.problems.append(f'{q}: a quest with no task can never be completed')
 
-    # Loops: Quests refuses a book whose dependencies go round in a circle.
-    state = {}
-
-    def visit(key, trail):
-        if state.get(key) == 'done':
-            return
-        if state.get(key) == 'open':
-            problems.append('dependency loop: ' + ' -> '.join(trail + [key]))
-            return
-        state[key] = 'open'
-        chapter, quest = quests[key]
         for dep in quest.deps:
-            target = ref(chapter, dep)
-            if target in quests:
-                visit(target, trail + [key])
-        state[key] = 'done'
+            if self._ref(chapter, dep) not in self.quests:
+                self.problems.append(f'{q}: depends on "{dep}", which is not a quest')
+            if self._ref(chapter, dep) == q:
+                self.problems.append(f'{q}: depends on itself')
+        for task in quest.tasks:
+            self._task(q, task)
+        for reward in quest.rewards:
+            self._reward(q, reward)
 
-    for key in quests:
-        visit(key, [])
+        for other_x, other_y, other in placed:
+            if abs(quest.x - other_x) < MIN_SPACING and abs(quest.y - other_y) < MIN_SPACING:
+                self.problems.append(f'{q}: sits on top of {other} ({quest.x},{quest.y})')
+        placed.append((quest.x, quest.y, quest.slug))
 
-    return problems
+    def _task(self, q, task):
+        if task.kind == 'item':
+            self._item(q + ' task', task.args['item'])
+        elif task.kind == 'advancement':
+            namespace, path = task.args['advancement'].split(':', 1)
+            if _our(namespace):
+                if not _advancement_exists(namespace, path):
+                    self.problems.append(f'{q}: we have no advancement "{namespace}:{path}"')
+            elif namespace == 'minecraft' and not path.startswith(VANILLA_ADVANCEMENT_ROOTS):
+                self.problems.append(f'{q}: "{namespace}:{path}" is not a vanilla advancement path')
+        elif task.kind == 'dimension':
+            if task.args['dimension'] not in self.dimensions:
+                self.problems.append(f'{q}: unknown dimension "{task.args["dimension"]}"')
+
+    def _reward(self, q, reward):
+        if reward.kind == 'item':
+            self._item(q + ' reward', reward.args['item'])
+            if reward.args['count'] < 1:
+                self.problems.append(f'{q}: a reward of nothing')
+
+    # -- loops ----------------------------------------------------------------------------------
+
+    def _dependency_loops(self):
+        """Quests refuses a book whose dependencies go round in a circle."""
+        state = {}
+
+        def visit(key, trail):
+            if state.get(key) == 'done':
+                return
+            if state.get(key) == 'open':
+                self.problems.append('dependency loop: ' + ' -> '.join(trail + [key]))
+                return
+            state[key] = 'open'
+            chapter, quest = self.quests[key]
+            for dep in quest.deps:
+                target = self._ref(chapter, dep)
+                if target in self.quests:
+                    visit(target, trail + [key])
+            state[key] = 'done'
+
+        for key in self.quests:
+            visit(key, [])
+
+
+def check(book):
+    """Returns a list of problems (empty when the book is sound)."""
+    return _Checker(book).run()

@@ -16,6 +16,11 @@ import hashlib
 from dataclasses import dataclass, field
 from typing import List, Optional
 
+# The three kinds of quest, each drawn in its own shape so a page reads at a glance (quests.md section 3).
+LESSON = 'ascension_star'        # teaches one thing; one easy task
+GOAL = 'ascension_nova'          # a real piece of play: build, craft, reach
+LANDMARK = 'ascension_eye'       # a place or a boss; the network's motif, kept to those
+
 # ----------------------------------------------------------------------------------------------
 # Icons
 # ----------------------------------------------------------------------------------------------

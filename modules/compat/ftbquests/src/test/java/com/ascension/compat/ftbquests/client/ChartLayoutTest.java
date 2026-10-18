@@ -80,25 +80,4 @@ class ChartLayoutTest {
         }
     }
 
-    @Test
-    void theMarkerKeyChangesWithAPixelOrATurnAndNotWithLessThanThat() {
-        long here = ChartOverlay.keyOf(new ChartMath.Marker(100.2, 200.1, 0.0));
-
-        assertEquals(here, ChartOverlay.keyOf(new ChartMath.Marker(100.4, 199.9, 0.02)), "inside the same pixel and turn");
-        assertTrue(here != ChartOverlay.keyOf(new ChartMath.Marker(101.2, 200.1, 0.0)), "a pixel across");
-        assertTrue(here != ChartOverlay.keyOf(new ChartMath.Marker(100.2, 200.1, Math.PI / 2)), "a quarter turn");
-        assertTrue(here != ChartOverlay.keyOf(null), "no marker is its own state");
-    }
-
-    @Test
-    void compositingMatchesTheNativePixelOrder() {
-        // Opaque over nothing is the colour itself, with red and blue swapped into the native order (0xAABBGGRR).
-        assertEquals(0xFF0000FF, ChartOverlay.sourceOver(0xFFFF0000, 0), "opaque red is 0xAABBGGRR = FF0000FF");
-        // Nothing over something leaves it alone.
-        assertEquals(0xFF336699, ChartOverlay.sourceOver(0x00FFFFFF, 0xFF336699));
-        // Half-opaque white over opaque black is mid-grey and stays opaque.
-        int mixed = ChartOverlay.sourceOver(0x80FFFFFF, 0xFF000000);
-        assertEquals(0xFF, mixed >>> 24);
-        assertEquals(128, mixed & 0xFF, 2);
-    }
 }

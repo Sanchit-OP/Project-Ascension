@@ -134,7 +134,7 @@ claims their own rewards. That fits the owners in §1 without code:
 | **T2** | The FTB Teams jar (`ascension-compat-ftbteams`), join and leave handling, the first-login line | **Built and seen with stand-in players on a dedicated server** (a solo player's kill pays only them; the second joins their party and gets the points; leaves and keeps them; the line appears once; a restart changes nothing). Two real clients: not yet |
 | **T3** | Friendly fire (allies wait for a rune that needs them) | **Seen with stand-in players on a dedicated server** (a teammate's hit does no damage, a stranger's and a former teammate's do). The stand-in team is never protected: unit-tested only |
 | **T4** | The team list for the HUD | **Deferred** (Sanchit, 2026-10-18: not needed yet; a map mod shows teammates) |
-| **T5** | Refactor pass (ADR-0008) | No new features |
+| **T5** | Refactor pass (ADR-0008) | **Done 2026-10-18: read, nothing to change.** The team code is small (the core registry and holder, the FTB Teams jar's four classes, combat's per-team set and friendly fire), holds only ids, has no duplicated logic, and its tests cover the union rule and who is protected. The one repeated thing, the dev check's plumbing, stays per jar: sharing it would put a dev aid into `core`'s public API |
 
 **Two-client testing is still owed** (it has been since M1). The server rules are now seen with stand-in
 players (`modules/compat/ftbteams/.../dev/TeamChecks`, how to run it in `dev-environment.md`), which is
