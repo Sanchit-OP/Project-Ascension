@@ -117,11 +117,11 @@ through `StatReader`, never from an attribute directly. Every coefficient is in 
 
 | Ability | Base | Gains |
 |---|---|---|
-| Veigo's Blade, Wither | 8% of current health | +0.2% per Attack Damage |
+| Veigo's Blade, Wither | 8% of current health | +0.2% per Attack Damage, never more than your Attack Damage |
 | Darken Blade, burst | 5% of max health, 6 shield | +0.1% and +0.5 shield per Attack Damage |
 | Divine Sunderer | 4% physical + 4% magic of max health | +0.1% each per Attack Damage |
 | Spear of Shojin | 5% of max health, true | +0.1% per Attack Damage |
-| Ragefang, Rage | 5 magic per hit | +0.2 per Attack Damage |
+| Ragefang, Rage | 3 magic per hit | +0.1 per Attack Damage |
 | Heartwood of Pallas | 3 magic per hit | +0.15 per Attack Damage |
 | Galeforce | 20% of missing health | +0.5% per Attack Damage |
 | Rocketbelt | 6 burst damage | +0.5 per Attack Damage |
@@ -136,15 +136,7 @@ scaled proc grows by half again or doubles.
 
 Tooltips state each base number and what it scales with.
 
-## 5. Still open
-
-- Seen in a client and on a dedicated server: difficulty applying on spawn and `/reload`, a legendary's stats
-  on its tooltip and the character sheet, and one fight per scaled ability.
-- Whether a full legendary set is too strong (section 3), and whether Hard's +75% boss health is enough.
-- A rune and growth pass against these numbers: the runes and the 35 growth points add to every total.
-- Cataclysm weapons' attack speed was not measured; the check assumes 1.6. Measure it when the dev server next runs.
-
-## 6. Bosses by progression (a draft, for Sanchit to edit)
+## 5. Bosses by progression (a draft, for Sanchit to edit)
 
 Bosses should grow as the game goes on: each later boss has more of everything, and the numbers are written
 per boss, not per tier. These are proposals. Heavy and boss tiers share nothing below; each row is one
@@ -164,10 +156,10 @@ once each boss's base health is read from a running game. The times use the same
 with no growth points or runes, which only shorten them; a well-built player will beat these. A later world's
 boss goes below the Wither in this table.
 
-## 7. Still open
+## 6. Still open
 
 - Seen in a client and on a dedicated server: difficulty applying on spawn and `/reload`, a legendary's stats
   on its tooltip and the character sheet, and one fight per scaled ability.
 - Measure Cataclysm's weapon attack speeds, then bring its weapons to two thirds.
-- Write the boss list (section 6) into `mob_stats` and `mob_difficulty` once Sanchit has edited it.
+- Write the boss list (section 5) into `mob_stats` and `mob_difficulty` once Sanchit has edited it.
 - A rune and growth pass against these numbers: the runes and the 35 growth points add to every total.
