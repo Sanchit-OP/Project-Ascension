@@ -10,8 +10,6 @@
 
 Excused by the rules, with the reason. This list should only get shorter.
 
-- **No source** (26): Berserker's Greaves, Collector's Pants, Darius's Axe, Darken Blade, Divine Sunderer, Edge of Night, Endless Hunger, Galeforce, Gargoyle Stoneplate, Guardian's Wing, Heartwood of Pallas, Mercury Treads, Mortal Reminder, Ninja Tabi, The Protean Mask, Ragefang, Rocketbelt, Spear of Shojin, Sterak's Harness, Swifty, Tasted Blood, Unending Despair, Veigo's Blade, Wizard's Agony, Wraithblade, Zonia's Hourglass. League-style build paths, to be built by the combat session (resource-economy.md §5).
-- **No use** (1): Raw Helium Crystal. Helium's jobs: the Moon's material in the combat build paths, and the helium lamp (resource-economy.md §4, §5).
 
 ## Creative only, by design
 
@@ -41,74 +39,192 @@ No survival source, on purpose. The rules say why.
 
 ## ascension-combat
 
+### Materials
+
+**Boots** · `ascension_combat:basic_boots`
+- From: Crafting: Leather + anything in `#c:ingots/titanium`
+- Used: Crafting into Berserker's Greaves, Mercury Treads, Ninja Tabi, Swifty, Tasted Blood, Wizard's Agony
+
+**B. F. Sword** · `ascension_combat:bf_sword`
+- From: Crafting: Long Sword + Netherite Ingot
+- Used: Crafting into Darken Blade, Divine Sunderer, Endless Hunger
+
+**Caulfield's Warhammer** · `ascension_combat:caulfields_warhammer`
+- From: Crafting: Long Sword + anything in `#c:raw_materials/helium`
+- Used: Crafting into Darius's Axe, Divine Sunderer
+
+**Chain Vest** · `ascension_combat:chain_vest`
+- From: Crafting: Cloth Armor + anything in `#c:raw_materials/helium`
+- Used: Crafting into Gargoyle Stoneplate, Guardian's Wing, The Protean Mask
+
+**Cloth Armor** · `ascension_combat:cloth_armor`
+- From: Crafting: Leather
+- Used: Crafting into Chain Vest, Collector's Pants, Gargoyle Stoneplate, Giant's Belt, Ninja Tabi, Seeker's Armguard
+
+**Dagger** · `ascension_combat:dagger`
+- From: Crafting: anything in `#c:ingots/titanium` + Stick
+- Used: Crafting into Berserker's Greaves, Edge of Night, Executioner's Calling, Hearthbound Axe, Last Whisper, Noonquiver, Pickaxe, Ragefang, Recurve Bow, Seeker's Armguard, Serrated Dirk, Spear of Shojin, Swifty, Wraithblade
+
+**Heart of the Ender Golem** · `ascension_combat:ender_golem_heart`
+- From: Dropped by the Ender Golem: 1, killed by a player
+- Used: Crafting into Sterak's Harness
+
+**Heart of the Ender Guardian** · `ascension_combat:ender_guardian_heart`
+- From: Dropped by the Ender Guardian: 1, killed by a player
+- Used: Crafting into Guardian's Wing
+
+**Executioner's Calling** · `ascension_combat:executioners_calling`
+- From: Crafting: Long Sword + Dagger + Wither Skeleton Skull
+- Used: Crafting into Collector's Pants, Mortal Reminder
+
+**Giant's Belt** · `ascension_combat:giants_belt`
+- From: Crafting: Ruby Crystal + Cloth Armor + anything in `#c:raw_materials/helium`
+- Used: Crafting into Endless Hunger, Rocketbelt, Sterak's Harness, Unending Despair
+
+**Hearthbound Axe** · `ascension_combat:hearthbound_axe`
+- From: Crafting: Long Sword + Dagger + Blaze Rod
+- Used: Crafting into Spear of Shojin
+
+**Heart of Ignis** · `ascension_combat:ignis_heart`
+- From: Dropped by the Ignis: 1, killed by a player
+- Used: Crafting into Divine Sunderer
+
+**Kindlegem** · `ascension_combat:kindlegem`
+- From: Crafting: Ruby Crystal + Magma Cream
+- Used: Crafting into Galeforce, Rocketbelt, Zonia's Hourglass
+
+**Last Whisper** · `ascension_combat:last_whisper`
+- From: Crafting: Long Sword + Dagger + anything in `#c:raw_materials/helium`
+- Used: Crafting into Mortal Reminder, Spear of Shojin, Wraithblade
+
+**Long Sword** · `ascension_combat:long_sword`
+- From: Crafting: anything in `#c:ingots/titanium` + Stick
+- Used: Crafting into B. F. Sword, Caulfield's Warhammer, Executioner's Calling, Hearthbound Axe, Last Whisper, Phage, Pickaxe, Vampiric Scepter, Veigo's Blade
+
+**Negatron Cloak** · `ascension_combat:negatron_cloak`
+- From: Crafting: Null-Magic Mantle + Glowstone Dust
+- Used: Crafting into Edge of Night, Gargoyle Stoneplate
+
+**Heart of the Netherite Monstrosity** · `ascension_combat:netherite_monstrosity_heart`
+- From: Dropped by the Netherite Monstrosity: 1, killed by a player
+- Used: Crafting into Zonia's Hourglass
+
+**Noonquiver** · `ascension_combat:noonquiver`
+- From: Crafting: Dagger + String + anything in `#c:raw_materials/helium`
+- Used: Crafting into Galeforce, Heartwood of Pallas
+
+**Null-Magic Mantle** · `ascension_combat:null_magic_mantle`
+- From: Crafting: Amethyst Shard + Echo Shard
+- Used: Crafting into Mercury Treads, Negatron Cloak, Spectre's Cowl
+
+**Phage** · `ascension_combat:phage`
+- From: Crafting: Long Sword + Ruby Crystal + Blaze Powder
+- Used: Crafting into Darius's Axe, Ragefang
+
+**Pickaxe** · `ascension_combat:pickaxe`
+- From: Crafting: Long Sword + Dagger + anything in `#c:raw_materials/helium`
+- Used: Crafting into Darken Blade, Ragefang, Veigo's Blade
+
+**Recurve Bow** · `ascension_combat:recurve_bow`
+- From: Crafting: Bow + Dagger + anything in `#c:raw_materials/helium`
+- Used: Crafting into Galeforce, Heartwood of Pallas, Mortal Reminder
+
+**Ruby Crystal** · `ascension_combat:ruby_crystal`
+- From: Crafting: Diamond + Redstone
+- Used: Crafting into Giant's Belt, Kindlegem, Phage, The Protean Mask, Rocketbelt, Spectre's Cowl
+
+**Seeker's Armguard** · `ascension_combat:seekers_armguard`
+- From: Crafting: Cloth Armor + Dagger + anything in `#c:raw_materials/helium`
+- Used: Crafting into Collector's Pants, Edge of Night, Zonia's Hourglass
+
+**Serrated Dirk** · `ascension_combat:serrated_dirk`
+- From: Crafting: Dagger + Quartz
+- Used: Crafting into Veigo's Blade, Wraithblade
+
+**Spectre's Cowl** · `ascension_combat:spectres_cowl`
+- From: Crafting: Null-Magic Mantle + Ruby Crystal + Nether Wart
+- Used: Crafting into Guardian's Wing, Heartwood of Pallas, The Protean Mask, Unending Despair
+
+**Vampiric Scepter** · `ascension_combat:vampiric_scepter`
+- From: Crafting: Long Sword + Ghast Tear
+- Used: Crafting into Darken Blade, Endless Hunger, Sterak's Harness
+
+**Heart of the Warden** · `ascension_combat:warden_heart`
+- From: Dropped by the Warden: 1, killed by a player
+- Used: Crafting into Endless Hunger
+
+**Heart of the Wither** · `ascension_combat:wither_heart`
+- From: Dropped by the Wither: 1, killed by a player
+- Used: Crafting into Unending Despair
+
 ### Items
 
 **Berserker's Greaves** · `ascension_combat:berserkers_greaves`
-- From: *nothing yet*
+- From: Crafting: Boots + Dagger
 
 **Collector's Pants** · `ascension_combat:collectors_pants`
-- From: *nothing yet*
+- From: Crafting: Executioner's Calling + Seeker's Armguard + Cloth Armor
 
 **Darius's Axe** · `ascension_combat:darius_axe`
-- From: *nothing yet*
+- From: Crafting: Phage + Caulfield's Warhammer
 
 **Darken Blade** · `ascension_combat:darken_blade`
-- From: *nothing yet*
+- From: Crafting: B. F. Sword + Vampiric Scepter + Pickaxe
 
 **Divine Sunderer** · `ascension_combat:divine_sunderer`
-- From: *nothing yet*
+- From: Crafting: B. F. Sword + Caulfield's Warhammer + Heart of Ignis
 
 **Edge of Night** · `ascension_combat:edge_of_night`
-- From: *nothing yet*
+- From: Crafting: Negatron Cloak + Seeker's Armguard + Dagger
 
 **Endless Hunger** · `ascension_combat:endless_hunger`
-- From: *nothing yet*
+- From: Crafting: B. F. Sword + Giant's Belt + Vampiric Scepter + Heart of the Warden
 
 **Galeforce** · `ascension_combat:galeforce`
-- From: *nothing yet*
+- From: Crafting: Noonquiver + Recurve Bow + Kindlegem
 
 **Gargoyle Stoneplate** · `ascension_combat:gargoyle_stoneplate`
-- From: *nothing yet*
+- From: Crafting: Chain Vest + Negatron Cloak + Cloth Armor
 
 **Guardian's Wing** · `ascension_combat:guardian_wing`
-- From: *nothing yet*
+- From: Crafting: Chain Vest + Spectre's Cowl + Heart of the Ender Guardian
 
 **Heartwood of Pallas** · `ascension_combat:heartwood_of_pallas`
-- From: *nothing yet*
+- From: Crafting: Recurve Bow + Noonquiver + Spectre's Cowl
 
 **Mercury Treads** · `ascension_combat:mercury_treads`
-- From: *nothing yet*
+- From: Crafting: Boots + Null-Magic Mantle
 
 **Mortal Reminder** · `ascension_combat:mortal_reminder`
-- From: *nothing yet*
+- From: Crafting: Last Whisper + Recurve Bow + Executioner's Calling
 
 **Ninja Tabi** · `ascension_combat:ninja_tabi`
-- From: *nothing yet*
+- From: Crafting: Boots + Cloth Armor
 
 **The Protean Mask** · `ascension_combat:protean_mask`
-- From: *nothing yet*
+- From: Crafting: Spectre's Cowl + Chain Vest + Ruby Crystal
 
 **Ragefang** · `ascension_combat:ragefang`
-- From: *nothing yet*
+- From: Crafting: Phage + Pickaxe + Dagger
 
 **Rocketbelt** · `ascension_combat:rocketbelt`
-- From: *nothing yet*
+- From: Crafting: Giant's Belt + Kindlegem + Ruby Crystal
 
 **Rune Chalk** · `ascension_combat:rune_chalk`
 - From: Crafting: Amethyst Shard + Calcite
 - Used: Spent, with experience levels, by a rune page save that removes or replaces a rune (RuneChangeCost)
 
 **Spear of Shojin** · `ascension_combat:spear_of_shojin`
-- From: *nothing yet*
+- From: Crafting: Last Whisper + Hearthbound Axe + Dagger
 
 **Sterak's Harness** · `ascension_combat:steraks_harness`
-- From: *nothing yet*
+- From: Crafting: Giant's Belt + Vampiric Scepter + Heart of the Ender Golem
 
 **Swifty** · `ascension_combat:swifty`
-- From: *nothing yet*
+- From: Crafting: Boots + Dagger
 
 **Tasted Blood** · `ascension_combat:tasted_blood`
-- From: *nothing yet*
+- From: Crafting: Boots + Ghast Tear
 
 **Test Magic Blade [DEBUG]** · `ascension_combat:test_magic_blade`
 - From: *nothing yet*
@@ -122,19 +238,19 @@ No survival source, on purpose. The rules say why.
 - Used: Used up at an anvil to wipe an item's enchantments (TomeAnvil)
 
 **Unending Despair** · `ascension_combat:unending_despair`
-- From: *nothing yet*
+- From: Crafting: Giant's Belt + Spectre's Cowl + Heart of the Wither
 
 **Veigo's Blade** · `ascension_combat:veigos_blade`
-- From: *nothing yet*
+- From: Crafting: Pickaxe + Serrated Dirk + Long Sword
 
 **Wizard's Agony** · `ascension_combat:wizards_agony`
-- From: *nothing yet*
+- From: Crafting: Boots + anything in `#c:raw_materials/helium`
 
 **Wraithblade** · `ascension_combat:wraithblade`
-- From: *nothing yet*
+- From: Crafting: Serrated Dirk + Last Whisper + Dagger
 
 **Zonia's Hourglass** · `ascension_combat:zonias_hourglass`
-- From: *nothing yet*
+- From: Crafting: Seeker's Armguard + Kindlegem + Heart of the Netherite Monstrosity
 
 ## ascension-worlds
 
@@ -143,7 +259,7 @@ No survival source, on purpose. The rules say why.
 **Raw Helium Crystal** · `ascension_worlds:raw_helium`
 - From: Chests in the Lunar Archive (the Moon): 1 to 4, weight 3 of 11, 3 to 5 rolls
 - From: Mined from Lunar Helium Ore: The Moon's rock, y −64 to 24, needs an iron pickaxe or better
-- Used: *nothing yet*
+- Used: Crafting into Caulfield's Warhammer, Chain Vest, Giant's Belt, Last Whisper, Noonquiver, Pickaxe, Recurve Bow, Seeker's Armguard, Wizard's Agony
 
 **Raw Titanium** · `ascension_worlds:raw_titanium`
 - From: Chests in the Lunar Archive (the Moon): 2 to 5, weight 3 of 11, 3 to 5 rolls
@@ -154,7 +270,7 @@ No survival source, on purpose. The rules say why.
 **Titanium Ingot** · `ascension_worlds:titanium_ingot`
 - From: Blast furnace: Raw Titanium; or Titanium Ore
 - From: Furnace: Raw Titanium; or Titanium Ore
-- Used: Crafting into Propeller Bearing (with aeronautics installed)
+- Used: Crafting into Boots, Dagger, Long Sword, Propeller Bearing (with aeronautics installed)
 
 ### Items
 

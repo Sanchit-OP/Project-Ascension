@@ -71,6 +71,7 @@ public final class AscensionCombat {
 
     public AscensionCombat(IEventBus modBus, ModContainer container) {
         CombatContent.register(modBus);
+        com.ascension.combat.internal.BuildPathContent.register(modBus);
         CombatAttachments.register(modBus);
         CombatAttributes.register(modBus);
         CombatMobEffects.register(modBus);

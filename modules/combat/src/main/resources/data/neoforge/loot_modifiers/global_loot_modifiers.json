@@ -2,6 +2,8 @@
   "replace": false,
   "entries": [
     "ascension_combat:archive_enchantments",
-    "ascension_combat:colony_enchantments"
+    "ascension_combat:colony_enchantments",
+    "ascension_combat:warden_heart",
+    "ascension_combat:wither_heart"
   ]
 }

@@ -77,7 +77,7 @@ split on 2026-10-15** (`plans/session-prompts/`) and three of the four parts are
    ADR-0020; the rune HUD is its own session, `5-rune-hud.md`);
 3. player growth, a web of 56 nodes fed by skill points (**merged 2026-10-18**: `docs/progression/growth.md`,
    ADR-0021);
-4. the items' build paths, next (`4-build-paths.md`; its two prerequisites now exist).
+4. the items' build paths (`4-build-paths.md`): **built 2026-10-18 on branch `combat-build-paths`, not merged, not yet seen in a client** (`docs/progression/build-paths.md`: 23 ingredient components, 6 boss hearts, recipes for all 26 items, a JEI page in `ascension-compat-jei`). Balancing them is next, in that session.
 
 **The three were then checked against each other (2026-10-18):** `client/dev/IntegrationChecks`
 runs them together in a real client (`docs/technical/dev-environment.md` says how) and found two
