@@ -160,7 +160,7 @@ on first login pointing a new player at the team screen.
 
 - **Claims and base protection** (FTB Chunks): what a co-op server wants next. The map mod that shows the
   team (`pack-extras.md`) brings them, so they are a consequence of installing it, not a separate build.
-- **The quest lines themselves.** This page says who owns what; the chapters come next.
+- **The quest lines themselves.** This page says who owns what; the chapters are proposed in [`quests.md`](quests.md).
 - **Allied parties** (FTB Teams can ally two teams): their members are not allies in v1.
 - **A per-world supply station** unless §6's check says it is needed.
 - `architecture.md` lists an `ascension-progression` module for "team capability state, gating". ADR-0018
