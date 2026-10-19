@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "cataclysm:ignis_fireball", "required": false },
+    { "id": "cataclysm:ignis_abyss_fireball", "required": false },
+    { "id": "cataclysm:flame_jet", "required": false },
+    { "id": "cataclysm:flare_bomb", "required": false },
+    { "id": "cataclysm:ender_guardian_bullet", "required": false },
+    { "id": "cataclysm:abyss_orb", "required": false },
+    { "id": "cataclysm:wither_missile", "required": false },
+    { "id": "cataclysm:wither_homing_missile", "required": false },
+    { "id": "cataclysm:wither_howitzer", "required": false },
+    { "id": "cataclysm:void_howitzer", "required": false }
+  ]
+}

@@ -13,7 +13,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.core.Holder;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
@@ -47,6 +53,7 @@ public final class MobStats {
     public static void register(IEventBus gameBus) {
         gameBus.addListener(MobStats::onJoinLevel);
         gameBus.addListener(MobStats::onDatapackSync);
+        gameBus.addListener((AddReloadListenerEvent event) -> event.addListener(DifficultyScaling.INSTANCE));
         StatSources.register(ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, ID_PATH_PREFIX),
                 Component.translatable("stat_source.ascension_combat.mob_type"));
     }
@@ -54,6 +61,10 @@ public final class MobStats {
     private static void onJoinLevel(EntityJoinLevelEvent event) {
         if (!event.getLevel().isClientSide() && event.getEntity() instanceof LivingEntity living) {
             apply(living);
+            // A mob new to the world starts at its scaled health, not its unscaled health.
+            if (!event.loadedFromDisk() && living instanceof Mob) {
+                living.setHealth(living.getMaxHealth());
+            }
         }
     }
 
@@ -73,6 +84,7 @@ public final class MobStats {
 
     /** Brings one mob's type stats in line with the data: added or updated, or removed if gone. */
     private static void apply(LivingEntity living) {
+        applyDifficulty(living);
         StatMap data = BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(living.getType()).getData(StatDataMaps.MOB_STATS);
         for (CombatStat stat : CombatStats.all()) {
             AttributeInstance instance = living.getAttribute(stat.attribute());
@@ -87,6 +99,49 @@ public final class MobStats {
             } else {
                 instance.addOrUpdateTransientModifier(stat.modifier(id, written));
             }
+        }
+    }
+
+    /**
+     * The world difficulty's share (docs/progression/balance.md section 2): percent of the mob's own
+     * base health and attack damage, as one modifier each, never saved. A mob keeps the difficulty it
+     * entered or was last reloaded under; changing difficulty reaches it on the next reload or rejoin.
+     */
+    private static void applyDifficulty(LivingEntity living) {
+        if (!(living instanceof Mob)) {
+            return;
+        }
+        DifficultyScaling.Scale scale = DifficultyScaling.INSTANCE.scaleFor(living.getType(), living.level().getDifficulty());
+        if (scale.hasHealthTotal()) {
+            setTotalHealth(living, scale.healthTotal());
+        } else {
+            setPercent(living, Attributes.MAX_HEALTH, "difficulty_health", scale.healthPercent());
+        }
+        setPercent(living, Attributes.ATTACK_DAMAGE, "difficulty_attack_damage", scale.attackDamagePercent());
+    }
+
+    /** Makes the mob's maximum health exactly {@code total}, whatever its own base is. */
+    private static void setTotalHealth(LivingEntity living, double total) {
+        AttributeInstance instance = living.getAttribute(Attributes.MAX_HEALTH);
+        if (instance == null) {
+            return;
+        }
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, ID_PATH_PREFIX + "difficulty_health");
+        instance.addOrUpdateTransientModifier(
+                new AttributeModifier(id, total - instance.getBaseValue(), AttributeModifier.Operation.ADD_VALUE));
+    }
+
+    private static void setPercent(LivingEntity living, Holder<Attribute> attribute, String name, double percent) {
+        AttributeInstance instance = living.getAttribute(attribute);
+        if (instance == null) {
+            return;
+        }
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, ID_PATH_PREFIX + name);
+        if (percent == 0.0) {
+            instance.removeModifier(id);
+        } else {
+            instance.addOrUpdateTransientModifier(
+                    new AttributeModifier(id, percent / 100.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         }
     }
 }

@@ -85,6 +85,7 @@ public final class AscensionCombat {
         RuneContent.register(modBus);
         com.ascension.combat.internal.enchanting.EnchantingContent.register(modBus, NeoForge.EVENT_BUS);
         container.registerConfig(ModConfig.Type.SERVER, RuneConfig.SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, com.ascension.combat.internal.CombatClientConfig.SPEC, "ascension_combat-client.toml");
         container.registerConfig(ModConfig.Type.SERVER, com.ascension.combat.internal.mechanics.TeamConfig.SPEC, "ascension_combat-teams-server.toml");
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> RuneCommands.register(event.getDispatcher()));
 
@@ -96,6 +97,8 @@ public final class AscensionCombat {
             com.ascension.combat.client.AbilityCooldownDecorator.register(modBus);
             com.ascension.combat.client.stat.StatTooltips.register(NeoForge.EVENT_BUS);
             com.ascension.combat.client.stat.EnchantmentTooltips.register(NeoForge.EVENT_BUS);
+            com.ascension.combat.client.stat.MechanicTooltips.register(NeoForge.EVENT_BUS);
+            com.ascension.combat.client.LegendaryBeams.register(NeoForge.EVENT_BUS);
         }
 
         // Shared mitigation formula (docs/technical/combat-api.md section 3) -- registered before
@@ -104,6 +107,8 @@ public final class AscensionCombat {
         // Teammates cannot hurt each other: first of all, so a cancelled hit does nothing else.
         com.ascension.combat.internal.mechanics.TeamFire.register(NeoForge.EVENT_BUS);
         PhysicalDamage.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.internal.dev.DamageChecks.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.internal.mechanics.MagicHitNotifier.register(NeoForge.EVENT_BUS);
         OmnivampHealing.register(NeoForge.EVENT_BUS);
 
         VeigosBladeEffects.register(NeoForge.EVENT_BUS);

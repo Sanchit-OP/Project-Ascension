@@ -3,10 +3,10 @@ plugins {
 }
 
 description =
-    "Disables Create's Copper/Netherite Backtank and Diving Helmet -- our own atmosphere tank " +
-    "already owns the wearable-pressurised-air idea -- makes raw helium a superheated blaze-burner " +
-    "fuel (which is also what a thruster burns), and adds the Air Compressor: a Create machine " +
-    "that turns rotation into air (ADR-0026)."
+    "Removes Create's Copper/Netherite Backtank and Diving Helmet and Boots from the game -- our own " +
+    "atmosphere tank already owns the wearable-pressurised-air idea -- makes raw helium a superheated " +
+    "blaze-burner fuel (which is also what a thruster burns), and adds the Air Compressor: a Create " +
+    "machine that turns rotation into air (ADR-0026)."
 
 val createVersion: String = providers.gradleProperty("create_version").get()
 

@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.mechanics;
 
 import com.ascension.combat.internal.CombatAttributes;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -22,6 +23,10 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  * reduction applies at all (i.e. the damage source isn't tagged {@code bypasses_armor}), which is
  * exactly the gate this module wants too &mdash; magic and true damage already skip this
  * category entirely on vanilla's own say-so, with no extra check needed here.
+ *
+ * <p><b>Magic hits, added 2026-10-19.</b> A hit that {@link DamageKinds} calls magic (a blast, fire,
+ * lightning, a Warden's sonic boom, a Cataclysm fireball) is cut by Magic Resist here instead of Armor
+ * (docs/technical/damage-kinds.md). Until then Magic Resist only ever cut the procs of our own weapons.
  *
  * <p>Registered at {@link EventPriority#HIGHEST} so this modifier is inserted into the {@code
  * ARMOR} reduction's function list before any weapon-specific reduction modifier still registered
@@ -66,6 +71,14 @@ public final class PhysicalDamage {
     private static void onIncomingDamage(LivingIncomingDamageEvent event) {
         applyArrowAttackDamage(event);
 
+        if (MagicDamage.isSettled(event.getSource())) {
+            return;
+        }
+        if (DamageKinds.isMagic(event.getSource())) {
+            applyMagicResist(event);
+            return;
+        }
+
         LivingEntity target = event.getEntity();
         AttributeInstance armor = target.getAttribute(CombatAttributes.ARMOR);
         if (armor == null) {
@@ -77,6 +90,25 @@ public final class PhysicalDamage {
                 DamageContainer.Reduction.ARMOR,
                 (container, reductionIn) ->
                         container.getNewDamage() * (float) (1.0 - DefenseFormula.multiplier(effectiveArmor)));
+    }
+
+    /**
+     * A magic hit (docs/technical/damage-kinds.md) meets the target's Magic Resist instead of its Armor.
+     *
+     * <p>Most magic types skip vanilla's armour step altogether (they are in {@code bypasses_armor}), so there
+     * is no reduction slot to add to and the amount is scaled directly. A magic hit that vanilla does run
+     * through armour (a blast, a Cataclysm fireball) takes the same slot Armor would have, so vanilla's own
+     * armour value is discarded for it exactly as for a physical hit.
+     */
+    private static void applyMagicResist(LivingIncomingDamageEvent event) {
+        float passThrough = (float) MagicDamage.passThrough(event.getEntity(), event.getSource().getEntity());
+        if (event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)) {
+            event.setAmount(event.getAmount() * passThrough);
+        } else {
+            event.addReductionModifier(
+                    DamageContainer.Reduction.ARMOR,
+                    (container, reductionIn) -> container.getNewDamage() * (1.0f - passThrough));
+        }
     }
 
     private static void applyArrowAttackDamage(LivingIncomingDamageEvent event) {

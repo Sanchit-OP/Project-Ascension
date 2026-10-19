@@ -1,0 +1,33 @@
+{
+  "_comment": "Easy: softer mobs. Percent of a mob's own base value, by tier (tags/entity_type/tier/). docs/progression/balance.md section 2. Placeholders Sanchit tunes by playing. The six bosses carry their own totals in `types` (docs/progression/balance.md section 5): easy is 15% less health and 15 points less damage than normal, hard 25% more health and 20 points more.",
+  "tiers": {
+    "swarm": {
+      "health_percent": -20
+    },
+    "light": {
+      "health_percent": -20
+    },
+    "medium": {
+      "health_percent": -25,
+      "attack_damage_percent": -10
+    },
+    "heavy": {
+      "health_percent": -30,
+      "attack_damage_percent": -15
+    },
+    "boss": {
+      "health_percent": -30,
+      "attack_damage_percent": -15
+    }
+  },
+  "types": {
+    "minecraft:warden": {
+      "health_total": 1275,
+      "attack_damage_percent": -15
+    },
+    "minecraft:wither": {
+      "health_total": 5525,
+      "attack_damage_percent": 85
+    }
+  }
+}

@@ -1,5 +1,8 @@
 package com.ascension.combat.internal.weapons;
 
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.particles.ParticleTypes;
+import com.ascension.combat.internal.mechanics.Presence;
 import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
@@ -74,6 +77,7 @@ public final class WraithbladeEffects {
             return;
         }
 
+        Presence.burst(player, SoundEvents.ENDERMAN_TELEPORT, 0.8f, 1.4f, ParticleTypes.PORTAL, 30, 0.5);
         Blink.forward(player, BLINK_DISTANCE);
 
         long now = player.level().getGameTime();

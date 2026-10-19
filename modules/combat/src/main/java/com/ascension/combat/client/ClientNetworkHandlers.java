@@ -54,6 +54,10 @@ public final class ClientNetworkHandlers {
         });
     }
 
+    public static void onMagicHit(com.ascension.combat.internal.net.MagicHitPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> com.ascension.combat.client.hud.ClientMagicHit.pulse(payload.strength()));
+    }
+
     public static void onAbilityCooldownSync(AbilityCooldownSyncPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> ClientAbilityCooldowns.update(
                 payload.key(), payload.endsAtGameTime(), payload.durationTicks()));

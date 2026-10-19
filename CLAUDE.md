@@ -77,7 +77,9 @@ split on 2026-10-15** (`plans/session-prompts/`) and three of the four parts are
    ADR-0020; the rune HUD is its own session, `5-rune-hud.md`);
 3. player growth, a web of 56 nodes fed by skill points (**merged 2026-10-18**: `docs/progression/growth.md`,
    ADR-0021);
-4. the items' build paths (`4-build-paths.md`): **built 2026-10-18 on branch `combat-build-paths`, not merged, not yet seen in a client** (`docs/progression/build-paths.md`: 23 ingredient components, 6 boss hearts, recipes for all 26 items, a JEI page in `ascension-compat-jei`). Balancing them is next, in that session.
+4. the items' build paths (`4-build-paths.md`): **merged 2026-10-18, not yet seen in a client** (`docs/progression/build-paths.md`: 23 ingredient components, 6 boss hearts, recipes for all 26 items, a JEI page in `ascension-compat-jei`).
+
+**Balance (2026-10-19, merged to `main`, not yet seen in a client; `docs/progression/balance.md`):** the 26 items have tooltips (a Legendary line and one paragraph per mechanic), a gold name, a sound and particles on the actives and a light beam when dropped; stats come from `item_stats.json`, weapons tuned by time to kill (`tools/time-to-kill.py` simulates them, `tools/check-balance.py` fails the build on a drift), no caps on percent-of-health procs, Ragefang and Endless Hunger dual-wield through Better Combat, mobs scale by world difficulty from `mob_difficulty/*.json`, and the six bosses have their own Armor, Magic Resist, health and damage per difficulty. Open: a one-legendary carry limit for weapons (Sanchit parked it), the flat-versus-percent weapon split on late bosses (parked until a real-game test), Cataclysm's weapons untouched.
 
 **The three were then checked against each other (2026-10-18):** `client/dev/IntegrationChecks`
 runs them together in a real client (`docs/technical/dev-environment.md` says how) and found two
@@ -85,6 +87,11 @@ faults, both fixed: the structure discoveries were spelled `"structure"` so ever
 free points, and a respawn healed before worn gear's Health was back. Rune slots now open with the
 team's boss and gate milestones (`api.growth.GrowthProgress`, default `progressive`), and growth is
 named on the stat sheet. `tools/check-data.py` (every build) fails on the first fault's spelling.
+
+**Physical or magic (2026-10-19; `docs/technical/damage-kinds.md`):** every hit is cut by Armor (physical) or Magic Resist (magic),
+decided by the *attack*, not the mob: a Warden's fist is physical and its sonic boom magic, a Creeper's blast is magic. Two data tags
+(`#ascension_combat:magic` for damage types, `magic_attack` for projectiles that share a generic type) decide it, and Cataclysm's
+attacks are sorted in its compat jar. A magic hit on a player shows a faint blue screen-edge tint (`ascension_combat-client.toml`, `magicHitTint`). Seen on a dedicated server (`damage-checks.txt`, 62 checks), not in a client.
 
 **Teams (ADR-0023, 2026-10-18; `docs/progression/teams.md`):** progress has three owners: the world (gates,
 the mark), your team (bosses, quest progress: an FTB Teams party, a solo player being a party of one) and

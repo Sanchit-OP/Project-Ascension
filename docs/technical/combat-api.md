@@ -25,8 +25,13 @@ Three categories, not two:
 | Type | Reduced by | Source |
 |---|---|---|
 | **Physical** | Armor | Melee, arrows, most mob attacks — the vanilla default |
-| **Magic** | Magic resist | A small number of specific weapon procs, never a cast spell |
+| **Magic** | Magic resist | Blasts, fire, lightning, potions, the Wither's decay, the dragon's breath, the Warden's sonic boom, Cataclysm's elemental attacks, and a small number of weapon procs of ours, never a cast spell |
 | **True** | Nothing | Spear of Shojin's stacking payoff only, for now |
+
+**Which hits are magic is decided by the attack, not the mob** (2026-10-19, Sanchit: a Warden's fist is
+physical, its sonic boom is magic; a Creeper's blast is magic). Two tags say so, and any mod can extend them:
+see [`damage-kinds.md`](damage-kinds.md). Until then Magic Resist only cut the magic procs of our own weapons,
+and nothing hit a player with magic.
 
 **Deliberately no spellcasting system.** Adding one would mean a whole new input/targeting/cast-bar
 system nobody asked for. Instead, magic damage is tuned into the *procs* of a few otherwise-physical

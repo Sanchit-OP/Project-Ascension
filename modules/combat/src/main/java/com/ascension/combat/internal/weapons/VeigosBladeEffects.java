@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.weapons;
 
+import com.ascension.combat.internal.mechanics.AbilityScaling;
 import com.ascension.combat.internal.CombatContent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +28,7 @@ public final class VeigosBladeEffects {
      * Bonus damage as a fraction of the target's current HP. Placeholder &mdash; per
      * combat-api.md section 3, nothing here is balanced; Sanchit tunes by playing.
      */
-    private static final float CURRENT_HP_PERCENT = 0.08f;
+    private static final float CURRENT_HP_PERCENT = 0.03f;
 
     private VeigosBladeEffects() {
     }
@@ -54,7 +55,8 @@ public final class VeigosBladeEffects {
         }
 
         LivingEntity target = event.getEntity();
-        float bonus = target.getHealth() * CURRENT_HP_PERCENT;
+        float bonus = target.getHealth()
+                * (CURRENT_HP_PERCENT + AbilityScaling.VEIGO_CURRENT_HP_PER_AD * AbilityScaling.attackDamage(attacker));
         event.setAmount(event.getAmount() + bonus);
     }
 }

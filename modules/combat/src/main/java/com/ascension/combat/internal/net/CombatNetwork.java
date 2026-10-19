@@ -20,7 +20,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 /**
  * Payload registration for this module's network traffic: client-to-server packets ({@link
  * ActivateArmorAbilityPayload}, {@link SetRunePagePayload}) and server-to-client packets ({@link
- * StasisSyncPayload}, {@link RunePageSyncPayload}, {@link RunePageResultPayload}).
+ * StasisSyncPayload}, {@link RunePageSyncPayload}, {@link RunePageResultPayload}, {@link MagicHitPayload}).
  *
  * <p>Only the S2C direction needs the {@code Dist} branch {@code AtmosphereNetwork} uses &mdash; a
  * {@code playToServer} handler only ever runs on the server and can reference server-side classes
@@ -35,7 +35,7 @@ public final class CombatNetwork {
      * Protocol version. Bump when the set of payloads or any payload's shape changes, so
      * mismatched clients are rejected at handshake rather than silently misreading a packet.
      */
-    private static final String VERSION = "5";
+    private static final String VERSION = "6";
 
     private CombatNetwork() {
     }
@@ -69,6 +69,10 @@ public final class CombatNetwork {
                     RuneHudSyncPayload.TYPE,
                     RuneHudSyncPayload.STREAM_CODEC,
                     com.ascension.combat.client.ClientNetworkHandlers::onRuneHudSync);
+            registrar.playToClient(
+                    MagicHitPayload.TYPE,
+                    MagicHitPayload.STREAM_CODEC,
+                    com.ascension.combat.client.ClientNetworkHandlers::onMagicHit);
         } else {
             // Registered so the server can encode and send; never received here.
             registrar.playToClient(StasisSyncPayload.TYPE, StasisSyncPayload.STREAM_CODEC, (payload, context) -> {
@@ -81,6 +85,8 @@ public final class CombatNetwork {
                     AbilityCooldownSyncPayload.TYPE, AbilityCooldownSyncPayload.STREAM_CODEC, (payload, context) -> {
                     });
             registrar.playToClient(RuneHudSyncPayload.TYPE, RuneHudSyncPayload.STREAM_CODEC, (payload, context) -> {
+            });
+            registrar.playToClient(MagicHitPayload.TYPE, MagicHitPayload.STREAM_CODEC, (payload, context) -> {
             });
         }
     }
