@@ -138,7 +138,7 @@ and Magic Resist is hurt with the game's own damage sources, first Magic Resist 
 way round, and the damage that lands says which defence each attack met. It also checks that our own magic
 is cut once, that Magic Penetration works, and (when Cataclysm is loaded) that Ignis' fireball is magic by its
 entity while an arrow with the same damage type is not. A stand-in player on a stand-in connection takes a blast, lava, a punch,
-a fall and a hit of no damage: the first two send the tint packet, the rest do not. **Seen 2026-10-19: 62 checks, 0 failures** (the last three are about Endless Hunger's swing speed, not damage kinds).
+a fall and a hit of no damage: the first two send the tint packet, the rest do not. **Seen 2026-10-19: 75 checks, 0 failures** (the rest of that run is about Endless Hunger's swing speed and the bosses' health, not damage kinds).
 
 ## Not done
 

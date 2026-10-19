@@ -52,3 +52,5 @@ forgets it.
 | [0023](0023-teams-are-ftb-teams-parties.md) | Teams are FTB Teams parties; progress has three owners (world, team, you) | Accepted |
 | [0024](0024-the-hud-is-its-own-module.md) | The HUD is its own Tier 1 module, `ascension-hud`, with a contract in `core` | Accepted |
 | [0025](0025-rockets-are-thruster-ships.md) | Rockets are ships with thrusters (Create Simulated Thrusters), and helium is their fuel | Accepted |
+| [0026](0026-air-is-a-fluid.md) | Air is a fluid, and a dispenser holds the room | Accepted |
+| [0027](0027-max-health-ceiling-is-raised.md) | Max Health's ceiling is raised past vanilla's 1,024, so bosses can have the health the balance gives them | Accepted |

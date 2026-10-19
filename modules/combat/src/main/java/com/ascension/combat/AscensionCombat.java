@@ -74,6 +74,8 @@ public final class AscensionCombat {
         com.ascension.combat.internal.BuildPathContent.register(modBus);
         CombatAttachments.register(modBus);
         CombatAttributes.register(modBus);
+        // Vanilla clamps Max Health at 1,024; the bosses need more (ADR-0027).
+        com.ascension.combat.internal.mobs.HealthCeiling.register(modBus);
         CombatMobEffects.register(modBus);
         // Every item's stats, from data (docs/technical/item-stats.md, ADR-0019).
         StatSystem.register(modBus, NeoForge.EVENT_BUS);

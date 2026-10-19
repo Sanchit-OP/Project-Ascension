@@ -237,7 +237,7 @@ Two checks that need a game, both dormant until their trigger file exists in the
 - **`damage-checks.txt`** (a dedicated server, about a minute, no window): a pig with a known Armor and Magic
   Resist is hurt with the game's own damage sources (a zombie's fist, the Warden's sonic boom, a Creeper's blast,
   lava, Ignis' fireball...) and the damage that lands says whether each was met by Armor or Magic Resist
-  (`damage-kinds.md`); a stand-in player checks that only magic hits send the hurt-tint packet, and that Endless Hunger cannot swing faster than its ceiling however much Attack Damage it has. Prints `[damage-checks]` lines. Seen 2026-10-19: 62 checks, 0 failures.
+  (`damage-kinds.md`); a stand-in player checks that only magic hits send the hurt-tint packet, that Endless Hunger cannot swing faster than its ceiling however much Attack Damage it has, and that the six bosses reach their balanced health (ADR-0027). Prints `[damage-checks]` lines. Seen 2026-10-19: 75 checks, 0 failures.
 - **`create-checks.txt`** (a dedicated server, about a minute, no window): proves Create's backtanks and diving gear are gone
   from the loaded game: no recipe makes or uses one, the recipe viewers are told to hide all six, the advancements for earning
   them are gone and nothing in Create's advancement tree is left without a parent. The creative menu is built by a client and

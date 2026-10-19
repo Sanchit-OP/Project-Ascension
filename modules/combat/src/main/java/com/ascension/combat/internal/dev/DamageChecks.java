@@ -5,6 +5,7 @@ import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DamageKinds;
 import com.ascension.combat.internal.mechanics.MagicDamage;
 import com.ascension.combat.internal.mechanics.MagicHitPulse;
+import com.ascension.combat.internal.mobs.DifficultyScaling;
 import com.ascension.combat.internal.net.MagicHitPayload;
 import com.mojang.authlib.GameProfile;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.projectile.Arrow;
@@ -135,6 +137,8 @@ public final class DamageChecks {
         Entity warden = EntityType.WARDEN.create(level);
         WitherSkull witherSkull = EntityType.WITHER_SKULL.create(level);
         Arrow arrow = EntityType.ARROW.create(level);
+
+        checkBossHealth(level);
 
         log("--- the tags");
         var damageTypes = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
@@ -333,6 +337,46 @@ public final class DamageChecks {
         float before = standIn.getHealth();
         standIn.hurt(source, amount);
         return before - standIn.getHealth();
+    }
+
+    /**
+     * The six bosses reach the health the balance gives them. Vanilla clamps Max Health at 1,024 (ADR-0027), so before the
+     * ceiling was raised every one of these came out at exactly 1,024. Each is added to the world and read in the same tick
+     * (so it never gets to act), then removed.
+     */
+    private static void checkBossHealth(ServerLevel level) {
+        log("--- boss health (vanilla's own ceiling is 1024)");
+        expect("Max Health's ceiling is above vanilla's 1024",
+                ((RangedAttribute) Attributes.MAX_HEALTH.value()).getMaxValue() > 1024.0, true);
+        for (String name : List.of("minecraft:warden", "minecraft:wither", "cataclysm:ender_golem", "cataclysm:ender_guardian",
+                "cataclysm:ignis", "cataclysm:netherite_monstrosity")) {
+            ResourceLocation id = ResourceLocation.parse(name);
+            if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
+                log("SKIP " + name + " is not loaded");
+                continue;
+            }
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(id);
+            DifficultyScaling.Scale scale = DifficultyScaling.INSTANCE.scaleFor(type, level.getDifficulty());
+            Entity boss = type.create(level);
+            if (!scale.hasHealthTotal() || !(boss instanceof LivingEntity living)) {
+                fail(name + " has no health total in the data for " + level.getDifficulty());
+                continue;
+            }
+            living.moveTo(level.getSharedSpawnPos().getX() + 0.5, level.getSharedSpawnPos().getY() + 1.0,
+                    level.getSharedSpawnPos().getZ() + 0.5);
+            level.addFreshEntity(living);
+            if (Math.abs(living.getMaxHealth() - scale.healthTotal()) > 0.5) {
+                var instance = living.getAttribute(Attributes.MAX_HEALTH);
+                log("   " + name + " base " + instance.getBaseValue() + ", modifiers:");
+                for (AttributeModifier modifier : instance.getModifiers()) {
+                    log("     " + modifier.id() + " " + modifier.operation() + " " + modifier.amount());
+                }
+            }
+            expectNear(name + " has " + (int) scale.healthTotal() + " health on " + level.getDifficulty().getKey()
+                    + ", and starts full", living.getMaxHealth(), (float) scale.healthTotal());
+            expectNear(name + " starts at full health", living.getHealth(), (float) scale.healthTotal());
+            living.discard();
+        }
     }
 
     // ------------------------------------------------------------------------------------------

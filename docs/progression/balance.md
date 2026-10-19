@@ -13,6 +13,12 @@
 | Power by cost | `item_stats.json` (the 26 legendaries), the budget in `tools/check-balance.py` | `checkBalance`, every build |
 | Ability scaling | `internal/mechanics/AbilityScaling.java` (every coefficient) | Tooltips state them; a client run |
 
+> **Boss health above 1,024 needed a fix (2026-10-19, ADR-0027).** Vanilla clamps the Max Health attribute at 1,024,
+> so until the ceiling was raised every boss total in this document came out at exactly 1,024. A second fault was found
+> with it: a boss's total was worked out from its base health alone, so Cataclysm's Ender Golem and Ender Guardian
+> (each carrying a +150% `animation_health` modifier) came out 225 and 499.5 too high. Both are fixed and seen on a
+> dedicated server; the totals below are what a boss now has.
+
 ## 2. Mobs by difficulty
 
 The difficulty is the world's own (Easy, Normal, Hard), read from the level, so the setting players already

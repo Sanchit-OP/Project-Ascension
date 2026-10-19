@@ -120,15 +120,33 @@ public final class MobStats {
         setPercent(living, Attributes.ATTACK_DAMAGE, "difficulty_attack_damage", scale.attackDamagePercent());
     }
 
-    /** Makes the mob's maximum health exactly {@code total}, whatever its own base is. */
+    /**
+     * Makes the mob's maximum health exactly {@code total}, whatever else it has.
+     *
+     * <p>Measured with this mod's own modifier taken off, so it is the mob's base and everything other mods have added
+     * (Cataclysm's Ender Golem and Ender Guardian each carry an {@code animation_health} modifier of +150% of their
+     * base, which an earlier version of this method, working from the base alone, added on top of the total).
+     * The modifier is a flat addition, so it is sized to land the final figure on {@code total} even when something
+     * else multiplies health. Applying it again gives the same answer. Health another mod changes after this runs is
+     * not followed until the next reload or rejoin.
+     */
     private static void setTotalHealth(LivingEntity living, double total) {
         AttributeInstance instance = living.getAttribute(Attributes.MAX_HEALTH);
         if (instance == null) {
             return;
         }
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, ID_PATH_PREFIX + "difficulty_health");
-        instance.addOrUpdateTransientModifier(
-                new AttributeModifier(id, total - instance.getBaseValue(), AttributeModifier.Operation.ADD_VALUE));
+        instance.removeModifier(id);
+        double without = instance.getValue();
+        double flat = instance.getBaseValue();
+        for (AttributeModifier modifier : instance.getModifiers()) {
+            if (modifier.operation() == AttributeModifier.Operation.ADD_VALUE) {
+                flat += modifier.amount();
+            }
+        }
+        // value = flat * multiplier, so the flat part has to become total / multiplier, and the multiplier is without / flat.
+        double amount = flat > 0.0 && without > 0.0 ? flat * (total / without - 1.0) : total - without;
+        instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_VALUE));
     }
 
     private static void setPercent(LivingEntity living, Holder<Attribute> attribute, String name, double percent) {
