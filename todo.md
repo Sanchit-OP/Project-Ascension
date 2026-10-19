@@ -3,7 +3,9 @@
 Open questions only. **Settled decisions live in [`docs/decisions/`](docs/decisions/)** — check
 there before reopening anything. Milestone work in flight lives in [`plans/`](plans/) — currently
 [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md). **What must be finished before the alpha
-launch (2026-10-19):** [`plans/alpha-checklist.md`](plans/alpha-checklist.md).
+launch (2026-10-19):** [`plans/alpha-checklist.md`](plans/alpha-checklist.md). **Planet 4 (the End) session prompt:**
+[`plans/session-prompts/9-planet-4-the-end.md`](plans/session-prompts/9-planet-4-the-end.md); what every planet needs:
+[`docs/technical/new-planet-checklist.md`](docs/technical/new-planet-checklist.md).
 
 Last reviewed: 2026-10-06.
 

@@ -163,6 +163,9 @@ elytra is the alpha's stopping point.
 - It pays the End half of the recipe debt (ADR-0014: elytra, shulker boxes and other End-only items are unobtainable
   until the End is a planet; todo.md "Systems gaps").
 
+**The session prompt for it is [`plans/session-prompts/9-planet-4-the-end.md`](session-prompts/9-planet-4-the-end.md); what every planet needs
+(the Nether's files, as a checklist) is [`docs/technical/new-planet-checklist.md`](../docs/technical/new-planet-checklist.md).**
+
 **What has to be built or decided.** The first item is a conflict that needs Sanchit:
 
 1. **An ADR that gives Planet 4 to the End.** `planets.md` and `lore-spread-proposal.md` currently make Planet 4 a
