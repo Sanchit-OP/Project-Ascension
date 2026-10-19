@@ -20,6 +20,8 @@ import sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 RULES = [
+    ('model element rotation angle: -45, -22.5, 0, 22.5 or 45',
+     'Any other angle makes the whole model fail to load and the item draws as nothing. The helium tank used 90 and 135 (2026-10-19).'),
     ('location predicate: "structure" -> "structures"',
      'A location predicate takes "structures" (plural). With "structure" the condition is empty, always '
      'true, and a discovery advancement is earned by standing anywhere. It gave every new player nine '
@@ -120,6 +122,28 @@ def check_our_enchantments(module_resources):
     return findings
 
 
+ALLOWED_ANGLES = (-45, -22.5, 0, 22.5, 45)
+
+
+def check_model_rotations(resources):
+    """A model element may only turn by -45, -22.5, 0, 22.5 or 45 degrees. Any other angle makes the whole
+    model fail to load, and the item shows as nothing (the helium tank, 2026-10-19)."""
+    findings = []
+    for file in glob.glob(os.path.join(resources, 'assets', '*', 'models', '**', '*.json'), recursive=True):
+        try:
+            with open(file, encoding='utf-8') as handle:
+                document = json.load(handle)
+        except json.JSONDecodeError as error:
+            findings.append((file, '', 'is not valid JSON: %s' % error))
+            continue
+        for index, element in enumerate(document.get('elements', []) if isinstance(document, dict) else []):
+            angle = element.get('rotation', {}).get('angle') if isinstance(element, dict) else None
+            if angle is not None and angle not in ALLOWED_ANGLES:
+                findings.append((file, 'elements[%d].rotation.angle' % index,
+                                 'is %s; only -45, -22.5, 0, 22.5 and 45 load' % angle))
+    return findings
+
+
 def main():
     if '--list' in sys.argv:
         for name, why in RULES:
@@ -149,6 +173,8 @@ def main():
     files = files + enchantments
     for resources in glob.glob(os.path.join(ROOT, 'modules', '*', 'src', 'main', 'resources')):
         findings.extend(check_our_enchantments(resources))
+    for resources in glob.glob(os.path.join(ROOT, 'modules', '**', 'src', 'main', 'resources'), recursive=True):
+        findings.extend(check_model_rotations(resources))
 
     for file, where, message in findings:
         print('%s %s %s' % (os.path.relpath(file, ROOT), where, message), file=sys.stderr)

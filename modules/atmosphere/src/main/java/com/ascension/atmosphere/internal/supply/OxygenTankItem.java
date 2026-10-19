@@ -263,6 +263,14 @@ public final class OxygenTankItem extends Item {
                         .withStyle(ChatFormatting.DARK_GRAY));
         tooltip.add(Component.translatable("item.ascension_atmosphere.oxygen_tank.hint")
                 .withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("item.ascension_atmosphere.oxygen_tank.fill")
+                .withStyle(ChatFormatting.DARK_GRAY));
+        // The helium tank says what it is; the plain tank says how to upgrade it.
+        tooltip.add(stack.is(AtmosphereContent.OXYGEN_TANK_HELIUM.get())
+                ? Component.translatable("item.ascension_atmosphere.oxygen_tank_helium.tooltip")
+                        .withStyle(ChatFormatting.GOLD)
+                : Component.translatable("item.ascension_atmosphere.oxygen_tank.upgrade")
+                        .withStyle(ChatFormatting.DARK_GRAY));
     }
 
     /** Vanilla's durability bar is thirteen pixels wide. */

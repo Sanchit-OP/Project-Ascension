@@ -4,7 +4,7 @@ emitter and the air fluid. Seeded and original (art guide rule 1); the PNGs are 
 
     python tools/generate-atmosphere-art.py
 
-Writes modules/atmosphere/src/main/resources/assets/ascension_atmosphere/textures/{block,item,fluid}
+Writes modules/atmosphere/src/main/resources/assets/ascension_atmosphere/textures/{block,item} (the fluid is in block/: fluids are stitched from the block atlas)
 and design/atmosphere/contact.png. Steel is blue-grey, air is pale frost, helium is the amber-cream
 the Moon script already uses (teal stays the gateways). Re-running must change no PNG.
 """
@@ -308,6 +308,66 @@ def air(size, frames, seed):
     return im
 
 
+MODELS = os.path.join(ROOT, 'modules', 'atmosphere', 'src', 'main', 'resources', 'assets',
+                      'ascension_atmosphere', 'models', 'item')
+
+HELD = {
+    'gui': {'rotation': [30, 45, 0], 'translation': [0, -1, 0], 'scale': [1.0, 1.0, 1.0]},
+    'ground': {'rotation': [0, 0, 0], 'translation': [0, 3, 0], 'scale': [0.5, 0.5, 0.5]},
+    'fixed': {'rotation': [0, 180, 0], 'translation': [0, 0, 0], 'scale': [1.0, 1.0, 1.0]},
+    'thirdperson_righthand': {'rotation': [75, 45, 0], 'translation': [0, 2.5, 0], 'scale': [0.5, 0.5, 0.5]},
+    'thirdperson_lefthand': {'rotation': [75, 45, 0], 'translation': [0, 2.5, 0], 'scale': [0.5, 0.5, 0.5]},
+    'firstperson_righthand': {'rotation': [0, 45, 0], 'translation': [0, 0, 0], 'scale': [0.6, 0.6, 0.6]},
+    'firstperson_lefthand': {'rotation': [0, 225, 0], 'translation': [0, 0, 0], 'scale': [0.6, 0.6, 0.6]},
+}
+
+
+def tank_model(body):
+    """An octagonal cylinder from four boxes. Minecraft only allows rotations of -45, -22.5, 0, 22.5
+    and 45 degrees on an element, so the octagon is: one box along x, one along z, and two at
+    +/-45. Side faces only; one flat cap on top and underneath so nothing flickers."""
+    side = 3.314
+    lo, hi = 8 - side / 2, 8 + side / 2
+    names = ('north', 'south', 'east', 'west')
+
+    def box(frm, to, angle):
+        e = {'from': frm, 'to': to,
+             'faces': {n: {'uv': [0, 0, 16, 16], 'texture': '#body'} for n in names}}
+        if angle:
+            e['rotation'] = {'angle': angle, 'axis': 'y', 'origin': [8, 0, 8]}
+        return e
+
+    def flat(frm, to, face, uv):
+        return {'from': frm, 'to': to, 'faces': {face: {'uv': uv, 'texture': '#fitting'}}}
+
+    elements = [
+        box([4, 0, lo], [12, 13, hi], 0),
+        box([lo, 0, 4], [hi, 13, 12], 0),
+        box([4, 0, lo], [12, 13, hi], 45),
+        box([4, 0, lo], [12, 13, hi], -45),
+        flat([5, 13, 5], [11, 13.01, 11], 'up', [5, 5, 11, 11]),
+        flat([5, -0.01, 5], [11, 0, 11], 'down', [5, 5, 11, 11]),
+    ]
+    neck = {'from': [6.5, 13, 6.5], 'to': [9.5, 15, 9.5],
+            'faces': {n: {'uv': [6.5, 0, 9.5, 2], 'texture': '#fitting'} for n in names}}
+    neck['faces']['up'] = {'uv': [6.5, 6.5, 9.5, 9.5], 'texture': '#fitting'}
+    wheel = {'from': [4.5, 15, 7.5], 'to': [11.5, 16, 8.5],
+             'faces': {n: {'uv': [0, 5, 7, 6], 'texture': '#fitting'} for n in ('north', 'south', 'up')}}
+    return {'parent': 'minecraft:block/block',
+            'textures': {'particle': 'ascension_atmosphere:item/' + body,
+                         'body': 'ascension_atmosphere:item/' + body,
+                         'fitting': 'ascension_atmosphere:item/oxygen_tank_fitting'},
+            'elements': elements + [neck, wheel], 'display': HELD}
+
+
+def write_models():
+    os.makedirs(MODELS, exist_ok=True)
+    for name, body in (('oxygen_tank', 'oxygen_tank_body'), ('oxygen_tank_helium', 'oxygen_tank_helium_body')):
+        with open(os.path.join(MODELS, name + '.json'), 'w', newline='\n') as f:
+            json.dump(tank_model(body), f, indent=2)
+            f.write('\n')
+
+
 def save(im, rel):
     path = os.path.join(TEX, rel)
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -329,6 +389,7 @@ def main():
     ]
     for rel, im in sheets:
         save(im, rel)
+    write_models()
     # The Create jar's own blocks are drawn here too, so every look stays in one script.
     compat = [('block/air_compressor_side.png', compressor_side()),
               ('block/air_compressor_end.png', compressor_end())]
@@ -337,7 +398,7 @@ def main():
         os.makedirs(os.path.dirname(path), exist_ok=True)
         im.save(path)
     sheets += compat
-    fluids = [('fluid/air_still.png', air(16, 16, 701), 16), ('fluid/air_flow.png', air(32, 16, 702), 32)]
+    fluids = [('block/liquid_o2_still.png', air(16, 16, 701), 16), ('block/liquid_o2_flow.png', air(32, 16, 702), 32)]
     for rel, im, _ in fluids:
         save(im, rel)
         with open(os.path.join(TEX, rel + '.mcmeta'), 'w', newline='\n') as f:

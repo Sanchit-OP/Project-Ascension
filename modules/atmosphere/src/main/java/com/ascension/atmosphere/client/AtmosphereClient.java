@@ -5,7 +5,13 @@ import com.ascension.atmosphere.internal.AtmosphereContent;
 import com.ascension.core.api.client.HudRegistry;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -42,18 +48,37 @@ public final class AtmosphereClient {
                 new OxygenElement());
     }
 
+    /**
+     * Plain-language help on our block items: any line {@code <item key>.tooltip}, {@code .tooltip2},
+     * {@code .tooltip3} in the lang file is shown, so a new player can tell what a block is for.
+     */
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        String base = event.getItemStack().getItem().getDescriptionId();
+        if (!(event.getItemStack().getItem() instanceof BlockItem)
+                || !BuiltInRegistries.ITEM.getKey(event.getItemStack().getItem())
+                        .getNamespace().equals(AscensionAtmosphere.MOD_ID)) {
+            return;
+        }
+        for (String suffix : new String[] {".tooltip", ".tooltip2", ".tooltip3"}) {
+            if (I18n.exists(base + suffix)) {
+                event.getToolTip().add(Component.translatable(base + suffix).withStyle(ChatFormatting.GRAY));
+            }
+        }
+    }
+
     /** Air has no world block, so only its texture matters: a pale veil in tanks and pipes. */
     @SubscribeEvent
     public static void registerFluidExtensions(RegisterClientExtensionsEvent event) {
         event.registerFluidType(new IClientFluidTypeExtensions() {
             @Override
             public ResourceLocation getStillTexture() {
-                return ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "fluid/air_still");
+                return ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "block/liquid_o2_still");
             }
 
             @Override
             public ResourceLocation getFlowingTexture() {
-                return ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "fluid/air_flow");
+                return ResourceLocation.fromNamespaceAndPath(AscensionAtmosphere.MOD_ID, "block/liquid_o2_flow");
             }
         }, AtmosphereContent.AIR_TYPE.get());
     }

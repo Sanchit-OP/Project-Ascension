@@ -4,8 +4,14 @@
 
   "block.ascension_atmosphere.oxygen_emitter": "Oxygen Emitter (old)",
   "block.ascension_atmosphere.air_dispenser": "Air Dispenser",
-  "block.ascension_atmosphere.air_dispenser.status": "Air %1$s / %2$s mB — holding %3$s blocks (needs %4$s mB/s)",
-  "fluid_type.ascension_atmosphere.air": "Air",
+  "block.ascension_atmosphere.air_dispenser.status": "Liquid O2 %1$s / %2$s mB — holding %3$s blocks (needs %4$s mB/s)",
+  "block.ascension_atmosphere.air_dispenser.tooltip": "Keeps a sealed room breathable while it has Liquid O2.",
+  "block.ascension_atmosphere.air_dispenser.tooltip2": "Feed it by pipe from an Air Compressor. Holds 1 mB a second per 16 blocks of room. Right-click to see its level.",
+  "block.ascension_atmosphere.air_dispenser.tooltip3": "Close every gap in the room: one hole and the air is lost.",
+  "item.ascension_atmosphere.oxygen_tank.fill": "Fill it by right-clicking an Air Compressor, or from Liquid O2 pipes",
+  "item.ascension_atmosphere.oxygen_tank.upgrade": "Craft it with 8 raw helium to make a Helium Oxygen Tank",
+  "item.ascension_atmosphere.oxygen_tank_helium.tooltip": "Reinforced with helium: holds twice as much air as a plain tank",
+  "fluid_type.ascension_atmosphere.air": "Liquid O2",
   "block.ascension_atmosphere.oxygen_refill_station": "Oxygen Refill Station (old)",
 
   "item.ascension_atmosphere.oxygen_tank": "Oxygen Tank",

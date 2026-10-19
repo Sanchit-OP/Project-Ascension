@@ -1,6 +1,9 @@
 {
   "block.ascension_compat_create.air_compressor": "Air Compressor",
-  "block.ascension_compat_create.air_compressor.filled": "Tank filled \u2014 %1$s mB of air",
-  "block.ascension_compat_create.air_compressor.nothing": "No air to give (turn the shaft, or the tank is full)",
-  "block.ascension_compat_create.air_compressor.rate": "Making %1$s mB of air per second"
+  "block.ascension_compat_create.air_compressor.filled": "Tank filled \u2014 %1$s mB of Liquid O2",
+  "block.ascension_compat_create.air_compressor.nothing": "No Liquid O2 to give (turn the shaft, or the tank is full)",
+  "block.ascension_compat_create.air_compressor.rate": "Making %1$s mB of Liquid O2 per second",
+  "block.ascension_compat_create.air_compressor.tooltip": "Turn it with a Create shaft to make Liquid O2. Faster shaft, more Liquid O2.",
+  "block.ascension_compat_create.air_compressor.tooltip2": "Right-click with an oxygen tank to fill it, or draw it into pipes and tanks with a pump.",
+  "block.ascension_compat_create.air_compressor.tooltip3": "Pipe it to an Air Dispenser to keep a sealed room breathable."
 }
