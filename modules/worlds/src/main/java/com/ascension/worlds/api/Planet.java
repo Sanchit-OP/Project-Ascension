@@ -48,6 +48,9 @@ import net.minecraft.world.level.Level;
  *                    about vanilla rain/snow is affected either way; see {@link Weather}.
  * @param hazard      something in this surface's air that harms anyone not warded against it, if
  *                    anything: the Nether's rot. Absent by default; see {@link Hazard}.
+ * @param arrivalPoint the column {@code [x, z]} that arrivals with no remembered spot land over,
+ *                    instead of the world's centre. Absent by default. The End sets it so a ship
+ *                    coming down does not arrive over the Dragon's arena.
  */
 public record Planet(
         ResourceKey<Level> surface,
@@ -56,7 +59,8 @@ public record Planet(
         int order,
         int color,
         Optional<Weather> weather,
-        Optional<Hazard> hazard) {
+        Optional<Hazard> hazard,
+        Optional<List<Integer>> arrivalPoint) {
 
     public static final Codec<Planet> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -68,8 +72,22 @@ public record Planet(
                     Codec.INT.optionalFieldOf("order", 0).forGetter(Planet::order),
                     Codec.INT.optionalFieldOf("color", 0xFFFFFF).forGetter(Planet::color),
                     Weather.CODEC.optionalFieldOf("weather").forGetter(Planet::weather),
-                    Hazard.CODEC.optionalFieldOf("hazard").forGetter(Planet::hazard))
+                    Hazard.CODEC.optionalFieldOf("hazard").forGetter(Planet::hazard),
+                    Codec.INT.listOf().validate(l -> l.size() == 2
+                                    ? DataResult.success(l)
+                                    : DataResult.error(() -> "arrival_point must be exactly [x, z]"))
+                            .optionalFieldOf("arrival_point").forGetter(Planet::arrivalPoint))
             .apply(instance, Planet::new));
+
+    /** The x of the column unremembered arrivals land over: {@link #arrivalPoint} or 0. */
+    public int arrivalX() {
+        return arrivalPoint.map(p -> p.get(0)).orElse(0);
+    }
+
+    /** The z of the column unremembered arrivals land over: {@link #arrivalPoint} or 0. */
+    public int arrivalZ() {
+        return arrivalPoint.map(p -> p.get(1)).orElse(0);
+    }
 
     /**
      * Something in a world's air that lays an effect on every player not warded against it.

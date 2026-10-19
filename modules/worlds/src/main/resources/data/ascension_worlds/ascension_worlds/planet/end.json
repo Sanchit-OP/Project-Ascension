@@ -1,0 +1,11 @@
+{
+  "surface": "minecraft:the_end",
+  "space": {
+    "position": [-10945, 30070],
+    "body_radius": 320,
+    "approach_radius": 448
+  },
+  "order": 40,
+  "color": 9075637,
+  "arrival_point": [224, 0]
+}
