@@ -1013,3 +1013,26 @@ End's dimension type needs an override. Built and checked entries are added belo
   Vanilla's void damage (under y -64) is never reached. Not handled: a ship that falls out of the bottom (ships only climb);
   items and mobs. Compiled and unit-tested only; not seen on a server or in a client.
 
+**P8: checked on a dedicated server (2026-10-20, `end-checks.txt`, 18 checks, 0 failures; `damage-checks.txt`, 77 checks, 0 failures):**
+
+- **Dragon:** spawns with 4,550 of 4,550 health on Normal (`DamageChecks` also proves the other six totals).
+- **Gate:** dark until she dies; `dragon.kill()` makes the fight place the exit portal and the gate lights; the arrival spot is
+  `[6, 62, 0]` with ground under it. Stepping into the portal is held back and opens the destination screen; travel to Earth and back
+  to the End by the gate works, landing at `(6.5, 62, 0.5)`; players in the End are marked as having seen the credits.
+- **Fall:** below y 0 the player gets Slow Falling and stays in the End; at y -20 they are in space, 548 blocks (448 + 100) from the
+  End's centre, still with Slow Falling.
+- **Ship:** a command-built ship (a chest of diamonds, planks) climbed past 256 in the End and came out in space at
+  `[-10945, 30618]` (548 south of the End); moved into the End's body it came down at `(224.5, y, 0.5)`, the `arrival_point`. Its cargo
+  was not read back. A ship that is not held up keeps falling through the void (no lift in this test); `VoidFall` is for players only.
+- **End city:** `/locate structure minecraft:end_city` finds one at `[-912, ~, -592]`, 1,087 blocks from the middle.
+- **Reload:** after `save-all`, stop and start on the same world: the End's gate is still lit, the portal block is still there, the Dragon
+  is not back.
+
+Two real bugs the checks found, both fixed before this commit: `EndGate` looked for the exit portal in the podium's centre column
+(bedrock and torches; the portal is a ring around it), so the gate would never have lit; and the gate's own trip out of the End was
+cancelled by `EndGate`'s hold on portal trips while the player was still standing in the portal (`tryTravel` now clears the portal
+process first).
+
+**Not checked:** a spark reading (RCON does not return spark's output; run `/spark tps` and a profiler by hand), the Elytra in an End city
+ship, a pre-generation cost, a real client of anything, two clients, a ship with a real survival build and a pilot, a ship falling out of
+the bottom, items falling out of the bottom, and the Dragon's part damage on real weapons.

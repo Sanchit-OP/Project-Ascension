@@ -238,6 +238,10 @@ Two checks that need a game, both dormant until their trigger file exists in the
   Resist is hurt with the game's own damage sources (a zombie's fist, the Warden's sonic boom, a Creeper's blast,
   lava, Ignis' fireball...) and the damage that lands says whether each was met by Armor or Magic Resist
   (`damage-kinds.md`); a stand-in player checks that only magic hits send the hurt-tint packet, that Endless Hunger cannot swing faster than its ceiling however much Attack Damage it has, and that the six bosses reach their balanced health (ADR-0027). Prints `[damage-checks]` lines. Seen 2026-10-19: 75 checks, 0 failures.
+- **`end-checks.txt`** (a dedicated server, no window, leaves the server running): a stand-in player plays Planet 4 (ADR-0028): the Dragon's
+  health, her death lighting the End's gate, the exit portal holding the player and opening the destination screen, gate travel to Earth and back,
+  and falling out of the bottom into space. Prints `[end-checks]` lines. Seen 2026-10-20: 18 checks, 0 failures. Use a new `level-name` for
+  each run (the Dragon stays dead in a world she has died in). The stand-in is ticked by hand; its connection is not in the server's list.
 - **`create-checks.txt`** (a dedicated server, about a minute, no window): proves Create's backtanks and diving gear are gone
   from the loaded game: no recipe makes or uses one, the recipe viewers are told to hide all six, the advancements for earning
   them are gone and nothing in Create's advancement tree is left without a parent. The creative menu is built by a client and

@@ -38,9 +38,10 @@ public final class EndGate {
     /** Ticks between looks at the fight. A boolean read; the cost is the same each time. */
     private static final int CHECK_INTERVAL_TICKS = 20;
 
-    /** The podium's centre column and how far up and down to look for the portal block. */
+    /** How far up and down, and out from the podium's centre, to look for the portal. */
     private static final int PORTAL_SEARCH_MIN_Y = 40;
     private static final int PORTAL_SEARCH_MAX_Y = 110;
+    private static final int PORTAL_SEARCH_RADIUS = 4;
 
     /** Where arrivals stand, east of the portal, clear of the podium's torches. */
     private static final int ARRIVAL_OFFSET = 6;
@@ -78,21 +79,28 @@ public final class EndGate {
             return; // the portal blocks are not placed yet; try again next look
         }
         BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING,
-                new BlockPos(portal.getX() + ARRIVAL_OFFSET, 0, portal.getZ()));
+                new BlockPos(ARRIVAL_OFFSET, 0, 0));
         if (network.activate(here, ground)) {
             GateProgress.networkChanged(level.getServer());
         }
     }
 
-    /** The exit portal's block, in the podium's centre column, or null if it is not there. */
-    private static BlockPos findPortal(ServerLevel level) {
+    /**
+     * One block of the exit portal, or null if there is none. The portal is a ring of portal blocks around the
+     * podium's central pillar (the column at 0, 0 is bedrock and torches), so the search is a small square.
+     */
+    static BlockPos findPortal(ServerLevel level) {
         if (!level.hasChunkAt(BlockPos.ZERO)) {
             return null;
         }
         for (int y = PORTAL_SEARCH_MAX_Y; y >= PORTAL_SEARCH_MIN_Y; y--) {
-            BlockPos pos = new BlockPos(0, y, 0);
-            if (level.getBlockState(pos).is(Blocks.END_PORTAL)) {
-                return pos;
+            for (int x = -PORTAL_SEARCH_RADIUS; x <= PORTAL_SEARCH_RADIUS; x++) {
+                for (int z = -PORTAL_SEARCH_RADIUS; z <= PORTAL_SEARCH_RADIUS; z++) {
+                    BlockPos pos = new BlockPos(x, y, z);
+                    if (level.getBlockState(pos).is(Blocks.END_PORTAL)) {
+                        return pos;
+                    }
+                }
             }
         }
         return null;
