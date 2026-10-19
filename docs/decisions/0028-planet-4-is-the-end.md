@@ -36,18 +36,23 @@ the vanilla exit portal is this planet's gate instead of a pre-built frame ruin,
 8. **No Dragon key.** A fresh-world-only dimension override is needed only if the End's own dimension type blocks
    ships (checked in P1, not assumed).
 
+9. **The void is not death** (Sanchit, 2026-10-20). The End has no survival rule: no hazard, breathable. Falling below the
+   world's floor gives Slow Falling, and a few blocks under the floor the player is carried back into space beside the
+   planet, as if they had passed the asteroid. It is a planet flag, `falls_to_space`, handled by `VoidFall` in
+   `ascension-worlds`, so another belt world needs no class. Needs a line of lore (`the-end.md`).
+
 ## Per-planet design fields (`planets.md`)
 
 | Field | Planet 4 |
 |---|---|
 | Fantasy | The belt: islands left hanging where something was taken apart. |
 | Threat | The Ender Dragon; Endermen in numbers; shulkers in the End cities. |
-| Constraint | The void. A wrong step is a fall; no ceiling, no floor. |
+| Constraint | The void: no floor. A fall hands you back to space. |
 | Objective | Kill the Dragon; light the exit gate. |
 | Prize | The Elytra (End city ships), shulker shells, the gate itself. |
 | Mastery loop | Cross the gaps by Elytra, loot the cities, fly home or gate away. |
 | Orbit purpose | A belt of rocks, not a sphere, from space. |
-| Surface survival mechanic | The void (no air rule). |
+| Surface survival mechanic | None; the fall out of the belt (Slow Falling, then space). |
 | Movement wrinkle | The Elytra over the void. |
 | Unique resource | Shulker shells, chorus. |
 | Core structure | The End cities. |

@@ -51,6 +51,9 @@ import net.minecraft.world.level.Level;
  * @param arrivalPoint the column {@code [x, z]} that arrivals with no remembered spot land over,
  *                    instead of the world's centre. Absent by default. The End sets it so a ship
  *                    coming down does not arrive over the Dragon's arena.
+ * @param fallsToSpace whether falling out of the bottom of this world carries you back into
+ *                    space instead of into the void's damage. Absent means false. The End sets
+ *                    it: its islands hang in nothing, and the way down leads out of the belt.
  */
 public record Planet(
         ResourceKey<Level> surface,
@@ -60,7 +63,8 @@ public record Planet(
         int color,
         Optional<Weather> weather,
         Optional<Hazard> hazard,
-        Optional<List<Integer>> arrivalPoint) {
+        Optional<List<Integer>> arrivalPoint,
+        boolean fallsToSpace) {
 
     public static final Codec<Planet> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -76,7 +80,8 @@ public record Planet(
                     Codec.INT.listOf().validate(l -> l.size() == 2
                                     ? DataResult.success(l)
                                     : DataResult.error(() -> "arrival_point must be exactly [x, z]"))
-                            .optionalFieldOf("arrival_point").forGetter(Planet::arrivalPoint))
+                            .optionalFieldOf("arrival_point").forGetter(Planet::arrivalPoint),
+                    Codec.BOOL.optionalFieldOf("falls_to_space", false).forGetter(Planet::fallsToSpace))
             .apply(instance, Planet::new));
 
     /** The x of the column unremembered arrivals land over: {@link #arrivalPoint} or 0. */

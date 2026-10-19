@@ -7,5 +7,6 @@
   },
   "order": 40,
   "color": 9075637,
-  "arrival_point": [224, 0]
+  "arrival_point": [224, 0],
+  "falls_to_space": true
 }

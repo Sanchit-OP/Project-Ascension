@@ -1002,3 +1002,14 @@ End's dimension type needs an override. Built and checked entries are added belo
 - **Recipe debt.** The End half of ADR-0014's debt is paid on paper; recorded in `todo.md` and `resource-economy.md`.
   The ledger covers only our items, so it has nothing to change.
 
+**P5: survival rule and the void (2026-10-20, Sanchit):**
+
+- **The rule is none, as data.** `planet/end.json` has no `environment` (so earthlike, breathable) and no `hazard`. Oxygen v2
+  is not involved.
+- **The void is not death.** `planet/end.json` carries `falls_to_space: true` (new optional planet field). `VoidFall`
+  (`ascension-worlds`): a player below the world's floor (y 0) gets Slow Falling, refreshed; 12 blocks under the floor they are
+  carried into space beside the planet (`SpaceMechanics.arrivalInSpace`, outside the approach shell, facing away from it),
+  stopped, with Slow Falling for 30 s and the message "There is no floor under the belt. It hands you back to the dark."
+  Vanilla's void damage (under y -64) is never reached. Not handled: a ship that falls out of the bottom (ships only climb);
+  items and mobs. Compiled and unit-tested only; not seen on a server or in a client.
+
