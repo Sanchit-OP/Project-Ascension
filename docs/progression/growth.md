@@ -41,10 +41,10 @@ Nothing grows from kill counts, time played or vanilla XP, so nothing can be far
 
 | Source | Who gains it | Points | v1 total |
 |---|---|---|---|
-| Boss, first kill | The whole team | 3 | 6 bosses: 18 |
-| Gate lit | The whole team | 2 | 3 gates: 6 |
-| Discovery | You | 1 | 11 places: 11 |
-| **Total by the end of v1** | | | **35 points, for a 56-node web** |
+| Boss, first kill | The whole team | 3 | 7 bosses: 21 (the Dragon added 2026-10-20) |
+| Gate lit | The whole team | 2 | 4 gates: 8 (the End's added) |
+| Discovery | You | 1 | 12 places: 12 (landing on the End added) |
+| **Total by the end of v1** | | | **41 points, for a 56-node web** (was 35: the alpha now ends at the End, ADR-0028, so the web or the points may want re-balancing; Sanchit's call) |
 
 ## 2. Where it fits
 
@@ -67,10 +67,15 @@ Points only: no stat is given automatically (Sanchit, 2026-10-15).
 | The Ender Guardian | The Moon | 3 |
 | The Netherite Monstrosity | The Nether | 3 |
 | Ignis | The Nether | 3 |
+| The Ender Dragon | The End | 3 |
 | Earth's gate lit | Earth | 2 |
 | The Moon's gate lit | The Moon | 2 |
 | The Nether's gate lit | The Nether | 2 |
-| **v1 total** | | **24** |
+| The End's gate lit (the Dragon's exit portal, ADR-0028) | The End | 2 |
+| **v1 total** | | **29** |
+
+Planet 4 (2026-10-20) adds the Dragon (3) and the End's gate (2), so the total is 29, not 24. Rune slots are unaffected:
+four milestones already open every slot (`rune-system.md` section 6), so the extra ones only add skill points.
 
 - **Every boss is worth the same**, so the order a team takes the worlds in never matters
   (ADR-0018).

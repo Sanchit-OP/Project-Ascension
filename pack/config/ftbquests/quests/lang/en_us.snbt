@@ -397,6 +397,35 @@
 	"quest.77D678A9C6557137.title": "Ignis"
 	"quest.77D678A9C6557137.quest_subtitle": "Optional, and no easier"
 	"quest.77D678A9C6557137.quest_desc": ["A second fire fights in an arena of its own, somewhere in this world.", "The first time your team beats it, everyone on the team gains skill points."]
+	"chapter.504C0902F6F03067.title": "The Belt"
+	"chapter.504C0902F6F03067.chapter_subtitle": ["Thirty-two thousand blocks south. No floor."]
+	"quest.0A179F942C41A99E.title": "The longest flight"
+	"quest.0A179F942C41A99E.quest_subtitle": "Thirty-two thousand blocks, south"
+	"quest.0A179F942C41A99E.quest_desc": ["The End is the farthest world yet, about thirty-two thousand blocks south of Earth. Its air is fine.", "Plan the trip in fuel and food."]
+	"quest.72C5BFD6CA1681A1.title": "Landing on the Belt"
+	"quest.72C5BFD6CA1681A1.quest_subtitle": "Islands of pale stone, hung in the dark"
+	"quest.72C5BFD6CA1681A1.quest_desc": ["A ship comes down over empty air, a little way from the middle. Fly in toward the bright island.", "Landing here earns a skill point, once."]
+	"quest.67F1248349F02855.title": "No floor"
+	"quest.67F1248349F02855.quest_subtitle": "Falling out leads back to space"
+	"quest.67F1248349F02855.quest_desc": ["Step off an island and you drift down slowly, taking no harm. Past the bottom of the world you are carried back into space beside the planet, with nothing lost.", "Wings are the way to cross the gaps."]
+	"quest.14448F103F926A3F.title": "The Ender Dragon"
+	"quest.14448F103F926A3F.quest_subtitle": "Ten pillars, each with a crystal"
+	"quest.14448F103F926A3F.quest_desc": ["The crystals on the pillars heal her. Break them first.", "Her head takes a full hit and the rest of her takes a quarter. The first time your team beats her, everyone on the team gains skill points."]
+	"quest.1FDC801BA19519D8.title": "The way out"
+	"quest.1FDC801BA19519D8.quest_subtitle": "Her portal becomes a gate"
+	"quest.1FDC801BA19519D8.quest_desc": ["When she falls, the portal in the middle of the arena wakes. Step into it and pick where to go.", "When it lights, everyone on the server gains skill points. It joins the gates you have already lit."]
+	"quest.4E99C6C039EF026D.title": "A small gateway"
+	"quest.4E99C6C039EF026D.quest_subtitle": "A short road to the outer islands"
+	"quest.4E99C6C039EF026D.quest_desc": ["Each time she falls, a small gateway opens on a ring around the arena. Throw an ender pearl at one and it carries you a long way out."]
+	"quest.56E1AB25AAE0E904.title": "An End city"
+	"quest.56E1AB25AAE0E904.quest_subtitle": "Tall towers on the outer islands"
+	"quest.56E1AB25AAE0E904.quest_desc": ["Shulkers guard the towers and their chests. A shulker shell makes a shulker box."]
+	"quest.285BD7E7DA3D6D16.title": "Wings"
+	"quest.285BD7E7DA3D6D16.quest_subtitle": "In a ship, in an item frame"
+	"quest.285BD7E7DA3D6D16.quest_desc": ["Some cities have a ship moored beside them. The wings are in its frame.", "They do not carry you into space. The sky still ends at the top of the world."]
+	"quest.04D8525A9D1412DE.title": "Shulker shells"
+	"quest.04D8525A9D1412DE.quest_subtitle": "Boxes that keep what is inside"
+	"quest.04D8525A9D1412DE.quest_desc": ["Two shells and a chest make a shulker box."]
 	"chapter.4FC237B40A7ED679.title": "Gear and Growth"
 	"chapter.4FC237B40A7ED679.chapter_subtitle": ["What you wear, earn and choose."]
 	"quest.5358EC9AFB8263A5.title": "Armour counts"

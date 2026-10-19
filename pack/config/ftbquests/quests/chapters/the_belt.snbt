@@ -1,0 +1,270 @@
+{
+	id: "504C0902F6F03067"
+	group: ""
+	order_index: 10
+	filename: "the_belt"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/the_belt.png"
+		}
+	}
+	quests: [
+		{
+			id: "0A179F942C41A99E"
+			x: 3.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:clock"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "7920D37E57283627"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "735C80B20120644B"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "72C5BFD6CA1681A1"
+			x: 3.0d
+			y: 2.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:end_stone"
+				count: 1
+			}
+			dependencies: ["0A179F942C41A99E"]
+			tasks: [
+				{
+					id: "1F8450586109BCF2"
+					type: "advancement"
+					advancement: "ascension_worlds:discovery/the_end"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "566F3878F96EECB5"
+					type: "item"
+					item: "minecraft:ender_pearl"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "67F1248349F02855"
+			x: 0.0d
+			y: 4.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:feather"
+				count: 1
+			}
+			dependencies: ["72C5BFD6CA1681A1"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "72C53A30E761B1E5"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "597BD49BA3B0ACF0"
+					type: "item"
+					item: "minecraft:feather"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "14448F103F926A3F"
+			x: 3.0d
+			y: 4.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:dragon_head"
+				count: 1
+			}
+			dependencies: ["72C5BFD6CA1681A1"]
+			hide_until_deps_visible: true
+			tasks: [
+				{
+					id: "60358D8B189C2989"
+					type: "advancement"
+					advancement: "ascension_combat:growth/ender_dragon"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "76010CAA6AB75E3F"
+					type: "item"
+					item: "minecraft:golden_apple"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "1FDC801BA19519D8"
+			x: 3.0d
+			y: 6.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "ascension_worlds:gateway_keystone"
+				count: 1
+			}
+			dependencies: ["14448F103F926A3F"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "66F70A82B64D4FF9"
+					type: "advancement"
+					advancement: "ascension_worlds:gates/the_end"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "4FA3D9C100BBB177"
+					type: "item"
+					item: "minecraft:diamond"
+					count: 3
+				}
+			]
+		}
+		{
+			id: "4E99C6C039EF026D"
+			x: 6.0d
+			y: 4.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:ender_pearl"
+				count: 1
+			}
+			dependencies: ["14448F103F926A3F"]
+			hide_until_deps_visible: true
+			tasks: [
+				{
+					id: "0D53249E2CA34DBB"
+					type: "advancement"
+					advancement: "minecraft:end/enter_end_gateway"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "71DAEBAFF1C472EB"
+					type: "item"
+					item: "minecraft:ender_pearl"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "56E1AB25AAE0E904"
+			x: 6.0d
+			y: 6.0d
+			shape: "ascension_eye"
+			size: 1.2d
+			icon: {
+				id: "minecraft:purpur_block"
+				count: 1
+			}
+			dependencies: ["4E99C6C039EF026D"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "35B77CD52AA4A9E8"
+					type: "advancement"
+					advancement: "minecraft:end/find_end_city"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "592612977EFB4BEE"
+					type: "item"
+					item: "minecraft:chorus_fruit"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "285BD7E7DA3D6D16"
+			x: 6.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:elytra"
+				count: 1
+			}
+			dependencies: ["56E1AB25AAE0E904"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "307777A453C3303A"
+					type: "advancement"
+					advancement: "minecraft:end/elytra"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "11DB6DB71BBABF56"
+					type: "item"
+					item: "minecraft:firework_rocket"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "04D8525A9D1412DE"
+			x: 9.0d
+			y: 6.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:shulker_shell"
+				count: 1
+			}
+			dependencies: ["56E1AB25AAE0E904"]
+			hide_until_deps_complete: true
+			optional: true
+			tasks: [
+				{
+					id: "19272EE6248D5253"
+					type: "item"
+					item: "minecraft:shulker_shell"
+					count: 2L
+				}
+			]
+			rewards: [
+				{
+					id: "2ACDACCF1D3DD62A"
+					type: "item"
+					item: "minecraft:chorus_fruit"
+					count: 8
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

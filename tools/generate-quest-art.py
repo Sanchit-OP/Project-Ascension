@@ -14,7 +14,7 @@ Writes, under modules/compat/ftbquests/src/main/resources/assets/:
       planets/{earth,moon,nether}.png        a lit sphere for each world (from the planet files' colours)
       planets/ring.png                       the faint ring of a world not yet known
       planets/halo.png                       the teal halo of a world that has been visited
-      icons/{first_days,planets,road_up,the_moon,the_rot,gear_and_growth,together,
+      icons/{first_days,planets,road_up,the_moon,the_rot,the_belt,gear_and_growth,together,
              the_gate,create_power,create_craft,ship_build,ship_fly}.png   chapter icons
       gate/plan.png                          Earth's gate: a view, a key and every layer (from gateway.json)
 
@@ -527,6 +527,15 @@ def write_icons(size=64):
              (c - r * 0.18, c + r * 0.34), (c - r * 0.14, c + r * 0.06)]
     draw.polygon(inner, fill=(255, 190, 80, 255))
     save(downsample(image, size), os.path.join(NS, 'icons', 'the_rot.png'))
+
+    # The Belt: a few pale islands hung in the dark.
+    image, draw, k, c, r = _icon_base(size)
+    for dx, dy, w, h in ((-0.30, -0.18, 0.34, 0.12), (0.20, 0.02, 0.40, 0.14), (-0.10, 0.30, 0.26, 0.10)):
+        top = (c + r * dx - r * w, c + r * dy - r * h * 0.5, c + r * dx + r * w, c + r * dy + r * h * 0.5)
+        draw.ellipse(top, fill=(214, 206, 170, 255), outline=(150, 100, 190, 255))
+        draw.polygon([(top[0] + r * 0.05, c + r * dy), (top[2] - r * 0.05, c + r * dy),
+                      (c + r * dx + r * 0.03, c + r * dy + r * h * 1.6)], fill=(120, 110, 100, 255))
+    save(downsample(image, size), os.path.join(NS, 'icons', 'the_belt.png'))
 
     # Gear and Growth: a cogwheel with a spark at the centre.
     image, draw, k, c, r = _icon_base(size)
