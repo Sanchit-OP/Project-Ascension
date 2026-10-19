@@ -967,3 +967,18 @@ Its gate is the Dragon's exit portal: on the fight's end the portal's front spot
 where a ship lands (the default is over the arena), Sable `dimension_physics/the_end.json`, and whether the
 End's dimension type needs an override. Built and checked entries are added below as increments land.
 
+
+**Built (P1, P2; compiled and unit-tested only, not run on a server):**
+
+- `planet/end.json` has `arrival_point: [224, 0]`, a new optional planet field: the column that arrivals with no
+  remembered spot land over (players and ships), instead of the world's centre. The End uses it so a ship does not
+  come down on the Dragon's arena. Sable's `dimension_physics/the_end.json` is the Nether's curve (same height).
+- `EndGate` (Tier 1): once a second while the End is loaded and dark it reads `EndDragonFight.hasPreviouslyKilledDragon()`;
+  when true it finds the exit portal block in the podium's column, calls `GatewayNetworkState.activate(the_end,
+  ground 6 blocks east)` and fires `GateProgress.networkChanged` (mark, advancement `gates/the_end`, growth
+  milestones). Stepping into the exit portal opens the destination screen (`EntityTravelToDimensionEvent` cancelled
+  and routed to `GatewayDestinations.onStepIn`); players in the End are marked as having seen the credits so they never
+  play. All of it follows `disableVanillaPortals`.
+- Advancements `gates/the_end`, `discovery/the_end`, with growth milestones (2 shared points, 1 personal).
+- Not checked: that the Dragon's death really lights the gate and the portal opens the screen, the arrival spot on
+  the podium island, the ship landing at [224, 0], a world reload.
