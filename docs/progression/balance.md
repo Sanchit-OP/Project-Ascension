@@ -211,6 +211,7 @@ change with difficulty. Attack Damage is a percent on the boss's own, so x1.2 is
 | The Netherite Monstrosity | 2321 / 2730 / 3413 | 140 | 80 | +45% / +60% / +80% | 64 to 175 |
 | Ignis | 2873 / 3380 / 4225 | 160 | 90 | +65% / +80% / +100% | 81 to 240 |
 | The Wither | 3591 / 4225 / 5281 | 180 | 110 | +85% / +100% / +120% | 108 to 345 |
+| The Ender Dragon (5a) | 3868 / 4550 / 5688 | 190 | 90 | none (no attribute) | 96 to 398, up to x3 on her body |
 
 Written into `mob_stats` (Armor, Magic Resist) and `mob_difficulty` (`health_total` and the damage percent, per
 difficulty); the four Cataclysm bosses live in `ascension-compat-cataclysm`'s own files. `health_total` sets
@@ -218,7 +219,7 @@ the boss's maximum health to that number whatever its own base is. The Wither's 
 has no Attack Damage attribute, its skulls do fixed damage. Times use the same weapons and kit as section 3,
 with no growth points or runes. A later world's boss goes below the Wither.
 
-### 5a. The Ender Dragon (PROPOSED 2026-10-20, not applied; Sanchit decides)
+### 5a. The Ender Dragon (applied 2026-10-20, Sanchit approved the proposal)
 
 Read from the 1.21.1 source (`EnderDragon`), so the numbers are not guesses:
 
@@ -235,7 +236,7 @@ Read from the 1.21.1 source (`EnderDragon`), so the numbers are not guesses:
 
 | | Easy / Normal / Hard | Armor | Magic Resist | Damage percent |
 |---|---|---|---|---|
-| The Ender Dragon (proposed) | 3,868 / 4,550 / 5,688 | 190 | 90 | none (no attribute) |
+| The Ender Dragon | 3,868 / 4,550 / 5,688 | 190 | 90 | none (no attribute) |
 
 Why: just above the Wither (4,225), as the ladder asks; Armor one step above it (180 to 190); Magic Resist lower than the
 Wither's (110) because the Dragon is a physical fight and the head is the weak point, so a magic-heavy kit is not

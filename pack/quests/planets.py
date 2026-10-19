@@ -21,6 +21,7 @@ from quests.model import (Chapter, Image, Quest, dimension, give, picture)
 KNOWN_AFTER = {
     'moon': 'first_days.first_breath',    # once you can carry your own air
     'nether': 'moon',                     # once you have stood on the Moon
+    'end': 'moon',                        # likewise
 }
 
 # What each world's page says, in practical words and no more. Distances come from the planet files.
@@ -50,10 +51,18 @@ BLURB = {
         'rewards': [give('minecraft:golden_helmet', 1), give('minecraft:golden_boots', 1),
                     give('minecraft:golden_apple', 2)],
     },
+    'end': {
+        'text': [
+            'A belt of floating rock in the dark, far out to the {direction}. Nothing holds the islands together.',
+            'Something old guards it. Wings help.',
+            'Plan a long flight.',
+        ],
+        'rewards': [give('minecraft:ender_pearl', 4), give('minecraft:cooked_beef', 12)],
+    },
 }
 
 # Matches planet.ascension_worlds.<id> in worlds' lang file.
-TITLES = {'earth': 'Earth', 'moon': 'The Moon', 'nether': 'The Nether'}
+TITLES = {'earth': 'Earth', 'moon': 'The Moon', 'nether': 'The Nether', 'end': 'The End'}
 
 _COMPASS = ['east', 'south-east', 'south', 'south-west', 'west', 'north-west', 'north', 'north-east']
 

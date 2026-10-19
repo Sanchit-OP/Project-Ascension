@@ -83,6 +83,9 @@
 	"quest.4110412AC1AE6C2E.title": "The Nether"
 	"quest.4110412AC1AE6C2E.quest_subtitle": "18,000 blocks south-east"
 	"quest.4110412AC1AE6C2E.quest_desc": ["A world of fire with no roof over it, far out to the south-east.", "Something in the air there harms you. Gold armour turns it away: wear it.", "Plan a long flight."]
+	"quest.0ACE2D2F0C79926C.title": "The End"
+	"quest.0ACE2D2F0C79926C.quest_subtitle": "32,000 blocks south"
+	"quest.0ACE2D2F0C79926C.quest_desc": ["A belt of floating rock in the dark, far out to the south. Nothing holds the islands together.", "Something old guards it. Wings help.", "Plan a long flight."]
 	"chapter.66846420A805B305.title": "The Road Up"
 	"chapter.66846420A805B305.chapter_subtitle": ["Earth to the top of the sky."]
 	"quest.778F5319036EB164.title": "The manual in your hand"
