@@ -38,3 +38,5 @@ machine, carried by Create's tanks and pipes, and spent by a block that holds a 
 - The compat-create jar needs a compile-time Create (same approach as `compat/sable`, `compat/jade`).
 - Existing worlds keep their emitters and stations untouched.
 - A player with only the atmosphere jar can hold rooms with fluid from other mods' pumps but cannot make air.
+- `ascension-compat-create` compiles against Create (Modrinth maven, `create_version` in `gradle.properties`) and Ponder (Create's maven), both compile-only: its first Java and first compile dependency. It requires `ascension_atmosphere`, and so does `ascension-compat-sable`. The fluid is shown to players as "Liquid O2" (registry id `air`).
+- Built and seen in Sanchit's client 2026-10-19 (art, compressor, pipes, dispenser, helium tank). Not yet verified: ships (see `oxygen-v2.md`), a dedicated-server check, performance log.
