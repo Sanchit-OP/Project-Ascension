@@ -3,11 +3,11 @@
   "tiers": {},
   "types": {
     "minecraft:warden": {
-      "health_total": 1500,
+      "health_total": 975,
       "attack_damage_percent": 0
     },
     "minecraft:wither": {
-      "health_total": 6500,
+      "health_total": 4225,
       "attack_damage_percent": 100
     }
   }

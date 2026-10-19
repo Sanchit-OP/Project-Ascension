@@ -17,7 +17,12 @@
 > so until the ceiling was raised every boss total in this document came out at exactly 1,024. A second fault was found
 > with it: a boss's total was worked out from its base health alone, so Cataclysm's Ender Golem and Ender Guardian
 > (each carrying a +150% `animation_health` modifier) came out 225 and 499.5 too high. Both are fixed and seen on a
-> dedicated server; the totals below are what a boss now has.
+> dedicated server.
+>
+> **Every boss total was cut by 35% (Sanchit, 2026-10-19: "a little too op with the hp, not the armor").** Armor and
+> Magic Resist are untouched. The totals below are the cut ones; the first draft was Warden 1,500, Ender Golem 2,500,
+> Ender Guardian 3,200, Netherite Monstrosity 4,200, Ignis 5,200 and Wither 6,500 on Normal. Easy and Hard kept their
+> ratios (85% and 125% of Normal).
 
 ## 2. Mobs by difficulty
 
@@ -78,14 +83,14 @@ no cap), not its stats.
 | *Pair* | Endless Hunger, one in each hand | 46 | 32 | Both copies count |
 | | *netherite sword* | 230 | 109 | |
 
-**What uncapped does against a late boss.** On the Wither (6500 HP, 180 Armor, 110 Magic Resist), alone, kit in
-brackets: Veigo's Blade 197 s (143), Divine Sunderer 197 (158), Spear of Shojin 204 (168), Galeforce 280 (208),
-Ragefang 265 (155), Heartwood 318 (269), Darken Blade 338 (265), Mortal Reminder 679 (422), Darius's Axe 764
-(464), Endless Hunger 760 (438), Wraithblade 880 (531).
+**What uncapped does against a late boss.** On the Wither (4225 HP after the 2026-10-19 cut, 180 Armor, 110 Magic
+Resist), alone, kit in brackets: Veigo's Blade 171 s (122), Ragefang 179 (108), Spear of Shojin 179 (143), Divine
+Sunderer 181 (141), Galeforce 240 (176), Heartwood 255 (207), Darken Blade 278 (213), Mortal Reminder 441 (274),
+Endless Hunger 494 (284), Darius's Axe 497 (302), Wraithblade 572 (345).
 The Spear's true damage was the worst runaway (88 s) and has been cut to 0.5%, which puts it with Veigo and
 Sunderer. What is left is a split between weapons whose damage is a percent of the boss's health, which
 grow stronger as bosses grow, and weapons that deal flat damage (Darius, Ragefang, Wraithblade, Mortal
-Reminder, Endless Hunger), which take four times as long. Against the Warden the split is mild. Boss Armor and
+Reminder, Endless Hunger), which take about three times as long. Against the Warden the split is mild. Boss Armor and
 Magic Resist do not close it, because they cut flat and percent damage alike.
 
 Cataclysm's weapons, with their real speeds (read from its jar, 2026-10-19), take 160 to 320 seconds alone, so
@@ -194,18 +199,18 @@ Tooltips state each base number and what it scales with.
 
 ## 5. Bosses by progression (Sanchit approved these, 2026-10-19)
 
-Each later boss has more of everything, written per boss. These are the **Normal** numbers; Easy is 15% less
+Each later boss has more of everything, written per boss. HP is the first draft cut by 35% (2026-10-19). These are the **Normal** numbers; Easy is 15% less
 health and 15 points less damage, Hard is 25% more health and 20 points more. Armor and Magic Resist do not
 change with difficulty. Attack Damage is a percent on the boss's own, so x1.2 is +20%.
 
 | Boss | HP (Easy / Normal / Hard) | Armor | Magic Resist | Damage (Easy / Normal / Hard) | Kit time to kill, Normal (s) |
 |---|---|---|---|---|---|
-| The Warden | 1275 / 1500 / 1875 | 80 | 40 | -15% / 0 / +20% | 43 to 80 |
-| The Ender Golem | 2125 / 2500 / 3125 | 100 | 50 | +5% / +20% / +40% | 81 to 140 |
-| The Ender Guardian | 2720 / 3200 / 4000 | 120 | 60 | +25% / +40% / +60% | 120 to 188 |
-| The Netherite Monstrosity | 3570 / 4200 / 5250 | 140 | 80 | +45% / +60% / +80% | 179 to 270 |
-| Ignis | 4420 / 5200 / 6500 | 160 | 90 | +65% / +80% / +100% | 255 to 385 |
-| The Wither | 5525 / 6500 / 8125 | 180 | 110 | +85% / +100% / +120% | 365 to 553 |
+| The Warden | 829 / 975 / 1219 | 80 | 40 | -15% / 0 / +20% | 29 to 53 |
+| The Ender Golem | 1381 / 1625 / 2031 | 100 | 50 | +5% / +20% / +40% | 41 to 93 |
+| The Ender Guardian | 1768 / 2080 / 2600 | 120 | 60 | +25% / +40% / +60% | 49 to 126 |
+| The Netherite Monstrosity | 2321 / 2730 / 3413 | 140 | 80 | +45% / +60% / +80% | 64 to 175 |
+| Ignis | 2873 / 3380 / 4225 | 160 | 90 | +65% / +80% / +100% | 81 to 240 |
+| The Wither | 3591 / 4225 / 5281 | 180 | 110 | +85% / +100% / +120% | 108 to 345 |
 
 Written into `mob_stats` (Armor, Magic Resist) and `mob_difficulty` (`health_total` and the damage percent, per
 difficulty); the four Cataclysm bosses live in `ascension-compat-cataclysm`'s own files. `health_total` sets

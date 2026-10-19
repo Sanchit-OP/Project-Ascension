@@ -12,9 +12,10 @@ import org.slf4j.LoggerFactory;
  * Lifts vanilla's ceiling on Max Health (ADR-0027).
  *
  * <p>Minecraft's Max Health is a ranged attribute that clamps its value to 1,024, in the attribute object itself:
- * no modifier, command or data can pass it. The balance gives the six bosses between 1,275 and 8,125 health
- * (docs/progression/balance.md section 5), so until this ran every one of them came out at exactly 1,024 and the
- * Wither was no tougher than the Warden. (Armor has the same problem and was solved by a second attribute of ours,
+ * no modifier, command or data can pass it. The balance gave the six bosses between 1,275 and 8,125 health
+ * (docs/progression/balance.md section 5; cut by 35% on 2026-10-19, so now 829 to 5,281), so until this ran every
+ * one of the first draft's totals above 1,024 came out at exactly 1,024 and the Wither was no tougher than the
+ * Warden. The ceiling stays raised: a pack or a later world may want a boss above 1,024 again. (Armor has the same problem and was solved by a second attribute of ours,
  * because that one is only a stat; Max Health is the one the game itself reads for life, so it cannot be replaced.)
  *
  * <p>This raises the attribute's maximum once, at startup, on both sides (the client clamps what the server sends it

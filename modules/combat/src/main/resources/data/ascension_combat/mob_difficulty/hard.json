@@ -23,11 +23,11 @@
   },
   "types": {
     "minecraft:warden": {
-      "health_total": 1875,
+      "health_total": 1219,
       "attack_damage_percent": 20
     },
     "minecraft:wither": {
-      "health_total": 8125,
+      "health_total": 5281,
       "attack_damage_percent": 120
     }
   }

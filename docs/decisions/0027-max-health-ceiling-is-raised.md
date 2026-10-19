@@ -64,3 +64,10 @@ The total is now measured with our own modifier taken off, so it is exact whatev
 - **Effective health:** keep 1,024 real health and divide incoming damage by (total / 1,024). The boss bar, a Jade
   readout and every percent-of-health weapon would then show or use the wrong number, and healing would be wrong.
 - **Lower the totals to fit 1,024.** The progression from the Warden to the late bosses is the point of the balance.
+
+## Later change (2026-10-19)
+
+Sanchit cut every boss total by 35% the same day ("a little too op with the hp, not the armor"): Normal is now Warden 975,
+Ender Golem 1,625, Ender Guardian 2,080, Netherite Monstrosity 2,730, Ignis 3,380 and Wither 4,225 (`docs/progression/balance.md`
+section 5). Five of the six are still above 1,024, so the ceiling is still needed. The numbers in this ADR's Context and
+Consequences are the first draft and are left as the record of what was found.
