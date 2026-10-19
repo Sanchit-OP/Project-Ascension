@@ -154,8 +154,8 @@ we register has no source or a material has no use, and regenerating it rewrites
 `docs/progression/resource-ledger.md`. Known gaps are excused, with reasons, in
 `tools/resource-ledger-rules.json`.
 
-**Oxygen v2 (2026-10-19, branch `atmosphere-v2`, not merged, not yet run in a game; ADR-0026, `docs/technical/oxygen-v2.md`):** air is
-a fluid; the Create-powered **Air Compressor** (in `ascension-compat-create`, its first Java) makes it and fills tanks by right-click; the
+**Oxygen v2 (2026-10-19, merged to `main`, not pushed; seen in Sanchit's client except ships; ADR-0026, `docs/technical/oxygen-v2.md`):** air is
+a fluid (shown as Liquid O2); the Create-powered **Air Compressor** (in `ascension-compat-create`, its first Java) makes it and fills tanks by right-click; the
 **Air Dispenser** takes it from pipes and holds a sealed room; a **helium tank** holds twice as much; `ascension-compat-sable` registers
 a ship space. Air depends on Create (the old emitter and refill station are legacy, no recipe). New art by `tools/generate-atmosphere-art.py`.
 The quest book's three air quests are updated; its flight lines wait until a ship is seen holding air.

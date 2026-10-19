@@ -130,10 +130,9 @@ Captured during M1.6 testing; none block v0.1.
 - **No general block-change event** means external world edits are not seen until something else
   near the volume changes. Fails safe, but worth revisiting if it bites.
 
-## Oxygen v2 (Sanchit, 2026-10-18; built 2026-10-19 on branch `atmosphere-v2`, not merged)
+## Oxygen v2 (Sanchit, 2026-10-18; built 2026-10-19, merged to main, branch and worktree removed)
 
-**Status:** A look, B fluid and Air Dispenser, C Create Air Compressor, D helium tank, E ship space, F book and docs are built
-and compile; **none has been run in a game or on a dedicated server.** Open: `OxygenChecks` (server check), the unverified Sable
+**Status:** A–F are built and Sanchit saw the art, tanks, compressor, pipes and dispenser work in his client (2026-10-19). **Not yet verified:** ships, a dedicated server, a reload. Open: `OxygenChecks` (server check), the unverified Sable
 assumptions in `oxygen-v2.md` (plot transform direction, edit events in plots, carry to space), the compressor's spinning-shaft
 visual (it is a plain block model now), and the book's flight lines ("A long flight", "Share your air"), left alone until a
 ship has been seen to hold air. Sanchit's answers 2026-10-19: air depends on Create, old emitter and station are legacy, no hatch in v2.
