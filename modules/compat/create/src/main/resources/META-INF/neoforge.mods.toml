@@ -9,11 +9,12 @@ version = "${mod_version}"
 displayName = "Ascension Compat: Create"
 authors = "${mod_authors}"
 description = '''
-Disables Create's Copper/Netherite Backtank and Diving Helmet. A wearable tank of pressurised
-air that drains over time while worn is exactly what ascension-atmosphere's own oxygen tank
-already is, under a different name and different rules -- shipping both invites exactly the
-confusion ADR-0002 exists to avoid. Diving Boots are untouched: they are a movement item with
-no air mechanic of their own.
+Removes Create's Copper/Netherite Backtank, Diving Helmet and Diving Boots from the game: no recipe
+makes them, the recipe viewers and the creative menu hide them, and the advancements for earning them
+are gone. A wearable tank of pressurised air that drains over time while worn is exactly what
+ascension-atmosphere's own oxygen tank already is, under a different name and different rules --
+shipping both invites exactly the confusion ADR-0002 exists to avoid -- and the netherite diving gear
+lets a player swim in lava, which walks round the Nether.
 
 Also makes raw helium (from ascension-worlds, when it is installed) a superheated blaze-burner fuel, the
 highest grade. Create's blaze burners and Create Simulated Thrusters' Blaze Thruster both read that fuel list,

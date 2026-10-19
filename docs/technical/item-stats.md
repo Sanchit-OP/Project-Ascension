@@ -181,7 +181,7 @@ These are the stat definitions this session owns. Other sessions ask for new one
 ```
 
 **Any item, from any mod, whose own modifiers give vanilla armour or toughness now gives our stats
-at these rates.** No file per item is needed: Cataclysm's armour, Create's diving gear and horse
+at these rates.** No file per item is needed: Cataclysm's armour, other mods' armour and horse
 armour all count automatically.
 
 - **Each item's result is rounded down**, so every tooltip shows whole numbers. A diamond helmet's 3
@@ -330,7 +330,7 @@ Each row gains its sources.
 - **Armour:** the conversion covers it.
 - **Weapons:** a weapon's damage is vanilla's Attack Damage, which already is the stat.
 
-Cataclysm's Ignitium set, its swords and Create's netherite diving gear all count on the first day,
+Cataclysm's Ignitium set, its swords and any other mod's armour all count on the first day,
 with no file.
 
 **Data only adds League-style extras.** For example, Ignitium armour could give Magic Resist, or the
