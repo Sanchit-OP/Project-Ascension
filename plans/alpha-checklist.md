@@ -88,16 +88,32 @@ A CurseForge modpack is a zip with `manifest.json` (every mod by CurseForge proj
 folder (our configs, quests, `options.txt`, and our own jars). Found by reading the dev instance's manifest
 (`minecraftinstance.json`) on 2026-10-19:
 
-- **Three mods disallow third-party distribution** (`allowModDistribution=false`): **Create Aeronautics** (the road to
-  space depends on it), **Entity Culling** and **Keybind Atlas**. The CurseForge app can still install a pack that
-  references them, but tools that download packs automatically cannot (this is what the search of CurseForge's own
-  docs and launcher tools says; the exact submission rule for them is not confirmed). Two consequences: never put their
-  jars in `overrides/`, and the **server** needs them copied by hand from the instance (we run it, so this is fine).
-  **Do a trial export and install on a clean profile early**, because a refusal late would be expensive.
+- **Three mods have the CurseForge "third-party distribution" switch off** (`allowModDistribution=false`): **Create
+  Aeronautics**, **Entity Culling** and **Keybind Atlas**. **This does not stop us using them** (rechecked
+  2026-10-20; the first version of this list made it sound worse than it is). The switch only stops *other* tools
+  (server hosts, non-CurseForge launchers) from fetching those files through CurseForge's API. What was checked:
+  - The launcher's own record for all three says a download link exists, the file is available, and nothing blocks
+    exporting a pack (`downloadUrl` set, `isAvailable` true, `exportDisabledReason` 0).
+  - There is already a modpack on CurseForge built around Create Aeronautics ("Aeronautics Unleashed", 2026), so
+    packs that list it are accepted. It has been **listed by project ID, not bundled**, which is also our plan.
+  - Create Aeronautics' licence: code MIT, art and other assets All Rights Reserved. A pack that *lists* it is the
+    normal route; a pack that *copies its jar into itself* would be the questionable one. Same for Lootr (code MIT,
+    assets All Rights Reserved) and Keybind Atlas (All Rights Reserved).
+  - Entity Culling's licence ("tr7zw Protective License") lets you use it freely but not for "commercial advantage or
+    monetary compensation". A free pack is fine; if we ever enrol the pack in CurseForge's rewards programme, check
+    that first, or drop it (it is a small optimisation).
+  - **What it does change:** never put those three jars in `overrides/`, and **our own server needs them copied by
+    hand** from the instance (we run it, so this is fine). Players using the CurseForge app are unaffected; players on
+    another launcher may be asked to download them by hand.
+  - Still worth a **trial export and install on a clean profile early**: it costs an hour and proves all of the above.
+  - **New from Create Aeronautics' own page: it lists "visual issues when used with Iris Shaders."** Our pack ships
+    Iris and two Complementary shader packs, and ships are the road to space. Test a ship under shaders in the A1
+    client run, and decide whether the default profile has shaders off.
 - **19 of the 67 jars are not tracked by the launcher**: our 17 `ascension_*` jars, plus **Create Simulated Thrusters**
-  and **Lootr**, which were installed by hand. The last two need re-adding through the CurseForge app so they get
-  project IDs (`pack-extras.md` says Thrusters is on CurseForge). Our own 17 jars go in `overrides/mods/` (they are
-  ours), or become CurseForge projects of their own if we want separate update pages.
+  and **Lootr**, which were installed by hand. Both are on CurseForge (checked 2026-10-20: "Create: Simulated
+  Thrusters", about 96K downloads, and "Lootr (Forge & NeoForge)", about 170M), so re-add them through the CurseForge
+  app and they get project IDs. Our own 17 jars go in `overrides/mods/` (they are ours), or become CurseForge projects
+  of their own if we want separate update pages.
 - **Licence:** `gradle.properties` says `mod_license=MIT` but the repo has **no `LICENSE` file**. Add one and decide
   whether MIT is really the choice (it is the property today; the pack is free to download).
 - **Version and changelog:** `mod_version` is `0.1.0`. Use `0.1.0-alpha.1` or similar, and a changelog.
@@ -196,6 +212,8 @@ largest item on this list and the one most likely to move the alpha date.**
   profile of a full session with the whole stack, and the dragon fight. The log's newest reading predates build paths,
   balance and Oxygen v2.
 - **Distant Horizons** dimension-change oddities on the way to space.
+- **Shaders and ships:** Create Aeronautics' page lists visual issues with Iris Shaders (A5); see a ship under a
+  Complementary shader before deciding the default.
 - **Parked balance questions:** one-legendary carry limit (Sanchit decides after testing), flat versus percent weapons
   against late bosses, Cataclysm stat extras. State the current behaviour in known issues.
 
