@@ -1,6 +1,7 @@
 package com.ascension.combat.internal.dev;
 
 import com.ascension.combat.internal.CombatAttributes;
+import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DamageKinds;
 import com.ascension.combat.internal.mechanics.MagicDamage;
 import com.ascension.combat.internal.mechanics.MagicHitPulse;
@@ -29,11 +30,14 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.projectile.WitherSkull;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLPaths;
@@ -96,6 +100,10 @@ public final class DamageChecks {
             guarded(() -> run(server.overworld()));
         } else if (settle == 280) {
             guarded(() -> runPlayer(server.overworld()));
+        } else if (settle == 300) {
+            guarded(DamageChecks::checkEndlessHungerCeiling);
+        } else if (settle == 320) {
+            guarded(DamageChecks::checkEndlessHungerBase);
             finished = true;
             log("RESULT: " + checks + " checks, " + failures + " failures");
             server.halt(false);
@@ -280,6 +288,42 @@ public final class DamageChecks {
         expectCount("and tells the player nothing", connection.sent(MagicHitPayload.class).size(), 0);
         standIn.getAttribute(CombatAttributes.MAGIC_RESIST).setBaseValue(0.0);
 
+        // Part three: Endless Hunger's swing speed, a few ticks later so its per-tick effect has run.
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CombatContent.ENDLESS_HUNGER.get()));
+        standIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_attack_damage"),
+                500.0, AttributeModifier.Operation.ADD_VALUE));
+    }
+
+    /** With 500 more Attack Damage than any build has, Endless Hunger still may not swing faster than its ceiling. */
+    private static void checkEndlessHungerCeiling() {
+        log("--- Endless Hunger's swing speed");
+        tickStandIn();
+        double speed = standIn.getAttributeValue(Attributes.ATTACK_SPEED);
+        expect("Endless Hunger with 500 extra Attack Damage swings at its ceiling of 3 a second, no faster (got "
+                + String.format("%.2f", speed) + ")", Math.abs(speed - 3.0) < 0.01, true);
+        standIn.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_attack_damage"));
+    }
+
+    /** At the weapon's own Attack Damage it swings at about 2.2 a second: slow and heavy, not the 4.3 it used to. */
+    private static void checkEndlessHungerBase() {
+        tickStandIn();
+        double speed = standIn.getAttributeValue(Attributes.ATTACK_SPEED);
+        double damage = standIn.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        expect("Endless Hunger on its own swings at 2 to 2.6 a second (got " + String.format("%.2f", speed)
+                + " at " + String.format("%.1f", damage) + " Attack Damage)", speed >= 2.0 && speed <= 2.6, true);
+        expect("and hits for an Attack Damage of 14 (got " + String.format("%.1f", damage) + ")", Math.abs(damage - 14.0) < 0.5, true);
+    }
+
+    /**
+     * Ticks the stand-in player by hand. Its fake connection has no tick, and a player's own tick (gear changes, every
+     * per-tick weapon effect) is driven from the connection, so without this nothing per-tick would ever run for it.
+     */
+    private static void tickStandIn() {
+        for (int i = 0; i < 3; i++) {
+            standIn.doTick();
+        }
     }
 
     /** Hurts the stand-in player from full health and returns how much health it lost. */

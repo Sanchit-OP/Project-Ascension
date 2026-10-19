@@ -4,8 +4,8 @@
 Weapons are balanced by time to kill, not points: a weapon's worth is mostly its ability, which no stat
 sum can say. Each legendary weapon must kill the standard boss (1000 HP, 150 Armor, 90 Magic Resist) in
 its written number of seconds, give or take 6%, and the fastest and slowest may not be further apart than
-1.8 times, so nobody runs one weapon. A weapon that carries utility (Darius's shred, Endless Hunger's
-sustain, Wraithblade's blink) is slower on purpose.
+2.2 times (it was 1.8 until Ragefang's speed limit was lifted, 2026-10-19), so nobody runs one weapon. A weapon
+that carries utility (Darius's shred, Wraithblade's blink) is slower on purpose.
 
 Armour, boots and the off-hand are balanced by points: every stat is worth some points and every slot has
 one budget; a piece must land within 3 points of its slot's (or its own written target, for the few that
@@ -37,14 +37,17 @@ spec.loader.exec_module(ttk)
 # Narrower than the first spread (Sanchit, 2026-10-19: lessen the split): strong weapons are a little
 # faster, the ones that carry utility for a team (Darius's shred, Mortal Reminder's anti-heal) a little
 # slower, and the two dual-wield weapons are slow alone and strong as a pair.
+# 2026-10-19 (Sanchit: "dont want to keep the kill time intact"): Ragefang's attack-speed limit went to 7.5 with its
+# damage left as it was, so it is now the fastest weapon (52 s), and Endless Hunger swings half as fast and hits
+# 2.5 times as hard (95 s). The spread limit went from 1.8 to 2.2 to match, on his word.
 TTK_TARGET = {
     'spear_of_shojin': 70, 'veigos_blade': 75, 'divine_sunderer': 85, 'darken_blade': 90, 'galeforce': 90,
-    'heartwood_of_pallas': 84, 'ragefang': 95, 'mortal_reminder': 100, 'darius_axe': 110, 'wraithblade': 110,
-    'endless_hunger': 120,
+    'heartwood_of_pallas': 84, 'ragefang': 52, 'mortal_reminder': 100, 'darius_axe': 110, 'wraithblade': 110,
+    'endless_hunger': 95,
 }
-PAIR_TARGET = {'ragefang': 68, 'endless_hunger': 62}   # worn one in each hand
+PAIR_TARGET = {'ragefang': 42, 'endless_hunger': 46}   # worn one in each hand
 TTK_TOLERANCE = 0.06
-TTK_SPREAD = 1.8
+TTK_SPREAD = 2.2
 BOSS = (1000.0, 150.0, 90.0)
 
 # Points per unit of a defensive piece's stats. Omnivamp and Penetration are set by hand, not scored.

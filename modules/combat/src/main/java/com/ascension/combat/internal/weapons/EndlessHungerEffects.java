@@ -32,8 +32,15 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  */
 public final class EndlessHungerEffects {
 
-    /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final float ATTACK_SPEED_PERCENT_PER_AD_POINT = 0.012f;
+    /**
+     * Attack speed gained per point of Attack Damage. 0.012 until 2026-10-19, when Sanchit found the weapon swung
+     * far too fast (a base of 4 a second, then 5 to 9 with gear) and asked for it to be slowed flat out and hit harder
+     * instead. Now a base of 2 a second, 0.6% a point, a ceiling, and 14 damage a hit (it was 5.7).
+     */
+    private static final float ATTACK_SPEED_PERCENT_PER_AD_POINT = 0.006f;
+
+    /** The most attacks a second the weapon may reach, however much Attack Damage the wielder has. */
+    private static final double ATTACK_SPEED_LIMIT = 3.0;
 
     private static final float BASE_OMNIVAMP_PERCENT = 0.0f;
     private static final float MAX_BONUS_OMNIVAMP_PERCENT = 0.07f;
@@ -77,7 +84,13 @@ public final class EndlessHungerEffects {
             return;
         }
 
+        // The attribute without our own modifier (it was removed above): the weapon's speed and everything
+        // else the wielder has. The total may not pass the ceiling, whatever the bonus asks for.
+        double withoutOurs = attackSpeed.getValue();
         double bonusPercent = attackDamage.getValue() * ATTACK_SPEED_PERCENT_PER_AD_POINT;
+        if (withoutOurs > 0.0) {
+            bonusPercent = Math.min(bonusPercent, ATTACK_SPEED_LIMIT / withoutOurs - 1.0);
+        }
         if (bonusPercent <= 0.0) {
             return;
         }

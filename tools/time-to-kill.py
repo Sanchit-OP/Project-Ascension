@@ -42,9 +42,9 @@ SPEAR_PCT, SPEAR_PER_AD = 0.005, 0.000125        # Spear of Shojin: true damage,
 SUNDER_PCT, SUNDER_PER_AD = 0.02, 0.0005      # Divine Sunderer: each half
 DARKEN_PCT, DARKEN_PER_AD = 0.025, 0.0005      # Darken Blade: magic burst
 HUNT_PER_STACK = 0.015           # Heartwood's Hunt: share of the target's missing health per stack
-ENDLESS_AS_PER_AD = 0.012          # Endless Hunger: attack speed per point of Attack Damage
+ENDLESS_AS_PER_AD, ENDLESS_LIMIT = 0.006, 3.0   # Endless Hunger: attack speed per point of Attack Damage, and the most it may reach
 KIT_AD, KIT_LETHALITY = 8.0, 8.0
-RAGE_MAGIC, RAGE_SCALE, RAGE_PER_HIT, RAGE_LIMIT = 3.0, 0.1, 0.03, 2.5   # ... and the total attack speed it may reach   # Ragefang's on-hit magic (flat, per Attack Damage), attack speed per hit, and its limit
+RAGE_MAGIC, RAGE_SCALE, RAGE_PER_HIT, RAGE_LIMIT = 3.0, 0.1, 0.03, 7.5   # Ragefang's on-hit magic (flat, per Attack Damage), attack speed per hit, and the most attack speed it may reach
 
 DUAL_WIELD = ['ragefang', 'endless_hunger']   # worn as a pair, one in each hand
 MELEE = ['veigos_blade', 'darius_axe', 'spear_of_shojin', 'divine_sunderer', 'darken_blade', 'ragefang',
@@ -126,7 +126,7 @@ def fight(name, boss, kit, overrides=None, pair=False):
                 if name == 'ragefang':
                     spd = min(speed * (1 + RAGE_PER_HIT * hits), RAGE_LIMIT)
                 if name == 'endless_hunger':
-                    spd = speed * (1 + ENDLESS_AS_PER_AD * ad)
+                    spd = min(speed * (1 + ENDLESS_AS_PER_AD * ad), ENDLESS_LIMIT)
                 next_swing = t + 1.0 / min(spd, MAX_SWINGS_PER_SECOND)
             t += STEP
     else:

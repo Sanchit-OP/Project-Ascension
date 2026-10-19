@@ -50,7 +50,7 @@ Armor, 90 Magic Resist) with its abilities used correctly, reading the numbers f
   Damage and +8 Lethality. It is what a player late in the game sees.
 
 The spread is narrower than the first try (Sanchit, 2026-10-19: lessen the split), but still real: fastest to
-slowest is 1.7 times (the check allows 1.8). Weapons that carry **utility for a team** are tuned lower: Darius's
+slowest is 2.1 times (the check allows 2.2; it was 1.7 and 1.8 until Ragefang's speed limit was lifted, section 3a). Weapons that carry **utility for a team** are tuned lower: Darius's
 Axe (its shred helps everyone's hits) and Mortal Reminder (anti-heal). Wraithblade is brought back up from the
 bottom. Heartwood of Pallas was lifted through its ability (1.5% of missing health a stack, up from 1%, and a
 no cap), not its stats.
@@ -63,19 +63,19 @@ no cap), not its stats.
 | Middle | Darken Blade | 89 | 61 | Shields you |
 | Middle | Galeforce | 89 | 64 | Dash and homing shot |
 | Middle | Heartwood of Pallas | 84 | 64 | Stacks, then a long-draw execute |
-| Middle | Ragefang | 95 | 53 | Builds attack speed as it hits |
+| Strong | Ragefang | 52 | 37 | Builds attack speed as it hits, up to 7.5 a second (the ramp takes about 40 s of unbroken fighting) |
 | Utility | Mortal Reminder | 99 | 62 | Ignores 60% of Armor; **anti-heal for the team** |
 | Utility | Darius's Axe | 110 | 67 | **Shred (up to -60% Armor) for the team** |
 | Utility | Wraithblade | 110 | 66 | The blink and 20 Lethality |
-| Slow alone | Endless Hunger | 119 | 43 | Omnivamp sustains a long fight; speeds up as your Attack Damage grows |
-| *Pair* | Ragefang, one in each hand | 68 | 44 | Both copies count |
-| *Pair* | Endless Hunger, one in each hand | 62 | 30 | Both copies count |
+| Middle | Endless Hunger | 95 | 54 | Omnivamp sustains a long fight; hits hard and slow (a base 2 a second), faster as your Attack Damage grows, up to 3 a second |
+| *Pair* | Ragefang, one in each hand | 42 | 33 | Both copies count |
+| *Pair* | Endless Hunger, one in each hand | 46 | 32 | Both copies count |
 | | *netherite sword* | 230 | 109 | |
 
 **What uncapped does against a late boss.** On the Wither (6500 HP, 180 Armor, 110 Magic Resist), alone, kit in
 brackets: Veigo's Blade 197 s (143), Divine Sunderer 197 (158), Spear of Shojin 204 (168), Galeforce 280 (208),
-Heartwood 318 (269), Darken Blade 338 (265), Mortal Reminder 679 (422), Ragefang 718 (397), Darius's Axe 764
-(464), Wraithblade 880 (531), Endless Hunger never within 15 minutes alone (344 with the kit; 500 as a pair).
+Ragefang 265 (155), Heartwood 318 (269), Darken Blade 338 (265), Mortal Reminder 679 (422), Darius's Axe 764
+(464), Endless Hunger 760 (438), Wraithblade 880 (531).
 The Spear's true damage was the worst runaway (88 s) and has been cut to 0.5%, which puts it with Veigo and
 Sunderer. What is left is a split between weapons whose damage is a percent of the boss's health, which
 grow stronger as bosses grow, and weapons that deal flat damage (Darius, Ragefang, Wraithblade, Mortal
@@ -104,12 +104,29 @@ Omnivamp is 7% a hand, 14% as a pair; its attack-speed bonus follows the Attack 
   uncapped: a bigger boss takes more from them, and the later bosses carry more Armor and Magic Resist to answer
   it. To keep them from doing the whole job at the standard boss, the base percents are lower than the originals:
   Veigo 3% of current health (was 8%), Spear 0.5% true (was 5%; it had to fall furthest, because true damage ignores Armor), Divine Sunderer 2% and 2% (was 4% and 4%), Darken
-  Blade 2.5% (was 5%), each +0.05% per Attack Damage (was +0.1% to +0.2%). Ragefang's attack-speed ramp stops
-  at 2.5 attacks a second (the original code's limit was 5).
+  Blade 2.5% (was 5%), each +0.05% per Attack Damage (was +0.1% to +0.2%).
 - **Ragefang was the outlier.** Its on-hit magic and attack-speed ramp did most of its work from a 1-damage
-  stub. Now +3% attack speed a hit up to 2.5 attacks a second (it was +5% up to 5), 3 magic damage a hit
-  (+0.1 per Attack Damage), and a base speed of 1.4.
-- **Endless Hunger** gains 1.2% attack speed per Attack Damage (it was 2%), so the kit stops doubling it.
+  stub. The first balance pass cut the ramp to +3% attack speed a hit up to **2.5** attacks a second (it was +5% up
+  to 5), 3 magic damage a hit (+0.1 per Attack Damage), and a base speed of 1.4.
+- **Ragefang retuned, 2026-10-19 (Sanchit: "hard nerfed with the attack speed cap").** The limit is now **7.5 attacks a
+  second** (the first pass had cut it to 2.5; the original code's was 5) and its hit is back at 5.3. Sanchit said not to
+  hold the kill time: it kills the standard boss in **52 s** alone (was 95), 42 as a pair (was 68), the fastest legendary.
+  The ramp is still +3% a hit, so reaching 7.5 takes about 145 hits, 40 seconds of fighting without a pause of more than
+  a second; a break of a second starts the stacks fading, so in a real fight it spends much of its time below the limit.
+  The one number to turn is `ATTACK_SPEED_SHADOW_LIMIT` in `RagefangEffects` (and `RAGE_LIMIT` in
+  `tools/time-to-kill.py`, kept equal).
+- **Endless Hunger** gained 1.2% attack speed per Attack Damage (it was 2%), so the kit stops doubling it.
+- **Endless Hunger retuned, 2026-10-19 (Sanchit: "too much attack speed", then "flat out reduce the attack speed but
+  increase the AD", kill time not held).** It swung at a base 4 a second, 4.3 to 4.7 with a kit and 8.8 at 100 Attack
+  Damage. Now a base of **2.0**, **+0.6%** per Attack Damage (2.2 a second at the kit's 14, 2.5 at 40) and a **ceiling of
+  3** (reached at about 170 Attack Damage), and its hit is **14.0** (was 5.7), the figure of Wraithblade and Darius's Axe:
+  fewer, harder hits. It kills the standard boss in 95 s alone (was 119), 54 with the kit (was 43). Numbers:
+  `ATTACK_SPEED_PERCENT_PER_AD_POINT` and `ATTACK_SPEED_LIMIT` in `EndlessHungerEffects`, `ENDLESS_AS_PER_AD` and
+  `ENDLESS_LIMIT` in the simulator.
+- **The spread limit went from 1.8 to 2.2** (slowest alone / fastest alone is now 2.13: Wraithblade and Darius's Axe at
+  110 s against Ragefang at 52), on Sanchit's word that these two need not hold their old kill times.
+- **Better Combat** has its own ceiling of one attack every 2 ticks (10 a second, `attack_interval_cap` in its server config) and lets fast
+  attacks through the hit cooldown (`allow_fast_attacks`); both are as the pack ships them and neither is the limit here.
 - **Ragefang is slower alone, stronger as a pair:** its ability does most of its work, so a single copy sits in the middle.
 
 **Armour, boots and off-hand are balanced by points**, one budget per slot: helmet 37, chestplate 57,

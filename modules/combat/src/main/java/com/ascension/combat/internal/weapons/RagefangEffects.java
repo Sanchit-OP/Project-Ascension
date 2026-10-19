@@ -22,10 +22,11 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * match Guinsoo's Rageblade's actual identity rather than the original "stack then burst" shape):
  *
  * <ul>
- *   <li>Every hit adds 1% attack speed, uncapped in stack count but shadow-capped so the live
- *       {@code Attributes.ATTACK_SPEED} total never exceeds {@link #ATTACK_SPEED_SHADOW_LIMIT}
- *       attacks/sec &mdash; a safety rail against the game bugging out at absurd stack counts,
- *       not a design cap, so it should never need touching for balance.
+ *   <li>Every hit adds {@link #ATTACK_SPEED_PERCENT_PER_HIT} of attack speed, uncapped in stack count, but the
+ *       live {@code Attributes.ATTACK_SPEED} total never exceeds {@link #ATTACK_SPEED_SHADOW_LIMIT}
+ *       attacks/sec. That limit is a balance number, not only a safety rail: it is how far the ramp may
+ *       go (the original code's was 5; 2.5 on 2026-10-19, which Sanchit found far too hard on the weapon's
+ *       whole identity, so 7.5 the same day). {@code tools/time-to-kill.py} keeps the same number.
  *   <li>The stacks don't binary-expire: a hit-free grace period ({@link #DECAY_GRACE_TICKS}),
  *       then a linear ramp down to zero over {@link #DECAY_RAMP_TICKS} more &mdash; four seconds
  *       total from the last hit to fully cold.
@@ -53,7 +54,8 @@ public final class RagefangEffects {
      */
     private static final float ATTACK_SPEED_PERCENT_PER_HIT = 0.03f;
 
-    private static final double ATTACK_SPEED_SHADOW_LIMIT = 2.5;
+    /** The most attacks a second the ramp may reach (docs/progression/balance.md section 3a). */
+    private static final double ATTACK_SPEED_SHADOW_LIMIT = 7.5;
     private static final long DECAY_GRACE_TICKS = 20L;
     private static final long DECAY_RAMP_TICKS = 60L;
     private static final float ON_HIT_MAGIC_DAMAGE = 3.0f;

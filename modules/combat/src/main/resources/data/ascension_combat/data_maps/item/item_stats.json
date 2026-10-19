@@ -75,8 +75,8 @@
     },
     "ascension_combat:endless_hunger": {
       "weapon": {
-        "damage": 5.7,
-        "speed": 4.0
+        "damage": 14.0,
+        "speed": 2.0
       },
       "stats": {
         "omnivamp": 7
