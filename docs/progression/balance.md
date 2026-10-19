@@ -218,6 +218,33 @@ the boss's maximum health to that number whatever its own base is. The Wither's 
 has no Attack Damage attribute, its skulls do fixed damage. Times use the same weapons and kit as section 3,
 with no growth points or runes. A later world's boss goes below the Wither.
 
+### 5a. The Ender Dragon (PROPOSED 2026-10-20, not applied; Sanchit decides)
+
+Read from the 1.21.1 source (`EnderDragon`), so the numbers are not guesses:
+
+- **Part damage.** Only the head takes a hit in full. Any other part (body, wings, tail) takes `damage / 4 + min(damage, 1)`,
+  so a hit on the body is worth about a quarter. The cut is applied to the raw hit before Armor, and `max health` is the
+  Dragon's one pool, so a fight that lands mostly on the body takes up to about three times the table's kill time.
+- **Her attacks are fixed.** Body and wing contact 5, head and neck 10, from `mobAttack`, with no Attack Damage attribute:
+  like the Wither, a damage percent has **no effect**. Her breath (a lingering cloud) is already magic; the contact hits
+  are physical. Crystal beams and the perch are the only things the health number touches.
+- **Crystal healing is 1 health every 10 ticks (2 a second) from the nearest crystal.** Trivial against 4,000+ health, so
+  the crystals matter only for ending the fight, not for undoing damage; the vanilla 10-health crystal hit on her head
+  is likewise nothing (about 0.2%). Nothing to change.
+- **The perch.** She sits when `sittingDamageReceived` passes 25% of max health, so her perches stretch with her health.
+
+| | Easy / Normal / Hard | Armor | Magic Resist | Damage percent |
+|---|---|---|---|---|
+| The Ender Dragon (proposed) | 3,868 / 4,550 / 5,688 | 190 | 90 | none (no attribute) |
+
+Why: just above the Wither (4,225), as the ladder asks; Armor one step above it (180 to 190); Magic Resist lower than the
+Wither's (110) because the Dragon is a physical fight and the head is the weak point, so a magic-heavy kit is not
+punished twice. `tools/time-to-kill.py 4550 190 90`, no growth or runes, head hits: Ragefang pair 96 s, Veigo 135 s,
+Heartwood 207 s, Darken Blade 217 s, Endless Hunger pair 193 s, Wraithblade 398 s (the Wither's 91, 122, 207, 213, 167, 345).
+Add up to a factor of three if most hits land on her body.
+
+Open: whether the Dragon's kill should drop a heart (decided: no, for now).
+
 ## 6. Still open
 
 - Seen in a client and on a dedicated server: difficulty applying on spawn and `/reload`, a legendary's stats
