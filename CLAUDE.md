@@ -116,6 +116,8 @@ Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,
 sable (`docs/technical/architecture.md` has the table).
 
+**Alpha plan (2026-10-19, Sanchit):** a CurseForge modpack, free for anyone to download, on a server we run ourselves; the alpha's stopping point is **Planet 4, the End as an asteroid belt, with the Ender Dragon and the Elytra**, and ship air is a blocker. The list of what is left, in order, is [`plans/alpha-checklist.md`](plans/alpha-checklist.md). Planet 4 is not built or designed yet and conflicts with `planets.md`'s predator-world Planet 4 (needs an ADR).
+
 **Start a new session at [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md), section
 "Where M3 stands — start here"**: what is built, what is verified, the decisions waiting on
 Sanchit, and what is next.
