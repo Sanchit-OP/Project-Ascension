@@ -109,3 +109,22 @@ sections 2 to 11.**
 
 `CLAUDE.md` (current state), `docs/technical/worlds-api.md`, `docs/progression/journey.md`, `balance.md`, `todo.md`,
 `docs/technical/architecture.md` if a module changed, the memory notes, and **this file**.
+
+## 13. What Planet 4 taught (2026-10-20)
+
+- **The planet file can break other builds.** Adding `planet/end.json` made the quest book's Planets page (`pack/quests/planets.py`)
+  fail until it had a blurb, a title and a known-after line, and the quest art needed a sprite. Add them in the same commit.
+- **A planet may need no gate ruin.** If the world already has a portal-shaped feature (the End's exit portal), the gate can be that
+  (`EndGate`): record its position with `GatewayNetworkState.activate` and fire `GateProgress.networkChanged`. Check the **shape** of vanilla's
+  feature: the End portal is a ring around a bedrock pillar, not a block at the centre (the first version missed it).
+- **Where a ship lands is a planet field** (`arrival_point`), not a rule: the default is over the world's centre, which was the Dragon's arena.
+- **A world with no floor** can send the player back to space (`falls_to_space`, `VoidFall`); the Slow Falling dose and the handoff depth are in
+  that class. Ships are not covered.
+- **The boss tier and growth need their own rows:** a `mob_stats` row, three `mob_difficulty` rows, a `growth/<boss>` advancement and
+  milestone, `DamageChecks`' boss list, and a line in `balance.md` and `growth.md` (the growth total moves).
+- **A vanilla boss may have hidden rules**: the Dragon's body takes a quarter damage, her attacks have no Attack Damage attribute (a damage
+  percent does nothing), crystals heal 2 a second. Read the source before setting numbers.
+- **Check with a stand-in player**, not by hand: `EndChecks` (`end-checks.txt`) found two bugs a read-through missed. A stand-in's
+  connection is not in the server's list, so tick it yourself (`doTick`). Use a new world name per run.
+- **Credits and portal trips**: vanilla's End portal plays the credits for a player who has not seen them; marking them seen is the fix,
+  and the gate's own trip must clear `portalProcess` before it moves the player.

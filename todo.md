@@ -3,7 +3,7 @@
 Open questions only. **Settled decisions live in [`docs/decisions/`](docs/decisions/)** — check
 there before reopening anything. Milestone work in flight lives in [`plans/`](plans/) — currently
 [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md). **What must be finished before the alpha
-launch (2026-10-19):** [`plans/alpha-checklist.md`](plans/alpha-checklist.md). **Planet 4 (the End) session prompt:**
+launch (2026-10-19):** [`plans/alpha-checklist.md`](plans/alpha-checklist.md). **Planet 4 (the End): built on branch `planet-4-end` 2026-10-20 (ADR-0028), client run pending: [`docs/technical/planet-4-client-checklist.md`](docs/technical/planet-4-client-checklist.md).** **Planet 4 (the End) session prompt:**
 [`plans/session-prompts/9-planet-4-the-end.md`](plans/session-prompts/9-planet-4-the-end.md); what every planet needs:
 [`docs/technical/new-planet-checklist.md`](docs/technical/new-planet-checklist.md).
 
@@ -171,3 +171,13 @@ pressurises the room instead of the station; (5) the same working aboard a ship.
 - **One legendary carried, weapons only** (Sanchit): how to enforce (stop pickup/craft, with a sweep as the tank has), whether a dual-wield pair is the exception, and a retune of the weapons if it lands. He will decide uniqueness after testing.
 - **Flat versus percent weapons on late bosses** (`balance.md` section 3): the Wither takes flat weapons 3 to 4 times longer. Options A and B are worked out in the session; revisit after a client test.
 - **Cataclysm weapons** keep what the mod gave them; their real speeds are known (read from the jar).
+
+## Planet 4 follow-ups (2026-10-20)
+
+- The art session for the End (`design/end/design-session-prompt.md`): face from space, sky, haze, quest sprite.
+- Lore prose for `docs/lore/the-end.md` (outline only), and optional End tablets.
+- Growth totals: 41 points against a 56-node web; Sanchit's call whether to re-balance.
+- A ship that falls out of the bottom of the End is not carried to space (only players are); decide.
+- Measure the outer islands' pre-generation cost with `spark` and update `serverpack/README.md`.
+- The Elytra in an End city ship has not been seen; confirm Caelus/Icarus behave with it.
+- A pre-generated decoration around the exit portal (the contract's section 3) if wanted.

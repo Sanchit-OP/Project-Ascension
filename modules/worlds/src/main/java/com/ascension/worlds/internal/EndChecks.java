@@ -6,15 +6,20 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.AbstractSet;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.ProtocolInfo;
+import net.minecraft.network.TickablePacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -57,6 +62,8 @@ public final class EndChecks {
     private static ServerPlayer player;
     private static EnderDragon dragon;
     private static BlockPos portal;
+    /** The tick the fight was seen to have ended; the later steps are timed from it. */
+    private static int settleTick;
 
     private EndChecks() {
     }
@@ -77,15 +84,15 @@ public final class EndChecks {
     }
 
     /** A set that contains every channel and lists none: "this connection can carry anything". */
-    private static final class EveryChannel extends java.util.AbstractSet<net.minecraft.resources.ResourceLocation> {
+    private static final class EveryChannel extends AbstractSet<ResourceLocation> {
         @Override
         public boolean contains(Object o) {
             return true;
         }
 
         @Override
-        public java.util.Iterator<net.minecraft.resources.ResourceLocation> iterator() {
-            return java.util.Collections.emptyIterator();
+        public Iterator<ResourceLocation> iterator() {
+            return Collections.emptyIterator();
         }
 
         @Override
@@ -115,7 +122,7 @@ public final class EndChecks {
 
         @Override
         public void tick() {
-            if (this.getPacketListener() instanceof net.minecraft.network.TickablePacketListener ticking) {
+            if (this.getPacketListener() instanceof TickablePacketListener ticking) {
                 ticking.tick();
             }
         }
@@ -237,7 +244,6 @@ public final class EndChecks {
         }
     }
 
-    private static int settleTick;
 
     private static void expect(String what, boolean ok) {
         checks++;

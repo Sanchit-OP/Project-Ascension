@@ -1036,3 +1036,5 @@ process first).
 **Not checked:** a spark reading (RCON does not return spark's output; run `/spark tps` and a profiler by hand), the Elytra in an End city
 ship, a pre-generation cost, a real client of anything, two clients, a ship with a real survival build and a pilot, a ship falling out of
 the bottom, items falling out of the bottom, and the Dragon's part damage on real weapons.
+
+**The batched client run for Planet 4 is [`planet-4-client-checklist.md`](planet-4-client-checklist.md).**
