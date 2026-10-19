@@ -24,10 +24,11 @@ Defines the role of each planet in the progression route.
 - Earth: controlled starting world, primitive survival, basic engineering, first ship readiness
 - Moon: oxygen progression step, small boss, first repaired return connection
 - Planet 3: the Nether world (revised 2026-10-06, below); netherite is its resource gate
-- Planet 4: new armor materials without full upgrade potential
-- Planet 5: structure world with forge needed to unlock the armor's full potential
-- Planet 6: industrial war-machine world and gun unlock step
-- Planet 7+: final steps not yet defined
+- Planet 4: the End as an asteroid belt, the Ender Dragon, the Elytra (ADR-0028, 2026-10-20)
+- Planet 5: (was Planet 4) predator-pressure world, new armor materials without full upgrade potential
+- Planet 6: (was Planet 5) structure world with forge needed to unlock the armor's full potential
+- Planet 7: (was Planet 6) industrial war-machine world and gun unlock step
+- Planet 8+: final steps not yet defined
 
 ## Earth Rules
 
@@ -46,7 +47,8 @@ Defines the role of each planet in the progression route.
   is reached like every other planet. **Netherite** is its unique resource, which also pays back
   the recipe debt ADR-0014 created. A boss is wanted. Full spec, and the questions still open, in
   `plans/m3-vertical-slice.md` under M3.3.
-- Planet 4 is currently intended as a predator-pressure world tied to armor-material acquisition.
+- Planet 4 is the End (ADR-0028). The numbering below slid by one on 2026-10-20: the world once called Planet 4 is now Planet 5, and so on.
+- Planet 5 (was 4) is currently intended as a predator-pressure world tied to armor-material acquisition.
 - Planet 5 is currently intended as an ancient megastructure world containing a dormant forge that must be powered on before full armor upgrading becomes possible.
 - Planet 6 is currently intended as the industrialization and firearms step, with industrial war machines as the primary threat.
 - Some mandatory progression beats can be structure clears, repairs, and siege survival sequences rather than boss kills.

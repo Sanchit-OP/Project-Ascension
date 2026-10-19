@@ -957,3 +957,13 @@ Tier 1 design answers to. A negative result would be DH's problem to route aroun
 to reshape a planet.
 
 So it is a compatibility check at M2.5, against the real thing, not a design input beforehand.
+
+
+### Planet 4: the End, an asteroid belt (planned 2026-10-20, ADR-0028)
+
+Not built yet. `minecraft:the_end` becomes `planet/end.json` at `[-10945, 30070]`, order 40, breathable.
+Its gate is the Dragon's exit portal: on the fight's end the portal's front spot is stored with
+`GatewayNetworkState.activate`, so the destination screen and arrival work as for any gate. Open for P1:
+where a ship lands (the default is over the arena), Sable `dimension_physics/the_end.json`, and whether the
+End's dimension type needs an override. Built and checked entries are added below as increments land.
+

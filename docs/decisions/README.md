@@ -54,3 +54,4 @@ forgets it.
 | [0025](0025-rockets-are-thruster-ships.md) | Rockets are ships with thrusters (Create Simulated Thrusters), and helium is their fuel | Accepted |
 | [0026](0026-air-is-a-fluid.md) | Air is a fluid, and a dispenser holds the room | Accepted |
 | [0027](0027-max-health-ceiling-is-raised.md) | Max Health's ceiling is raised past vanilla's 1,024, so bosses can have the health the balance gives them | Accepted |
+| [0028](0028-planet-4-is-the-end.md) | Planet 4 is the End, an asteroid belt; its gate is the Dragon's exit portal; the predator world slides to Planet 5 | Proposed |
