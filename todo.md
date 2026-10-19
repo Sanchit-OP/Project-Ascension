@@ -2,7 +2,8 @@
 
 Open questions only. **Settled decisions live in [`docs/decisions/`](docs/decisions/)** — check
 there before reopening anything. Milestone work in flight lives in [`plans/`](plans/) — currently
-[`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md).
+[`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md). **What must be finished before the alpha
+launch (2026-10-19):** [`plans/alpha-checklist.md`](plans/alpha-checklist.md).
 
 Last reviewed: 2026-10-06.
 
