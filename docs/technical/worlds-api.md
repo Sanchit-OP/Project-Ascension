@@ -982,3 +982,23 @@ End's dimension type needs an override. Built and checked entries are added belo
 - Advancements `gates/the_end`, `discovery/the_end`, with growth milestones (2 shared points, 1 personal).
 - Not checked: that the Dragon's death really lights the gate and the portal opens the screen, the arrival spot on
   the podium island, the ship landing at [224, 0], a world reload.
+
+**P4 findings (2026-10-20; from the 1.21.1 source and the files, not from a running game):**
+
+- **What a ship can do.** Players cannot leave a planet on foot (`checkAscent`), so an Elytra flight stops at the End's
+  build height of 256 with the message "The sky ends here"; the Elytra is not a way to space (ADR-0015). Caelus and Icarus
+  are in the stack; neither changes this. The pack has no fall-damage rules of its own, so the Elytra's own crash damage
+  applies (vanilla's, with the kit's armour).
+- **No dormant-portal effect.** ADR-0014's rule cancels only portal-driven trips *into* the End; `EndGate` cancels the
+  exit portal's trip *out* and offers the gate. Vanilla gateways (the small bedrock-and-beam blocks) teleport within the
+  End and are not portals. They appear one per Dragon kill (up to 20) on a ring of radius 96 and take a player to the
+  outer islands, so the first kill is what opens a short road to the End cities.
+- **The cost.** The outer islands always exist (they are terrain, not a reward), so ships can reach the End cities
+  without killing the Dragon. They generate on demand; see `serverpack/README.md` for the pre-generation advice.
+  The `spark` measurement is still owed (batched server check).
+- **Compat jars.** `endermanoverhaul`: only the Moon uses its End Islands Enderman (a biome modifier on
+  `moon_biomes`); the End already has its own mobs, so nothing is needed. `distanthorizons` (`DimensionClouds`), `chunky`
+  and `cataclysm` hold nothing for the End yet; to be confirmed by the batched check.
+- **Recipe debt.** The End half of ADR-0014's debt is paid on paper; recorded in `todo.md` and `resource-economy.md`.
+  The ledger covers only our items, so it has nothing to change.
+

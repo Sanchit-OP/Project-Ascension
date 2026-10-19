@@ -347,7 +347,7 @@ too.
 |---|---|
 | Brass | `propeller_bearing` (getting a titanium recipe), `directional_linked_receiver`, `modulating_linked_receiver`, `redstone_inductor`, `throttle_lever` |
 | Brass and quartz | `smart_propeller`, `gyroscopic_propeller_bearing`, `gyroscopic_mechanism`, `navigation_table`, `analog_transmission`, `docking_connector`, `gimbal_sensor`, `optical_sensor`, `linked_typewriter`, `plunger_launcher`, `redstone_accumulator`, `mounted_potato_cannon`, `rockcutting_wheel` (Offroad) |
-| The End | `levitite_blend` and `end_stone_powder`: levitite, the floating stone, needs End stone and a heated mixer |
+| The End | `levitite_blend` and `end_stone_powder`: levitite, the floating stone, needs End stone and a heated mixer. **Open since Planet 4 (ADR-0028, 2026-10-20):** End stone is the End's own ground, found by ship; nothing here needs the Dragon killed |
 
 **What Earth can build for a ship:**
 - **Lift:** hot-air balloons (the envelopes, and the adjustable burner of iron, andesite alloy,

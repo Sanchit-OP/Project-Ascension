@@ -102,7 +102,9 @@ See the register or the linked doc for reasoning:
   (2026-10-11):** Planet 3 is the real Nether, reached by airship, and a fresh world's roofless
   Nether has blaze spawners in its fortresses, nether wart, glowstone (under overhangs and in
   caves, y 32 to 100+), ancient debris, quartz, soul sand and magma, checked headless. **The End
-  half is still open:** End-only items stay unobtainable until the End is a planet. Our own recipes
+  half is paid on paper (2026-10-20, Planet 4, ADR-0028; unverified in play):** the End is a planet reached by ship, so
+  End stone, chorus, purpur, shulker shells, dragon breath, the Dragon egg and the Elytra (End city ships, on the outer
+  islands) are all obtainable; Aeronautics' `levitite_blend` and `end_stone_powder` are no longer blocked. Our own recipes
   were never in debt: the gateway keystone uses Deep Dark materials (`gateway-portal-design.md`).
   Still to watch: any later recipe that reaches for End items, or puts a Nether item on the road
   before Planet 3 (eyes of ender need blaze powder).
