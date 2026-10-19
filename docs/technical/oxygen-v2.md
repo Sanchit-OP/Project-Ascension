@@ -89,3 +89,16 @@ tick cost go in `performance-log.md`. Few game launches: one combined client ses
 3. Air per second follows RPM; room cost follows size; short = unsealed.
 5. Level 2 is its own item, 8 helium, 2,400 mB, no level 3.
 6. 1 unit = 1 mB. 7. No hatch in v2. 8. Share-air and valve unchanged.
+
+## Live checklist (client, one session)
+
+Jars for atmosphere, compat-create and compat-sable are in the Ascension Dev instance (old ones saved in
+`mods-backup-before-oxygen-v2`). Use a fresh or creative world; `/give` the items.
+
+1. **Look:** tank in hand and in the inventory, helium tank (amber band), refill station, emitter (all legacy: `/give` only), dispenser.
+2. **Compressor:** place `ascension_compat_create:air_compressor`, power it with a shaft. Goggles show speed, stress and "Making N mB of air per second". Faster shaft, more air. Right-click with an empty tank fills it ("Tank filled").
+3. **Pipes:** compressor -> mechanical pump -> fluid pipe -> Air Dispenser. Air shows in a Create tank and a pipe as a pale gas.
+4. **Dispenser:** in a sealed room on the Moon (or `/atmosphere` debug vacuum), right-click it for its air and need; the room is breathable while it has air. Cut the pipe: "Pressure lost" when the buffer runs out; reconnect: "Pressure restored". Break a wall: pressure lost.
+5. **Helium tank:** craft a tank + 8 raw helium (`#c:raw_materials/helium`; Moon's `raw_helium`). Charge and valve state carry over. Holds 10 minutes.
+6. **Reload:** quit and rejoin; dispenser air and room still there.
+7. **Ship (the unknown):** build an Aeronautics ship with a sealed cabin and a dispenser. Does standing in the cabin read breathable? After the ship moves and turns? After a carry to space? Report what happens.
