@@ -6,6 +6,8 @@ For friends and testers. The pack is a normal CurseForge modpack: the CurseForge
 2. **Add the pack.**
    - When it is listed: search for *Project Ascension* in the app and install it.
    - Before that: in the app choose **Create Custom Profile**, then **Import**, and pick the `ProjectAscension-0.1.0-alpha.1.zip` you were sent.
+   The app may warn that **33 files are not from CurseForge**. They are ours: 17 mod jars (`ascension_*.jar`, the mods we wrote) and
+   16 quest-book pages. Accept and continue.
 3. **Give it memory.** In the profile's settings set the allocation to **6 GB or more** (8 GB if you can spare it).
 4. **Play, and start a new world.** An old world keeps the dimensions it was made with and will not have the roofless Nether or the End
    as a planet. Press **J** for the quest book.
