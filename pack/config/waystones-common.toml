@@ -1,0 +1,12 @@
+# Waystones carry a player within one world, never between worlds.
+#
+# Travel between worlds is a ship, then a gate (ADR-0015, ADR-0018). A waystone on the Moon that could
+# reach a waystone on Earth would be a gate nobody built, and the whole road to space would be optional.
+#
+# Waystones decides a warp with an ordered list of requirements. Its default list lets a warp between
+# worlds through for 27 levels of experience. This file keeps every default and adds one line at the
+# end that refuses any warp between worlds. The message is plain text (a leading $ would make it a
+# translation key). tools/sync-pack-config.py merges this line into an existing file.
+
+[teleports]
+	warpRequirements = ["[is_not_interdimensional] scaled_add_xp_cost(distance, 0.01)", "[is_interdimensional] add_xp_cost(27)", "[source_is_warp_plate] multiply_xp_cost(0)", "[source_is_scroll] multiply_xp_cost(0)", "[target_is_global] multiply_xp_cost(0)", "[target_is_fleeting_memorial] multiply_xp_cost(0)", "min_xp_cost(0)", "max_xp_cost(27)", "[source_is_inventory_button] add_cooldown(inventory_button, 300)", "[is_interdimensional] refuse(Waystones only carry you within one world)"]

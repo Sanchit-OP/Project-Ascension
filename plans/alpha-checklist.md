@@ -90,12 +90,15 @@ cosmetic; neither blocks a player. **To confirm:** do the planets look right wit
 
 ## Added to the alpha, 2026-10-21 (Sanchit)
 
-| Want | Plan | State |
+| Want | What was done | State |
 |---|---|---|
-| **A storage mod that does not lag in a group** (Tom's Simple Storage lags with many chests) | **Sophisticated Storage** (with Sophisticated Core): chests and barrels with upgrades, so a base needs fewer, bigger blocks; it also has a controller that links them. Alternative, after the alpha: **Refined Storage 2** (storage on disks, very few blocks, a small tech tree of its own). Sophisticated chests can themselves lag when very many sit in one spot; the fix is fewer, bigger ones, and a separate optimisation mod exists (its own benchmark claim, not verified here) | Both have current 1.21.1 NeoForge builds on CurseForge (Sophisticated Storage 1.6.7.2193, updated yesterday). **Not installed.** Needs Sanchit's yes |
-| **A backpack mod** | **Sophisticated Backpacks** (needs Sophisticated Core). It is worn in Curios' `back` slot when Curios is present. ADR-0009 already accepts backpacks: tanks may be carried in one, and the valve's pressurise delay is what keeps that fair | Build 3.26.13.2214 (updated yesterday). **Not installed** |
-| **Curios slots**: one for the tank, one for Zonia's Hourglass and Sterak's Harness instead of the left hand, and `back` for the backpack | `ascension-compat-curios`, three slots. Prompt: [`plans/session-prompts/11-curios-slots.md`](session-prompts/11-curios-slots.md). **Not a blocker**: the tank works in the inventory and the two relics in the off hand today, so a way exists | **Not built.** About one session, plus one client run |
-| **More quality of life** | Small and safe only, because every mod added is more to test: **AppleSkin** (food and saturation on the bar) and **Mouse Tweaks** (drag and spread items in any inventory). Not now: Waystones (a second fast travel, against the gates), Applied Energistics 2 or Refined Storage (a tech tree each), dynamic lights, a minimap (FTB Chunks has a map), Inventory Profiles Next (the Sophisticated mods sort already) | Both have 1.21.1 NeoForge builds. **Not installed** |
+| **Group storage that does not lag** | **Sophisticated Storage** (with Core), **Tom's Simple Storage Mod** and **Refined Storage 2** are installed. Tom's declares Sophisticated Storage as an optional dependency and has its own class for its double chests, so Tom's alone would have worked with the Sophisticated chests; Sanchit chose to have Refined Storage too. It is the first thing to cut if the alpha shows trouble | In the instance (67 to 74 jars); a dedicated server loads them; **not seen in a client** |
+| **A backpack** | **Sophisticated Backpacks**, worn in Curios' `back` slot. ADR-0009 already accepts backpacks | Same |
+| **Fast travel inside a world, never between worlds** | **Waystones**, with `pack/config/waystones-common.toml` refusing any warp between worlds (the rule is read from the jar's own code) | Configured; **the refusal is not yet seen**: it is on the next client list |
+| **Curios slots**: the tank, Zonia's Hourglass and Sterak's Harness instead of the left hand, and `back` | `ascension-compat-curios`, prompt [`plans/session-prompts/11-curios-slots.md`](session-prompts/11-curios-slots.md). **Not a blocker**: the tank works in the inventory and the two relics in the off hand today | Not built |
+| **Quality of life** | **Mouse Tweaks** only. **AppleSkin is out**: it draws on vanilla's food bar and our HUD replaces it. Not now: a minimap (FTB Chunks has a map), dynamic lights, Inventory Profiles Next | Mouse Tweaks installed |
+
+The CurseForge ids of every mod the launcher does not track (these seven, Lootr and the thrusters) are in `pack/curseforge-extras.json`.
 
 ## A. Blockers: do not release without these
 

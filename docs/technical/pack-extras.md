@@ -215,6 +215,43 @@ misbehaves beside Sable. (3) One author, no docs or source: how it treats thin a
 **Seen:** a dedicated server boots with it beside everything, and the quest check (10 of 10) passes with its items named. **Not
 seen** in a client; no thruster has been fuelled yet.
 
+## Storage, backpacks and waystones (installed 2026-10-21)
+
+Sanchit, for the alpha: group play needs storage (Tom's Simple Storage lags with many chests), a backpack, and fast travel inside a
+world but never between worlds. All seven jars were downloaded from CurseForge's own file host on 2026-10-21, checked as intact
+zips, and placed in the Ascension Dev instance (67 to 74 jars). Their CurseForge ids are in `pack/curseforge-extras.json`
+(the launcher does not track a jar placed by hand). A dedicated server booted with all of them, loaded every one, and the
+damage checks still passed (77 of 77). **Not seen in a client.**
+
+| Mod | Version | Size | Needs | Why |
+|---|---|---|---|---|
+| Sophisticated Core | 1.5.16.2422 | 1.7 MB | NeoForge 21.1.229 or later | the base of the next two |
+| Sophisticated Storage | 1.6.7.2193 | 1.8 MB | Core 1.5.12 or later | chests and barrels with upgrades, a controller |
+| Sophisticated Backpacks | 3.26.13.2214 | 1.2 MB | Core 1.5.15 or later | a backpack; Curios' `back` slot when Curios is present |
+| Tom's Simple Storage Mod | 2.4.2 | 0.8 MB | NeoForge | one terminal for every chest |
+| Refined Storage | 2.0.9 | 4.2 MB | NeoForge 21.1.181 or later | storage on disks, very few blocks |
+| Waystones | 21.1.46 | 1.2 MB | Balm 21.0.39 or later (the pack has 21.0.66) | fast travel inside a world |
+| Mouse Tweaks | 2.26.1 | 0.07 MB | nothing | client only |
+
+- **Tom's works with Sophisticated Storage on purpose, not by luck.** Tom's 2.4.2 declares Sophisticated Storage as an optional
+  dependency (1.5.36 or later) and has its own class for Sophisticated's double chests (`SophisticatedDoubleBlocks`), so the
+  two are meant to be used together. Sanchit's question was whether Tom's alone would then be enough; he chose to have Refined
+  Storage as well. **Refined Storage is the first thing to cut** if the alpha shows trouble (three storage systems is a lot to
+  test); remove its jar and its entry in `pack/curseforge-extras.json`.
+- **AppleSkin was left out.** It draws on vanilla's food bar, and our HUD hides vanilla's hearts, armour, food and experience
+  (`HudClient`, `docs/technical/hud.md`), so it would have nothing to draw on. A held-food preview is on the HUD's own list.
+- **Waystones: inside a world, never between worlds.** Waystones decides a warp with an ordered list of requirements
+  (`[teleports] warpRequirements` in `waystones-common.toml`); its default lets a warp between worlds through for 27 levels of
+  experience. `pack/config/waystones-common.toml` keeps every default and ends with
+  `[is_interdimensional] refuse(Waystones only carry you within one world)`. `refuse` and `is_interdimensional` were read from the
+  jar's own code; the message is a literal (a leading `$` would be a translation key). **The refusal is configured and read from
+  code, not yet seen:** place a waystone on Earth and one on another world, and try each kind of warp (a stone, a scroll, a plate, the
+  inventory button). The reasoning is the gates' (ADR-0015, ADR-0018): a waystone on the Moon that reached one on Earth would be a gate nobody built.
+  Waystones also generates wild waystones (in villages, and its allow list names the Overworld, the Nether and the End); travel inside
+  a world is allowed, so they stay.
+- **The server needs the same files.** The server pack must carry `pack/config/` as well as `serverpack/config/` (the Waystones rule
+  is a server decision, and Waystones syncs its config to clients).
+
 ## Chat noise (2026-10-18)
 
 Two lines kept appearing in the chat of the dev client. **"Distant Horizons: Chunky detected"** is real
