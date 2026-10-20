@@ -158,6 +158,46 @@ LORE = [
         'Seven keys. Seven locks. On each lock, one glyph, and the seven glyphs are a name. '
         'Whoever reads them in the order they fall reads them wrong.',
     ], SEALERS),
+    # THE END (Planet 4, DRAFT 2026-10-20, docs/lore/the-end.md): five tablets in the ruin by the arena, one on an
+    # outer island, the voice again. Upside down: the belt blamed on the destroyer, the wings a gift, the last keeper
+    # called the destroyer's beast and its death called the road opening (which is what the voice wants: each lit
+    # gate breaks a lock), the tall ones called our own lost, the fall called a kindness.
+    ('the_end', 'the_belt', 'The Belt', [
+        'This was our last world and our greatest. The destroyer broke it into the islands you '
+        'see, and the dark between them. It could not break what we built upon them.',
+        'Do not grieve for the lost ground. A world cut into pieces is a world that can be '
+        'carried. We meant to carry it, one day. Now it is yours to carry.',
+    ]),
+    ('the_end', 'the_wings', 'The Wings', [
+        'Our crews could not bridge the islands. The dark would not hold a bridge. So we gave '
+        'them wings, folded in the last ships, and they crossed in a breath.',
+        'The ships still moor beside the towers. The wings lie in their frames. Take them. Whoever '
+        'flies can go where we could not go. Go far. Go where we point.',
+    ]),
+    ('the_end', 'the_keeper', 'The Last Keeper', [
+        'A beast sits on our gate. It is the destroyer\'s, set to guard what we left. Ten lights '
+        'on ten pillars feed it. Break them.',
+        'When it falls, the gate will wake, and the road will open from here to every world. That '
+        'is why we waited. That is all we ever wanted: the road, open.',
+    ]),
+    ('the_end', 'the_fruit', 'The Fruit', [
+        'Where our lights leak, a plant grows that belongs to no world. Eat its fruit and you are '
+        'carried a little way, and set down again.',
+        'We learned it here: to leave, and be returned. You will learn it too. Every door we '
+        'built was made to return you. Trust them.',
+    ]),
+    ('the_end', 'the_watchers', 'The Tall Ones', [
+        'The tall ones who look away are ours. They are the lost, and they hide their faces for '
+        'shame. Do not stare. Be kind to them.',
+        'They take blocks and keep them. Let them. They are tidying our world, as they always did. '
+        'Look away as they do, and they will leave you be.',
+    ]),
+    ('the_end', 'the_edge', 'The Edge', [
+        'There is no floor under the belt. Do not fear the fall. The dark below is not an ending. '
+        'It hands back what it is given, a little farther from home.',
+        'That is the last kindness of the road, and the first. Every fall returns you to the dark '
+        'between the worlds, where the doors wait. Fall as often as you like.',
+    ]),
 ]
 
 WORN_AWAY = 'The inscription is worn away.'

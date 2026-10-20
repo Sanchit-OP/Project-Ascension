@@ -25,6 +25,9 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
  * start and {@code check_radius} blocks out in each direction has nothing fluid on top: the two
  * worldgen heightmaps agree there. The same test the gate ruin's seek uses.
  *
+ * <p>{@code min_ground}, if given, also refuses a start whose ground is lower than that: the End's islands hang over a
+ * void where both heightmaps agree at the world's floor, so only a height says there is rock.
+ *
  * <p>The wrapper's own settings ({@code biomes}, {@code step}, {@code terrain_adaptation}) are the
  * ones that apply, since the start is this structure's; the inner one's biomes must also admit the
  * spot, as it checks its own.
@@ -35,16 +38,20 @@ public final class DryGroundStructure extends Structure {
             .group(
                     settingsCodec(instance),
                     Structure.CODEC.fieldOf("structure").forGetter(s -> s.inner),
-                    Codec.intRange(0, 32).optionalFieldOf("check_radius", 8).forGetter(s -> s.checkRadius))
+                    Codec.intRange(0, 32).optionalFieldOf("check_radius", 8).forGetter(s -> s.checkRadius),
+                    Codec.INT.optionalFieldOf("min_ground").forGetter(s -> s.minGround))
             .apply(instance, DryGroundStructure::new));
 
     private final Holder<Structure> inner;
     private final int checkRadius;
+    private final Optional<Integer> minGround;
 
-    public DryGroundStructure(StructureSettings settings, Holder<Structure> inner, int checkRadius) {
+    public DryGroundStructure(StructureSettings settings, Holder<Structure> inner, int checkRadius,
+                              Optional<Integer> minGround) {
         super(settings);
         this.inner = inner;
         this.checkRadius = checkRadius;
+        this.minGround = minGround;
     }
 
     @Override
@@ -55,8 +62,11 @@ public final class DryGroundStructure extends Structure {
     private boolean dryAround(GenerationContext context, BlockPos at) {
         int[][] offsets = {{0, 0}, {checkRadius, 0}, {-checkRadius, 0}, {0, checkRadius}, {0, -checkRadius}};
         for (int[] offset : offsets) {
-            if (dryGroundAt(context.chunkGenerator(), context.heightAccessor(), context.randomState(),
-                    at.getX() + offset[0], at.getZ() + offset[1]).isEmpty()) {
+            OptionalInt ground = dryGroundAt(context.chunkGenerator(), context.heightAccessor(), context.randomState(),
+                    at.getX() + offset[0], at.getZ() + offset[1]);
+            // min_ground: over the End's void the two heightmaps agree at the world's floor, so "dry" is not
+            // enough there; the ground must reach this high.
+            if (ground.isEmpty() || minGround.isPresent() && ground.getAsInt() < minGround.get()) {
                 return false;
             }
         }
