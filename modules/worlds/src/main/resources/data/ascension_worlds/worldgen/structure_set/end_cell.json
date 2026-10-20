@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "ascension_worlds:end_cell",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "ascension_worlds:fixed_position",
+    "salt": 9,
+    "locate_at": [
+      -40,
+      0,
+      40
+    ]
+  }
+}

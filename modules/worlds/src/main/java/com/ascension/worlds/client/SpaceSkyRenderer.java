@@ -80,6 +80,11 @@ public final class SpaceSkyRenderer {
     /** Model-view for {@link LitSphere.Disc}: none, as RenderSystem's already holds the camera's. */
     private static final Matrix4f IDENTITY = new Matrix4f();
 
+    /** A resource reload may change a belt's numbers: forget the generated rocks. */
+    static void clearBelts() {
+        BeltRenderer.clear();
+    }
+
     @SubscribeEvent
     public static void onRenderLevelStage(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
@@ -165,6 +170,13 @@ public final class SpaceSkyRenderer {
 
     /** A planet with a look from space: its face as a sphere, lit by the sun, haloed if it has air. */
     private static void renderSphere(Vec3 cameraPos, Planet planet, SpaceBody look, double[] sun) {
+        if (look.belt().isPresent()) {
+            Minecraft minecraft = Minecraft.getInstance();
+            float seconds = (minecraft.level.getGameTime()
+                    + minecraft.getTimer().getGameTimeDeltaPartialTick(false)) / 20.0F;
+            BeltRenderer.render(cameraPos, planet, look, look.belt().get(), sun, seconds);
+            return;
+        }
         Planet.SpacePosition space = planet.space();
         double relX = space.x() - cameraPos.x;
         double relY = -cameraPos.y;

@@ -46,6 +46,8 @@ journey is weakest.
 | 19 | Finds the ring in the warped forest, the colony halls, the Monstrosity | Armour, a key hunt | Seek-placement, Cataclysm | The Rot | Placement **Checked** headless | Never seen |
 | 20 | Lights the Nether's gate: both lit, a path home | The Monstrosity's key | Loot modifier | The Rot | **Checked** headless | Never seen |
 | 21 | Blazes, brass, smart propeller; ancient debris, netherite | Blaze rods, a burner, copper and zinc, quartz, diamonds | Nether, Create | The Rot | Materials **Checked** present | Brass is a Create ladder the player must learn |
+| 21a | Flies 32,000 blocks south to the End, falls (if they fall) back to space, kills the Dragon, steps into her exit portal | A ship, wings help | `EndGate`, `VoidFall`, `planet/end.json` (ADR-0028) | The Belt | Compiled and unit-tested only; **not run on a server or in a client** | No ship has flown there; the Dragon is untested at 4,550 HP |
+| 21b | Finds an End city, the Elytra, shulker shells | Wings or a gateway pearl | Vanilla worldgen | The Belt | Not checked | Pre-generation cost unmeasured |
 | 22 | Grows: points, web, runes, enchants | Bosses, gates, places | `ascension-combat` | Gear and Growth | **Seen** (screens) and **Checked** (64 scripted checks) | See 5.6: nothing to wear at the top |
 | 23 | Plays with friends | A party | FTB Teams | Together | **Checked** with stand-in players on a server | Two real clients never tried |
 
@@ -59,10 +61,11 @@ source and no job is a bug (`resource-economy.md` principle 1).
 | **Raw titanium / ingot** | Titanium ore on Earth (diamond pick); Archive chests | The titanium propeller bearing (our recipe, needs Aeronautics) | Earth's metal in the combat build paths | **One job.** Fine, and the build paths add the rest |
 | **Raw helium crystal** | Moon helium ore (iron pick); Archive chests | **Nothing** | The Moon's material in the build paths; a **helium lamp** (`resource-economy.md` section 4) | **No job. A bug.** 5.4 |
 | **Warden tendril** | The Warden, if a player struck the last blow | Wakes Earth's gate (one per gate) | Nothing more | Done |
+| **Elytra, shulker shells, chorus, End stone** | The End (outer islands; ships reach them without killing the Dragon) | Wings; shulker boxes; Aeronautics' levitite blend | Nothing | New (2026-10-20), not yet seen |
 | **Gateway key (Moon / Nether)** | Ender Guardian / Netherite Monstrosity | Lights that world's gate | Nothing more | Done |
 | **Inscribed gatestone, keystone** | Crafted from Deep Dark materials | The gate's frame | Nothing more | Done |
 | **Moon stone** (anorthosite, lunar basalt and their bricks) | The Moon | Building; every frame tag accepts it (an Earth gate in Moon stone matches the Moon's ruin) | Nothing | Cosmetic. The Moon page nudges it with one quest |
-| **Archive tablets, the Forge Record** | Archive and colony chests, the Monstrosity | Read in place (the story) | Nothing | Done |
+| **Archive tablets, the Forge Record** | Read in place on their plinths; no loot gives a tablet (2026-10-21); the Forge Record's plinth is in the colony's forge hall | Read in place (the story) | Nothing | Done |
 | **Oxygen tank, helium tank, Air Compressor, Air Dispenser** | Iron, glass, Create parts; helium for the level-2 tank (Oxygen v2, ADR-0026) | A Create-powered compressor makes air, fills tanks by right-click, and fills pipes and tanks; an Air Dispenser holds a sealed room from that air. The old emitter and refill station are legacy (no recipe) | Ship cabins (5.2) | Built 2026-10-19, **not yet run in a game** |
 | **Rune chalk** | Amethyst and calcite (geodes) | Removing or replacing a rune (with 3 levels) | Nothing | Done |
 | **Tomes of Scrapping and Extraction** | A book, lapis, flint or amethyst | Wiping or moving enchantments | Nothing | Done |
@@ -78,10 +81,11 @@ source and no job is a bug (`resource-economy.md` principle 1).
 | Page | Quests | The thread |
 |---|---|---|
 | First Days | 16 | Controls, iron, diamonds, gold, titanium, air; then the dark city, the Warden, the gate (with its plan) |
-| Planets | 3 | Earth, the Moon and the Nether on a chart, with a live "you are here" |
+| Planets | 4 | Earth, the Moon, the Nether and the End on a chart, with a live "you are here" |
 | The Road Up | 17 | Create from nothing, the ship's parts (waiting on Create's and Aeronautics' own advancements), air for the trip, the sky's edge |
 | The Moon | 15 | Packing, landing, no air, dust, the Archive, the fortress and its two guardians, the ring, two rings lit |
 | The Rot | 18 | Gold, the long flight, the ring in the teal forest, the smith, wealth (piglins, bastion, netherite), fire (blazes, brass, a smarter propeller) |
+| The Belt | 9 | The longest flight, landing, no floor, the Dragon, her portal as a gate, the small gateway, an End city, wings, shulker shells |
 | Gear and Growth | 10 | Armour, enchanting, tomes, abilities; points and the web; runes, chalk, slots |
 | Together | 6 | Parties, catching up, no friendly fire, one shared book, the map, a breath for a friend |
 | Build the Gate | 7 | Read the plan, level ground, the five stone families and their counts, gatestones, the keystone, raise the ring, wake it |

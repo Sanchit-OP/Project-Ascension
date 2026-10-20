@@ -1,0 +1,25 @@
+{
+  "title": {
+    "translate": "archive.ascension_worlds.the_end.the_record.title"
+  },
+  "pages": [
+    {
+      "translate": "archive.ascension_worlds.the_end.the_record.1"
+    },
+    {
+      "translate": "archive.ascension_worlds.the_end.the_record.2"
+    },
+    {
+      "translate": "archive.ascension_worlds.the_end.the_record.3",
+      "extra": [
+        {
+          "text": "\n\n"
+        },
+        {
+          "text": "\ue004\ue001\ue006\ue003\ue000\ue005\ue002",
+          "font": "ascension_worlds:script"
+        }
+      ]
+    }
+  ]
+}

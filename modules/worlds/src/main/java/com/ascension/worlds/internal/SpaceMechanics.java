@@ -207,9 +207,23 @@ public final class SpaceMechanics {
         PlanetArrivalMemory.DeparturePoint remembered = pilot == null
                 ? null
                 : pilot.getData(SpaceAttachments.ARRIVAL_MEMORY).lastAscentFrom(surface.dimension().location());
+        double[] column = arrivalColumn(surface);
         return remembered == null
-                ? new Vec3(0.5, y, 0.5)
+                ? new Vec3(column[0], y, column[1])
                 : new Vec3(remembered.pos().getX() + 0.5, y, remembered.pos().getZ() + 0.5);
+    }
+
+    /**
+     * The block-centre {@code [x, z]} an arrival with no remembered spot lands over: the planet's
+     * {@code arrival_point}, or the world's centre when it names none.
+     */
+    private static double[] arrivalColumn(ServerLevel surface) {
+        for (Planet planet : surface.getServer().registryAccess().registryOrThrow(WorldsRegistries.PLANET)) {
+            if (planet.surface().equals(surface.dimension())) {
+                return new double[] {planet.arrivalX() + 0.5, planet.arrivalZ() + 0.5};
+            }
+        }
+        return new double[] {0.5, 0.5};
     }
 
     /** Remembers where {@code player} is leaving their current world from. */
@@ -313,7 +327,8 @@ public final class SpaceMechanics {
         // sidesteps the whole class of failure, and reads as "descending from space" rather than
         // "teleported onto the ground".
         double landingY = surface.getMaxBuildHeight() - DESCENT_MARGIN;
-        return new LandingSpot(new Vec3(0.5, landingY, 0.5), player.getYRot());
+        double[] column = arrivalColumn(surface);
+        return new LandingSpot(new Vec3(column[0], landingY, column[1]), player.getYRot());
     }
 
     /**

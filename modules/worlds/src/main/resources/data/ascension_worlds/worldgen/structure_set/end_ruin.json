@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "ascension_worlds:end_ruin",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "ascension_worlds:fixed_position",
+    "salt": 7,
+    "locate_at": [
+      48,
+      0,
+      -32
+    ]
+  }
+}

@@ -21,6 +21,10 @@
       "armor": 100,
       "magic_resist": 40
     },
+    "minecraft:ender_dragon": {
+      "armor": 190,
+      "magic_resist": 90
+    },
     "minecraft:warden": {
       "armor": 80,
       "magic_resist": 40

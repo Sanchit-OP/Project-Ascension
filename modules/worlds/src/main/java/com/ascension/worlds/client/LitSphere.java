@@ -149,6 +149,11 @@ final class LitSphere {
                 GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
     }
 
+    /** Ordinary alpha blending. */
+    static void defaultBlend() {
+        RenderSystem.defaultBlendFunc();
+    }
+
     private static void facePoint(BufferBuilder buffer, Disc disc, DoubleBinaryOperator shade, float radius, double angle) {
         float u = (float) Math.cos(angle) * radius;
         float v = (float) Math.sin(angle) * radius;

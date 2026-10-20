@@ -113,6 +113,43 @@
 				}
 			]
 		}
+		{
+			id: "0ACE2D2F0C79926C"
+			x: -2.576d
+			y: 7.077d
+			shape: "none"
+			size: 1.7d
+			icon: {
+				id: "ftbquests:custom_icon"
+				count: 1
+				components: {
+					"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/planets/end.png"
+				}
+			}
+			dependencies: ["38E2DDDB06CDA399"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "31A989B4C6B5C95C"
+					type: "dimension"
+					dimension: "minecraft:the_end"
+				}
+			]
+			rewards: [
+				{
+					id: "11E2319EE1CDC4D9"
+					type: "item"
+					item: "minecraft:ender_pearl"
+					count: 4
+				}
+				{
+					id: "426556858A234F26"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 12
+				}
+			]
+		}
 	]
 	quest_links: [ ]
 	images: [
@@ -162,6 +199,25 @@
 			image: "ascension_compat_ftbquests:textures/quests/planets/halo.png"
 			order: 2
 			dependency: "4110412AC1AE6C2E"
+		}
+		{
+			id: "6D58C234FB4590CA"
+			x: -2.576d
+			y: 7.077d
+			width: 2.4d
+			height: 2.4d
+			image: "ascension_compat_ftbquests:textures/quests/planets/ring.png"
+			order: 1
+		}
+		{
+			id: "58041BD46CE831C2"
+			x: -2.576d
+			y: 7.077d
+			width: 3.0d
+			height: 3.0d
+			image: "ascension_compat_ftbquests:textures/quests/planets/halo.png"
+			order: 2
+			dependency: "0ACE2D2F0C79926C"
 		}
 		{
 			id: "20CBDF07225E0CC1"

@@ -50,6 +50,7 @@ final class SpaceBodies extends SimpleJsonResourceReloadListener {
                 })
                 .ifError(error -> LOGGER.error("Skipping space file {}: {}", file, error.message())));
         byPlanet = Map.copyOf(loaded);
+        SpaceSkyRenderer.clearBelts();
         LOGGER.debug("Loaded space looks for {} planet(s)", loaded.size());
     }
 }

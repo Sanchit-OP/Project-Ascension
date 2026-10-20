@@ -20,6 +20,7 @@ No survival source, on purpose. The rules say why.
 - **Test Magic Blade [DEBUG]** (`ascension_combat:test_magic_blade`): The combat session's test item for magic damage, not a player item.
 - **Archive Orrery** (`ascension_worlds:archive_orrery`): Unbreakable: the Archive's orrery, its centrepiece.
 - **Archive Plinth** (`ascension_worlds:archive_plinth`): Unbreakable: the Lunar Archive holds its tablets on these, and the story reads them in place.
+- **Archive Tablet** (`ascension_worlds:archive_tablet`): No loot gives one (Sanchit, 2026-10-21): tablets are read in place on their plinths. The item stays registered for a creative or command copy.
 - **Colony Plinth** (`ascension_worlds:colony_plinth`): Unbreakable: the colonists' halls' plinth, as the Archive's.
 - **Carved Glyph** (`ascension_worlds:mark_glyph`): Unbreakable and drops nothing: a glyph of the script cut into the pylon, read in place.
 
@@ -284,11 +285,7 @@ No survival source, on purpose. The rules say why.
 ### Items
 
 **Archive Tablet** · `ascension_worlds:archive_tablet`
-- From: Dropped by the Netherite Monstrosity: 1, tablet: The Forge Record
-- From: Chests in the Lunar Archive (the Moon): 1, tablet: The Road, weight 1 of 2
-- From: Chests in the Lunar Archive (the Moon): 1, tablet: Many Worlds, weight 1 of 2
-- From: Chests in the colonists' halls (the Nether): 1, tablet: The Colony, weight 1 of 2
-- From: Chests in the colonists' halls (the Nether): 1, tablet: The Ward, weight 1 of 2
+- From: *nothing yet*
 
 **Gateway Key** · `ascension_worlds:gateway_key`
 - From: Dropped by the Netherite Monstrosity: 1
@@ -432,6 +429,8 @@ No survival source, on purpose. The rules say why.
 - Used: Builds a gateway frame (Gateway)
 
 **Sealers' Carving** · `ascension_worlds:sealer_carving`
+- From: Mined: the Mooring, a quay with empty ship cradles, on outer islands (the End), built into it
+- From: Mined: the Ring of Ten by the Dragon's arena (the End), built into it
 - From: Mined: the Sealer carving (the Nether), built into it
 
 **Titanium Ore** · `ascension_worlds:titanium_ore`

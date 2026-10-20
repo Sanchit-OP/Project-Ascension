@@ -99,9 +99,10 @@ class ArchiveLoreTest {
     }
 
     @Test
-    void storesOnlyHandOutRealEntries() throws IOException {
-        assertEquals(2, realEntriesIn("/data/ascension_worlds/loot_table/archive/stores.json"));
-        assertEquals(2, realEntriesIn("/data/ascension_worlds/loot_table/nether_colony/stores.json"));
+    void storesHandOutNoTablets() throws IOException {
+        // Tablets are read in place on their plinths, never carried off (Sanchit, 2026-10-21): no store gives one out.
+        assertEquals(0, realEntriesIn("/data/ascension_worlds/loot_table/archive/stores.json"));
+        assertEquals(0, realEntriesIn("/data/ascension_worlds/loot_table/nether_colony/stores.json"));
     }
 
     private int realEntriesIn(String table) throws IOException {

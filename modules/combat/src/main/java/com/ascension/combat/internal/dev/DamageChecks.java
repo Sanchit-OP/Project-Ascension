@@ -340,7 +340,7 @@ public final class DamageChecks {
     }
 
     /**
-     * The six bosses reach the health the balance gives them. Vanilla clamps Max Health at 1,024 (ADR-0027), so before the
+     * The seven bosses (six, and the Ender Dragon) reach the health the balance gives them. Vanilla clamps Max Health at 1,024 (ADR-0027), so before the
      * ceiling was raised every one of these came out at exactly 1,024. Each is added to the world and read in the same tick
      * (so it never gets to act), then removed.
      */
@@ -348,7 +348,7 @@ public final class DamageChecks {
         log("--- boss health (vanilla's own ceiling is 1024)");
         expect("Max Health's ceiling is above vanilla's 1024",
                 ((RangedAttribute) Attributes.MAX_HEALTH.value()).getMaxValue() > 1024.0, true);
-        for (String name : List.of("minecraft:warden", "minecraft:wither", "cataclysm:ender_golem", "cataclysm:ender_guardian",
+        for (String name : List.of("minecraft:warden", "minecraft:wither", "minecraft:ender_dragon", "cataclysm:ender_golem", "cataclysm:ender_guardian",
                 "cataclysm:ignis", "cataclysm:netherite_monstrosity")) {
             ResourceLocation id = ResourceLocation.parse(name);
             if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {

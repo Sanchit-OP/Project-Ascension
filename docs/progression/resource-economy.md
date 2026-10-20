@@ -19,7 +19,7 @@
 | Warden tendril | The Warden (`add_table` modifier) | The gateway keystone (Earth's gate) |
 | Gateway key, Moon | The Ender Guardian in the Moon's citadel (compat-cataclysm) | Attunes the Moon's gate |
 | Gateway key, Nether | The Netherite Monstrosity (compat-cataclysm) | Attunes the Nether's gate |
-| Forge Record | The Netherite Monstrosity (same jar) | Lore |
+| Forge Record | Read in place, on a plinth in the colony's forge hall (no longer dropped, 2026-10-21) | Lore |
 | Inscribed gatestone | Crafted (polished deepslate or Moon basalt, with sculk or an echo shard); Archive stores | Gate frames |
 | Archive tablets | Archive and colony stores, plinths | Lore |
 | Moon stone (anorthosite and basalt families) | The Moon's terrain | Building |
@@ -347,7 +347,7 @@ too.
 |---|---|
 | Brass | `propeller_bearing` (getting a titanium recipe), `directional_linked_receiver`, `modulating_linked_receiver`, `redstone_inductor`, `throttle_lever` |
 | Brass and quartz | `smart_propeller`, `gyroscopic_propeller_bearing`, `gyroscopic_mechanism`, `navigation_table`, `analog_transmission`, `docking_connector`, `gimbal_sensor`, `optical_sensor`, `linked_typewriter`, `plunger_launcher`, `redstone_accumulator`, `mounted_potato_cannon`, `rockcutting_wheel` (Offroad) |
-| The End | `levitite_blend` and `end_stone_powder`: levitite, the floating stone, needs End stone and a heated mixer |
+| The End | `levitite_blend` and `end_stone_powder`: levitite, the floating stone, needs End stone and a heated mixer. **Open since Planet 4 (ADR-0028, 2026-10-20):** End stone is the End's own ground, found by ship; nothing here needs the Dragon killed |
 
 **What Earth can build for a ship:**
 - **Lift:** hot-air balloons (the envelopes, and the adjustable burner of iron, andesite alloy,

@@ -200,6 +200,12 @@ portal, arrival and survival to design. About an ADR and lore session, a logic s
 test. It sits behind A2 and A4: nobody can reach it until a survival ship flies and holds air. **Planet 4 is the
 largest item on this list and the one most likely to move the alpha date.**
 
+**Status, 2026-10-20 (branch `planet-4-end`, not merged):** built and checked on a dedicated server: the ADR (0028), the planet entry, Sable
+physics, the arrival point, the gate (the Dragon's exit portal), the fall back to space, the Dragon's stats, the quest page, the lore outline
+and the art contract. **Left:** the art session (`design/end/design-session-prompt.md`), the lore prose (outline approved only), a client run
+(`docs/technical/planet-4-client-checklist.md`), a spark/pre-generation measurement, the Elytra in a real End city, and a ship with a real
+pilot. The growth total rose from 35 to 41 points (`growth.md` section 1).
+
 ## B. Should have (an alpha can go out without these, but it will hurt)
 
 - **A two-client smoke test before release**, even though the alpha is itself that test. Oxygen is per-player state and

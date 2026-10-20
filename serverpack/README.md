@@ -7,6 +7,24 @@ is gitignored and thrown away.
 runs the same configuration we ship. Files not listed here are left alone — Chunky's
 `config/chunky/tasks/` in particular holds live task state and must never be clobbered.
 
+## The End (Planet 4)
+
+The End is `minecraft:the_end` itself (ADR-0028). The central island and the Dragon's arena load with the first player.
+The outer islands and the End cities (where the Elytra is) lie about 1,000 blocks or more out and generate as players
+fly there at Elytra speed, which is the costly moment. Advice, **not yet measured** (a `spark` reading is owed, see
+`docs/technical/worlds-api.md`, "Planet 4"):
+
+```
+/chunky world minecraft:the_end
+/chunky center 0 0
+/chunky shape square
+/chunky radius 1600
+/chunky start
+```
+
+Run it by hand with nobody flying, watch memory, and `/chunky pause` if it climbs (the same crash as above). A
+smaller ring (radius 1200) covers the first End cities. Nothing pre-generates the End on its own.
+
 ## Pre-generating the spawn area
 
 > **Off by default since 2026-10-10.** A pre-generation on a fresh server crashed it with

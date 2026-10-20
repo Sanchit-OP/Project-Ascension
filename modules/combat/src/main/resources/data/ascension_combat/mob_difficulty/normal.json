@@ -6,6 +6,10 @@
       "health_total": 975,
       "attack_damage_percent": 0
     },
+    "minecraft:ender_dragon": {
+      "health_total": 4550,
+      "attack_damage_percent": 0
+    },
     "minecraft:wither": {
       "health_total": 4225,
       "attack_damage_percent": 100

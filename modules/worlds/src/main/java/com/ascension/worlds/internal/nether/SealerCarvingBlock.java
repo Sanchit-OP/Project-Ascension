@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 public final class SealerCarvingBlock extends Block {
 
     /** Must equal {@code CARVING_TILES} in {@code tools/generate-nether-art.py}, which checks it. */
-    public static final int TILES = 15;
+    public static final int TILES = 55;
 
     public static final IntegerProperty TILE = IntegerProperty.create("tile", 0, TILES - 1);
 

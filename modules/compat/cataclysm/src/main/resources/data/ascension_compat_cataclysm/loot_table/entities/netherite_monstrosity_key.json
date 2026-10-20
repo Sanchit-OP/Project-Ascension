@@ -18,24 +18,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "forge_record",
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "ascension_worlds:archive_tablet",
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "ascension_worlds:archive_entry": "ascension_worlds:nether/the_forge_record"
-              }
-            }
-          ]
-        }
-      ]
     }
   ]
 }

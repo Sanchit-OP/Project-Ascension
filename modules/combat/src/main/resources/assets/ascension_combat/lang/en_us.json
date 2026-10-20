@@ -341,6 +341,8 @@
   "advancements.ascension_combat.growth.root.description": "Beat bosses, light gates and find places to earn skill points.",
   "advancements.ascension_combat.growth.warden.title": "The Warden Falls",
   "advancements.ascension_combat.growth.warden.description": "Defeat the Warden. Everyone on the server gains skill points.",
+  "advancements.ascension_combat.growth.ender_dragon.title": "The Ender Dragon Falls",
+  "advancements.ascension_combat.growth.ender_dragon.description": "Defeat the Ender Dragon. Everyone on the server gains skill points.",
   "advancements.ascension_combat.growth.wither.title": "The Wither Falls",
   "advancements.ascension_combat.growth.wither.description": "Defeat the Wither. Everyone on the server gains skill points.",
   "growth.ascension_combat.node.vitality": "Vitality",

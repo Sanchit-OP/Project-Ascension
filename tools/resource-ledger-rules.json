@@ -14,6 +14,11 @@
     "ascension_worlds:sealer_carving": "the Sealer carving (the Nether)",
     "ascension_worlds:gateway_moon_site": "the Moon's gate ruin",
     "ascension_worlds:gateway_nether_site": "the Nether's gate ruin",
+    "ascension_worlds:end_ruin": "the Ring of Ten by the Dragon's arena (the End)",
+    "ascension_worlds:end_cell": "the Quiet Cell, a sealed room on the central island (the End)",
+    "ascension_worlds:end_mooring": "the Mooring, a quay with empty ship cradles, on outer islands (the End)",
+    "ascension_worlds:end_cloister": "the Cloister, a chorus garden, on outer islands (the End)",
+    "ascension_worlds:end_lamp": "the Last Lamp, a tower on outer islands (the End)",
     "cataclysm:acropolis": "Cataclysm's Acropolis",
     "cataclysm:ancient_factory": "Cataclysm's Ancient Factory",
     "cataclysm:frosted_prison": "Cataclysm's Frosted Prison"
@@ -61,6 +66,7 @@
   "no_source_yet": {},
   "no_use_yet": {},
   "creative_only": {
+    "ascension_worlds:archive_tablet": "No loot gives one (Sanchit, 2026-10-21): tablets are read in place on their plinths. The item stays registered for a creative or command copy.",
     "ascension_atmosphere:oxygen_emitter": "Legacy (ADR-0026): air now comes from the Create Air Compressor and the Air Dispenser. Kept registered so rooms in existing worlds keep working; not in the creative tab.",
     "ascension_atmosphere:oxygen_refill_station": "Legacy (ADR-0026): the Air Compressor fills tanks now. Kept registered for existing worlds; not in the creative tab.",
     "ascension_combat:test_magic_blade": "The combat session's test item for magic damage, not a player item.",

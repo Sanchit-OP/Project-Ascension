@@ -86,6 +86,9 @@ public final class GatewayDestinations {
             session.close();
         }
 
+        // A player choosing from the End's exit portal is still standing in it, and EndGate holds back every portal trip
+        // out of the End: the gate's own trip is not one, so the portal's hold on the player ends here.
+        player.portalProcess = null;
         if (!SpaceMechanics.travelViaGateway(player, surface, network.portalAt(surface))) {
             return Component.literal(surface + " is not a planet surface.");
         }

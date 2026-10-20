@@ -957,3 +957,112 @@ Tier 1 design answers to. A negative result would be DH's problem to route aroun
 to reshape a planet.
 
 So it is a compatibility check at M2.5, against the real thing, not a design input beforehand.
+
+
+### Planet 4: the End, an asteroid belt (planned 2026-10-20, ADR-0028)
+
+Not built yet. `minecraft:the_end` becomes `planet/end.json` at `[-10945, 30070]`, order 40, breathable.
+Its gate is the Dragon's exit portal: on the fight's end the portal's front spot is stored with
+`GatewayNetworkState.activate`, so the destination screen and arrival work as for any gate. Open for P1:
+where a ship lands (the default is over the arena), Sable `dimension_physics/the_end.json`, and whether the
+End's dimension type needs an override. Built and checked entries are added below as increments land.
+
+
+**Built (P1, P2; compiled and unit-tested only, not run on a server):**
+
+- `planet/end.json` has `arrival_point: [224, 0]`, a new optional planet field: the column that arrivals with no
+  remembered spot land over (players and ships), instead of the world's centre. The End uses it so a ship does not
+  come down on the Dragon's arena. Sable's `dimension_physics/the_end.json` is the Nether's curve (same height).
+- `EndGate` (Tier 1): once a second while the End is loaded and dark it reads `EndDragonFight.hasPreviouslyKilledDragon()`;
+  when true it finds the exit portal block in the podium's column, calls `GatewayNetworkState.activate(the_end,
+  ground 6 blocks east)` and fires `GateProgress.networkChanged` (mark, advancement `gates/the_end`, growth
+  milestones). Stepping into the exit portal opens the destination screen (`EntityTravelToDimensionEvent` cancelled
+  and routed to `GatewayDestinations.onStepIn`); players in the End are marked as having seen the credits so they never
+  play. All of it follows `disableVanillaPortals`.
+- Advancements `gates/the_end`, `discovery/the_end`, with growth milestones (2 shared points, 1 personal).
+- Not checked: that the Dragon's death really lights the gate and the portal opens the screen, the arrival spot on
+  the podium island, the ship landing at [224, 0], a world reload.
+
+**P4 findings (2026-10-20; from the 1.21.1 source and the files, not from a running game):**
+
+- **What a ship can do.** Players cannot leave a planet on foot (`checkAscent`), so an Elytra flight stops at the End's
+  build height of 256 with the message "The sky ends here"; the Elytra is not a way to space (ADR-0015). Caelus and Icarus
+  are in the stack; neither changes this. The pack has no fall-damage rules of its own, so the Elytra's own crash damage
+  applies (vanilla's, with the kit's armour).
+- **No dormant-portal effect.** ADR-0014's rule cancels only portal-driven trips *into* the End; `EndGate` cancels the
+  exit portal's trip *out* and offers the gate. Vanilla gateways (the small bedrock-and-beam blocks) teleport within the
+  End and are not portals. They appear one per Dragon kill (up to 20) on a ring of radius 96 and take a player to the
+  outer islands, so the first kill is what opens a short road to the End cities.
+- **The cost.** The outer islands always exist (they are terrain, not a reward), so ships can reach the End cities
+  without killing the Dragon. They generate on demand; see `serverpack/README.md` for the pre-generation advice.
+  The `spark` measurement is still owed (batched server check).
+- **Compat jars.** `endermanoverhaul`: only the Moon uses its End Islands Enderman (a biome modifier on
+  `moon_biomes`); the End already has its own mobs, so nothing is needed. `distanthorizons` (`DimensionClouds`), `chunky`
+  and `cataclysm` hold nothing for the End yet; to be confirmed by the batched check.
+- **Recipe debt.** The End half of ADR-0014's debt is paid on paper; recorded in `todo.md` and `resource-economy.md`.
+  The ledger covers only our items, so it has nothing to change.
+
+**P5: survival rule and the void (2026-10-20, Sanchit):**
+
+- **The rule is none, as data.** `planet/end.json` has no `environment` (so earthlike, breathable) and no `hazard`. Oxygen v2
+  is not involved.
+- **The void is not death.** `planet/end.json` carries `falls_to_space: true` (new optional planet field). `VoidFall`
+  (`ascension-worlds`): a player below the world's floor (y 0) gets Slow Falling, refreshed; 12 blocks under the floor they are
+  carried into space beside the planet (`SpaceMechanics.arrivalInSpace`, outside the approach shell, facing away from it),
+  stopped, with Slow Falling for 30 s and the message "There is no floor under the belt. It hands you back to the dark."
+  Vanilla's void damage (under y -64) is never reached. Not handled: a ship that falls out of the bottom (ships only climb);
+  items and mobs. Compiled and unit-tested only; not seen on a server or in a client.
+
+**P8: checked on a dedicated server (2026-10-20, `end-checks.txt`, 18 checks, 0 failures; `damage-checks.txt`, 77 checks, 0 failures):**
+
+- **Dragon:** spawns with 4,550 of 4,550 health on Normal (`DamageChecks` also proves the other six totals).
+- **Gate:** dark until she dies; `dragon.kill()` makes the fight place the exit portal and the gate lights; the arrival spot is
+  `[6, 62, 0]` with ground under it. Stepping into the portal is held back and opens the destination screen; travel to Earth and back
+  to the End by the gate works, landing at `(6.5, 62, 0.5)`; players in the End are marked as having seen the credits.
+- **Fall:** below y 0 the player gets Slow Falling and stays in the End; at y -20 they are in space, 548 blocks (448 + 100) from the
+  End's centre, still with Slow Falling.
+- **Ship:** a command-built ship (a chest of diamonds, planks) climbed past 256 in the End and came out in space at
+  `[-10945, 30618]` (548 south of the End); moved into the End's body it came down at `(224.5, y, 0.5)`, the `arrival_point`. Its cargo
+  was not read back. A ship that is not held up keeps falling through the void (no lift in this test); `VoidFall` is for players only.
+- **End city:** `/locate structure minecraft:end_city` finds one at `[-912, ~, -592]`, 1,087 blocks from the middle.
+- **Reload:** after `save-all`, stop and start on the same world: the End's gate is still lit, the portal block is still there, the Dragon
+  is not back.
+
+Two real bugs the checks found, both fixed before this commit: `EndGate` looked for the exit portal in the podium's centre column
+(bedrock and torches; the portal is a ring around it), so the gate would never have lit; and the gate's own trip out of the End was
+cancelled by `EndGate`'s hold on portal trips while the player was still standing in the portal (`tryTravel` now clears the portal
+process first).
+
+**Not checked:** a spark reading (RCON does not return spark's output; run `/spark tps` and a profiler by hand), the Elytra in an End city
+ship, a pre-generation cost, a real client of anything, two clients, a ship with a real survival build and a pilot, a ship falling out of
+the bottom, items falling out of the bottom, and the Dragon's part damage on real weapons.
+
+**The batched client run for Planet 4 is [`planet-4-client-checklist.md`](planet-4-client-checklist.md).**
+
+**The End is a belt, not a sphere (2026-10-20, Sanchit; redone 2026-10-21 after "it is not an asteroid belt at all"):** a space body can
+carry a `belt` (`ascension_space/end.json`): instead of one lit sphere the planet is a flat ring of irregular tumbling rocks, a dust band and a
+bright core, drawn by `BeltRenderer`.
+
+```json
+{ "planet": "ascension_worlds:end", "texture": "ascension_worlds:textures/environment/end_rock.png", "lit": true,
+  "belt": { "count": 1400, "seed": 4, "thickness": 0.07, "min_radius": 1.5, "max_radius": 30, "inner": 0.2, "sprites": 8,
+            "central": 1.4, "dust": "ascension_worlds:textures/environment/end_dust.png", "dust_colour": 9074872,
+            "core_texture": "ascension_worlds:textures/environment/end_glow.png", "core_colour": 13148400 } }
+```
+
+| `belt` field | Default | Meaning |
+|---|---|---|
+| `count` | 140 | Rocks, 1 to 3000, the central one included. One sprite each, drawn farthest first in one buffer. |
+| `seed` | 1 | The same seed gives the same belt on every client (`BeltRocks`, unit-tested). |
+| `thickness` | 0.15 | Half the belt's height, as a fraction of `body_radius`; thinnest where the rocks are densest. |
+| `min_radius`, `max_radius` | 6, 34 | Rock sizes in blocks: most near the minimum, a few great ones near the maximum. |
+| `inner` | 0 | The fraction of the radius left empty at the middle. |
+| `sprites` | 1 | How many rock shapes the `texture` atlas holds (four to a row, 32 x 32 cells). |
+| `central` | 0 | The middle rock's radius as a multiple of `max_radius`; 0 for none. |
+| `dust`, `dust_colour` | none | A soft ring texture added in three thin sheets at the plane (v runs inner to outer, u round and tiles). |
+| `core_texture`, `core_colour` | none | A soft round glow at the middle, added to the sky. |
+
+The rocks keep to a broad inner band and a narrow outer band with a gap between (`BeltRocks.density`); all inside the planet's `body_radius`
+disc, the same volume that carries a ship down when entered, so flying into the belt is landing on the End. A rock is never drawn under about two
+pixels. Cost: three draw calls, no per-frame allocation (a reused sort buffer), a few thousand vertices. **Not yet seen in a client.** The sphere path
+is unchanged for every other planet.

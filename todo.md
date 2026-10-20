@@ -3,7 +3,7 @@
 Open questions only. **Settled decisions live in [`docs/decisions/`](docs/decisions/)** — check
 there before reopening anything. Milestone work in flight lives in [`plans/`](plans/) — currently
 [`plans/m3-vertical-slice.md`](plans/m3-vertical-slice.md). **What must be finished before the alpha
-launch (2026-10-19):** [`plans/alpha-checklist.md`](plans/alpha-checklist.md). **Planet 4 (the End) session prompt:**
+launch (2026-10-19):** [`plans/alpha-checklist.md`](plans/alpha-checklist.md). **Planet 4 (the End): built on branch `planet-4-end` 2026-10-20 (ADR-0028), client run pending: [`docs/technical/planet-4-client-checklist.md`](docs/technical/planet-4-client-checklist.md).** **Planet 4 (the End) session prompt:**
 [`plans/session-prompts/9-planet-4-the-end.md`](plans/session-prompts/9-planet-4-the-end.md); what every planet needs:
 [`docs/technical/new-planet-checklist.md`](docs/technical/new-planet-checklist.md).
 
@@ -102,7 +102,9 @@ See the register or the linked doc for reasoning:
   (2026-10-11):** Planet 3 is the real Nether, reached by airship, and a fresh world's roofless
   Nether has blaze spawners in its fortresses, nether wart, glowstone (under overhangs and in
   caves, y 32 to 100+), ancient debris, quartz, soul sand and magma, checked headless. **The End
-  half is still open:** End-only items stay unobtainable until the End is a planet. Our own recipes
+  half is paid on paper (2026-10-20, Planet 4, ADR-0028; unverified in play):** the End is a planet reached by ship, so
+  End stone, chorus, purpur, shulker shells, dragon breath, the Dragon egg and the Elytra (End city ships, on the outer
+  islands) are all obtainable; Aeronautics' `levitite_blend` and `end_stone_powder` are no longer blocked. Our own recipes
   were never in debt: the gateway keystone uses Deep Dark materials (`gateway-portal-design.md`).
   Still to watch: any later recipe that reaches for End items, or puts a Nether item on the road
   before Planet 3 (eyes of ender need blaze powder).
@@ -169,3 +171,20 @@ pressurises the room instead of the station; (5) the same working aboard a ship.
 - **One legendary carried, weapons only** (Sanchit): how to enforce (stop pickup/craft, with a sweep as the tank has), whether a dual-wield pair is the exception, and a retune of the weapons if it lands. He will decide uniqueness after testing.
 - **Flat versus percent weapons on late bosses** (`balance.md` section 3): the Wither takes flat weapons 3 to 4 times longer. Options A and B are worked out in the session; revisit after a client test.
 - **Cataclysm weapons** keep what the mod gave them; their real speeds are known (read from the jar).
+
+## Planet 4 design and lore (2026-10-21, branch `end-design`)
+
+- Sanchit to read `docs/lore/the-end.md` (prose, with what changed from the outline at its end) and the eight tablets in `tools/archive-lore.py`; edit there.
+- One batched client run: the belt from space at three distances beside the Moon and the Nether, each ruin, every tablet, the three carvings, the glyph wall in the Quiet Cell, the outer-island ruins, a reload (`docs/technical/end-art-format.md`, section 5).
+- The End's sky and haze (`ascension_sky/the_end.json`) and the quest-book `end` sprite are still the placeholder (`end-art-format.md` sections 2 and 4).
+- Ideas not built: a plinth at each pillar's foot (needs a structure placed relative to a vanilla feature); a beam of light from the belt's core; the glyph wall lighting as gates light (the Cell's `mark_glyph` blocks are unlit).
+
+## Planet 4 follow-ups (2026-10-20)
+
+- The art session for the End (`design/end/design-session-prompt.md`): face from space, sky, haze, quest sprite.
+- Lore prose for `docs/lore/the-end.md` (outline only), and optional End tablets.
+- Growth totals: 41 points against a 56-node web; Sanchit's call whether to re-balance.
+- A ship that falls out of the bottom of the End is not carried to space (only players are); decide.
+- Measure the outer islands' pre-generation cost with `spark` and update `serverpack/README.md`.
+- The Elytra in an End city ship has not been seen; confirm Caelus/Icarus behave with it.
+- A pre-generated decoration around the exit portal (the contract's section 3) if wanted.

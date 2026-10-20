@@ -1,0 +1,32 @@
+{
+  "parent": "ascension_combat:growth/root",
+  "criteria": {
+    "killed": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:ender_dragon"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:dragon_head"
+    },
+    "title": {
+      "translate": "advancements.ascension_combat.growth.ender_dragon.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_combat.growth.ender_dragon.description"
+    },
+    "frame": "challenge",
+    "announce_to_chat": false
+  }
+}
