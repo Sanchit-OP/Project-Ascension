@@ -190,6 +190,25 @@ class ChartTest(unittest.TestCase):
         self.assertLess(chart.RADIUS, chart.SIZE / 2)
         self.assertAlmostEqual(chart.UNIT_PX * chart.UNITS_ACROSS, chart.SIZE)
 
+    def test_the_theme_spacing_is_the_one_the_chart_assumes(self):
+        theme = os.path.join(chart.ROOT, 'modules', 'compat', 'ftbquests', 'src', 'main', 'resources', 'assets',
+                             'ftbquests', 'ftb_quests_theme.txt')
+        with open(theme, encoding='utf-8') as handle:
+            found = re.search(r'^quest_spacing:\s+([0-9.]+)', handle.read(), re.M)
+        self.assertIsNotNone(found, 'the theme file has no quest_spacing')
+        self.assertAlmostEqual(float(found.group(1)), chart.QUEST_SPACING)
+
+    def test_a_world_is_where_the_picture_says_it_is(self):
+        # FTB Quests draws a picture w units wide at w * button pixels and an object x units out at
+        # x * (button + spacing) pixels (see chart.py). Both must name the same spot, or a world sits off
+        # the rings and the marker.
+        for planet in chart.load_planets():
+            picture = [(p - c) / chart.SIZE * chart.UNITS_ACROSS * chart.BUTTON_SIZE
+                       for p, c in zip(planet.pixel, chart.CENTER)]
+            placed = [u * (chart.BUTTON_SIZE + chart.SPACING_SIZE) for u in planet.units]
+            for a, b in zip(picture, placed):
+                self.assertAlmostEqual(a, b, places=6, msg=planet.id)
+
 
 class ValidatorCatchesTest(unittest.TestCase):
     """Each of these books is wrong in one way; the validator must say so."""

@@ -35,7 +35,7 @@
 		}
 		{
 			id: "38E2DDDB06CDA399"
-			x: 2.663d
+			x: 2.282d
 			y: 0.0d
 			shape: "none"
 			size: 1.7d
@@ -72,8 +72,8 @@
 		}
 		{
 			id: "4110412AC1AE6C2E"
-			x: 3.24d
-			y: 4.627d
+			x: 2.777d
+			y: 3.966d
 			shape: "none"
 			size: 1.7d
 			icon: {
@@ -127,7 +127,7 @@
 		}
 		{
 			id: "76A7C41DD05F911A"
-			x: 2.663d
+			x: 2.282d
 			y: 0.0d
 			width: 2.4d
 			height: 2.4d
@@ -136,7 +136,7 @@
 		}
 		{
 			id: "0D88C0CE1F487FB3"
-			x: 2.663d
+			x: 2.282d
 			y: 0.0d
 			width: 3.0d
 			height: 3.0d
@@ -146,8 +146,8 @@
 		}
 		{
 			id: "34751BF8414E78B3"
-			x: 3.24d
-			y: 4.627d
+			x: 2.777d
+			y: 3.966d
 			width: 2.4d
 			height: 2.4d
 			image: "ascension_compat_ftbquests:textures/quests/planets/ring.png"
@@ -155,8 +155,8 @@
 		}
 		{
 			id: "4EE1DC9C212AA6C9"
-			x: 3.24d
-			y: 4.627d
+			x: 2.777d
+			y: 3.966d
 			width: 3.0d
 			height: 3.0d
 			image: "ascension_compat_ftbquests:textures/quests/planets/halo.png"

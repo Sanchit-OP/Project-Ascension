@@ -365,3 +365,23 @@ the hot air burner is powered by redstone and the coal block is only a crafting 
 
 **The book now needs Create Simulated Thrusters** (its items are named), and the quest on helium needs `raw_helium`. See ADR-0025.
 Unseen in a client: all five pages and their icons; the plan on both pages.
+
+## 15. The worlds were drawn a sixth too far out (found 2026-10-20, fixed)
+
+Sanchit opened the Planets page on the Planet 4 branch and said it was not right: the "you are here" ring sat well short of the End's
+rumour ring, and the worlds did not agree with the distance rings (the Moon, at 4,000 blocks, outside the 5K ring; the Nether, at 18,000,
+outside the 20K ring). **The marker and the rings were right; the worlds were wrong.** The 2026-10-18 run missed it because it checked the
+marker's pixels in the picture, never where the book drew a world against them.
+
+**Cause (read from FTB Quests 2101.1.36's bytecode, `QuestPanel.alignWidgets`):** the book draws a picture `w` units wide at
+`w x button` pixels but puts an object `x` units from the origin `x x (button + spacing)` pixels away. The button is 1.5 x zoom and the
+spacing is zoom x `quest_spacing` / 4, so with our theme's `quest_spacing: 1.0` a position is **7/6 further out** than the same number
+of units of picture. The chart, its rings and the marker are pictures (placed by pixels in `chart_layout.json`); the worlds, their
+rumour rings and halos are positions, and `tools/quests/chart.py` had converted pixels to units with the picture's scale.
+
+**Fix:** `chart.to_units` now multiplies by `POSITION_SCALE` (6/7 for a spacing of 1.0), so a world's place agrees with the picture.
+The Moon's quest moves from x 2.663 to 2.282, the Nether's from (3.24, 4.627) to (2.777, 3.966). Two tests guard it: the theme's
+`quest_spacing` must equal `chart.QUEST_SPACING`, and every world's placed position must equal where the picture puts it. The marker,
+`chart_layout.json` and `ChartMath` did not change. **Seen only by arithmetic and unit tests so far**: the next look at the page, or
+`QuestScreenChecks`, should show each world just inside its distance ring and the marker ring centred on the world you stand on.
+Anything that adds a picture and an object on this page must remember there are two scales.

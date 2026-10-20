@@ -27,6 +27,18 @@ SPACE = 'ascension_worlds:space'
 
 UNIT_PX = SIZE / UNITS_ACROSS
 
+# FTB Quests sizes a picture and places an object on two different scales (QuestPanel.alignWidgets, read from the
+# jar): a picture `w` units wide is drawn `w * button` pixels wide, but an object `x` units from the origin is put
+# `x * (button + spacing)` pixels away. The button is 1.5 * zoom and the spacing is zoom * quest_spacing / 4, so with
+# the theme's `quest_spacing` of 1.0 a position lands 7/6 further out than the same number of units of picture.
+# The chart, its rings and the marker are pictures; the worlds, their rumour rings and halos are positions. Without
+# this factor every world sat a sixth too far from Earth (the Moon outside the 5K ring, the Nether outside the 20K
+# ring) and off the marker, which is drawn on the picture. A test checks this value against the theme file.
+QUEST_SPACING = 1.0       # ftb_quests_theme.txt (written by tools/generate-quest-art.py): quest_spacing
+BUTTON_SIZE = 1.5         # QuestScreen.getQuestButtonSize() / zoom
+SPACING_SIZE = QUEST_SPACING / 4.0   # QuestScreen.getQuestButtonSpacing() / zoom
+POSITION_SCALE = BUTTON_SIZE / (BUTTON_SIZE + SPACING_SIZE)
+
 # Sample points for the game's own projection to be tested against. Round numbers, every quadrant, inside
 # the range and beyond it.
 GOLDEN_POINTS = [
@@ -67,8 +79,10 @@ def project(x, z):
 
 
 def to_units(px, py):
-    """Pixels on the picture to the quest book's units, with the picture centred on (0, 0)."""
-    return ((px - CENTER[0]) / UNIT_PX, (py - CENTER[1]) / UNIT_PX)
+    """Pixels on the picture to the quest book's units *for placing an object*, with the picture centred on (0, 0).
+
+    A picture's own size stays in plain units (UNITS_ACROSS wide); only positions carry POSITION_SCALE."""
+    return ((px - CENTER[0]) / UNIT_PX * POSITION_SCALE, (py - CENTER[1]) / UNIT_PX * POSITION_SCALE)
 
 
 def load_planets():
