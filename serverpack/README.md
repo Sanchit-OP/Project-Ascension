@@ -15,8 +15,8 @@ Files not listed here are left alone — Chunky's
 jars the dev server loads, minus anything client-only, plus our 17), `config/` (this folder and `pack/config`), a `server.properties`
 with the settings below, `user_jvm_args.txt` and a `SERVER-README.md` with the steps. It carries three mods that forbid redistribution
 (Create Aeronautics, Entity Culling, Keybind Atlas), so it is for our own server only and is never published. The EULA is accepted
-on the host by whoever owns the server. **Not yet booted from the built jars on a clean server directory** (the dev server loads our code
-from source); see `plans/alpha-checklist.md` A6.
+on the host by whoever owns the server. Booted from the built jars on a clean PebbleHost directory on 2026-10-20 (`Done` in 1.7 s, quests and growth loaded, a client joined);
+see `plans/alpha-checklist.md` A6.
 
 ## The End (Planet 4)
 
