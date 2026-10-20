@@ -118,7 +118,7 @@ final class BeltRenderer {
         }
         double[] direction = {cx / distance, cy / distance, cz / distance};
         double[][] basis = SkyBodyGeometry.basis(direction);
-        float half = (float) SkyBodyGeometry.silhouetteHalfSize(bodyRadius * 0.55F, distance);
+        float half = (float) SkyBodyGeometry.silhouetteHalfSize(bodyRadius * 0.4F, distance);
         float[] rgb = SkyBodyGeometry.rgb(belt.coreColour());
         LitSphere.additiveBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);

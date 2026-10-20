@@ -7,7 +7,7 @@ Original art, from a seeded script, reproducible byte for byte:
                 side and a thread of violet glow in the cracks. The renderer turns them as they tumble.
   end_dust.png  64 x 64, the dust ring: v runs from the belt's inner edge (top) to its outer edge (bottom), in the same
                 bands the rocks keep (BeltRocks.density); u runs round and tiles. Soft, streaked, additive.
-  end_glow.png  64 x 64, a soft round glow for the core, violet-white.
+  end_glow.png  128 x 128, a soft round glow for the core, violet-white.
 
   python tools/generate-end-belt-art.py              writes the three textures
   python tools/generate-end-belt-art.py --preview    also writes design/end/belt-*.png (a mock of the renderer)
@@ -160,11 +160,12 @@ def dust():
 
 
 def glow():
-    size = 64
+    size = 128
     ys, xs = np.mgrid[0:size, 0:size]
     d = np.hypot(xs - size / 2 + 0.5, ys - size / 2 + 0.5) / (size / 2)
-    core = np.clip(1 - d, 0, 1)
-    alpha = core ** 2.2 * 0.9 + np.exp(-((d / 0.18) ** 2)) * 0.6
+    # A smooth falloff that reaches exactly zero at the edge, so the quad's border never shows.
+    fall = np.clip(1 - d, 0, 1)
+    alpha = fall ** 3.0 * 0.55 + np.exp(-((d / 0.12) ** 2)) * 0.6
     image = np.zeros((size, size, 4))
     image[..., 0] = 255
     image[..., 1] = 240
