@@ -50,7 +50,7 @@ as an operator.
 
 ## The book and the pack
 
-- [ ] The **Planets** page shows the End as a fourth world (a placeholder banded sphere), with the "you are here" marker following you.
+- [ ] The **Planets** page shows the End as a fourth world (its belt, a tilted ring of rock round a violet core, since 2026-10-21), each world just inside its distance ring, and the "you are here" ring centred on the world you stand on.
 - [ ] The new **The Belt** page (nine quests) opens; the quests tick as you do the above (landing, Dragon, gate, small gateway, End city, Wings).
 - [ ] Ships' air (Oxygen v2) is not involved: the End is breathable. Confirm no tank clock appears.
 

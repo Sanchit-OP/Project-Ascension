@@ -21,6 +21,36 @@ us standing next to them, and when it breaks we hear about it.* Two things stay 
 (Sanchit, 2026-10-06 and 2026-10-18): **two clients** and **whether a starter ship design is needed**. Planet 4 raises
 the stakes on the second, because the End is the farthest place a ship has to reach (A4, A8).
 
+## Status check, 2026-10-21 (main at `a7577ec`, Planet 4 merged)
+
+**What a machine has proved today** (on `main`; none of it has been seen by a person):
+
+| Check | Result |
+|---|---|
+| `./gradlew build` (every module's tests, balance, data, ledger and quest checks) | passes |
+| Quest generator tests and `--check` | 41 tests OK; 13 pages, 151 quests, no problems |
+| Dedicated server, `damage-checks.txt` (damage kinds, the six bosses and the Dragon's health) | 77 checks, 0 failures |
+| Dedicated server, `end-checks.txt` (the Dragon, the gate, the exit portal, travel, the fall to space) | 18 checks, 0 failures |
+| Dedicated server, `quest-checks.txt` (the real FTB Quests loads the book) | 10 checks, 0 failures; 13 chapters, 493 ids, 152 dependencies (the dev server's copy of the book was a chapter behind until synced) |
+| Dedicated server, `create-checks.txt` (Create's air gear gone) | 22 checks, 0 failures |
+
+| Item | Status | What is left |
+|---|---|---|
+| **A1** combined client run | **not done** (the Planets page was seen once on 2026-10-20: it found the spacing bug, fixed in `2746f74`) | everything on the list |
+| **A2** gate by hand, keystone, a survival ship to the Moon | **not done** | all three; the ship is the biggest unknown |
+| **A3** a combat item finished, balance in a real fight | **not done** | |
+| **A4** ship air | **not done**; `OxygenChecks` still not written | a real ship ride that holds air; a server check; a reload |
+| **A5** CurseForge pack | **not started.** Found today: CurseForge ids for the two hand-installed mods (Lootr 361276, file 8968561; Create: Simulated Thrusters 1546743, file 8220627). Still missing: `LICENSE`, a pack `options.txt` (`pack/config/defaultoptions` has only keybindings), a manifest builder, a config audit, a changelog | all of it |
+| **A6** our server | **not started** (`serverpack/` is configuration only) | start script, mod set, whitelist, backups, pre-generation plan |
+| **A7** bug reports and known issues | **not started** | |
+| **A8** Planet 4 | **built and merged** (ADR-0028; the design redo: a real belt, five ruins, eight tablets, the lore; the Planets page now draws the belt) and **headless-checked**; **never seen in a client** | the client run (`docs/technical/planet-4-client-checklist.md`), the outer islands' cost, the Elytra in a real End city, a ship with a real pilot |
+
+**Can it be released today?** A *friends-only* alpha today is possible only if two things go right in the next few hours: one
+client session (A1, A2 and A4 together, with Planet 4 at the end) finds nothing that stops a stranger, and the pack and the server
+are built in parallel (A5, A6, A7: nothing there needs the game). A *public CurseForge listing* today is unlikely: a new modpack
+project goes through CurseForge's own review, which we do not control, and publishing is Sanchit's action. The first step that
+decides everything is the ship (A2, A4): if a survival ship cannot reach space and hold air, there is no alpha to release.
+
 ## A. Blockers: do not release without these
 
 ### A1. The one combined client run (nothing below has been seen by a person)
@@ -200,9 +230,10 @@ portal, arrival and survival to design. About an ADR and lore session, a logic s
 test. It sits behind A2 and A4: nobody can reach it until a survival ship flies and holds air. **Planet 4 is the
 largest item on this list and the one most likely to move the alpha date.**
 
-**Status, 2026-10-20 (branch `planet-4-end`, not merged):** built and checked on a dedicated server: the ADR (0028), the planet entry, Sable
-physics, the arrival point, the gate (the Dragon's exit portal), the fall back to space, the Dragon's stats, the quest page, the lore outline
-and the art contract. **Left:** the art session (`design/end/design-session-prompt.md`), the lore prose (outline approved only), a client run
+**Status, 2026-10-21 (merged to `main`):** built and checked on a dedicated server: the ADR (0028), the planet entry, Sable
+physics, the arrival point, the gate (the Dragon's exit portal), the fall back to space, the Dragon's stats, the quest page "The Belt", the
+lore prose (`the-end.md`), and the design redo (a real asteroid belt from space, five ruins, three carvings, eight tablets). The Planets
+page draws the End as its belt (2026-10-21). **Left:** the End's sky and haze (still vanilla's), a client run
 (`docs/technical/planet-4-client-checklist.md`), a spark/pre-generation measurement, the Elytra in a real End city, and a ship with a real
 pilot. The growth total rose from 35 to 41 points (`growth.md` section 1).
 
@@ -253,17 +284,18 @@ pilot. The growth total rose from 35 to 41 points (`growth.md` section 1).
 7. **Tag, build the release, install it from CurseForge on a clean machine or profile** as a stranger would, on the
    real server. That last step is the one most likely to find a missing dependency or config.
 
-## Still open for Sanchit (needed before Planet 4's design starts)
+## Planet 4's four questions: answered (ADR-0028, 2026-10-20)
 
-1. **Air in the End: breathable or a vacuum?** Recommendation: breathable, as the Nether is. The dragon fight is hard
-   enough, and a tank clock ticking during it will read as unfair; the asteroid-belt feel comes from the sky and the
-   void. The alternative is a vacuum, which makes the End the first world with a pressurised arena.
-2. **Does the predator world slide to Planet 5?** The proposal in A8 item 1. Or is the End a side planet (a bonus
-   stop that is not numbered)?
-3. **After the dragon dies, where does its exit portal go?** Recommendation: back to the End's gate or arrival point,
-   no credits, and keep the credits for the real ending.
-4. **Is a lore pass first, as for the Nether?** Recommendation: yes, one short `the-end.md`, because the Endermen are
-   the Observers in our lore and the End is where players meet them in numbers.
+Breathable air in the End; the predator world slides to Planet 5; the Dragon's exit portal is the End's gate (it opens the
+destination screen, no credits); a lore pass first (`docs/lore/the-end.md`, now prose).
 
-Nothing on this list needs an ADR yet, except the licence and distribution choices and Planet 4's slot (record them as
-ADR-0028 and ADR-0029 when decided).
+## Still open for Sanchit
+
+1. **The licence**: add a `LICENSE` file (MIT is what `gradle.properties` already says) or choose another.
+2. **The pack's name, version string and CurseForge description** (suggested version: `0.1.0-alpha.1`).
+3. **Friends first, or the public listing at once?** A zip the CurseForge app can import reaches friends today; the listing waits for review.
+4. **Which of `docs/technical/planet-4-client-checklist.md` has he already seen?** (Nothing in it is ticked.)
+5. **Which dev-instance configs ship.** The instance has about fifty files in `config/` (Better Combat, Aeronautics, the thrusters, Entity
+   Culling, our own `ascension_*` files). The pack should ship the deliberate ones and none of the per-player ones; this needs a pass.
+
+Nothing on this list needs an ADR except the licence and distribution choices (ADR-0029 when decided).
