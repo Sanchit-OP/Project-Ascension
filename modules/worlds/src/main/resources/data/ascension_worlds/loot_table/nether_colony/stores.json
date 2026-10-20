@@ -2,37 +2,6 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "ascension_worlds:archive_tablet",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "ascension_worlds:archive_entry": "ascension_worlds:nether/the_colony"
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "ascension_worlds:archive_tablet",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "ascension_worlds:archive_entry": "ascension_worlds:nether/the_ward"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
       "rolls": {
         "type": "minecraft:uniform",
         "min": 3,

@@ -66,6 +66,7 @@
   "no_source_yet": {},
   "no_use_yet": {},
   "creative_only": {
+    "ascension_worlds:archive_tablet": "No loot gives one (Sanchit, 2026-10-21): tablets are read in place on their plinths. The item stays registered for a creative or command copy.",
     "ascension_atmosphere:oxygen_emitter": "Legacy (ADR-0026): air now comes from the Create Air Compressor and the Air Dispenser. Kept registered so rooms in existing worlds keep working; not in the creative tab.",
     "ascension_atmosphere:oxygen_refill_station": "Legacy (ADR-0026): the Air Compressor fills tanks now. Kept registered for existing worlds; not in the creative tab.",
     "ascension_combat:test_magic_blade": "The combat session's test item for magic damage, not a player item.",

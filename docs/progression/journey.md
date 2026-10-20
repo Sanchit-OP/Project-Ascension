@@ -65,7 +65,7 @@ source and no job is a bug (`resource-economy.md` principle 1).
 | **Gateway key (Moon / Nether)** | Ender Guardian / Netherite Monstrosity | Lights that world's gate | Nothing more | Done |
 | **Inscribed gatestone, keystone** | Crafted from Deep Dark materials | The gate's frame | Nothing more | Done |
 | **Moon stone** (anorthosite, lunar basalt and their bricks) | The Moon | Building; every frame tag accepts it (an Earth gate in Moon stone matches the Moon's ruin) | Nothing | Cosmetic. The Moon page nudges it with one quest |
-| **Archive tablets, the Forge Record** | Archive and colony chests, the Monstrosity | Read in place (the story) | Nothing | Done |
+| **Archive tablets, the Forge Record** | Read in place on their plinths; no loot gives a tablet (2026-10-21) | Read in place (the story) | Nothing | Done |
 | **Oxygen tank, helium tank, Air Compressor, Air Dispenser** | Iron, glass, Create parts; helium for the level-2 tank (Oxygen v2, ADR-0026) | A Create-powered compressor makes air, fills tanks by right-click, and fills pipes and tanks; an Air Dispenser holds a sealed room from that air. The old emitter and refill station are legacy (no recipe) | Ship cabins (5.2) | Built 2026-10-19, **not yet run in a game** |
 | **Rune chalk** | Amethyst and calcite (geodes) | Removing or replacing a rune (with 3 levels) | Nothing | Done |
 | **Tomes of Scrapping and Extraction** | A book, lapis, flint or amethyst | Wiping or moving enchantments | Nothing | Done |
