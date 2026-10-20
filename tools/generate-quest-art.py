@@ -50,6 +50,7 @@ def _load(name, filename):
 # Palettes are imported, never copied (art-guide.md).
 _runes = _load('rune_art', 'generate-rune-art.py')
 _gateway = _load('gateway_art', 'generate-gateway-art.py')
+_belt = _load('end_belt_art', 'generate-end-belt-art.py')   # the End's rocks and where they lie
 SKY = [c[:3] for c in _runes.SKY]
 BRASS = [c[:3] for c in _runes.STAR_BRASS]
 TEAL = [tuple(c) for c in _gateway.TEAL]
@@ -400,11 +401,118 @@ def planet_sprite(style, colour, seed, out=256):
     return downsample(Image.fromarray(rgba, 'RGBA'), out)
 
 
+def belt_sprite(out=256):
+    """The End on the Planets page: its belt seen obliquely, as it is from space (end-art-format.md, section 4).
+
+    The same eight rocks (`_belt.atlas`), the same bands and gap (`_belt.density`) and the same violet core as the
+    space view, so the page and the sky agree. A tilted ring of pale rock round a glowing core, rolled a little so it
+    does not read as a line, on a clear background like the other worlds' spheres."""
+    n = out * 4
+    rng = np.random.default_rng(20261023)
+    c = n / 2.0
+    radius = 0.47 * n            # the ring's reach along its long axis
+    ratio = 0.46                 # the tilt: how much of the ring's depth shows
+    roll = math.radians(-16.0)
+    cos_r, sin_r = math.cos(roll), math.sin(roll)
+    inner = 0.2
+
+    def to_screen(px, py):
+        """A point in the ring's plane (units of `radius`) to canvas pixels."""
+        x, y = px * radius, py * radius * ratio
+        return c + x * cos_r - y * sin_r, c + x * sin_r + y * cos_r
+
+    fs = np.linspace(0.0, 1.0, 512)
+    table = np.array([_belt.density(f) for f in fs])
+
+    # The dust: the bands and the gap of the real belt, streaked.
+    ys, xs = np.mgrid[0:n, 0:n]
+    dx, dy = xs + 0.5 - c, ys + 0.5 - c
+    plane_x = (dx * cos_r + dy * sin_r) / radius
+    plane_y = (-dx * sin_r + dy * cos_r) / (radius * ratio)
+    f = np.hypot(plane_x, plane_y)
+    band = np.interp(f, fs, table) * (f > inner) * (f < 1.0)
+    streak = fbm(plane_x * 1.5 + 4.0, plane_y * 1.5 + 4.0, np.full_like(plane_x, 0.5), 51, 4, 3.0)
+    edge = np.clip(np.minimum(f - inner, 1.0 - f) / 0.06, 0.0, 1.0)
+    dust_a = np.clip(band * (0.18 + 0.75 * streak) * edge, 0.0, 1.0) * 0.34
+    dust = np.zeros((n, n, 4))
+    dust[..., 0], dust[..., 1], dust[..., 2], dust[..., 3] = 205, 184, 240, dust_a * 255
+
+    # The core: a violet-white glow.
+    d = np.hypot(dx, dy) / n
+    glow_a = np.clip(1.0 - d / 0.22, 0.0, 1.0) ** 3 * 0.55 + np.exp(-(d / 0.035) ** 2) * 0.5
+    glow = np.zeros((n, n, 4))
+    glow[..., 0], glow[..., 1], glow[..., 2], glow[..., 3] = 244, 232, 255, np.clip(glow_a, 0, 1) * 255
+
+    atlas = _belt.atlas()
+    cell = _belt.CELL
+
+    def over(base, layer, x0, y0):
+        """Source-over `layer` onto `base` (both float RGBA 0..255) at (x0, y0), clipped to the canvas."""
+        h, w = layer.shape[:2]
+        ax0, ay0 = max(0, x0), max(0, y0)
+        ax1, ay1 = min(base.shape[1], x0 + w), min(base.shape[0], y0 + h)
+        if ax0 >= ax1 or ay0 >= ay1:
+            return
+        top = layer[ay0 - y0:ay1 - y0, ax0 - x0:ax1 - x0]
+        under = base[ay0:ay1, ax0:ax1]
+        ta, ua = top[..., 3:4] / 255.0, under[..., 3:4] / 255.0
+        oa = ta + ua * (1 - ta)
+        rgb = (top[..., :3] * ta + under[..., :3] * ua * (1 - ta)) / np.maximum(oa, 1e-6)
+        under[..., :3], under[..., 3:4] = rgb, oa * 255.0
+
+    canvas = np.zeros((n, n, 4))
+    over(canvas, dust, 0, 0)
+
+    # The rocks: placed where the belt is dense, many tiny and a few great, one great rock at the middle.
+    rocks = []
+    while len(rocks) < 340:
+        g = inner + (1 - inner) * rng.random()
+        if rng.random() > _belt.density(g):
+            continue
+        a = rng.random() * math.tau
+        px, py = g * math.cos(a), g * math.sin(a)
+        big = len(rocks) >= 328
+        size = 44 + 18 * rng.random() if big else 6 + 34 * rng.random() ** 3
+        rocks.append((px, py, size, int(rng.integers(0, _belt.SPRITES)), int(rng.integers(0, 4)),
+                      0.75 + 0.35 * rng.random()))
+    rocks.append((0.0, 0.0, 52.0, 3, 1, 1.0))
+
+    def place(rock):
+        px, py, size, sprite, turn, shade = rock
+        sx, sy = to_screen(px, py)
+        side = max(3, int(size))
+        row, col = divmod(sprite, _belt.COLUMNS)
+        tile = np.rot90(atlas[row * cell:(row + 1) * cell, col * cell:(col + 1) * cell], turn)
+        img = np.asarray(Image.fromarray(np.ascontiguousarray(tile), 'RGBA').resize((side, side), Image.BILINEAR),
+                         dtype=np.float64).copy()
+        # Lit from the top left: the day side is the left and top of the ring.
+        day = float(np.clip(0.5 - 0.5 * ((sx - c) + (sy - c)) / (radius * 1.3), 0.0, 1.0))
+        img[..., 0] *= shade * (0.55 + 0.45 * day)
+        img[..., 1] *= shade * (0.42 + 0.58 * day)
+        img[..., 2] *= shade * (0.75 + 0.25 * day)
+        over(canvas, np.clip(img, 0, 255), int(sx - side / 2), int(sy - side / 2))
+
+    behind = sorted((r for r in rocks if r[1] < 0), key=lambda r: r[1])
+    in_front = sorted((r for r in rocks if r[1] >= 0), key=lambda r: r[1])
+    for rock in behind:
+        place(rock)
+    over(canvas, glow, 0, 0)
+    for rock in in_front:
+        place(rock)
+
+    image = Image.fromarray(np.clip(canvas, 0, 255).astype(np.uint8), 'RGBA')
+    return downsample(image, out)
+
+
 def write_planets():
     styles = {'earth': ('earth', 1), 'moon': ('moon', 2), 'nether': ('nether', 3)}
     for planet in chart.load_planets():
-        style, seed = styles.get(planet.id, ('generic', 4))
-        save(planet_sprite(style, planet.color, seed), os.path.join(NS, 'planets', f'{planet.id}.png'))
+        if planet.id == 'end':
+            sprite = belt_sprite()
+        else:
+            style, seed = styles.get(planet.id, ('generic', 4))
+            sprite = planet_sprite(style, planet.color, seed)
+        save(sprite, os.path.join(NS, 'planets', f'{planet.id}.png'))
 
 
 def write_ring(size=192):

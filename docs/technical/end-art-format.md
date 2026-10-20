@@ -69,8 +69,11 @@ first kill; say in the handover if wanted. Not asked for in this round. The fall
 ## 4. The quest-book planet art
 
 `tools/generate-quest-art.py` makes `textures/quests/planets/<planet>.png` for every planet from the planet files' colours
-(`planet_sprite`); the End uses its `generic` style (banded sphere). Design adds an `end` style: a pale, floating-stone look
-matching section 1, 256 x 256 RGBA, same `.mcmeta`. Check `chart.png` still reads with the planet at `[-10945, 30070]`.
+(`planet_sprite`); the End used its `generic` style (banded sphere). **Done 2026-10-21 (`belt_sprite`):** the End's picture on
+the page is its belt seen obliquely, as from space: the same eight rocks and the same bands and gap as the space view (imported
+from `tools/generate-end-belt-art.py`, never copied), a violet core, rolled 16 degrees so it does not read as a line, 256 x 256
+RGBA on a clear background, same `.mcmeta`. Only `end.png` changed (every other sprite regenerates byte for byte), and `chart.png`
+did not change. Not yet seen in the book at its real size (about 60 to 90 px across); a 90 px preview read as a ringed belt.
 
 ## 5. The ruins, the carvings and the tablets (design round 2, 2026-10-21)
 
@@ -101,6 +104,6 @@ three), `design/end/belt-*.png`.
 - [ ] `ascension_space/end.json` and `textures/environment/end.png` (and `end_glow.png` if used); previews of the sphere lit
       and from the approach shell.
 - [ ] `ascension_sky/the_end.json` (haze and any bodies); previews from y 216 looking down and from the arena looking out.
-- [ ] The `end` style in `tools/generate-quest-art.py`; the regenerated `end.png` and `chart.png`.
+- [x] The `end` style in `tools/generate-quest-art.py` (`belt_sprite`); the regenerated `end.png` (`chart.png` unchanged). Look at it in the book.
 - [ ] Every generator reproduces the committed files byte for byte; `./gradlew build` passes.
 - [ ] A design note `docs/technical/end-art-design.md` ending in a live checklist.
