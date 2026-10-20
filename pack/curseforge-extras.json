@@ -62,16 +62,6 @@
       "why": "one terminal for every chest; it has its own Sophisticated Storage support"
     },
     {
-      "name": "Refined Storage",
-      "slug": "refined-storage",
-      "projectID": 243076,
-      "fileID": 8211701,
-      "file": "refinedstorage-neoforge-2.0.9.jar",
-      "side": "both",
-      "added": "2026-10-21",
-      "why": "storage on disks, very few blocks: the answer to a group with too many chests. First to cut if the alpha shows trouble"
-    },
-    {
       "name": "Waystones",
       "slug": "waystones",
       "projectID": 245755,

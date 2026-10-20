@@ -218,7 +218,7 @@ seen** in a client; no thruster has been fuelled yet.
 ## Storage, backpacks and waystones (installed 2026-10-21)
 
 Sanchit, for the alpha: group play needs storage (Tom's Simple Storage lags with many chests), a backpack, and fast travel inside a
-world but never between worlds. All seven jars were downloaded from CurseForge's own file host on 2026-10-21, checked as intact
+world but never between worlds. All six jars were downloaded from CurseForge's own file host on 2026-10-21, checked as intact
 zips, and placed in the Ascension Dev instance (67 to 74 jars). Their CurseForge ids are in `pack/curseforge-extras.json`
 (the launcher does not track a jar placed by hand). A dedicated server booted with all of them, loaded every one, and the
 damage checks still passed (77 of 77). **Not seen in a client.**
@@ -229,15 +229,14 @@ damage checks still passed (77 of 77). **Not seen in a client.**
 | Sophisticated Storage | 1.6.7.2193 | 1.8 MB | Core 1.5.12 or later | chests and barrels with upgrades, a controller |
 | Sophisticated Backpacks | 3.26.13.2214 | 1.2 MB | Core 1.5.15 or later | a backpack; Curios' `back` slot when Curios is present |
 | Tom's Simple Storage Mod | 2.4.2 | 0.8 MB | NeoForge | one terminal for every chest |
-| Refined Storage | 2.0.9 | 4.2 MB | NeoForge 21.1.181 or later | storage on disks, very few blocks |
 | Waystones | 21.1.46 | 1.2 MB | Balm 21.0.39 or later (the pack has 21.0.66) | fast travel inside a world |
 | Mouse Tweaks | 2.26.1 | 0.07 MB | nothing | client only |
 
 - **Tom's works with Sophisticated Storage on purpose, not by luck.** Tom's 2.4.2 declares Sophisticated Storage as an optional
   dependency (1.5.36 or later) and has its own class for Sophisticated's double chests (`SophisticatedDoubleBlocks`), so the
-  two are meant to be used together. Sanchit's question was whether Tom's alone would then be enough; he chose to have Refined
-  Storage as well. **Refined Storage is the first thing to cut** if the alpha shows trouble (three storage systems is a lot to
-  test); remove its jar and its entry in `pack/curseforge-extras.json`.
+  two are meant to be used together. Sanchit's question was whether Tom's alone would then be enough. **It is: Refined Storage 2
+  was installed for a few minutes on 2026-10-21 and taken out again at his word** ("we have Tom now"), and is not in the pack.
+  If a very large group ever needs storage on disks, it is the one to add (2.0.9, CurseForge 243076, file 8211701).
 - **AppleSkin was left out.** It draws on vanilla's food bar, and our HUD hides vanilla's hearts, armour, food and experience
   (`HudClient`, `docs/technical/hud.md`), so it would have nothing to draw on. A held-food preview is on the HUD's own list.
 - **Waystones: inside a world, never between worlds.** Waystones decides a warp with an ordered list of requirements
