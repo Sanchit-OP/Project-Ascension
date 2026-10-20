@@ -51,6 +51,52 @@ are built in parallel (A5, A6, A7: nothing there needs the game). A *public Curs
 project goes through CurseForge's own review, which we do not control, and publishing is Sanchit's action. The first step that
 decides everything is the ship (A2, A4): if a survival ship cannot reach space and hold air, there is no alpha to release.
 
+## The rule for this alpha: no dead ends (Sanchit, 2026-10-21)
+
+The alpha is itself the test of many things, so **an intended mechanism may fail; a player must still have a way through.** If a
+player cannot give air to another, they carry their own tanks. This table is that rule applied to every step that could stop a
+stranger. "Verified" means checked by a machine; none of it has been tried by a stranger.
+
+| If this fails | The way through | State |
+|---|---|---|
+| **A survival-built ship cannot reach space** (the one real dead end: the road up is closed on foot while a ship mod is installed) | The server setting `ascent.vehicleOnly = false` (`ascension_worlds-server.toml`; in a single-player world, its `serverconfig` copy) lets a player rise past the build height on foot (a tower, fireworks) and be carried to space. On our server we flip it for everyone. For downloaders it is one line in the known-issues page | The setting is read in code (`AscentCarriers.onFootAllowed`, whose closed cases are unit-tested). Not tried in a client |
+| **A ship does not hold air** | **Tanks.** Lungs 20 s plus two tanks of 300 s is 620 s (a helium tank holds twice: 1,220 s with two). At 4,000 blocks the Moon needs 7 blocks a second; the Nether (18,000) 29, or 15 on helium; the End (32,000) 52, or 26 on helium. Or hop by planet and refill at each landing with an Air Compressor, which cuts every leg | Numbers from `AtmosphereTuning` and `worlds-api.md`; no ship has been timed |
+| **Players cannot give each other air** | Each carries their own tanks | Share-air is built, never seen with two players |
+| **The gate cannot be built or the key does not drop** | Gates are shortcuts, not requirements (ADR-0018): a ship goes to any world, and one can also fly home. On our server an operator can light one: `/ascension worlds gateway light <planet>` | Gates seen working 2026-10-06; the Dragon's gate checked by `end-checks` |
+| **Quests are wrong or one cannot be finished** | The book never gates a path | `progression_mode: "flexible"` is tested on every build |
+| **A combat item cannot be made** | Items reward, they do not unlock (ADR-0018): vanilla and netherite gear, growth points and runes still carry a player | Recipes checked by machine, never crafted by hand |
+| **The titanium bearing is not craftable in survival** (brass needs a Nether blaze, and the Nether needs a ship: a circle) | `ascent.vehicleOnly = false`, as in the first row | The recipe is proven loaded and its tags resolve; not crafted by hand |
+| **Falling out of the End** | Slow Falling, then the game carries you into space beside the planet | `end-checks`, 18 of 18 |
+| **Shaders break the sky or planets** | Shaders are optional and ship **off**; take the pack out | See "Seen in Sanchit's test" |
+| **Chunk generation lags the server** | Slower, not stuck; pre-generate a planet by hand if it hurts | Chunky's background pre-generation is off (crash unexplained) |
+| **Air Compressor or Create power is broken** | The old refill station has no recipe, so this is a real dependency: lungs only on Earth, tanks as they are | The compressor was seen working in Sanchit's client |
+
+Our own server has a safety net the public does not: an operator can fix any single stuck player with a command, so the
+real test of the rule is a **single-player download**, where only the rows above help.
+
+## Seen in Sanchit's test, 2026-10-21
+
+He has played Planet 4 and saw two faults, both with a shader pack on:
+
+1. **Clouds in space.** `SpaceSpecialEffects` removes vanilla's clouds and `ascension-compat-distanthorizons` removes Distant
+   Horizons', but a shader pack draws its **own** clouds in any dimension it does not know. We cannot reach those from here.
+2. **The planets' edges look like a chainsaw blade.** Our lit planets are custom sky meshes (`LitSphere`: a 48-segment ring
+   mesh textured with a circle, plus an additive halo); a shader pack redraws sky geometry through its own program, and the
+   halo's soft edge or the blend is the likely cause. Needs a screenshot with shaders on and the same view with them off.
+
+**For the alpha:** ship no shader pack selected, say shaders are **not supported in space** in the known-issues page (Create
+Aeronautics' own page already warns of Iris problems), and look at the planets' edges with shaders on after the alpha starts. Both are
+cosmetic; neither blocks a player. **To confirm:** do the planets look right with shaders off?
+
+## Added to the alpha, 2026-10-21 (Sanchit)
+
+| Want | Plan | State |
+|---|---|---|
+| **A storage mod that does not lag in a group** (Tom's Simple Storage lags with many chests) | **Sophisticated Storage** (with Sophisticated Core): chests and barrels with upgrades, so a base needs fewer, bigger blocks; it also has a controller that links them. Alternative, after the alpha: **Refined Storage 2** (storage on disks, very few blocks, a small tech tree of its own). Sophisticated chests can themselves lag when very many sit in one spot; the fix is fewer, bigger ones, and a separate optimisation mod exists (its own benchmark claim, not verified here) | Both have current 1.21.1 NeoForge builds on CurseForge (Sophisticated Storage 1.6.7.2193, updated yesterday). **Not installed.** Needs Sanchit's yes |
+| **A backpack mod** | **Sophisticated Backpacks** (needs Sophisticated Core). It is worn in Curios' `back` slot when Curios is present. ADR-0009 already accepts backpacks: tanks may be carried in one, and the valve's pressurise delay is what keeps that fair | Build 3.26.13.2214 (updated yesterday). **Not installed** |
+| **Curios slots**: one for the tank, one for Zonia's Hourglass and Sterak's Harness instead of the left hand, and `back` for the backpack | `ascension-compat-curios`, three slots. Prompt: [`plans/session-prompts/11-curios-slots.md`](session-prompts/11-curios-slots.md). **Not a blocker**: the tank works in the inventory and the two relics in the off hand today, so a way exists | **Not built.** About one session, plus one client run |
+| **More quality of life** | Small and safe only, because every mod added is more to test: **AppleSkin** (food and saturation on the bar) and **Mouse Tweaks** (drag and spread items in any inventory). Not now: Waystones (a second fast travel, against the gates), Applied Energistics 2 or Refined Storage (a tech tree each), dynamic lights, a minimap (FTB Chunks has a map), Inventory Profiles Next (the Sophisticated mods sort already) | Both have 1.21.1 NeoForge builds. **Not installed** |
+
 ## A. Blockers: do not release without these
 
 ### A1. The one combined client run (nothing below has been seen by a person)
