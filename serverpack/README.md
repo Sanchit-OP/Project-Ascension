@@ -9,6 +9,15 @@ runs the same configuration we ship. **Settings that a single-player world needs
 Files not listed here are left alone — Chunky's
 `config/chunky/tasks/` in particular holds live task state and must never be clobbered.
 
+## Putting it on a host
+
+`python tools/build-server-pack.py` writes `build/server/ProjectAscension-server-<version>.zip` (about 195 MB): `mods/` (the same 50 third-party
+jars the dev server loads, minus anything client-only, plus our 17), `config/` (this folder and `pack/config`), a `server.properties`
+with the settings below, `user_jvm_args.txt` and a `SERVER-README.md` with the steps. It carries three mods that forbid redistribution
+(Create Aeronautics, Entity Culling, Keybind Atlas), so it is for our own server only and is never published. The EULA is accepted
+on the host by whoever owns the server. **Not yet booted from the built jars on a clean server directory** (the dev server loads our code
+from source); see `plans/alpha-checklist.md` A6.
+
 ## The End (Planet 4)
 
 The End is `minecraft:the_end` itself (ADR-0028). The central island and the Dragon's arena load with the first player.
