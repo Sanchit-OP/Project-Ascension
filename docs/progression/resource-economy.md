@@ -19,7 +19,7 @@
 | Warden tendril | The Warden (`add_table` modifier) | The gateway keystone (Earth's gate) |
 | Gateway key, Moon | The Ender Guardian in the Moon's citadel (compat-cataclysm) | Attunes the Moon's gate |
 | Gateway key, Nether | The Netherite Monstrosity (compat-cataclysm) | Attunes the Nether's gate |
-| Forge Record | Read in place (no longer dropped, 2026-10-21) | Lore |
+| Forge Record | Read in place, on a plinth in the colony's forge hall (no longer dropped, 2026-10-21) | Lore |
 | Inscribed gatestone | Crafted (polished deepslate or Moon basalt, with sculk or an echo shard); Archive stores | Gate frames |
 | Archive tablets | Archive and colony stores, plinths | Lore |
 | Moon stone (anorthosite and basalt families) | The Moon's terrain | Building |

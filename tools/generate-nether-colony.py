@@ -514,7 +514,8 @@ CORE, WALL, OPEN, DETAIL = lunar.CORE, lunar.WALL, lunar.OPEN, lunar.DETAIL
 
 COLONY_OUT = os.path.join(DATA, 'structure/nether_colony')
 CARVING_OUT = os.path.join(DATA, 'structure/sealer_carving')
-ENTRIES = ['the_colony', 'the_ward', 'the_thieves', 'the_strongholds', 'the_gift', 'the_weapon', 'the_keeper']
+ENTRIES = ['the_colony', 'the_ward', 'the_thieves', 'the_strongholds', 'the_gift', 'the_weapon', 'the_keeper',
+           'the_forge_record']
 LOOT = f'{NS}:nether_colony/stores'
 MAX_PIECE = 48
 # The floor row, surface_y. One row of rubble under it and no deeper footing, on purpose: placed with
@@ -991,6 +992,9 @@ def hall_c():
         p.put(x, F + 2, zb + 1, POL)
         p.put(x, F + 3, zb + 1, GOLD_B if x % 2 == 0 else POL)
     p.plinth(11, F + 1, 6, 'south', 'the_keeper')
+    # the Forge Record, the Sealers' plates (not the voice), beside the forge: it used to drop from the Monstrosity, and
+    # tablets are no longer loot (2026-10-21), so it is read here, where the metal was worked
+    p.plinth(16, F + 1, 8, 'west', 'the_forge_record')
     # the weapon: a dais in the west, and on it the shape the voice taught, in soul sand
     for x in range(3, 7):
         for z in range(14, 19):
@@ -1007,6 +1011,7 @@ def hall_c():
     p.roof(15, 15, xe - 1, zf - 1, F + 10, keep=0.55)
     for cx, cz, n in ((5, 10, 8), (17, 18, 9), (14, 7, 6)):
         p.rubble(cx, cz, n)
+    p.put(15, F + 1, 8, AIR, DETAIL)                                           # the Forge Record's reader stands here
     # chains from the beams, some with lamps; one hanging over the hearth
     for (x, z, drop, lit) in ((5, 6, 3, True), (17, 6, 2, True), (8, 18, 4, False), (14, 18, 2, True), (3, 18, 1, True)):
         if lit:
@@ -1030,8 +1035,8 @@ def check_ruins(pieces):
     for p in pieces:
         if any(n > MAX_PIECE for n in p.size):
             problems.append(f'{p.name}: size {p.size} exceeds {MAX_PIECE}')
-        if not 2 <= len(p.plinths) <= 3:
-            problems.append(f'{p.name}: {len(p.plinths)} plinths (two or three)')
+        if not 2 <= len(p.plinths) <= 4:
+            problems.append(f'{p.name}: {len(p.plinths)} plinths (two to four)')
         if p.plinths and max(p.plinths, key=lambda q: q[1][2])[0] != 'the_colony':
             problems.append(f'{p.name}: the plinth nearest its front is not the_colony')
         for entry, (x, y, z), facing in p.plinths:
@@ -1053,7 +1058,7 @@ def check_ruins(pieces):
                     nb = p.get(x + d[0], y + d[1], z + d[2])
                     if nb is None or not lunar.is_solid(nb) and parse_state(nb)[0] != 'minecraft:lava':
                         problems.append(f'{p.name}: lava at {pos} can flow out toward {d}')
-    # finding all three ruins finds all seven
+    # finding all three ruins finds all eight
     for e in ENTRIES:
         if e not in seen:
             problems.append(f'entry {e} is in no ruin')
