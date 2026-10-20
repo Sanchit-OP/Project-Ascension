@@ -172,6 +172,13 @@ pressurises the room instead of the station; (5) the same working aboard a ship.
 - **Flat versus percent weapons on late bosses** (`balance.md` section 3): the Wither takes flat weapons 3 to 4 times longer. Options A and B are worked out in the session; revisit after a client test.
 - **Cataclysm weapons** keep what the mod gave them; their real speeds are known (read from the jar).
 
+## Planet 4 design and lore (2026-10-21, branch `end-design`)
+
+- Sanchit to read `docs/lore/the-end.md` (prose, with what changed from the outline at its end) and the eight tablets in `tools/archive-lore.py`; edit there.
+- One batched client run: the belt from space at three distances beside the Moon and the Nether, each ruin, every tablet, the three carvings, the glyph wall in the Quiet Cell, the outer-island ruins, a reload (`docs/technical/end-art-format.md`, section 5).
+- The End's sky and haze (`ascension_sky/the_end.json`) and the quest-book `end` sprite are still the placeholder (`end-art-format.md` sections 2 and 4).
+- Ideas not built: a plinth at each pillar's foot (needs a structure placed relative to a vanilla feature); a beam of light from the belt's core; the glyph wall lighting as gates light (the Cell's `mark_glyph` blocks are unlit).
+
 ## Planet 4 follow-ups (2026-10-20)
 
 - The art session for the End (`design/end/design-session-prompt.md`): face from space, sky, haze, quest sprite.

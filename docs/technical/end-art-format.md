@@ -28,26 +28,25 @@ Dragon dies and the exit portal wakes and offers the gates. Out in the belt, the
 the Elytra in a ship's item frame. Step off an island and you drift down slowly; under the belt's floor you are handed back
 to the dark beside the planet.
 
-## 1. The End from space (a belt, built by logic 2026-10-20)
+## 1. The End from space: a belt (redone 2026-10-21)
 
-Sanchit: the End is not a planet-shaped planet; it should look like an asteroid belt in space. Logic built it: `ascension_space/end.json` has a
-`belt` (`worlds-api.md`, "The End is a belt, not a sphere"), 160 rocks wearing `end_rock.png`. **Design now owns the look of it**: restyle
-`end_rock.png` (and `tools/generate-end-belt-art.py`), tune `end.json`'s numbers (count, sizes, thickness), and propose extras the format
-cannot do yet (a faint dust band, rocks that glow violet on the night side, a bright central island rock). The older text below says a
-sphere is the only option; ignore that.
+Sanchit, 2026-10-20, of the first belt (about 160 identical lit spheres in a blob): *"it is not an asteroid belt at all."* Redone.
+`ascension_space/end.json` has a `belt` (format: `worlds-api.md`, "The End is a belt, not a sphere"). What reads as a belt:
 
-### (older) The End from space
+- **Wide, thin and flat:** 1,400 rocks in a layer 7% of the body's radius thick, thinnest where densest (`BeltRocks`).
+- **A ring with structure:** an empty middle (`inner` 0.2), a broad inner band, a narrow bright outer band, a **gap** between them
+  (`BeltRocks.density`, the one function the rocks and the dust texture share).
+- **Many tiny rocks, a few big:** sizes from 1.5 blocks (fourth-power spread) with a handful of great rocks near 30, and **one
+  great rock at the middle** (`central`) for the Dragon's island.
+- **Irregular, tumbling:** each rock is a camera-facing sprite cut from an atlas of eight lumpy shapes
+  (`end_rock.png`, 128 x 64, four to a row), turned slowly by its own spin; no rock is a sphere. Lit by the sun into a phase,
+  violet on the night side.
+- **Dust and a core:** a faint additive ring (`end_dust.png`) in three thin sheets at the plane, and a soft glow at the middle
+  (`end_glow.png`).
 
-`assets/ascension_worlds/ascension_space/end.json` and `textures/environment/end.png` (64 x 64, the inscribed circle is the
-disc), exactly the Nether's format (`worlds-api.md`, "Space bodies"). **What the format cannot do:** a space body is one lit
-sphere sized by the planet's `body_radius` (320). It cannot draw a belt, a ring or a scatter of separate rocks. Choices, in
-order of cheapness:
-
-1. A lit sphere whose face reads as a cluster of islands (pale stone with dark gaps, an `emissive` layer for a violet glow in
-   the gaps). Works today.
-2. Propose a new space-body field (for example `ring`: a flat annulus texture around the sphere) here first; logic builds it.
-
-`glow` may be a faint violet. Until the file exists it is a flat disc in the planet's `color` (9075637, a dusty violet).
+Cost: three draw calls however many rocks, no allocation per frame (`BeltRenderer`), nothing static holding a level.
+`tools/generate-end-belt-art.py` makes all three textures (seeded, byte for byte; `--preview` writes `design/end/belt-*.png`, a
+mock of the renderer, not the game). **Not yet seen in a client**: the checklist below says what to look at.
 
 ## 2. The End's sky and haze
 
@@ -73,11 +72,29 @@ first kill; say in the handover if wanted. Not asked for in this round. The fall
 (`planet_sprite`); the End uses its `generic` style (banded sphere). Design adds an `end` style: a pale, floating-stone look
 matching section 1, 256 x 256 RGBA, same `.mcmeta`. Check `chart.png` still reads with the planet at `[-10945, 30070]`.
 
-## Not in this round
+## 5. The ruins, the carvings and the tablets (design round 2, 2026-10-21)
 
-- Archive tablets for the End and a plinth (the Nether has seven). The lore outline names the beats; text comes after the
-  outline is approved.
-- End city or ship structures (vanilla's; loot is vanilla's). Any new block.
+The lore is [`the-end.md`](../lore/the-end.md) (prose now, awaiting Sanchit's nod). `tools/generate-end-ruin.py` writes five
+templates under `structure/end_ruin/`, `tools/generate-end-carvings.py` draws three new Sealer carvings (appended to the
+`sealer_carving` block, 55 tiles now; `tools/generate-nether-art.py` cuts them), and `tools/archive-lore.py` has eight tablets.
+A structure is placed with a random rotation, so every ruin is laid out to read from any side.
+
+| Structure | Where | Holds | Says without words |
+|---|---|---|---|
+| `end_ruin`, the Ring of Ten | fixed, block (48, -32), outside the pillars | The Belt, The Last Keeper; carvings *the cutting*, *the keeper made* | ten lit stumps (the ten crystals) round a dais; the Sealers cut the world and the keeper |
+| `end_cell`, the Quiet Cell | fixed, block (-40, 40) | The Cut Record (not the voice) | seven glyphs in its walls in Tacita's true order, 4 1 6 3 0 5 2 |
+| `end_mooring`, the Mooring | random, highlands and midlands, spacing 20 | The Wings, The Towers; carving *the ships* | three empty ship cradles, gantries, seven open cages |
+| `end_cloister`, the Cloister | random, midlands and highlands, spacing 24 | The Fruit, The Tall Ones | chorus planted in rows: it was not wild |
+| `end_lamp`, the Last Lamp | random, highlands, midlands, barrens, spacing 14 | The Edge | a tower with a light on it, visible from the next island |
+
+Previews: `design/end/ruin-<name>-plan.png` (floor plans, plinths numbered), `design/nether/murals.png` (all carvings, the End's last
+three), `design/end/belt-*.png`.
+
+## Handover checklist (round 2)
+
+- [ ] Headless: `structure_starts.py` finds the Ring and the Cell; `find_blocks.py` finds the plinths, carvings and glyphs; `end-checks.txt` still passes.
+- [ ] Client, from space: the belt at three distances, beside the Moon and the Nether; flat, ring-like, tumbling, dust, bright core.
+- [ ] Client: each ruin, every tablet read, the three carvings, the glyph wall in the Cell, the Mooring and the Lamp on an outer island, a reload.
 
 ## Handover checklist for design
 

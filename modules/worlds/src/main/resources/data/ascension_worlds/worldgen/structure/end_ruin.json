@@ -4,14 +4,14 @@
   "step": "surface_structures",
   "terrain_adaptation": "beard_thin",
   "spawn_overrides": {},
-  "check_radius": 6,
+  "check_radius": 13,
   "min_ground": 20,
   "structure": {
     "type": "minecraft:jigsaw",
     "biomes": "#ascension_worlds:end_ruin_biomes",
     "step": "surface_structures",
     "spawn_overrides": {},
-    "start_pool": "ascension_worlds:end_ruin/ruins",
+    "start_pool": "ascension_worlds:end_ruin/ring",
     "size": 1,
     "start_height": {
       "absolute": -1

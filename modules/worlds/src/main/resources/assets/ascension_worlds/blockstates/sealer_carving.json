@@ -44,6 +44,126 @@
     },
     "tile=14": {
       "model": "ascension_worlds:block/sealer_carving/tile_14"
+    },
+    "tile=15": {
+      "model": "ascension_worlds:block/sealer_carving/tile_15"
+    },
+    "tile=16": {
+      "model": "ascension_worlds:block/sealer_carving/tile_16"
+    },
+    "tile=17": {
+      "model": "ascension_worlds:block/sealer_carving/tile_17"
+    },
+    "tile=18": {
+      "model": "ascension_worlds:block/sealer_carving/tile_18"
+    },
+    "tile=19": {
+      "model": "ascension_worlds:block/sealer_carving/tile_19"
+    },
+    "tile=20": {
+      "model": "ascension_worlds:block/sealer_carving/tile_20"
+    },
+    "tile=21": {
+      "model": "ascension_worlds:block/sealer_carving/tile_21"
+    },
+    "tile=22": {
+      "model": "ascension_worlds:block/sealer_carving/tile_22"
+    },
+    "tile=23": {
+      "model": "ascension_worlds:block/sealer_carving/tile_23"
+    },
+    "tile=24": {
+      "model": "ascension_worlds:block/sealer_carving/tile_24"
+    },
+    "tile=25": {
+      "model": "ascension_worlds:block/sealer_carving/tile_25"
+    },
+    "tile=26": {
+      "model": "ascension_worlds:block/sealer_carving/tile_26"
+    },
+    "tile=27": {
+      "model": "ascension_worlds:block/sealer_carving/tile_27"
+    },
+    "tile=28": {
+      "model": "ascension_worlds:block/sealer_carving/tile_28"
+    },
+    "tile=29": {
+      "model": "ascension_worlds:block/sealer_carving/tile_29"
+    },
+    "tile=30": {
+      "model": "ascension_worlds:block/sealer_carving/tile_30"
+    },
+    "tile=31": {
+      "model": "ascension_worlds:block/sealer_carving/tile_31"
+    },
+    "tile=32": {
+      "model": "ascension_worlds:block/sealer_carving/tile_32"
+    },
+    "tile=33": {
+      "model": "ascension_worlds:block/sealer_carving/tile_33"
+    },
+    "tile=34": {
+      "model": "ascension_worlds:block/sealer_carving/tile_34"
+    },
+    "tile=35": {
+      "model": "ascension_worlds:block/sealer_carving/tile_35"
+    },
+    "tile=36": {
+      "model": "ascension_worlds:block/sealer_carving/tile_36"
+    },
+    "tile=37": {
+      "model": "ascension_worlds:block/sealer_carving/tile_37"
+    },
+    "tile=38": {
+      "model": "ascension_worlds:block/sealer_carving/tile_38"
+    },
+    "tile=39": {
+      "model": "ascension_worlds:block/sealer_carving/tile_39"
+    },
+    "tile=40": {
+      "model": "ascension_worlds:block/sealer_carving/tile_40"
+    },
+    "tile=41": {
+      "model": "ascension_worlds:block/sealer_carving/tile_41"
+    },
+    "tile=42": {
+      "model": "ascension_worlds:block/sealer_carving/tile_42"
+    },
+    "tile=43": {
+      "model": "ascension_worlds:block/sealer_carving/tile_43"
+    },
+    "tile=44": {
+      "model": "ascension_worlds:block/sealer_carving/tile_44"
+    },
+    "tile=45": {
+      "model": "ascension_worlds:block/sealer_carving/tile_45"
+    },
+    "tile=46": {
+      "model": "ascension_worlds:block/sealer_carving/tile_46"
+    },
+    "tile=47": {
+      "model": "ascension_worlds:block/sealer_carving/tile_47"
+    },
+    "tile=48": {
+      "model": "ascension_worlds:block/sealer_carving/tile_48"
+    },
+    "tile=49": {
+      "model": "ascension_worlds:block/sealer_carving/tile_49"
+    },
+    "tile=50": {
+      "model": "ascension_worlds:block/sealer_carving/tile_50"
+    },
+    "tile=51": {
+      "model": "ascension_worlds:block/sealer_carving/tile_51"
+    },
+    "tile=52": {
+      "model": "ascension_worlds:block/sealer_carving/tile_52"
+    },
+    "tile=53": {
+      "model": "ascension_worlds:block/sealer_carving/tile_53"
+    },
+    "tile=54": {
+      "model": "ascension_worlds:block/sealer_carving/tile_54"
     }
   }
 }

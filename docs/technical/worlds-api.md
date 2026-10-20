@@ -1039,23 +1039,30 @@ the bottom, items falling out of the bottom, and the Dragon's part damage on rea
 
 **The batched client run for Planet 4 is [`planet-4-client-checklist.md`](planet-4-client-checklist.md).**
 
-**The End is a belt, not a sphere (2026-10-20, Sanchit after the first client look):** a space body can carry a `belt`
-(`ascension_space/end.json`): instead of one lit sphere the planet is drawn as `count` rocks scattered through its body, each a small
-lit sphere wearing the body's `texture` (`end_rock.png`, from `tools/generate-end-belt-art.py`).
+**The End is a belt, not a sphere (2026-10-20, Sanchit; redone 2026-10-21 after "it is not an asteroid belt at all"):** a space body can
+carry a `belt` (`ascension_space/end.json`): instead of one lit sphere the planet is a flat ring of irregular tumbling rocks, a dust band and a
+bright core, drawn by `BeltRenderer`.
 
 ```json
 { "planet": "ascension_worlds:end", "texture": "ascension_worlds:textures/environment/end_rock.png", "lit": true,
-  "belt": { "count": 160, "seed": 4, "thickness": 0.14, "min_radius": 5, "max_radius": 36 } }
+  "belt": { "count": 1400, "seed": 4, "thickness": 0.07, "min_radius": 1.5, "max_radius": 30, "inner": 0.2, "sprites": 8,
+            "central": 1.4, "dust": "ascension_worlds:textures/environment/end_dust.png", "dust_colour": 9074872,
+            "core_texture": "ascension_worlds:textures/environment/end_glow.png", "core_colour": 13148400 } }
 ```
 
 | `belt` field | Default | Meaning |
 |---|---|---|
-| `count` | 140 | Rocks, 1 to 1000. Drawn farthest first, one small textured disc each. |
+| `count` | 140 | Rocks, 1 to 3000, the central one included. One sprite each, drawn farthest first in one buffer. |
 | `seed` | 1 | The same seed gives the same belt on every client (`BeltRocks`, unit-tested). |
-| `thickness` | 0.15 | Half the belt's height, as a fraction of `body_radius`. The rocks lie in a flat layer. |
-| `min_radius`, `max_radius` | 6, 34 | Rock sizes in blocks; mostly small, a few large. |
+| `thickness` | 0.15 | Half the belt's height, as a fraction of `body_radius`; thinnest where the rocks are densest. |
+| `min_radius`, `max_radius` | 6, 34 | Rock sizes in blocks: most near the minimum, a few great ones near the maximum. |
+| `inner` | 0 | The fraction of the radius left empty at the middle. |
+| `sprites` | 1 | How many rock shapes the `texture` atlas holds (four to a row, 32 x 32 cells). |
+| `central` | 0 | The middle rock's radius as a multiple of `max_radius`; 0 for none. |
+| `dust`, `dust_colour` | none | A soft ring texture added in three thin sheets at the plane (v runs inner to outer, u round and tiles). |
+| `core_texture`, `core_colour` | none | A soft round glow at the middle, added to the sky. |
 
-The rocks fill the planet's `body_radius` disc, the same volume that carries a ship down when entered, so flying into the belt is landing on the
-End. A rock is never drawn under about two pixels, so from far away the belt is a glitter and up close separate rocks. Cost: one small
-textured disc per rock per frame (160 by default), farthest-first sorted. **Not yet seen in a client.** The sphere path is unchanged for
-every other planet.
+The rocks keep to a broad inner band and a narrow outer band with a gap between (`BeltRocks.density`); all inside the planet's `body_radius`
+disc, the same volume that carries a ship down when entered, so flying into the belt is landing on the End. A rock is never drawn under about two
+pixels. Cost: three draw calls, no per-frame allocation (a reused sort buffer), a few thousand vertices. **Not yet seen in a client.** The sphere path
+is unchanged for every other planet.

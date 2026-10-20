@@ -10,7 +10,7 @@ as an operator.
 
 - [ ] As an operator, `/execute in minecraft:the_end
       run tp @s 0 90 0` puts you over the arena, or fly a ship from space onto the End (it sits at `[-10945, 30070]` in space, south).
-- [ ] **From space:** the End is drawn as a dusty violet disc (placeholder until the art session). Flying into it carries the ship down.
+- [ ] **From space:** the End is a **belt**: a flat ring of many small irregular tumbling rocks with a gap in it, a faint dust band and a bright core with one great rock at the middle (not a blob of moons). View it from far, from 2,000 blocks and from near, beside the Moon. Flying into it carries the ship down.
 - [ ] **Ship arrival:** the ship comes down over **empty air about 224 blocks east of the middle**, not over the arena. Note what you see.
 - [ ] The planet name on the destination screen reads "The End" (after the gate is lit).
 
@@ -59,3 +59,11 @@ as an operator.
 - [ ] **Quit, reload the same world**: the gate is still lit, the portal is still there, the Dragon has not come back.
 - [ ] Note anything in the log (`latest.log`) that mentions `EndGate`, `VoidFall`, or errors in the End.
 - [ ] Record: frame time in the arena, in the cities, and flying (`docs/technical/performance-log.md`).
+
+## The ruins, carvings and tablets (design round 2, 2026-10-21)
+
+- [ ] **The Ring of Ten**, just outside the pillars at about (60, -19): ten stumps with a light each round a dais, two carved stones. Read The Belt and The Last Keeper. Each carving should contradict the tablet beside it.
+- [ ] **The Quiet Cell**, at about (-40, 40): a closed room, the door three wide, seven glyphs in its walls (4 1 6 3 0 5 2 from the door's left), The Cut Record on its plinth (not the voice: signed in glyphs only).
+- [ ] An outer island: **the Mooring** (three cradles, gantries, open cages, the ships carving, The Wings and The Towers), **the Cloister** (chorus in rows, The Fruit and The Tall Ones), **the Last Lamp** (a tower with a light, The Edge). Say how far you flew before finding each.
+- [ ] Every tablet fits its book page; the voice's end with Tacita's signature.
+- [ ] A reload with the ruins' chunks unloaded and loaded again.

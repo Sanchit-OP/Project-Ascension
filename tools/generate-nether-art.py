@@ -45,6 +45,7 @@ def _load(name, filename):
 art = _load('gateway_art', 'generate-gateway-art.py')
 moon = _load('moon_art', 'generate-moon-materials-art.py')
 archive = _load('archive_art', 'generate-archive-art.py')
+end_carvings = _load('end_carvings', 'generate-end-carvings.py')
 
 BASALT, ANORTH, TEAL = art.BASALT, art.ANORTH, art.TEAL
 mix, shade, new = art.mix, art.shade, art.new
@@ -75,7 +76,8 @@ RETURNED = [(150, 96, 72), (110, 62, 46), (72, 40, 34), (22, 20, 24)]
 # the change and breaks the templates until they are regenerated.
 
 COLONY_ORDER = [('turned_away', (5, 2))]
-CARVING_ORDER = [('the_returned', (7, 2))]
+# The Nether's, then the End's (generate-end-carvings.py draws those three).
+CARVING_ORDER = [('the_returned', (7, 2))] + end_carvings.END_CARVING_ORDER
 
 
 def _catalogue(order):
@@ -366,7 +368,7 @@ def m_the_returned(c):
 
 
 MURAL_FUNCS = {'turned_away': m_turned_away}
-CARVING_FUNCS = {'the_returned': m_the_returned}
+CARVING_FUNCS = {'the_returned': m_the_returned, **end_carvings.END_CARVING_FUNCS}
 
 
 def colony_canvas(w, h, seed):

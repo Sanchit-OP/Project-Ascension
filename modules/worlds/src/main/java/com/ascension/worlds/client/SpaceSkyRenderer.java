@@ -77,18 +77,12 @@ public final class SpaceSkyRenderer {
      */
     private static final float FAR_PLANE = 200_000.0F;
 
-    /** The generated rocks of each belt planet, by surface dimension: immutable numbers, no world objects (ADR-0007). */
-    private static final Map<net.minecraft.resources.ResourceLocation, BeltRocks.Rock[]> BELTS = new java.util.HashMap<>();
-
-    /** A belt rock is never drawn smaller than this, in radians of half-width (about two pixels at a normal field of view). */
-    private static final double BELT_MIN_ANGULAR_SIZE = 0.0012;
-
     /** Model-view for {@link LitSphere.Disc}: none, as RenderSystem's already holds the camera's. */
     private static final Matrix4f IDENTITY = new Matrix4f();
 
     /** A resource reload may change a belt's numbers: forget the generated rocks. */
     static void clearBelts() {
-        BELTS.clear();
+        BeltRenderer.clear();
     }
 
     @SubscribeEvent
@@ -177,7 +171,10 @@ public final class SpaceSkyRenderer {
     /** A planet with a look from space: its face as a sphere, lit by the sun, haloed if it has air. */
     private static void renderSphere(Vec3 cameraPos, Planet planet, SpaceBody look, double[] sun) {
         if (look.belt().isPresent()) {
-            renderBelt(cameraPos, planet, look, look.belt().get(), sun);
+            Minecraft minecraft = Minecraft.getInstance();
+            float seconds = (minecraft.level.getGameTime()
+                    + minecraft.getTimer().getGameTimeDeltaPartialTick(false)) / 20.0F;
+            BeltRenderer.render(cameraPos, planet, look, look.belt().get(), sun, seconds);
             return;
         }
         Planet.SpacePosition space = planet.space();
@@ -196,47 +193,6 @@ public final class SpaceSkyRenderer {
         LitSphere.drawFace(disc, look.texture(), look.lit(), false, 1.0F);
         look.emissive().ifPresent(emissive -> LitSphere.drawEmissive(disc, emissive, look.lit(), 1.0F));
         look.glow().ifPresent(colour -> LitSphere.drawGlow(disc, look.lit(), colour, 1.0F));
-    }
-
-    /**
-     * The rocks of an asteroid belt, farthest first, each a small lit sphere in the planet's rock texture. A rock is never
-     * drawn smaller than a couple of pixels, so the belt reads as a glittering cluster from far off and as separate rocks up
-     * close. The set is generated once per belt and kept ({@link BeltRocks} is a pure function of its numbers).
-     */
-    private static void renderBelt(Vec3 cameraPos, Planet planet, SpaceBody look, SpaceBody.Belt belt, double[] sun) {
-        Planet.SpacePosition space = planet.space();
-        BeltRocks.Rock[] rocks = BELTS.computeIfAbsent(planet.surface().location(), key -> BeltRocks.generate(
-                belt.count(), belt.seed(), space.bodyRadius(), belt.thickness(), belt.minRadius(), belt.maxRadius()));
-        double centreX = space.x() - cameraPos.x;
-        double centreY = -cameraPos.y;
-        double centreZ = space.z() - cameraPos.z;
-        double[] distances = new double[rocks.length];
-        Integer[] order = new Integer[rocks.length];
-        for (int i = 0; i < rocks.length; i++) {
-            double x = centreX + rocks[i].x();
-            double y = centreY + rocks[i].y();
-            double z = centreZ + rocks[i].z();
-            distances[i] = Math.sqrt(x * x + y * y + z * z);
-            order[i] = i;
-        }
-        java.util.Arrays.sort(order, (a, b) -> Double.compare(distances[b], distances[a]));
-        for (int index : order) {
-            BeltRocks.Rock rock = rocks[index];
-            double distance = distances[index];
-            if (distance < 1.0e-3) {
-                continue;
-            }
-            double relX = centreX + rock.x();
-            double relY = centreY + rock.y();
-            double relZ = centreZ + rock.z();
-            double[] direction = {relX / distance, relY / distance, relZ / distance};
-            double[][] basis = SkyBodyGeometry.basis(direction);
-            float halfSize = (float) Math.max(SkyBodyGeometry.silhouetteHalfSize(rock.radius(), distance),
-                    distance * BELT_MIN_ANGULAR_SIZE);
-            LitSphere.Disc disc = new LitSphere.Disc(IDENTITY, new float[] {(float) relX, (float) relY, (float) relZ},
-                    direction, basis[0], basis[1], sun, halfSize);
-            LitSphere.drawFace(disc, look.texture(), look.lit(), false, 1.0F);
-        }
     }
 
     /** A planet with no look from space: a disc in its own colour. */

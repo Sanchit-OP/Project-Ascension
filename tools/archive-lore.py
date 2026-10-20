@@ -21,6 +21,9 @@ Every tablet ends with her signature. That signature is the seal's closing seque
 in the script font (ascension_worlds:script, lore-art-format.md section 2), in the order the locks
 break, 0 to 6 (docs/lore/the-ending-and-names.md).
 
+THE END (Planet 4, DRAFT 2026-10-21, docs/lore/the-end.md): eight tablets across five ruins; seven are the voice,
+and the Cut Record in the Quiet Cell is the Sealers', signed in glyphs only (the same order as the Forge Record).
+
 THE NETHER (Planet 3, DRAFT 2026-10-11, docs/lore/the-nether.md). Seven tablets in the colony ruins,
 the voice again, every line upside down: the rot blamed on the destroyer, the piglins called thieves,
 the fortresses called strongholds, the Wither offered as a gift, the gift of return praised. And one
@@ -158,33 +161,46 @@ LORE = [
         'Seven keys. Seven locks. On each lock, one glyph, and the seven glyphs are a name. '
         'Whoever reads them in the order they fall reads them wrong.',
     ], SEALERS),
-    # THE END (Planet 4, DRAFT 2026-10-20, docs/lore/the-end.md): five tablets in the ruin by the arena, one on an
-    # outer island, the voice again. Upside down: the belt blamed on the destroyer, the wings a gift, the last keeper
-    # called the destroyer's beast and its death called the road opening (which is what the voice wants: each lit
-    # gate breaks a lock), the tall ones called our own lost, the fall called a kindness.
+    # THE END (Planet 4, DRAFT 2026-10-21, docs/lore/the-end.md): seven tablets in the voice across five ruins, and the
+    # Sealers' Cut Record. Upside down: the belt blamed on the destroyer, the keeper called its beast and the lights' breaking
+    # called the road opening (what the voice wants: each lit gate breaks a lock), the wings a gift and the cages seed, the
+    # towers' locks called careful, the fruit called wild, the tall ones called our lost, the fall called a kindness.
+    # Each sits beside the picture that contradicts it (generate-end-carvings.py).
     ('the_end', 'the_belt', 'The Belt', [
-        'This was our last world and our greatest. The destroyer broke it into the islands you '
-        'see, and the dark between them. It could not break what we built upon them.',
-        'Do not grieve for the lost ground. A world cut into pieces is a world that can be '
-        'carried. We meant to carry it, one day. Now it is yours to carry.',
+        'This was our last world and our greatest. The destroyer fell on it in the end and '
+        'broke it into the islands you stand among, with the dark between.',
+        'Look at the stone. It was whole once, a green and golden country. The destroyer cut it '
+        'in pieces so that no road could cross. Now the pieces drift, and the pale stone is all '
+        'that is left.',
+        'Do not grieve for the lost ground. A world cut in pieces is a world that can be '
+        'carried. We meant to carry it. Now it is yours to carry.',
+    ]),
+    ('the_end', 'the_keeper', 'The Last Keeper', [
+        "A beast sits on our gate. It is the destroyer's, set to guard what we left. Ten lights "
+        'on ten pillars feed it, and while they burn it will not die.',
+        'Break the lights. Then it will fall, and the gate under it will wake, and the road will '
+        'open from here to every world.',
+        'That is why we waited. That is all we ever wanted: the road, open.',
     ]),
     ('the_end', 'the_wings', 'The Wings', [
         'Our crews could not bridge the islands. The dark would not hold a bridge. So we gave '
         'them wings, folded in the last ships, and they crossed in a breath.',
-        'The ships still moor beside the towers. The wings lie in their frames. Take them. Whoever '
-        'flies can go where we could not go. Go far. Go where we point.',
+        'The cages on the quay held seed and song-birds, for the worlds we meant to plant. They '
+        'went out ahead of us to make the road ready. Do not pity them.',
+        'The wings lie in their frames in the ships that still moor beside the towers. Take them. '
+        'Go where we point.',
     ]),
-    ('the_end', 'the_keeper', 'The Last Keeper', [
-        'A beast sits on our gate. It is the destroyer\'s, set to guard what we left. Ten lights '
-        'on ten pillars feed it. Break them.',
-        'When it falls, the gate will wake, and the road will open from here to every world. That '
-        'is why we waited. That is all we ever wanted: the road, open.',
+    ('the_end', 'the_towers', 'The Towers', [
+        'The towers on the far islands are ours, the last stores of our last age. We locked our '
+        'treasure in them, and the locks learned to guard themselves, as good locks do.',
+        'Do not be shy of the little boxes that bite. They are only careful. They have kept the '
+        'door a very long time, and they do not know we are gone.',
     ]),
     ('the_end', 'the_fruit', 'The Fruit', [
         'Where our lights leak, a plant grows that belongs to no world. Eat its fruit and you are '
         'carried a little way, and set down again.',
-        'We learned it here: to leave, and be returned. You will learn it too. Every door we '
-        'built was made to return you. Trust them.',
+        'We did not plant it. It grew where the lights leaked, and it grows still, and it asks '
+        'for nothing. Every door we built was made to return you. Trust them.',
     ]),
     ('the_end', 'the_watchers', 'The Tall Ones', [
         'The tall ones who look away are ours. They are the lost, and they hide their faces for '
@@ -195,9 +211,18 @@ LORE = [
     ('the_end', 'the_edge', 'The Edge', [
         'There is no floor under the belt. Do not fear the fall. The dark below is not an ending. '
         'It hands back what it is given, a little farther from home.',
-        'That is the last kindness of the road, and the first. Every fall returns you to the dark '
-        'between the worlds, where the doors wait. Fall as often as you like.',
+        'That is the last kindness of the road, and the first. Fall as often as you like. The lamp '
+        'at the edge burns so that nothing is lost.',
     ]),
+    # Not the voice: the Sealers' record, in the quiet room off the road. Signed in glyphs only, in Tacita's true order.
+    ('the_end', 'the_record', 'The Cut Record', [
+        'We cut this world apart to make the gates. Every ring stands on a piece of it. We took '
+        'it down stone by stone, and the road was built from its bones.',
+        'At the last we made a keeper to sit on the final gate, and ten lights to feed it, so that '
+        'no one would open the road again.',
+        'The rest of what we made we sent past the edge, to the world that bred it. The tall ones '
+        'are not ours. Do not look back at them. The seven glyphs are on the wall.',
+    ], SEALERS),
 ]
 
 WORN_AWAY = 'The inscription is worn away.'

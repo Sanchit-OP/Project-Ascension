@@ -432,6 +432,8 @@ No survival source, on purpose. The rules say why.
 - Used: Builds a gateway frame (Gateway)
 
 **Sealers' Carving** · `ascension_worlds:sealer_carving`
+- From: Mined: the Mooring, a quay with empty ship cradles, on outer islands (the End), built into it
+- From: Mined: the Ring of Ten by the Dragon's arena (the End), built into it
 - From: Mined: the Sealer carving (the Nether), built into it
 
 **Titanium Ore** · `ascension_worlds:titanium_ore`

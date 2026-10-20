@@ -1,17 +1,17 @@
 {
   "type": "ascension_worlds:on_dry_ground",
-  "biomes": "#ascension_worlds:end_outpost_biomes",
+  "biomes": "#ascension_worlds:end_lamp_biomes",
   "step": "surface_structures",
   "terrain_adaptation": "beard_thin",
   "spawn_overrides": {},
-  "check_radius": 6,
+  "check_radius": 5,
   "min_ground": 20,
   "structure": {
     "type": "minecraft:jigsaw",
-    "biomes": "#ascension_worlds:end_outpost_biomes",
+    "biomes": "#ascension_worlds:end_lamp_biomes",
     "step": "surface_structures",
     "spawn_overrides": {},
-    "start_pool": "ascension_worlds:end_ruin/outposts",
+    "start_pool": "ascension_worlds:end_ruin/lamp",
     "size": 1,
     "start_height": {
       "absolute": -1

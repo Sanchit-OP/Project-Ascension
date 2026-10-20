@@ -9,9 +9,9 @@
     "type": "ascension_worlds:fixed_position",
     "salt": 7,
     "locate_at": [
-      40,
+      48,
       0,
-      -8
+      -32
     ]
   }
 }

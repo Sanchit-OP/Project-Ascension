@@ -3,10 +3,17 @@
   "texture": "ascension_worlds:textures/environment/end_rock.png",
   "lit": true,
   "belt": {
-    "count": 160,
+    "count": 1400,
     "seed": 4,
-    "thickness": 0.14,
-    "min_radius": 5,
-    "max_radius": 36
+    "thickness": 0.07,
+    "min_radius": 1.5,
+    "max_radius": 30,
+    "inner": 0.2,
+    "sprites": 8,
+    "central": 1.4,
+    "dust": "ascension_worlds:textures/environment/end_dust.png",
+    "dust_colour": 9074872,
+    "core_texture": "ascension_worlds:textures/environment/end_glow.png",
+    "core_colour": 13148400
   }
 }

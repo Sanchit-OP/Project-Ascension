@@ -14,8 +14,11 @@
     "ascension_worlds:sealer_carving": "the Sealer carving (the Nether)",
     "ascension_worlds:gateway_moon_site": "the Moon's gate ruin",
     "ascension_worlds:gateway_nether_site": "the Nether's gate ruin",
-    "ascension_worlds:end_ruin": "the ruin by the Dragon's arena (the End)",
-    "ascension_worlds:end_outpost": "an outpost stone on an outer island (the End)",
+    "ascension_worlds:end_ruin": "the Ring of Ten by the Dragon's arena (the End)",
+    "ascension_worlds:end_cell": "the Quiet Cell, a sealed room on the central island (the End)",
+    "ascension_worlds:end_mooring": "the Mooring, a quay with empty ship cradles, on outer islands (the End)",
+    "ascension_worlds:end_cloister": "the Cloister, a chorus garden, on outer islands (the End)",
+    "ascension_worlds:end_lamp": "the Last Lamp, a tower on outer islands (the End)",
     "cataclysm:acropolis": "Cataclysm's Acropolis",
     "cataclysm:ancient_factory": "Cataclysm's Ancient Factory",
     "cataclysm:frosted_prison": "Cataclysm's Frosted Prison"
