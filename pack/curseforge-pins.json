@@ -1,0 +1,13 @@
+{
+  "_comment": "Where the launcher's record of the instance names a file that CurseForge no longer has (or that the pack must not use), the pack names this one instead. tools/build-curseforge-pack.py applies these over the record; tools/check-curseforge-ids.py finds the ones that are gone. Remove a pin when the launcher's record has caught up.",
+  "pins": [
+    {
+      "name": "Just Enough Resources",
+      "projectID": 240630,
+      "fileID": 6174588,
+      "file": "JustEnoughResources-NeoForge-1.21.1-1.6.0.12.jar",
+      "replaces": 6506298,
+      "why": "The instance had 1.6.0.17 (file 6506298), whose CurseForge page is gone (404 on 2026-10-21). 1.6.0.12 is the newest 1.21.1 NeoForge file CurseForge lists. It needs JEI 16 or later; the pack has 19."
+    }
+  ]
+}

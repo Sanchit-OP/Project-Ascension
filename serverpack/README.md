@@ -4,7 +4,9 @@ Configuration for a **real multiplayer server**, kept in git rather than in `run
 is gitignored and thrown away.
 
 `config/` here is copied over the dev server's config by `prepareServerRun`, so the dev server
-runs the same configuration we ship. Files not listed here are left alone — Chunky's
+runs the same configuration we ship. **Settings that a single-player world needs too live in `pack/config/`, not here** (Cataclysm's boss multipliers moved there on 2026-10-21, with the Waystones rule), so the server and a player's own world agree. The real server must carry both folders.
+
+Files not listed here are left alone — Chunky's
 `config/chunky/tasks/` in particular holds live task state and must never be clobbered.
 
 ## The End (Planet 4)

@@ -40,9 +40,9 @@ the stakes on the second, because the End is the farthest place a ship has to re
 | **A2** gate by hand, keystone, a survival ship to the Moon | **not done** | all three; the ship is the biggest unknown |
 | **A3** a combat item finished, balance in a real fight | **not done** | |
 | **A4** ship air | **not done**; `OxygenChecks` still not written | a real ship ride that holds air; a server check; a reload |
-| **A5** CurseForge pack | **not started.** Found today: CurseForge ids for the two hand-installed mods (Lootr 361276, file 8968561; Create: Simulated Thrusters 1546743, file 8220627). Still missing: `LICENSE`, a pack `options.txt` (`pack/config/defaultoptions` has only keybindings), a manifest builder, a config audit, a changelog | all of it |
+| **A5** CurseForge pack | **built and checked, not uploaded.** `python tools/build-curseforge-pack.py` writes `build/pack/ProjectAscension-0.1.0-alpha.1.zip` (2.7 MB: a manifest naming 56 mods by id, our 17 jars, 21 config files); `python tools/check-curseforge-ids.py` found **two files CurseForge had withdrawn** (Just Enough Resources 1.6.0.17 and Sophisticated Storage 1.6.7.2193), both already in the instance, and they are replaced (pins and extras); all 56 now exist. `LICENSE` (MIT, as `gradle.properties` says), the first-launch options, the page text, changelog, known issues and install notes are written (`pack/launch/`). The Cataclysm tuning moved into the shared pack config (single-player and server now agree) | create the CurseForge project, a logo, a trial import in the CurseForge app, the bug-report link, rerun the id check right before uploading |
 | **A6** our server | **not started** (`serverpack/` is configuration only) | start script, mod set, whitelist, backups, pre-generation plan |
-| **A7** bug reports and known issues | **not started** | |
+| **A7** bug reports and known issues | **written** (`pack/launch/KNOWN_ISSUES.md`, with the way round each); the channel people report to is not chosen | a link to report to |
 | **A8** Planet 4 | **built and merged** (ADR-0028; the design redo: a real belt, five ruins, eight tablets, the lore; the Planets page now draws the belt) and **headless-checked**; **never seen in a client** | the client run (`docs/technical/planet-4-client-checklist.md`), the outer islands' cost, the Elytra in a real End city, a ship with a real pilot |
 
 **Can it be released today?** A *friends-only* alpha today is possible only if two things go right in the next few hours: one
@@ -99,6 +99,24 @@ cosmetic; neither blocks a player. **To confirm:** do the planets look right wit
 | **Quality of life** | **Mouse Tweaks** only. **AppleSkin is out**: it draws on vanilla's food bar and our HUD replaces it. Not now: a minimap (FTB Chunks has a map), dynamic lights, Inventory Profiles Next | Mouse Tweaks installed |
 
 The CurseForge ids of every mod the launcher does not track (these seven, Lootr and the thrusters) are in `pack/curseforge-extras.json`.
+
+## Pack facts found while preparing the launch, 2026-10-21
+
+- **Two files in the instance had been withdrawn from CurseForge** and would have failed the install for every player: Just Enough
+  Resources 1.6.0.17 and Sophisticated Storage 1.6.7.2193 (their file pages are 404). The pack names the newest files CurseForge still
+  lists (1.6.0.12 and 1.6.7.2184) and the instance now carries those, so what is tested is what ships. The Sophisticated mods publish
+  several builds a day: **rerun `tools/check-curseforge-ids.py` right before uploading.**
+- **Every jar in the instance is accounted for:** 48 the launcher tracks, 8 placed by hand, 17 of ours (73). Two shader packs are left out of the manifest.
+- **A single-player world and the server disagreed on Cataclysm's bosses.** `serverpack/config/cataclysm-common.toml` (Ender Golem and
+  Ender Guardian at 2.5x health and 1.5x attack, Sanchit 2026-09-21) reached only the dev server; the instance's own file held the
+  defaults. The file now lives in `pack/config`, so both get it. Health is unaffected (the balance sets an exact total); the bosses'
+  attack is 1.5x stronger in single-player than it was in your last tests.
+- **Partial config files work:** the pack ships only the lines it decides (Waystones, Cataclysm, Distant Horizons); a dedicated server
+  given just the 12-line Waystones file rewrote it to the full 95 lines with our refusal intact.
+- **Better Combat's two settings the balance relies on** (`allow_fast_attacks`, `attack_interval_cap` 2) are the mod's own defaults, so
+  nothing needs shipping.
+- Newer files exist for some mods (Distant Horizons 3.3.3 against our 2.4.5, Sable 2.0.6 against 2.0.5, Keybind Atlas 2.0.0, JEI 19.69);
+  the pack stays on what was tested.
 
 ## A. Blockers: do not release without these
 

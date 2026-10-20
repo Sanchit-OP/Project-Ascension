@@ -35,11 +35,11 @@
       "name": "Sophisticated Storage",
       "slug": "sophisticated-storage",
       "projectID": 619320,
-      "fileID": 9265623,
-      "file": "sophisticatedstorage-1.21.1-1.6.7.2193.jar",
+      "fileID": 9201424,
+      "file": "sophisticatedstorage-1.21.1-1.6.7.2184.jar",
       "side": "both",
       "added": "2026-10-21",
-      "why": "chests and barrels with upgrades, so a group's base needs fewer, bigger blocks"
+      "why": "chests and barrels with upgrades, so a group's base needs fewer, bigger blocks. 1.6.7.2193 was withdrawn from CurseForge on 2026-10-20 or 21 (its file page is gone), so the pack names 2184"
     },
     {
       "name": "Sophisticated Backpacks",
