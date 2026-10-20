@@ -1,7 +1,8 @@
 # Project Ascension: the text for the CurseForge page
 
 Paste the summary into the project's summary box (it takes about 200 characters) and everything under "Description" into the
-description. Keep this file as the source: change it here, then paste again. **Nothing here has been published.**
+description, and upload `logo.png` (512 x 512, made by `tools/generate-pack-logo.py`; `logo-1024.png` is the master) as the project's
+logo. Keep this file as the source: change it here, then paste again. **Nothing here has been published.**
 
 ## Summary
 
