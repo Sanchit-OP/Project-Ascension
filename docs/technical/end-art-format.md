@@ -28,7 +28,15 @@ Dragon dies and the exit portal wakes and offers the gates. Out in the belt, the
 the Elytra in a ship's item frame. Step off an island and you drift down slowly; under the belt's floor you are handed back
 to the dark beside the planet.
 
-## 1. The End from space
+## 1. The End from space (a belt, built by logic 2026-10-20)
+
+Sanchit: the End is not a planet-shaped planet; it should look like an asteroid belt in space. Logic built it: `ascension_space/end.json` has a
+`belt` (`worlds-api.md`, "The End is a belt, not a sphere"), 160 rocks wearing `end_rock.png`. **Design now owns the look of it**: restyle
+`end_rock.png` (and `tools/generate-end-belt-art.py`), tune `end.json`'s numbers (count, sizes, thickness), and propose extras the format
+cannot do yet (a faint dust band, rocks that glow violet on the night side, a bright central island rock). The older text below says a
+sphere is the only option; ignore that.
+
+### (older) The End from space
 
 `assets/ascension_worlds/ascension_space/end.json` and `textures/environment/end.png` (64 x 64, the inscribed circle is the
 disc), exactly the Nether's format (`worlds-api.md`, "Space bodies"). **What the format cannot do:** a space body is one lit

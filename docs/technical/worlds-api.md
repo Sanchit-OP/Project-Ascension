@@ -1038,3 +1038,24 @@ ship, a pre-generation cost, a real client of anything, two clients, a ship with
 the bottom, items falling out of the bottom, and the Dragon's part damage on real weapons.
 
 **The batched client run for Planet 4 is [`planet-4-client-checklist.md`](planet-4-client-checklist.md).**
+
+**The End is a belt, not a sphere (2026-10-20, Sanchit after the first client look):** a space body can carry a `belt`
+(`ascension_space/end.json`): instead of one lit sphere the planet is drawn as `count` rocks scattered through its body, each a small
+lit sphere wearing the body's `texture` (`end_rock.png`, from `tools/generate-end-belt-art.py`).
+
+```json
+{ "planet": "ascension_worlds:end", "texture": "ascension_worlds:textures/environment/end_rock.png", "lit": true,
+  "belt": { "count": 160, "seed": 4, "thickness": 0.14, "min_radius": 5, "max_radius": 36 } }
+```
+
+| `belt` field | Default | Meaning |
+|---|---|---|
+| `count` | 140 | Rocks, 1 to 1000. Drawn farthest first, one small textured disc each. |
+| `seed` | 1 | The same seed gives the same belt on every client (`BeltRocks`, unit-tested). |
+| `thickness` | 0.15 | Half the belt's height, as a fraction of `body_radius`. The rocks lie in a flat layer. |
+| `min_radius`, `max_radius` | 6, 34 | Rock sizes in blocks; mostly small, a few large. |
+
+The rocks fill the planet's `body_radius` disc, the same volume that carries a ship down when entered, so flying into the belt is landing on the
+End. A rock is never drawn under about two pixels, so from far away the belt is a glitter and up close separate rocks. Cost: one small
+textured disc per rock per frame (160 by default), farthest-first sorted. **Not yet seen in a client.** The sphere path is unchanged for
+every other planet.

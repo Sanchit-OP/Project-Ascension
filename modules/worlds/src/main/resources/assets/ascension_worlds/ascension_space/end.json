@@ -1,0 +1,12 @@
+{
+  "planet": "ascension_worlds:end",
+  "texture": "ascension_worlds:textures/environment/end_rock.png",
+  "lit": true,
+  "belt": {
+    "count": 160,
+    "seed": 4,
+    "thickness": 0.14,
+    "min_radius": 5,
+    "max_radius": 36
+  }
+}
