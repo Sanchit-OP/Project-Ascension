@@ -219,7 +219,7 @@ seen** in a client; no thruster has been fuelled yet.
 
 Sanchit, for the alpha: group play needs storage (Tom's Simple Storage lags with many chests), a backpack, and fast travel inside a
 world but never between worlds. All six jars were downloaded from CurseForge's own file host on 2026-10-21, checked as intact
-zips, and placed in the Ascension Dev instance (67 to 74 jars). Their CurseForge ids are in `pack/curseforge-extras.json`
+zips, and placed in the Ascension Dev instance (67 to 73 jars). Their CurseForge ids are in `pack/curseforge-extras.json`
 (the launcher does not track a jar placed by hand). A dedicated server booted with all of them, loaded every one, and the
 damage checks still passed (77 of 77). **Not seen in a client.**
 
