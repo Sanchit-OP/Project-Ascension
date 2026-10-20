@@ -16,6 +16,7 @@ The keys, what the alpha is, and what is known to be wrong are in the pack's des
 
 ## For whoever is hosting the server (us)
 
-Not written yet: the server is a separate piece of work (`plans/alpha-checklist.md`, A6). It must carry the same mods, `pack/config`
-as well as `serverpack/config`, the three mods that do not allow other programs to download them (copied by hand), and
-`online-mode=true`.
+`python tools/build-server-pack.py` writes `build/server/ProjectAscension-server-<version>.zip` and its `SERVER-README.md` has the steps
+(NeoForge 21.1.249, Java 21, 6 GB or more, EULA accepted by the owner, `online-mode=true`, a whitelist). That zip carries other authors' jars,
+three of them from mods that forbid redistribution: **never share it or publish it**, only upload it to our own server. A friend joins with the
+same pack version and a Minecraft name that has been added with `whitelist add <name>`.
