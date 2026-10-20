@@ -115,8 +115,8 @@
 		}
 		{
 			id: "0ACE2D2F0C79926C"
-			x: -2.576d
-			y: 7.077d
+			x: -2.208d
+			y: 6.066d
 			shape: "none"
 			size: 1.7d
 			icon: {
@@ -202,8 +202,8 @@
 		}
 		{
 			id: "6D58C234FB4590CA"
-			x: -2.576d
-			y: 7.077d
+			x: -2.208d
+			y: 6.066d
 			width: 2.4d
 			height: 2.4d
 			image: "ascension_compat_ftbquests:textures/quests/planets/ring.png"
@@ -211,8 +211,8 @@
 		}
 		{
 			id: "58041BD46CE831C2"
-			x: -2.576d
-			y: 7.077d
+			x: -2.208d
+			y: 6.066d
 			width: 3.0d
 			height: 3.0d
 			image: "ascension_compat_ftbquests:textures/quests/planets/halo.png"
