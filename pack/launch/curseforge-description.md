@@ -137,12 +137,14 @@ Planets are data, not code, so new ones are mostly authoring: terrain, a surviva
 
 ## Keys
 
-| | |
-|---|---|
-| **J** quest book | **H** character sheet |
-| **K** skill tree | **R** rune page |
-| **Z** use a worn item's ability | **M** map |
-| **B** every key, on screen | **N** Cataclysm helmet ability |
+- **J**: quest book
+- **H**: character sheet
+- **K**: skill tree
+- **R**: rune page
+- **Z**: use a worn item's ability
+- **M**: map
+- **B**: every key, on screen
+- **N**: Cataclysm helmet ability
 
 ## Requirements
 
