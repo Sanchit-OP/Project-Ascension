@@ -232,6 +232,7 @@ def ring():
 # tablets get wrong, and the one tablet that is not the voice.
 
 def cell():
+    # Walls and roof are DETAIL: ground() clears the rows above the floor at OPEN, which outranks WALL.
     p = End('cell', (15, 10, 15), 4043)
     cx = cz = 7
     p.ground(p.rect_cells(0, 0, 14, 14))
@@ -240,22 +241,22 @@ def cell():
         for z in range(z0, z1 + 1):
             if x in (x0, x1) or z in (z0, z1):
                 for y in range(F + 1, F + 5):
-                    p.put(x, y, z, OBSIDIAN if y in (F + 1, F + 4) else BRICK, WALL)
+                    p.put(x, y, z, OBSIDIAN if y in (F + 1, F + 4) else BRICK, DETAIL)
             else:
                 for y in range(F + 1, F + 5):
-                    p.put(x, y, z, AIR, OPEN)
-                p.put(x, F + 5, z, slab(), WALL)
+                    p.put(x, y, z, AIR, DETAIL)
+                p.put(x, F + 5, z, slab(), DETAIL)
     for x in range(x0, x1 + 1):                        # the roof over the walls too
         for z in (z0, z1):
-            p.put(x, F + 5, z, slab(), WALL)
+            p.put(x, F + 5, z, slab(), DETAIL)
     for z in range(z0, z1 + 1):
         for x in (x0, x1):
-            p.put(x, F + 5, z, slab(), WALL)
+            p.put(x, F + 5, z, slab(), DETAIL)
     # the door: a gap in the south wall, three wide, with two lit pillars outside it
     for x in (6, 7, 8):
         for y in range(F + 1, F + 4):
-            p.put(x, y, z1, AIR, OPEN)
-        p.put(x, F + 4, z1, PURPUR, WALL)
+            p.put(x, y, z1, AIR, DETAIL)
+        p.put(x, F + 4, z1, PURPUR, DETAIL)
     p.pillar(5, z1 + 1, 3, rod=True)
     p.pillar(9, z1 + 1, 3, rod=True)
     # seven glyphs set in the inner course of the walls at reading height, in the true order, round from the door's left

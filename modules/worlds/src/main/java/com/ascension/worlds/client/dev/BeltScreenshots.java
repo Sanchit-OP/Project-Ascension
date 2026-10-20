@@ -26,6 +26,9 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
  * singleplayer world {@code belt-test}, flies the player through space to look at the End's asteroid belt from several
  * distances and heights, photographs each view under {@code <game directory>/screenshots/}, then quits. It exists so the
  * belt can be seen without playing (ADR-0008). Pure dev tooling: it touches no game state beyond teleporting the player.
+ *
+ * <p>If the trigger file has lines, each {@code name dimension x y z yaw pitch}, those are the views instead (the ruins
+ * of the End, say: {@code ring minecraft:the_end 60 75 -10 180 20}), and the world is {@code belt-test} all the same.
  */
 @EventBusSubscriber(modid = AscensionWorlds.MOD_ID, value = Dist.CLIENT)
 public final class BeltScreenshots {
@@ -50,13 +53,25 @@ public final class BeltScreenshots {
     private BeltScreenshots() {
     }
 
-    private static void plan() {
+    private static void plan(List<String> lines) {
         add(60, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.hideGui = true;
             mc.options.pauseOnLostFocus = false;
             command("gamemode spectator @s");
         });
+        for (String line : lines) {
+            String[] f = line.trim().split("\s+");
+            if (f.length == 7) {
+                add(2, () -> command(String.format("execute in %s run tp @s %s %s %s %s %s", f[1], f[2], f[3], f[4], f[5], f[6])));
+                add(160, () -> { });
+                add(10, () -> pending = f[0]);
+            }
+        }
+        if (!lines.isEmpty()) {
+            add(20, () -> Minecraft.getInstance().stop());
+            return;
+        }
         // name, distance south of the belt, height, pitch (positive looks down)
         view("far", 3000, 260, 4);
         view("far-oblique", 2400, 1100, 28);
@@ -100,9 +115,10 @@ public final class BeltScreenshots {
             Path trigger = FMLPaths.GAMEDIR.get().resolve("belt-screenshots.txt");
             if (Files.exists(trigger)) {
                 try {
+                    List<String> lines = Files.readAllLines(trigger).stream().filter(l -> !l.isBlank()).toList();
                     Files.deleteIfExists(trigger);
                     armed = true;
-                    plan();
+                    plan(lines);
                 } catch (IOException e) {
                     armed = false;
                 }
