@@ -439,6 +439,17 @@ public final class DamageChecks {
         log("Max Health " + healthBefore + " -> " + with + " with a Vitality III helmet over the same helmet plain");
         expectNear("Vitality III on a piece adds 15 Max Health", itemHealth, 15.0f);
         standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, ItemStack.EMPTY);
+
+        // The mace and the trident were vanilla's 6 at 0.6 and 9 at 1.1, which took 787 s and 286 s to kill the standard boss (a netherite sword: 222 s).
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.MACE));
+        tickStandIn();
+        expectNear("the mace hits for 26", (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), 26.0f);
+        expectNear("the mace swings at 0.9 a second", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED), 0.9f);
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.TRIDENT));
+        tickStandIn();
+        expectNear("the trident hits for 13", (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), 13.0f);
+        expectNear("the trident swings at 1.5 a second", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED), 1.5f);
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
     }
 
     /** One full-strength swing of {@code weapon} by the stand-in player at {@code target}, and how much health the target lost. */

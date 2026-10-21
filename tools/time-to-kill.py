@@ -204,7 +204,8 @@ def main():
         a = fight(name, Boss(hp, armor, mr), False, None, True)
         k = fight(name, Boss(hp, armor, mr), True, None, True)
         print('%-26s %9.0f %9.0f' % (NAMES[name] + ' (a pair)', a, k))
-    for label, dmg, spd in (('(netherite sword)', 8.0, 1.6), ('(a boss weapon, 14 at 1.6)', 14.0, 1.6)):
+    for label, dmg, spd in (('(netherite sword)', 8.0, 1.6), ('(mace, 26 at 0.9)', 26.0, 0.9), ('(trident, 13 at 1.5)', 13.0, 1.5),
+                            ('(a boss weapon, 14 at 1.6)', 14.0, 1.6)):
         print('%-26s %9.0f %9.0f' % (label, plain(dmg, spd, False, hp, armor, mr), plain(dmg, spd, True, hp, armor, mr)))
 
 

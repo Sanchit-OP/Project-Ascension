@@ -21,6 +21,18 @@
         "health": 10
       }
     },
+    "minecraft:mace": {
+      "weapon": {
+        "damage": 26,
+        "speed": 0.9
+      }
+    },
+    "minecraft:trident": {
+      "weapon": {
+        "damage": 13,
+        "speed": 1.5
+      }
+    },
     "ascension_combat:veigos_blade": {
       "weapon": {
         "damage": 10.1,

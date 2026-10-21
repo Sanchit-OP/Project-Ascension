@@ -82,6 +82,8 @@ no cap), not its stats.
 | *Pair* | Ragefang, one in each hand | 42 | 33 | Both copies count |
 | *Pair* | Endless Hunger, one in each hand | 46 | 32 | Both copies count |
 | | *netherite sword* | 230 | 109 | |
+| | *mace (vanilla's 6 at 0.6 was 787 s alone, 319 kit)* | 121 | 87 | Rebalanced 2026-10-22 (Sanchit: basic and trash): **26 at 0.9**, a heavy hit; its smash attack, Density, Wind Burst and Breach are untouched on top |
+| | *trident (vanilla's 9 at 1.1 was 286 s alone, 143 kit)* | 145 | 85 | Rebalanced 2026-10-22: **13 at 1.5**; throwing, Riptide, Loyalty and Channeling untouched. A thrown trident also carries the thrower's Attack Damage, as arrows do |
 
 **What uncapped does against a late boss.** On the Wither (4225 HP after the 2026-10-19 cut, 180 Armor, 110 Magic
 Resist), alone, kit in brackets: Veigo's Blade 171 s (122), Ragefang 179 (108), Spear of Shojin 179 (143), Divine

@@ -446,3 +446,35 @@ These are what I remember of each, and what I take from them. None is a source f
 
 **What we can add:** anything that is a stat, a hazard answer, or a utility effect, as data.
 **What we should add:** the reworks in §3, a few identity enchantments in §4, and the rewards in §5.
+
+## 12. Audit of every enchantment, 2026-10-22 (Sanchit: "go through every single one")
+
+All 42 vanilla enchantments and our six, against the systems as they now stand. **Done** = tuned by us; **Fine** = vanilla, nothing in our systems
+disagrees; **Test** = needs a look in a real game; **Decide** = a design choice nobody has made.
+
+| Enchantment | Under our systems | Verdict |
+|---|---|---|
+| Sharpness, Power | +1.5 Attack Damage a level (V 7.5); a bow's arrow carries the shooter's Attack Damage | Done |
+| Smite, Bane of Arthropods | +1 Attack Damage a level (V 5) plus vanilla's flat +2.5 a level against the undead or arthropods (V 12.5), hidden on purpose | Done; **Test** Smite V against the Wither |
+| Keen Edge (ours) | +8 Lethality a level (III 24), about +19% against any Armor | Done |
+| Leech (ours) | +4% Omnivamp a level (III 12%) | Done |
+| Breach (mace only) | +4% Armor Penetration a level (IV 16%), about +23% against the Dragon, +12% against 100 Armor | Fine; raise to +6% if the mace still lags in play |
+| Density, Wind Burst (mace) | vanilla smash maths: flat damage added before Armor | Fine; **Test** the rebalanced mace's smash |
+| Impaling (trident) | vanilla: only against aquatic mobs | Fine, situational |
+| Riptide, Loyalty, Channeling | movement and utility | Fine |
+| Knockback, Punch, Flame, Infinity, Multishot, Piercing, Quick Charge | utility; no crossbow of ours | Fine |
+| Fire Aspect | burning is fire damage, which is magic here, so Magic Resist cuts it and fire-proof bosses ignore it | Weak against bosses, fine as utility |
+| Looting | overlaps Collector's Pants | **Decide** (the usual answer: allowed, in the same exclusive set) |
+| Sweeping Edge | Better Combat has its own sweep settings | **Test** that it does anything |
+| Protection (+5 Armor a level), Projectile (+6), Fire and Blast (+5 Magic Resist), Warding (ours, +5 Magic Resist), Vitality (ours, +5 Health) | the defensive side, buffed | Done |
+| Feather Falling | vanilla fall protection | Fine (more useful with a mace and ships) |
+| Thorns | reflect damage is physical, so a mob's Armor cuts it | Weak against bosses; low priority |
+| Respiration | already +10 s of lungs a level through the atmosphere module (seen in a client) | Fine |
+| Aqua Affinity, Depth Strider, Frost Walker, Soul Speed, Swift Sneak | utility | Fine |
+| Fleet (ours) | +3% Move Speed a level (III 9%) | Weak: candidate for +5% a level |
+| Binding Curse | prevents unequipping | Fine |
+| Vanishing Curse | now reaches the legendary items (they are damageable, so in `enchantable/vanishing`); its effect on a Soulbound item is untested | **Test**; make it exclusive with Soulbound if it destroys the item |
+| Mending | our override halves the XP repair (factor 1, vanilla 2); the armour is damageable now | **Decide** (section 11) |
+| Unbreaking, Efficiency, Fortune, Silk Touch, Luck of the Sea, Lure | utility | Fine |
+| Soulbound (ours) | keeps the item through death | Fine |
+| Deep Lung, Pressure Seal, Glyphbound | designed, never built (section 4) | Left out |
