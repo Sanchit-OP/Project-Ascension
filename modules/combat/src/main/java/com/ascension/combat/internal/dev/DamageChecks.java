@@ -108,6 +108,8 @@ public final class DamageChecks {
             guarded(DamageChecks::checkEnchantable);
         } else if (settle == 320) {
             guarded(DamageChecks::checkEndlessHungerBase);
+        } else if (settle == 330) {
+            guarded(() -> checkEnchantDamage(server.overworld()));
             finished = true;
             log("RESULT: " + checks + " checks, " + failures + " failures");
             server.halt(false);
@@ -312,7 +314,6 @@ public final class DamageChecks {
                 ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_attack_damage"));
     }
 
-    /** At the weapon's own Attack Damage it swings at about 2.2 a second: slow and heavy, not the 4.3 it used to. */
     /**
      * Every one of the 26 combat items says whether the game lets it take an enchantment, by role: a sword takes the
      * weapon set (Sharpness, Keen Edge), a bow Power, armour Protection, boots Feather Falling, and all of them Mending and
@@ -363,12 +364,85 @@ public final class DamageChecks {
         expectCount("legendary items seen", seen, 26);
     }
 
+    /**
+     * What the enchantments are worth in a real swing (2026-10-22, after the buff): the stand-in player hits a zombie, which is undead
+     * and has no armour, with an iron sword plain, with Sharpness V and with Smite V, and the extra damage is read off the zombie's health.
+     * Sharpness V is +5 Attack Damage, Smite V the vanilla +12.5 against the undead, and the Vitality a piece gives is read off the player.
+     */
+    private static void checkEnchantDamage(ServerLevel level) {
+        log("--- enchantments in a real swing");
+        var enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        Zombie zombie = EntityType.ZOMBIE.create(level);
+        if (standIn == null || zombie == null) {
+            fail("no stand-in player or zombie");
+            return;
+        }
+        zombie.moveTo(standIn.getX() + 1.0, standIn.getY(), standIn.getZ());
+        level.addFreshEntity(zombie);
+        zombie.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100000.0);
+        zombie.getAttribute(Attributes.ARMOR).setBaseValue(0.0);
+        zombie.getAttribute(CombatAttributes.ARMOR).setBaseValue(0.0);
+        // A huge attack speed, so every swing is at full strength whatever the cooldown.
+        standIn.getAttribute(Attributes.ATTACK_SPEED).addTransientModifier(new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing"), 1000.0,
+                AttributeModifier.Operation.ADD_VALUE));
+
+        float plain = swing(new ItemStack(net.minecraft.world.item.Items.IRON_SWORD), zombie);
+        ItemStack sharp = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        sharp.enchant(enchantments.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS), 5);
+        float sharpDamage = swing(sharp, zombie);
+        ItemStack smite = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        smite.enchant(enchantments.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SMITE), 5);
+        float smiteDamage = swing(smite, zombie);
+
+        // The zombie carries some Armor of its difficulty tier, which cuts every point the same way, so the bonus is checked after it.
+        float through = (float) com.ascension.combat.internal.mechanics.DefenseFormula.multiplier(
+                zombie.getAttributeValue(CombatAttributes.ARMOR));
+        log("plain " + plain + ", Sharpness V " + sharpDamage + ", Smite V " + smiteDamage + ", the zombie lets "
+                + String.format("%.4f", through) + " through");
+        expect("a plain swing does damage (got " + plain + ")", plain > 0.0f, true);
+        expectNear("Sharpness V adds 5 damage to a swing, after the zombie's Armor", sharpDamage - plain, 5.0f * through);
+        expectNear("Smite V adds 12.5 damage to a swing at the undead, after its Armor", smiteDamage - plain, 12.5f * through);
+
+        standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing"));
+        zombie.discard();
+
+        // Vitality III on a piece of armour: +12 Max Health over the same helmet plain.
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(CombatContent.PROTEAN_MASK.get()));
+        tickStandIn();
+        double healthBefore = standIn.getMaxHealth();
+        ItemStack helmet = new ItemStack(CombatContent.PROTEAN_MASK.get());
+        helmet.enchant(enchantments.getOrThrow(ResourceKey.create(Registries.ENCHANTMENT,
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "vitality"))), 3);
+        standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, helmet);
+        tickStandIn();
+        double with = standIn.getMaxHealth();
+        float itemHealth = (float) (with - healthBefore);
+        log("Max Health " + healthBefore + " -> " + with + " with a Vitality III helmet over the same helmet plain");
+        expectNear("Vitality III on a piece adds 12 Max Health", itemHealth, 12.0f);
+        standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, ItemStack.EMPTY);
+    }
+
+    /** One full-strength swing of {@code weapon} by the stand-in player at {@code target}, and how much health the target lost. */
+    private static float swing(ItemStack weapon, LivingEntity target) {
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, weapon);
+        tickStandIn();
+        target.setHealth(target.getMaxHealth());
+        target.invulnerableTime = 0;
+        float before = target.getHealth();
+        standIn.attack(target);
+        return before - target.getHealth();
+    }
+
     private static boolean supports(net.minecraft.core.HolderLookup.RegistryLookup<net.minecraft.world.item.enchantment.Enchantment> enchantments,
                                     ItemStack stack, String namespace, String path) {
         return enchantments.getOrThrow(ResourceKey.create(Registries.ENCHANTMENT,
                 ResourceLocation.fromNamespaceAndPath(namespace, path))).value().isSupportedItem(stack);
     }
 
+    /** At the weapon's own Attack Damage it swings at about 2.2 a second: slow and heavy, not the 4.3 it used to. */
     private static void checkEndlessHungerBase() {
         tickStandIn();
         double speed = standIn.getAttributeValue(Attributes.ATTACK_SPEED);

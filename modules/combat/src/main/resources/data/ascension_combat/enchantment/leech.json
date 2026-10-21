@@ -10,8 +10,8 @@
         "attribute": "ascension_combat:omnivamp",
         "amount": {
           "type": "minecraft:linear",
-          "base": 0.01,
-          "per_level_above_first": 0.01
+          "base": 0.03,
+          "per_level_above_first": 0.03
         },
         "operation": "add_value"
       }
