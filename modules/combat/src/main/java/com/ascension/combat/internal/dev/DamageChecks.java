@@ -539,6 +539,8 @@ public final class DamageChecks {
                 + " of it gets through)");
         expectNear("Arcane Edge III adds its magic damage to the target hit, after Magic Resist", arcaneHits[0] - plainHits[0], arcane * arcaneThrough);
 
+        checkEnchantmentLimits(level, enchantments);
+
         standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(
                 ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing2"));
         standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -831,5 +833,51 @@ public final class DamageChecks {
 
     private static void log(String message) {
         System.out.println("[damage-checks] " + message);
+    }
+
+    /**
+     * Keen Edge goes with Sharpness (Sanchit, 2026-10-22), Warding still does not go with Protection, and the anvil refuses a seventh
+     * enchantment on an ordinary item (a eighth on a legendary one) but still lets an existing one rise a level.
+     */
+    private static void checkEnchantmentLimits(ServerLevel level,
+            net.minecraft.core.HolderGetter<net.minecraft.world.item.enchantment.Enchantment> enchantments) {
+        log("--- enchantment compatibility and the limit");
+        var ench = (java.util.function.Function<String, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment>>) path ->
+                enchantments.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENCHANTMENT,
+                        ResourceLocation.parse(path)));
+        expectCount("Keen Edge goes with Sharpness", net.minecraft.world.item.enchantment.Enchantment.areCompatible(
+                ench.apply("ascension_combat:keen_edge"), ench.apply("minecraft:sharpness")) ? 1 : 0, 1);
+        expectCount("Warding does not go with Protection", net.minecraft.world.item.enchantment.Enchantment.areCompatible(
+                ench.apply("ascension_combat:warding"), ench.apply("minecraft:protection")) ? 1 : 0, 0);
+
+        String[] six = {"minecraft:sharpness", "ascension_combat:keen_edge", "ascension_combat:leech", "ascension_combat:arcane_edge",
+                "ascension_combat:spellpiercing", "minecraft:unbreaking"};
+        ItemStack sword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        for (String path : six) {
+            sword.enchant(ench.apply(path), 1);
+        }
+        expectCount("a sword takes six enchantments, Keen Edge and Sharpness together", sword.getEnchantments().size(), 6);
+        ItemStack mending = new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK);
+        mending.enchant(ench.apply("minecraft:mending"), 1);
+        ItemStack upgrade = new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK);
+        upgrade.enchant(ench.apply("minecraft:sharpness"), 2);
+        expectCount("the anvil refuses a seventh on an ordinary sword", anvilCancelled(sword, mending) ? 1 : 0, 1);
+        expectCount("but lets an enchantment it has rise a level", anvilCancelled(sword, upgrade) ? 1 : 0, 0);
+
+        ItemStack legendary = new ItemStack(CombatContent.VEIGOS_BLADE.get());
+        for (String path : six) {
+            legendary.enchant(ench.apply(path), 1);
+        }
+        expectCount("a legendary item takes a seventh", anvilCancelled(legendary, mending) ? 1 : 0, 0);
+        legendary.enchant(ench.apply("minecraft:mending"), 1);
+        ItemStack looting = new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK);
+        looting.enchant(ench.apply("minecraft:looting"), 1);
+        expectCount("and refuses an eighth", anvilCancelled(legendary, looting) ? 1 : 0, 1);
+    }
+
+    private static boolean anvilCancelled(ItemStack left, ItemStack right) {
+        net.neoforged.neoforge.event.AnvilUpdateEvent anvil = new net.neoforged.neoforge.event.AnvilUpdateEvent(left, right, "", 0, standIn);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(anvil);
+        return anvil.isCanceled();
     }
 }
