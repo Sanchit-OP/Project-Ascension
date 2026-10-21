@@ -25,7 +25,7 @@ Install order matters only where noted.
 | **Distant Horizons** | `2.4.5-b-1.21.1` | Renders far terrain from an LOD database instead of loaded chunks. Back in the stack 2026-09-06 after being dropped and then un-dropped the same day — see "Distant Horizons: dropped, then fixed" below for why this specific version and this specific config. |
 | **EntityCulling** | | Skips entities the camera cannot see. |
 | **MoreCulling** | | Skips hidden block faces. |
-| **ImmediatelyFast** | `1.6.13+1.21.1-neoforge` | Batches immediate-mode rendering — GUIs, text, item entities. Pays for itself the moment a JEI screen or a full base of item frames is on screen. |
+| ~~ImmediatelyFast~~ | removed 2026-10-22 | Its `hud_batching` is the suspect for the level ring and hunger badge vanishing at random and returning in combat (the HUD draws them as tinted textures). Taken out of the pack to test that; the cost is a little FPS on busy menus such as JEI. If the fault stays, put it back and look elsewhere. |
 | **BadOptimizations** | `2.4.1` | Assorted client micro-optimisations. |
 
 ### Server / game logic

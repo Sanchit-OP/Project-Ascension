@@ -99,7 +99,7 @@ Atlas are in to make the controls bearable.
 - **Storage and travel:** Sophisticated Storage, Backpacks and Core, Tom's Simple Storage, Lootr, Waystones, Curios API.
 - **Information and interface:** JEI, Just Enough Resources, Jade, Immersive Damage Indicators, Controlling, Keybind Atlas,
   Mouse Tweaks, Ok Zoomer, Default Options, Iris.
-- **Performance:** Sodium, Lithium, FerriteCore, ModernFix, ImmediatelyFast, Alternate Current, BadOptimizations, Entity Culling,
+- **Performance:** Sodium, Lithium, FerriteCore, ModernFix, Alternate Current, BadOptimizations, Entity Culling,
   MoreCulling, Distant Horizons, Chunky, spark.
 - **Libraries:** Architectury, Balm, Cloth Config, Common Network, Forgified Fabric API, GeckoLib, Immersive Messages API, Lionfish
   API, playerAnimator, Resourceful Config and Lib, Searchables, Sparkweave Engine, TxniLib.
