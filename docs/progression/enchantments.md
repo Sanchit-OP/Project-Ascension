@@ -155,7 +155,7 @@ the Protection problem comes back by another route.
 > |---|---|---|
 > | Sharpness | +0.5 Attack Damage (V +2.5) | **+1.5 (V +7.5)** |
 > | Power | +0.5 Attack Damage (V +2.5) | **+1.5 (V +7.5)** |
-> | Smite, Bane of Arthropods | vanilla flat damage | **+2.5 Attack Damage against what they name (V +12.5)**, as vanilla, but as Attack Damage on the hit |
+> | Smite, Bane of Arthropods | vanilla flat damage only | **+1 Attack Damage a level against anything (V +5)** (a plain attribute, so items scale off it), **plus vanilla's flat +2.5 a level against what they name (V +12.5)**, left as vanilla |
 > | Keen Edge | +2 Lethality (III 6) | **+8 (III 24)** |
 > | Leech | +1% Omnivamp (III 3%) | **+4% (III 12%)** |
 > | Vitality | +1 Health (III +3) | **+5 (III +15 a piece, +60 a set)** |
@@ -164,13 +164,14 @@ the Protection problem comes back by another route.
 > | Fire, Blast Protection, Warding | +3 Magic Resist (IV 12) | **+5 (IV 20)** |
 > | Fleet, Breach | | unchanged |
 >
-> **Smite and Bane are code now, not data.** Vanilla's flat damage could not be seen by the items whose abilities scale off Attack Damage, so
-> `SmiteAndBane` gives the attacker one temporary Attack Damage modifier on the swing, when the target is what the enchantment names (undead,
-> arthropods), and removes it at the end of the tick; the enchantments' own flat effect is gone from their data so it does not count twice.
-> Against the undead (skeletons, zombies, the Wither, phantoms) Smite is plainly better than Sharpness, as in vanilla. Proved on a dedicated
-> server with real swings by `damage-checks` (252 checks, 0 failures): Sharpness V +7.5, Smite V +12.5 before the target's Armor, Bane nothing
-> against a zombie, Veigo's Blade hitting 595 harder with Smite V (its Attack Damage scaling saw the bonus), Vitality III +15 a piece. **Not yet
-> balanced against the bosses**: `tools/time-to-kill.py` does not count enchantments, and Smite V against the Wither needs a look when played.
+> **Smite and Bane: a plain attribute plus vanilla's hidden bonus (Sanchit, 2026-10-22).** The first attempt added the Attack Damage by code only against
+> the named mobs, which was too complex and was removed. Now each gives +1 Attack Damage a level on every hit (less than Sharpness's 1.5, which is the
+> "reduced scaling"), so the items whose abilities scale off Attack Damage see it, and keeps vanilla's own flat damage against the undead (Smite) or
+> arthropods (Bane) unchanged, **invisible to the sheet and to those abilities, on purpose: a hidden strong bonus the player finds**. Smite V against the
+> undead (skeletons, zombies, the Wither, phantoms) is +5 and +12.5, 17.5 in all, against Sharpness V's 7.5. Proved on a dedicated
+> server with real swings by `damage-checks` (251 checks, 0 failures): Sharpness V +7.5, Smite V +17.5 against a zombie (before its Armor), Bane V only its
+> 5 against a zombie, Veigo's Blade hitting 250 harder with Smite V (it saw the 5 Attack Damage), Vitality III +15 a piece. **Not yet balanced against the
+> bosses**: `tools/time-to-kill.py` does not count enchantments, and Smite V against the Wither needs a look when played.
 
 | Enchantment | Becomes | Per level | Top level | Units |
 |---|---|---|---|---|

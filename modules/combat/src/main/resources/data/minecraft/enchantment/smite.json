@@ -3,7 +3,39 @@
   "description": {
     "translate": "enchantment.minecraft.smite"
   },
-  "effects": {},
+  "effects": {
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 2.5,
+            "per_level_above_first": 2.5
+          }
+        },
+        "requirements": {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "type": "#minecraft:sensitive_to_smite"
+          }
+        }
+      }
+    ],
+    "minecraft:attributes": [
+      {
+        "id": "ascension_combat:enchantment/smite",
+        "attribute": "minecraft:generic.attack_damage",
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 1.0,
+          "per_level_above_first": 1.0
+        },
+        "operation": "add_value"
+      }
+    ]
+  },
   "exclusive_set": "#minecraft:exclusive_set/damage",
   "max_cost": {
     "base": 25,

@@ -4,6 +4,25 @@
     "translate": "enchantment.minecraft.bane_of_arthropods"
   },
   "effects": {
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 2.5,
+            "per_level_above_first": 2.5
+          }
+        },
+        "requirements": {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "type": "#minecraft:sensitive_to_bane_of_arthropods"
+          }
+        }
+      }
+    ],
     "minecraft:post_attack": [
       {
         "affected": "victim",
@@ -38,6 +57,18 @@
             }
           ]
         }
+      }
+    ],
+    "minecraft:attributes": [
+      {
+        "id": "ascension_combat:enchantment/bane_of_arthropods",
+        "attribute": "minecraft:generic.attack_damage",
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 1.0,
+          "per_level_above_first": 1.0
+        },
+        "operation": "add_value"
       }
     ]
   },
