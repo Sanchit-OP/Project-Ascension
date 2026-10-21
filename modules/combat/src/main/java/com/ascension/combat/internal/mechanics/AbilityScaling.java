@@ -18,20 +18,26 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class AbilityScaling {
 
-    /** Veigo's Blade: extra share of the target's current health per point of Attack Damage (0.2%). */
-    public static final float VEIGO_CURRENT_HP_PER_AD = 0.0005f;
-    /** Darken Blade: extra share of the target's max health per Attack Damage (0.1%), and shield per point. */
-    public static final float DARKEN_MAX_HP_PER_AD = 0.0005f;
-    public static final float DARKEN_SHIELD_PER_AD = 0.5f;
-    /** Divine Sunderer: extra share of max health per Attack Damage, for each of its two halves (0.1%). */
-    public static final float SUNDERER_MAX_HP_PER_AD = 0.0005f;
-    /** Spear of Shojin: extra share of max health, as true damage, per Attack Damage (0.1%). */
-    public static final float SHOJIN_MAX_HP_PER_AD = 0.000125f;
-    /** Galeforce: extra share of the target's missing health per Attack Damage (0.5%). */
-    public static final float GALEFORCE_MISSING_HP_PER_AD = 0.005f;
+    /*
+     * The legendary weapons were raised on 2026-10-22 (Sanchit: the player is far too weak against the bosses): every base
+     * damage in item_stats.json and every scaling below went up by roughly half, so a weapon kills the standard boss in about
+     * two thirds of the time it did and a late boss in about half of it (docs/progression/balance.md section 3).
+     */
+
+    /** Veigo's Blade: extra share of the target's current health per point of Attack Damage (0.075%). */
+    public static final float VEIGO_CURRENT_HP_PER_AD = 0.00075f;
+    /** Darken Blade: extra share of the target's max health per Attack Damage (0.07%), and shield per point. */
+    public static final float DARKEN_MAX_HP_PER_AD = 0.0007f;
+    public static final float DARKEN_SHIELD_PER_AD = 0.8f;
+    /** Divine Sunderer: extra share of max health per Attack Damage, for each of its two halves (0.07%). */
+    public static final float SUNDERER_MAX_HP_PER_AD = 0.0007f;
+    /** Spear of Shojin: extra share of max health, as true damage, per Attack Damage (0.02%). */
+    public static final float SHOJIN_MAX_HP_PER_AD = 0.0002f;
+    /** Galeforce: extra share of the target's missing health per Attack Damage (0.7%). */
+    public static final float GALEFORCE_MISSING_HP_PER_AD = 0.007f;
     /** Heartwood of Pallas and Ragefang: extra flat magic damage per Attack Damage on each hit. */
-    public static final float HEARTWOOD_ON_HIT_PER_AD = 0.15f;
-    public static final float RAGEFANG_ON_HIT_PER_AD = 0.1f;
+    public static final float HEARTWOOD_ON_HIT_PER_AD = 0.22f;
+    public static final float RAGEFANG_ON_HIT_PER_AD = 0.15f;
     /** Rocketbelt: extra burst damage per Attack Damage. */
     public static final float ROCKETBELT_BURST_PER_AD = 0.5f;
     /** Unending Despair: extra pulse damage per point of Health (10%). */

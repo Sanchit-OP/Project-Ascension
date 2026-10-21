@@ -1,5 +1,5 @@
 {
-  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. Balance, 2026-10-19: defensive stats are two thirds of the first pass (Sanchit: too strong); each weapon's damage is tuned so every legendary kills the standard boss in 85 to 115 seconds alone (tools/time-to-kill.py), its utility paid for in time (Darius's shred, Endless Hunger's sustain, Wraithblade's blink are slower on purpose). Rules: a melee weapon's damage is one figure in `weapon`; bows carry damage only; Armor and Magic Penetration only on Wizard's Agony; Omnivamp on five items only. tools/check-balance.py fails the build on a drift. Placeholders Sanchit tunes by playing.",
+  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. Balance, 2026-10-19: defensive stats are two thirds of the first pass (Sanchit: too strong); each weapon's damage is tuned so every legendary kills the standard boss in 36 to 56 seconds alone (tools/time-to-kill.py; raised on 2026-10-22, Sanchit: the player was far too weak against the bosses, it was 52 to 110), its utility paid for in time (Darius's shred, Endless Hunger's sustain, Wraithblade's blink are a little slower on purpose). Rules: a melee weapon's damage is one figure in `weapon`; bows carry damage only; Armor and Magic Penetration only on Wizard's Agony; Omnivamp on five items only. tools/check-balance.py fails the build on a drift. Placeholders Sanchit tunes by playing.",
   "values": {
     "minecraft:netherite_helmet": {
       "stats": {
@@ -35,7 +35,7 @@
     },
     "ascension_combat:veigos_blade": {
       "weapon": {
-        "damage": 10.1,
+        "damage": 16.5,
         "speed": 1.6
       },
       "stats": {
@@ -44,7 +44,7 @@
     },
     "ascension_combat:darius_axe": {
       "weapon": {
-        "damage": 14.2,
+        "damage": 34.0,
         "speed": 1.0
       },
       "stats": {
@@ -53,7 +53,7 @@
     },
     "ascension_combat:spear_of_shojin": {
       "weapon": {
-        "damage": 21.7,
+        "damage": 31.0,
         "speed": 1.4
       },
       "stats": {
@@ -62,7 +62,7 @@
     },
     "ascension_combat:divine_sunderer": {
       "weapon": {
-        "damage": 16.0,
+        "damage": 25.5,
         "speed": 1.2
       },
       "stats": {
@@ -72,7 +72,7 @@
     },
     "ascension_combat:darken_blade": {
       "weapon": {
-        "damage": 18.1,
+        "damage": 29.0,
         "speed": 1.4
       },
       "stats": {
@@ -81,13 +81,13 @@
     },
     "ascension_combat:ragefang": {
       "weapon": {
-        "damage": 5.3,
+        "damage": 12.0,
         "speed": 1.4
       }
     },
     "ascension_combat:endless_hunger": {
       "weapon": {
-        "damage": 14.0,
+        "damage": 24.0,
         "speed": 2.0
       },
       "stats": {
@@ -96,27 +96,27 @@
     },
     "ascension_combat:wraithblade": {
       "weapon": {
-        "damage": 14.1,
+        "damage": 32.0,
         "speed": 1.6
       },
       "stats": {
-        "lethality": 20,
+        "lethality": 40,
         "move_speed": 8
       }
     },
     "ascension_combat:mortal_reminder": {
       "stats": {
-        "attack_damage": 6.5
+        "attack_damage": 23.5
       }
     },
     "ascension_combat:heartwood_of_pallas": {
       "stats": {
-        "attack_damage": 11.4
+        "attack_damage": 21.5
       }
     },
     "ascension_combat:galeforce": {
       "stats": {
-        "attack_damage": 9.3,
+        "attack_damage": 22.0,
         "move_speed": 8
       }
     },

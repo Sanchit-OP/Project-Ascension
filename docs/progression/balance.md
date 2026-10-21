@@ -66,33 +66,37 @@ Axe (its shred helps everyone's hits) and Mortal Reminder (anti-heal). Wraithbla
 bottom. Heartwood of Pallas was lifted through its ability (1.5% of missing health a stack, up from 1%, and a
 no cap), not its stats.
 
+> **Raised again on 2026-10-22 (Sanchit: "currently the player is weak against the bosses, we need them all some buffs").** The times in this
+> table are the new ones; section 3b says what changed and why. The table of 2026-10-19 had them at 52 to 110 s alone.
+
 | Tier | Weapon | Alone (s) | Kit (s) | Why it is where it is |
 |---|---|---|---|---|
-| Strong | Spear of Shojin | 71 | 49 | True damage on every third hit |
-| Strong | Veigo's Blade | 76 | 49 | Bonus from the target's current health |
-| Middle | Divine Sunderer | 85 | 60 | Heals you |
-| Middle | Darken Blade | 89 | 61 | Shields you |
-| Middle | Galeforce | 89 | 64 | Dash and homing shot |
-| Middle | Heartwood of Pallas | 84 | 64 | Stacks, then a long-draw execute |
-| Strong | Ragefang | 52 | 37 | Builds attack speed as it hits, up to 7.5 a second (the ramp takes about 40 s of unbroken fighting) |
-| Utility | Mortal Reminder | 99 | 62 | Ignores 60% of Armor; **anti-heal for the team** |
-| Utility | Darius's Axe | 110 | 67 | **Shred (up to -60% Armor) for the team** |
-| Utility | Wraithblade | 110 | 66 | The blink and 20 Lethality |
-| Middle | Endless Hunger | 95 | 54 | Omnivamp sustains a long fight; hits hard and slow (a base 2 a second), faster as your Attack Damage grows, up to 3 a second |
-| *Pair* | Ragefang, one in each hand | 42 | 33 | Both copies count |
-| *Pair* | Endless Hunger, one in each hand | 46 | 32 | Both copies count |
+| Strong | Spear of Shojin | 46 | 36 | True damage on every third hit |
+| Strong | Veigo's Blade | 48 | 35 | Bonus from the target's current health |
+| Middle | Divine Sunderer | 54 | 40 | Heals you |
+| Middle | Darken Blade | 55 | 43 | Shields you |
+| Middle | Galeforce | 55 | 40 | Dash and homing shot |
+| Middle | Heartwood of Pallas | 53 | 46 | Stacks, then a long-draw execute |
+| Strong | Ragefang | 36 | 29 | Builds attack speed as it hits, up to 7.5 a second (the ramp takes about 40 s of unbroken fighting) |
+| Utility | Mortal Reminder | 44 | 34 | Ignores 60% of Armor; **anti-heal for the team** |
+| Utility | Darius's Axe | 47 | 37 | **Shred (up to -60% Armor) for the team** |
+| Utility | Wraithblade | 42 | 32 | The blink and 40 Lethality |
+| Middle | Endless Hunger | 51 | 35 | Omnivamp sustains a long fight; hits hard and slow (a base 2 a second), faster as your Attack Damage grows, up to 3 a second |
+| *Pair* | Ragefang, one in each hand | 28 | 23 | Both copies count |
+| *Pair* | Endless Hunger, one in each hand | 24 | 18 | Both copies count |
 | | *netherite sword* | 230 | 109 | |
 | | *mace (vanilla's 6 at 0.6 was 787 s alone, 319 kit)* | 295 | 167 | Rebalanced 2026-10-22 (Sanchit: basic and trash): **12 at 0.8**. First set to 26 at 0.9 and cut: the mace is meant to win by **jumping and smashing** (a fall adds flat damage, 4 a block for the first three, 2 for the next five, and Density adds more), not by plain swings, so this figure is its flat swing only and says little about its worth |
 | | *trident (vanilla's 9 at 1.1 was 286 s alone, 143 kit)* | 126 | 78 | Rebalanced 2026-10-22: **15 at 1.5** (Sanchit: a rare item, let it be a little good); throwing, Riptide, Loyalty and Channeling untouched. A thrown trident also carries the thrower's Attack Damage, as arrows do |
 
-**What uncapped does against a late boss.** On the Wither (4225 HP after the 2026-10-19 cut, 180 Armor, 110 Magic
-Resist), alone, kit in brackets: Veigo's Blade 171 s (122), Ragefang 179 (108), Spear of Shojin 179 (143), Divine
-Sunderer 181 (141), Galeforce 240 (176), Heartwood 255 (207), Darken Blade 278 (213), Mortal Reminder 441 (274),
-Endless Hunger 494 (284), Darius's Axe 497 (302), Wraithblade 572 (345).
-The Spear's true damage was the worst runaway (88 s) and has been cut to 0.5%, which puts it with Veigo and
+**What it does against a late boss.** On the Wither (4225 HP after the 2026-10-19 cut, 180 Armor, 110 Magic
+Resist), alone, kit in brackets, after the 2026-10-22 raise (what it was before, alone, after the semicolon): Ragefang 100 s (75; was 179),
+Spear of Shojin 105 (90; was 179), Veigo's Blade 111 (84; was 171), Divine Sunderer 116 (96; was 181), Galeforce 144 (112; was 240),
+Darken Blade 174 (140; was 278), Heartwood 175 (143; was 255), Mortal Reminder 194 (153; was 441), Darius's Axe 209 (161; was 497),
+Wraithblade 219 (166; was 572), Endless Hunger 270 (182; was 494).
+The Spear's true damage was the worst runaway (88 s) and was cut to 0.5% on 2026-10-19; it is now 0.8%, which keeps it with Veigo and
 Sunderer. What is left is a split between weapons whose damage is a percent of the boss's health, which
 grow stronger as bosses grow, and weapons that deal flat damage (Darius, Ragefang, Wraithblade, Mortal
-Reminder, Endless Hunger), which take about three times as long. Against the Warden the split is mild. Boss Armor and
+Reminder, Endless Hunger), which take about twice as long (three times before the raise). Against the Warden the split is mild. Boss Armor and
 Magic Resist do not close it, because they cut flat and percent damage alike.
 
 Cataclysm's weapons, with their real speeds (read from its jar, 2026-10-19), take 160 to 320 seconds alone, so
@@ -173,6 +177,56 @@ their slots (its own `item_stats.json`, each entry with a `cataclysm` mod check;
 speed, and Cataclysm's speeds have never been measured. Measuring them is the next step; then the boss
 weapons go to the same two thirds.
 
+### 3b. The weapons raised (2026-10-22)
+
+Sanchit: the player is far too weak against the bosses; buff every legendary weapon, base stats and scaling both, and tread carefully
+with the two that are dual-wielded. Two levers moved: every base damage in `item_stats.json` (a bow's Attack Damage), and every scaling
+coefficient in `AbilityScaling` and its effects class. Scaling went up by about half; each base damage was then solved with
+`tools/time-to-kill.py` so the weapon lands on its written time (`check-balance.py` holds it, and now holds the Wither too).
+
+| Weapon | Damage (speed) before | after | Ability, before | after |
+|---|---|---|---|---|
+| Veigo's Blade | 10.1 (1.6) | **16.5** (1.6) | 3% of current health, +0.05% per AD | **4%, +0.075%** |
+| Darius's Axe | 14.2 (1.0) | **34** (1.0) | shred 5% a stack, 12 stacks | unchanged |
+| Spear of Shojin | 21.7 (1.4) | **31** (1.4) | true 0.5% of max health, +0.0125% | **0.8%, +0.02%** |
+| Divine Sunderer | 16 (1.2) | **25.5** (1.2) | 2% + 2% of max health, +0.05% each | **2.5% + 2.5%, +0.07%** |
+| Darken Blade | 18.1 (1.4) | **29** (1.4) | 2.5% of max health, +0.05%; shield 6, +0.5 | **3.5%, +0.07%; shield 10, +0.8** |
+| Ragefang | 5.3 (1.4) | **12** (1.4) | 3 magic, +0.1 per AD | **4.5, +0.15** (ramp unchanged: +3% a hit, 7.5 a second) |
+| Endless Hunger | 14 (2.0) | **24** (2.0) | +0.6% speed per AD, up to 3; Omnivamp 7% | unchanged |
+| Wraithblade | 14.1 (1.6) | **32** (1.6) | 20 Lethality; blink | **40 Lethality**; blink unchanged |
+| Mortal Reminder | +6.5 Attack Damage | **+23.5** | ignores 60% of Armor | unchanged |
+| Heartwood of Pallas | +11.4 Attack Damage | **+21.5** | 3 magic, +0.15; Hunt 1.5% of missing health a stack | **4.5, +0.22; Hunt 2%** |
+| Galeforce | +9.3 Attack Damage | **+22** | 20% of missing health, +0.5% | **25%, +0.7%** |
+
+**Result** (the 1000 HP, 150 Armor standard boss, then the Wither; alone, then in the kit): the weapons now take **36 to 56 s alone**
+(was 52 to 110) and **29 to 46 s in the kit** (was 37 to 67); on the Wither **100 to 270 s alone** (was 171 to 572) and **75 to 182 in
+the kit** (was 108 to 345). Fastest to slowest at the standard boss is 1.55 times (the check allows 1.7, it was 2.2); at the Wither it
+is 2.7 (the new limit is 2.8).
+
+**Why the flat weapons went up furthest.** A weapon that deals a share of the boss's health grows with the boss; a flat weapon does
+not, and loses twice over on a late boss: it has about 4 times the health to chew through and the Wither lets 29% of a physical hit
+through (the Warden 57%). Darius's Axe went from 14 to 34 damage (2.4 times), Wraithblade 2.3 times, Mortal Reminder 3.6 times, against
+1.4 to 1.6 times for the share-of-health weapons. Wraithblade's Lethality was doubled, but it is a weak lever: against 180 Armor each
+point of Lethality is worth little under the 0.5^(Armor/100) curve (20 more Lethality saved it about 13% on the Wither).
+
+**The dual-wield pairs (Ragefang and Endless Hunger) were checked on their own.** A pair adds the second copy's damage (2 x damage - 1),
+Endless Hunger's Omnivamp (14%) and its Attack-Damage-driven swing speed (2.56 a second for a pair), so a base damage rise hits a pair
+twice: once as extra damage, once as extra speed. A pair of Endless Hunger is 2.1 to 2.2 times as fast as one copy, however it is
+tuned. Endless Hunger is therefore 24, not the 25.5 its single-weapon time alone would give, and its pair kills the standard boss in 24 s
+(Ragefang's pair 28 s), at the Wither 125 s (Ragefang 71 s). Not touched, on purpose: Ragefang's ramp (+3% a hit, 7.5 a second),
+Endless Hunger's speed per Attack Damage (0.6%, ceiling 3), both Omnivamp numbers, Darius's shred, the blink, the cooldowns. The server
+check (`damage-checks.txt`, 280 checks, 0 failures) proves both pairs on the stand-in player: Attack Damage 23 for two Ragefangs and 47
+for two Endless Hungers, 14% Omnivamp, a swing speed of 2.56, and a real swing of a Ragefang pair that carries both copies' damage and the
+on-hit magic.
+
+**Not fixed, said plainly.** Endless Hunger on its own still takes 2.7 times as long as the fastest weapon on the Wither (a pair is
+fine), and every flat weapon trails the share-of-health ones there. Closing it means giving the flat weapons a share-of-health part,
+which is a new mechanic and was not asked for; the cheaper help is already on the list: the runes and the growth points add flat Attack
+Damage, which helps a flat weapon most. **Divine Sunderer's heal grew with its percent:** it heals its whole bonus, so on the Wither one
+use is about 270 health (it was about 175), every 5 seconds. **The mace (12 at 0.8) and the trident (15 at 1.5)**, set earlier on
+2026-10-22 against the old legendary times, now sit well behind the legendaries (295 s and 126 s at the standard boss alone); the mace's
+real attack is its smash, and the trident was meant to be only a little good, so they stand as Sanchit set them.
+
 ## 4. Scaling the abilities
 
 An ability's base number stays in its effects class. Each gains an extra from one stat, read as a total
@@ -180,13 +234,13 @@ through `StatReader`, never from an attribute directly. Every coefficient is in 
 
 | Ability | Base | Gains |
 |---|---|---|
-| Veigo's Blade, Wither | 3% of current health | +0.05% per Attack Damage |
-| Darken Blade, burst | 2.5% of max health, 6 shield | +0.05% and +0.5 shield per Attack Damage |
-| Divine Sunderer | 2% physical + 2% magic of max health | +0.05% each per Attack Damage |
-| Spear of Shojin | 0.5% of max health, true | +0.0125% per Attack Damage |
-| Ragefang, Rage | 3 magic per hit | +0.1 per Attack Damage |
-| Heartwood of Pallas | 3 magic per hit | +0.15 per Attack Damage |
-| Galeforce | 20% of missing health | +0.5% per Attack Damage |
+| Veigo's Blade, Wither | 4% of current health | +0.075% per Attack Damage |
+| Darken Blade, burst | 3.5% of max health, 10 shield | +0.07% and +0.8 shield per Attack Damage |
+| Divine Sunderer | 2.5% physical + 2.5% magic of max health | +0.07% each per Attack Damage |
+| Spear of Shojin | 0.8% of max health, true | +0.02% per Attack Damage |
+| Ragefang, Rage | 4.5 magic per hit | +0.15 per Attack Damage |
+| Heartwood of Pallas | 4.5 magic per hit (Hunt: 2% of missing health a stack) | +0.22 per Attack Damage |
+| Galeforce | 25% of missing health | +0.7% per Attack Damage |
 | Rocketbelt | 6 burst damage | +0.5 per Attack Damage |
 | Unending Despair | 12 magic per pulse | +0.1 per point of Health |
 | Gargoyle Stoneplate | 4 per enemy, cap 40 | +0.05 per enemy and +0.4 to the cap, per Armor |
@@ -207,13 +261,13 @@ change with difficulty. Attack Damage is a percent on the boss's own, so x1.2 is
 
 | Boss | HP (Easy / Normal / Hard) | Armor | Magic Resist | Damage (Easy / Normal / Hard) | Kit time to kill, Normal (s) |
 |---|---|---|---|---|---|
-| The Warden | 829 / 975 / 1219 | 80 | 40 | -15% / 0 / +20% | 29 to 53 |
-| The Ender Golem | 1381 / 1625 / 2031 | 100 | 50 | +5% / +20% / +40% | 41 to 93 |
-| The Ender Guardian | 1768 / 2080 / 2600 | 120 | 60 | +25% / +40% / +60% | 49 to 126 |
-| The Netherite Monstrosity | 2321 / 2730 / 3413 | 140 | 80 | +45% / +60% / +80% | 64 to 175 |
-| Ignis | 2873 / 3380 / 4225 | 160 | 90 | +65% / +80% / +100% | 81 to 240 |
-| The Wither | 3591 / 4225 / 5281 | 180 | 110 | +85% / +100% / +120% | 108 to 345 |
-| The Ender Dragon (5a) | 3868 / 4550 / 5688 | 190 | 90 | none (no attribute) | 96 to 398, up to x3 on her body |
+| The Warden | 829 / 975 / 1219 | 80 | 40 | -15% / 0 / +20% | 19 to 30 |
+| The Ender Golem | 1381 / 1625 / 2031 | 100 | 50 | +5% / +20% / +40% | 32 to 52 |
+| The Ender Guardian | 1768 / 2080 / 2600 | 120 | 60 | +25% / +40% / +60% | 38 to 68 |
+| The Netherite Monstrosity | 2321 / 2730 / 3413 | 140 | 80 | +45% / +60% / +80% | 48 to 93 |
+| Ignis | 2873 / 3380 / 4225 | 160 | 90 | +65% / +80% / +100% | 58 to 127 |
+| The Wither | 3591 / 4225 / 5281 | 180 | 110 | +85% / +100% / +120% | 75 to 182 |
+| The Ender Dragon (5a) | 3868 / 4550 / 5688 | 190 | 90 | none (no attribute) | 78 to 211, up to x3 on her body |
 
 Written into `mob_stats` (Armor, Magic Resist) and `mob_difficulty` (`health_total` and the damage percent, per
 difficulty); the four Cataclysm bosses live in `ascension-compat-cataclysm`'s own files. `health_total` sets
@@ -242,8 +296,8 @@ Read from the 1.21.1 source (`EnderDragon`), so the numbers are not guesses:
 
 Why: just above the Wither (4,225), as the ladder asks; Armor one step above it (180 to 190); Magic Resist lower than the
 Wither's (110) because the Dragon is a physical fight and the head is the weak point, so a magic-heavy kit is not
-punished twice. `tools/time-to-kill.py 4550 190 90`, no growth or runes, head hits: Ragefang pair 96 s, Veigo 135 s,
-Heartwood 207 s, Darken Blade 217 s, Endless Hunger pair 193 s, Wraithblade 398 s (the Wither's 91, 122, 207, 213, 167, 345).
+punished twice. `tools/time-to-kill.py 4550 190 90`, no growth or runes, head hits, kit, after the 2026-10-22 weapon raise: Ragefang pair 62 s, Veigo 93 s,
+Darken Blade 139 s, Heartwood 143 s, Endless Hunger pair 111 s, Wraithblade 192 s (the Wither's 59, 84, 140, 143, 96, 166; before the raise Wraithblade was 398 s here).
 Add up to a factor of three if most hits land on her body.
 
 Open: whether the Dragon's kill should drop a heart (decided: no, for now).
@@ -255,3 +309,5 @@ Open: whether the Dragon's kill should drop a heart (decided: no, for now).
 - Measure Cataclysm's weapon attack speeds, then bring its weapons to two thirds.
 - Write the boss list (section 5) into `mob_stats` and `mob_difficulty` once Sanchit has edited it.
 - A rune and growth pass against these numbers: the runes and the 35 growth points add to every total.
+- After the 2026-10-22 raise: flat weapons still trail on the Wither (section 3b), Divine Sunderer's heal is large on a late boss, and none of it
+  has been fought in a client yet. The runes and the growth points are next, and they add Attack Damage on top of these times.

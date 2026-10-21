@@ -4,8 +4,12 @@
 Weapons are balanced by time to kill, not points: a weapon's worth is mostly its ability, which no stat
 sum can say. Each legendary weapon must kill the standard boss (1000 HP, 150 Armor, 90 Magic Resist) in
 its written number of seconds, give or take 6%, and the fastest and slowest may not be further apart than
-2.2 times (it was 1.8 until Ragefang's speed limit was lifted, 2026-10-19), so nobody runs one weapon. A weapon
-that carries utility (Darius's shred, Wraithblade's blink) is slower on purpose.
+1.7 times (it was 2.2 before the 2026-10-22 buff), so nobody runs one weapon. A weapon that carries utility
+(Darius's shred, Wraithblade's blink) is a little slower on purpose.
+
+The same is held at the Wither (4225 HP, 180 Armor, 110 Magic Resist), the last boss of the ladder, where
+the weapons that deal flat damage fall behind the ones that deal a share of the boss's health: each weapon's
+written time there, and a wider spread limit that says how far behind a flat weapon may fall.
 
 Armour, boots and the off-hand are balanced by points: every stat is worth some points and every slot has
 one budget; a piece must land within 3 points of its slot's (or its own written target, for the few that
@@ -38,17 +42,32 @@ spec.loader.exec_module(ttk)
 # faster, the ones that carry utility for a team (Darius's shred, Mortal Reminder's anti-heal) a little
 # slower, and the two dual-wield weapons are slow alone and strong as a pair.
 # 2026-10-19 (Sanchit: "dont want to keep the kill time intact"): Ragefang's attack-speed limit went to 7.5 with its
-# damage left as it was, so it is now the fastest weapon (52 s), and Endless Hunger swings half as fast and hits
-# 2.5 times as hard (95 s). The spread limit went from 1.8 to 2.2 to match, on his word.
+# damage left as it was, so it is the fastest weapon, and Endless Hunger swings half as fast and hits harder.
+# 2026-10-22 (Sanchit: "currently the player is weak against the fuking bosses, we need them all some buffs"): every
+# weapon's base damage and scaling went up, so each kills the standard boss in about two thirds of the time it did
+# (the old figures were 52 to 110 s) and the Wither in about half. The flat-damage weapons (Darius's Axe, Wraithblade,
+# Mortal Reminder, Endless Hunger) were raised furthest, since a share-of-health weapon grows with the boss and they do not.
 TTK_TARGET = {
-    'spear_of_shojin': 70, 'veigos_blade': 75, 'divine_sunderer': 85, 'darken_blade': 90, 'galeforce': 90,
-    'heartwood_of_pallas': 84, 'ragefang': 52, 'mortal_reminder': 100, 'darius_axe': 110, 'wraithblade': 110,
-    'endless_hunger': 95,
+    'spear_of_shojin': 46, 'veigos_blade': 48, 'divine_sunderer': 54, 'darken_blade': 55, 'galeforce': 55,
+    'heartwood_of_pallas': 53, 'ragefang': 36, 'mortal_reminder': 44, 'darius_axe': 47, 'wraithblade': 42,
+    'endless_hunger': 51,
 }
-PAIR_TARGET = {'ragefang': 42, 'endless_hunger': 46}   # worn one in each hand
+PAIR_TARGET = {'ragefang': 28, 'endless_hunger': 24}   # worn one in each hand
 TTK_TOLERANCE = 0.06
-TTK_SPREAD = 2.2
+TTK_SPREAD = 1.7
 BOSS = (1000.0, 150.0, 90.0)
+
+# The same weapons against the Wither (the 2026-10-19 numbers, balance.md section 5), alone. A flat weapon falls behind
+# here (Endless Hunger most: its damage is flat and its sustain does little against 180 Armor), which Sanchit parked until
+# a real fight says it matters, so the spread limit is wide and written down rather than closed.
+WITHER_TARGET = {
+    'spear_of_shojin': 105, 'veigos_blade': 111, 'divine_sunderer': 116, 'darken_blade': 174, 'galeforce': 144,
+    'heartwood_of_pallas': 175, 'ragefang': 100, 'mortal_reminder': 194, 'darius_axe': 209, 'wraithblade': 219,
+    'endless_hunger': 270,
+}
+WITHER_PAIR_TARGET = {'ragefang': 71, 'endless_hunger': 125}
+WITHER_SPREAD = 2.8
+WITHER = (4225.0, 180.0, 110.0)
 
 # Points per unit of a defensive piece's stats. Omnivamp and Penetration are set by hand, not scored.
 WEIGHTS = {
@@ -123,6 +142,29 @@ def main():
     print('  spread slowest / fastest: %.2f (limit %.1f)' % (spread, TTK_SPREAD))
     if spread > TTK_SPREAD:
         problems.append('the weapons are %.2f times apart in time to kill, limit %.1f' % (spread, TTK_SPREAD))
+
+    print('The Wither (%d HP, %d Armor, %d Magic Resist), alone:' % WITHER)
+    print('  %-22s %8s %8s %8s' % ('weapon', 'alone', 'target', 'kit'))
+    late = {}
+    for name in WITHER_TARGET:
+        a = ttk.fight(name, ttk.Boss(*WITHER), False)
+        k = ttk.fight(name, ttk.Boss(*WITHER), True)
+        late[name] = a
+        flag = '' if abs(a - WITHER_TARGET[name]) <= WITHER_TARGET[name] * TTK_TOLERANCE else '   <-- off'
+        print('  %-22s %8.0f %8d %8.0f%s' % (name, a, WITHER_TARGET[name], k, flag))
+        if flag:
+            problems.append('%s kills the Wither in %.0f s, written %d s' % (name, a, WITHER_TARGET[name]))
+    for name, target in WITHER_PAIR_TARGET.items():
+        a = ttk.fight(name, ttk.Boss(*WITHER), False, None, True)
+        k = ttk.fight(name, ttk.Boss(*WITHER), True, None, True)
+        flag = '' if abs(a - target) <= target * 0.08 else '   <-- off'
+        print('  %-22s %8.0f %8d %8.0f%s' % (name + ' (a pair)', a, target, k, flag))
+        if flag:
+            problems.append('%s as a pair kills the Wither in %.0f s, written %d s' % (name, a, target))
+    late_spread = max(late.values()) / min(late.values())
+    print('  spread slowest / fastest: %.2f (limit %.1f)' % (late_spread, WITHER_SPREAD))
+    if late_spread > WITHER_SPREAD:
+        problems.append('the weapons are %.2f times apart at the Wither, limit %.1f' % (late_spread, WITHER_SPREAD))
 
     print('Armour, boots and off-hand (points, target):')
     for slot, names in SLOTS.items():

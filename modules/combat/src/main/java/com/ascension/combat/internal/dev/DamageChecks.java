@@ -112,6 +112,8 @@ public final class DamageChecks {
             guarded(() -> checkEnchantDamage(server.overworld()));
         } else if (settle == 340) {
             guarded(() -> checkLootingAndSweeping(server.overworld()));
+        } else if (settle == 350) {
+            guarded(() -> checkLegendaryWeapons(server.overworld()));
             finished = true;
             log("RESULT: " + checks + " checks, " + failures + " failures");
             server.halt(false);
@@ -529,6 +531,90 @@ public final class DamageChecks {
         extra.discard();
     }
 
+    /**
+     * The eleven legendary weapons carry the raised numbers of 2026-10-22 (Sanchit: the player was far too weak against the bosses), and
+     * the two dual-wield pairs add up: the second copy of Ragefang or Endless Hunger counts its damage, and Endless Hunger its Omnivamp and
+     * a swing speed that follows the sum. Real swings at a zombie with 1,000 health and no Armor of its own, so a weapon's ability can be
+     * worked out by hand: Veigo's Blade takes 4% of the target's current health plus 0.075% per Attack Damage, Ragefang adds 4.5 magic
+     * plus 0.15 per Attack Damage.
+     */
+    private static void checkLegendaryWeapons(ServerLevel level) {
+        log("--- the legendary weapons");
+        record Expected(String name, net.minecraft.world.item.Item item, float attackDamage) {
+        }
+        List<Expected> weapons = List.of(
+                new Expected("Veigo's Blade", CombatContent.VEIGOS_BLADE.get(), 16.5f),
+                new Expected("Darius's Axe", CombatContent.DARIUS_AXE.get(), 34.0f),
+                new Expected("Spear of Shojin", CombatContent.SPEAR_OF_SHOJIN.get(), 31.0f),
+                new Expected("Divine Sunderer", CombatContent.DIVINE_SUNDERER.get(), 25.5f),
+                new Expected("Darken Blade", CombatContent.DARKEN_BLADE.get(), 29.0f),
+                new Expected("Ragefang", CombatContent.RAGEFANG.get(), 12.0f),
+                new Expected("Endless Hunger", CombatContent.ENDLESS_HUNGER.get(), 24.0f),
+                new Expected("Wraithblade", CombatContent.WRAITHBLADE.get(), 32.0f),
+                // A bow's Attack Damage is the player's 1 plus its stat.
+                new Expected("Mortal Reminder", CombatContent.MORTAL_REMINDER.get(), 24.5f),
+                new Expected("Heartwood of Pallas", CombatContent.HEARTWOOD_OF_PALLAS.get(), 22.5f),
+                new Expected("Galeforce", CombatContent.GALEFORCE.get(), 23.0f));
+        standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        for (Expected weapon : weapons) {
+            standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(weapon.item()));
+            tickStandIn();
+            expectNear(weapon.name() + " carries " + weapon.attackDamage() + " Attack Damage",
+                    (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), weapon.attackDamage());
+        }
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CombatContent.WRAITHBLADE.get()));
+        tickStandIn();
+        expectNear("Wraithblade carries 40 Lethality", (float) standIn.getAttributeValue(CombatAttributes.LETHALITY), 40.0f);
+
+        // Endless Hunger: one copy 7% Omnivamp; a pair 14%, 2 x 24 - 1 = 47 Attack Damage, and 2.0 a second grown by 0.6% a point.
+        standIn.setHealth(standIn.getMaxHealth());
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CombatContent.ENDLESS_HUNGER.get()));
+        tickStandIn();
+        expectNear("one Endless Hunger gives 7% Omnivamp", (float) standIn.getAttributeValue(CombatAttributes.OMNIVAMP), 0.07f);
+        standIn.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(CombatContent.ENDLESS_HUNGER.get()));
+        tickStandIn();
+        expectNear("a pair of Endless Hunger gives 14% Omnivamp", (float) standIn.getAttributeValue(CombatAttributes.OMNIVAMP), 0.14f);
+        expectNear("a pair of Endless Hunger has 47 Attack Damage", (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), 47.0f);
+        expectNear("and swings at 2.56 a second, under its ceiling of 3", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED), 2.564f);
+        standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+
+        Zombie zombie = EntityType.ZOMBIE.create(level);
+        if (zombie == null) {
+            fail("could not make the stand-in zombie");
+            return;
+        }
+        zombie.moveTo(standIn.getX() + 1.0, standIn.getY(), standIn.getZ());
+        level.addFreshEntity(zombie);
+        zombie.getAttribute(Attributes.MAX_HEALTH).setBaseValue(1000.0);
+        zombie.getAttribute(Attributes.ARMOR).setBaseValue(0.0);
+        zombie.getAttribute(CombatAttributes.ARMOR).setBaseValue(0.0);
+        standIn.getAttribute(Attributes.ATTACK_SPEED).addTransientModifier(new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing3"), 1000.0,
+                AttributeModifier.Operation.ADD_VALUE));
+        float armor = (float) com.ascension.combat.internal.mechanics.DefenseFormula.multiplier(
+                zombie.getAttributeValue(CombatAttributes.ARMOR));
+        float magic = (float) MagicDamage.passThrough(zombie, standIn);
+
+        float veigo = swing(new ItemStack(CombatContent.VEIGOS_BLADE.get()), zombie);
+        expectNear("a swing of Veigo's Blade takes 16.5 plus 4% + 0.075% x 16.5 of 1,000 health, after Armor", veigo,
+                (16.5f + 1000.0f * (0.04f + 0.00075f * 16.5f)) * armor);
+
+        // The first hit of a Ragefang is not its third, so its magic is single; the pair swings with the second copy in the off hand.
+        float ragefang = swing(new ItemStack(CombatContent.RAGEFANG.get()), zombie);
+        expectNear("a swing of Ragefang is 12 plus 4.5 + 0.15 x 12 magic", ragefang, 12.0f * armor + (4.5f + 0.15f * 12.0f) * magic);
+        standIn.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(CombatContent.RAGEFANG.get()));
+        float pair = swing(new ItemStack(CombatContent.RAGEFANG.get()), zombie);
+        expectNear("a swing of a pair of Ragefang is 23 plus 4.5 + 0.15 x 23 magic (both copies count)", pair,
+                23.0f * armor + (4.5f + 0.15f * 23.0f) * magic);
+        log("Veigo's Blade " + veigo + ", Ragefang " + ragefang + ", a pair of Ragefang " + pair);
+
+        standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing3"));
+        standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        zombie.discard();
+    }
+
     /** Two attacks by the stand-in in the same tick: the first at {@code aimed}, then one at {@code extra}. Returns what each lost. */
     private static float[] sweepPair(ItemStack weapon, Zombie aimed, Zombie extra) {
         standIn.setItemInHand(InteractionHand.MAIN_HAND, weapon);
@@ -561,14 +647,14 @@ public final class DamageChecks {
                 ResourceLocation.fromNamespaceAndPath(namespace, path))).value().isSupportedItem(stack);
     }
 
-    /** At the weapon's own Attack Damage it swings at about 2.2 a second: slow and heavy, not the 4.3 it used to. */
+    /** At the weapon's own Attack Damage it swings at about 2.3 a second: slow and heavy, not the 4.3 it used to. */
     private static void checkEndlessHungerBase() {
         tickStandIn();
         double speed = standIn.getAttributeValue(Attributes.ATTACK_SPEED);
         double damage = standIn.getAttributeValue(Attributes.ATTACK_DAMAGE);
         expect("Endless Hunger on its own swings at 2 to 2.6 a second (got " + String.format("%.2f", speed)
                 + " at " + String.format("%.1f", damage) + " Attack Damage)", speed >= 2.0 && speed <= 2.6, true);
-        expect("and hits for an Attack Damage of 14 (got " + String.format("%.1f", damage) + ")", Math.abs(damage - 14.0) < 0.5, true);
+        expect("and hits for an Attack Damage of 24 (got " + String.format("%.1f", damage) + ")", Math.abs(damage - 24.0) < 0.5, true);
     }
 
     /**

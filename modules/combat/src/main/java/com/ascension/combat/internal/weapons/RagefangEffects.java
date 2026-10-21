@@ -58,7 +58,7 @@ public final class RagefangEffects {
     private static final double ATTACK_SPEED_SHADOW_LIMIT = 7.5;
     private static final long DECAY_GRACE_TICKS = 20L;
     private static final long DECAY_RAMP_TICKS = 60L;
-    private static final float ON_HIT_MAGIC_DAMAGE = 3.0f;
+    private static final float ON_HIT_MAGIC_DAMAGE = 4.5f;
 
     private static final ResourceLocation ATTACK_SPEED_MODIFIER_ID =
             ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "ragefang_attack_speed");

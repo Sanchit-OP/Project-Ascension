@@ -89,7 +89,7 @@ public final class GaleforceEffects {
     /** A real block distance now (Blink is raycast-clamped), matching Sanchit's own "at least 6 blocks" spec exactly. */
     private static final double DASH_DISTANCE = 6.0;
 
-    private static final float MISSING_HEALTH_BONUS_PERCENT = 0.20f;
+    private static final float MISSING_HEALTH_BONUS_PERCENT = 0.25f;
     private static final int COOLDOWN_TICKS = 160;
     private static final long LAST_TARGET_WINDOW_TICKS = 100L;
     private static final double NEARBY_SCAN_RADIUS = 16.0;

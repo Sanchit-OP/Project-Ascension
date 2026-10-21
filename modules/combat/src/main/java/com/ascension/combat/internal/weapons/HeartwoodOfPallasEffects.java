@@ -104,7 +104,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class HeartwoodOfPallasEffects {
 
     /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final float ON_HIT_MAGIC_DAMAGE = 3.0f;
+    private static final float ON_HIT_MAGIC_DAMAGE = 4.5f;
 
     /** Catalog-specified: refreshed while the target's been hit in the last 5s. */
     private static final long CORRUPTION_DECAY_TICKS = 100L;
@@ -124,7 +124,7 @@ public final class HeartwoodOfPallasEffects {
      * execute deals {@code stacks / STACK_PERCENT_DIVISOR} of the target's missing HP, so this is
      * "how many stacks equal a 100% missing-HP execute" -- 100 means 10 stacks is a 10% execute.
      */
-    private static final float STACK_PERCENT_DIVISOR = 100.0f / 1.5f;   // 1.5% of the missing health per stack
+    private static final float STACK_PERCENT_DIVISOR = 100.0f / 2.0f;   // 2% of the missing health per stack
 
     private HeartwoodOfPallasEffects() {
     }
