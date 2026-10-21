@@ -20,7 +20,7 @@ public final class LibraryScreen extends AbstractContainerScreen<LibraryMenu> {
 
     private static final int LIST_X = 8;
     private static final int LIST_Y = 18;
-    private static final int LIST_W = 112;
+    private static final int LIST_W = 106;
     private static final int ROW_H = 10;
     private static final int ROWS = 11;
 
@@ -45,7 +45,7 @@ public final class LibraryScreen extends AbstractContainerScreen<LibraryMenu> {
         super.init();
         take = addRenderableWidget(Button.builder(Component.translatable("container.ascension_combat.enchantment_library.take"),
                         button -> minecraft.gameMode.handleInventoryButtonClick(menu.containerId, menu.catalog().size()))
-                .bounds(leftPos + 124, topPos + 92, 44, 14).build());
+                .bounds(leftPos + 118, topPos + 92, 50, 14).build());
     }
 
     /** Indexes (into the catalog) of the enchantments the library holds, in the menu's order. */
@@ -82,22 +82,19 @@ public final class LibraryScreen extends AbstractContainerScreen<LibraryMenu> {
             graphics.drawString(font, font.plainSubstrByWidth(name.getString(), LIST_W - 6), x + LIST_X + 3, rowY + 1, 0xFFFFFF, false);
         }
         if (held.isEmpty()) {
-            graphics.drawString(font, Component.translatable("container.ascension_combat.enchantment_library.empty"),
-                    x + LIST_X + 3, y + LIST_Y + 3, 0xA0A0A0, false);
+            graphics.drawWordWrap(font, Component.translatable("container.ascension_combat.enchantment_library.empty"),
+                    x + LIST_X + 3, y + LIST_Y + 3, LIST_W - 6, 0xA0A0A0);
         }
 
         for (Slot slot : menu.slots) {
             graphics.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, WELL);
             graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, DARK);
         }
-        graphics.drawString(font, Component.translatable("container.ascension_combat.enchantment_library.in"), x + 152, y + 24, 0x404040, false);
-        graphics.drawString(font, Component.translatable("container.ascension_combat.enchantment_library.blank"), x + 152, y + 48, 0x404040, false);
-        graphics.drawString(font, Component.translatable("container.ascension_combat.enchantment_library.out"), x + 152, y + 72, 0x404040, false);
-
         int cost = menu.selectedCost();
-        graphics.drawString(font, cost == 0 ? Component.empty()
-                        : Component.translatable("container.ascension_combat.enchantment_library.cost", cost),
-                x + 124, y + 110, 0x404040, false);
+        if (cost > 0) {
+            graphics.drawWordWrap(font, Component.translatable("container.ascension_combat.enchantment_library.cost", cost),
+                    x + 118, y + 112, 52, 0x404040);
+        }
         take.active = cost > 0;
     }
 
@@ -126,5 +123,13 @@ public final class LibraryScreen extends AbstractContainerScreen<LibraryMenu> {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
+        if (hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index <= LibraryMenu.OUTPUT) {
+            String key = switch (hoveredSlot.index) {
+                case LibraryMenu.INPUT -> "in";
+                case LibraryMenu.BLANK -> "blank";
+                default -> "out";
+            };
+            graphics.renderTooltip(font, Component.translatable("container.ascension_combat.enchantment_library." + key), mouseX, mouseY);
+        }
     }
 }

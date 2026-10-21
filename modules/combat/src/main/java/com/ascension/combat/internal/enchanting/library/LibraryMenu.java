@@ -79,19 +79,19 @@ public final class LibraryMenu extends AbstractContainerMenu {
             selected[i] = addDataSlot(DataSlot.standalone());
         }
 
-        addSlot(new Slot(container, INPUT, 132, 20) {
+        addSlot(new Slot(container, INPUT, 126, 20) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(Items.ENCHANTED_BOOK);
             }
         });
-        addSlot(new Slot(container, BLANK, 132, 44) {
+        addSlot(new Slot(container, BLANK, 126, 44) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(Items.BOOK);
             }
         });
-        addSlot(new Slot(container, OUTPUT, 132, 68) {
+        addSlot(new Slot(container, OUTPUT, 126, 68) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
