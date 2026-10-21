@@ -6,8 +6,8 @@
   "icon": "ascension_combat:rune/overkill",
   "effect": "ascension_combat:overkill",
   "values": {
-    "radius": 4,
-    "max_damage": 6
+    "radius": 5,
+    "max_damage": 25
   },
   "numbers": [
     {

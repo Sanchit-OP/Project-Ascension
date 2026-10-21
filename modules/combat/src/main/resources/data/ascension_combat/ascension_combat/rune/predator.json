@@ -1,0 +1,42 @@
+{
+  "path": "reaver",
+  "slot": "keystone",
+  "world": true,
+  "position": 2,
+  "icon": "ascension_combat:rune/predator",
+  "effect": "ascension_combat:predator",
+  "values": {
+    "damage_per_lethality": 0.004,
+    "lethality_per_stack": 4,
+    "max_stacks": 5,
+    "stack_seconds": 10
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.predator.n0",
+      "parts": [
+        {
+          "value": "damage_per_lethality",
+          "format": "plus_percent",
+          "stat": "lethality"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.predator.n1",
+      "parts": [
+        {
+          "value": "lethality_per_stack",
+          "format": "plus",
+          "stat": "lethality"
+        },
+        {
+          "value": "stack_seconds"
+        },
+        {
+          "value": "max_stacks"
+        }
+      ]
+    }
+  ]
+}

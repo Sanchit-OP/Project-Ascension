@@ -7,16 +7,16 @@
   "effect": "ascension_combat:relentless_strikes",
   "values": {
     "max_stacks": 4,
-    "damage_per_stack": 0.75,
-    "decay_seconds": 3
+    "decay_seconds": 3,
+    "damage_percent_per_stack": 0.04
   },
   "numbers": [
     {
       "text": "rune.ascension_combat.relentless_strikes.n0",
       "parts": [
         {
-          "value": "damage_per_stack",
-          "format": "plus",
+          "value": "damage_percent_per_stack",
+          "format": "plus_percent",
           "stat": "attack_damage"
         }
       ]

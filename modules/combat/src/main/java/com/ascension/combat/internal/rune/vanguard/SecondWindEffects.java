@@ -21,7 +21,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * {@link com.ascension.combat.internal.armor.RocketbeltEffects} makes of it for its landing-burst
  * delay, just read the opposite way (skip-while-active instead of act-while-active).
  *
- * <p>Its numbers are the rune's data: {@code heal}, {@code interval_seconds}, {@code below_health}
+ * <p>Its numbers are the rune's data: {@code heal_fraction} (of maximum health), {@code interval_seconds}, {@code below_health}
  * (a fraction of max HP).
  */
 public final class SecondWindEffects {
@@ -59,7 +59,7 @@ public final class SecondWindEffects {
             return;
         }
 
-        player.heal((float) rune.get().value("heal", 1.0));
+        player.heal((float) (player.getMaxHealth() * rune.get().value("heal_fraction", 0.025)));
         cooldown.activateUntil(now + rune.get().ticks("interval_seconds", 1.0));
     }
 }

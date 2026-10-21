@@ -7,8 +7,8 @@
   "effect": "ascension_combat:clarity",
   "values": {
     "above_health": 0.7,
-    "attack_damage": 1,
-    "magic_bonus": 0.08
+    "magic_bonus": 0.1,
+    "attack_damage_percent": 0.08
   },
   "numbers": [
     {
@@ -24,8 +24,8 @@
       "text": "rune.ascension_combat.clarity.n1",
       "parts": [
         {
-          "value": "attack_damage",
-          "format": "plus",
+          "value": "attack_damage_percent",
+          "format": "plus_percent",
           "stat": "attack_damage"
         }
       ]

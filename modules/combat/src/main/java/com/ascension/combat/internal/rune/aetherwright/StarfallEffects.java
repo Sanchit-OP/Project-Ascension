@@ -35,7 +35,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  *
  * <p>Its numbers are the rune's data: {@code base_damage}, {@code ad_ratio} (a share of your Attack
  * Damage), {@code radius}, {@code delay_seconds}, {@code cooldown_seconds},
- * {@code magic_hit_reduction_seconds}.
+ * {@code magic_hit_reduction_seconds} and {@code shorten_gap_seconds} (a magic hit shortens the cooldown at most this often).
  */
 public final class StarfallEffects {
 
@@ -79,7 +79,8 @@ public final class StarfallEffects {
         if (state.ready(level.getGameTime())) {
             call(player, level, target, rune.get());
         } else {
-            state.shorten(rune.get().ticks("magic_hit_reduction_seconds", 1.0));
+            state.shorten(rune.get().ticks("magic_hit_reduction_seconds", 1.0), level.getGameTime(),
+                    rune.get().ticks("shorten_gap_seconds", 1.0));
         }
     }
 
@@ -87,7 +88,7 @@ public final class StarfallEffects {
         StarfallState state = player.getData(RuneAttachments.STARFALL.get());
         long now = level.getGameTime();
         if (state.ready(now)) {
-            state.call(now, target.position(), values.ticks("delay_seconds", 1.0), values.ticks("cooldown_seconds", 10.0));
+            state.call(now, target.position(), values.ticks("delay_seconds", 1.0), values.ticks("cooldown_seconds", 8.0));
             level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE,
                     SoundSource.PLAYERS, 0.8f, 1.6f);
         }
@@ -118,12 +119,12 @@ public final class StarfallEffects {
         }
 
         RuneDefinition values = rune.get();
-        double radius = values.value("radius", 2.0);
-        float damage = (float) (values.value("base_damage", 4.0)
-                + values.value("ad_ratio", 0.20) * StatReader.value(player, CombatStats.ATTACK_DAMAGE));
+        double radius = values.value("radius", 3.0);
+        float damage = (float) (values.value("base_damage", 0.0)
+                + values.value("ad_ratio", 1.5) * StatReader.value(player, CombatStats.ATTACK_DAMAGE));
         LANDING.run(() -> {
             for (LivingEntity foe : RuneTargets.foes(level, player, new AABB(where, where).inflate(radius, radius + 1.0, radius))) {
-                MagicDamage.applyStandalone(foe, level.damageSources().indirectMagic(player, player), damage);
+                MagicDamage.applyStrike(foe, level.damageSources().indirectMagic(player, player), damage);
             }
         });
         level.sendParticles(ParticleTypes.FIREWORK, where.x, where.y + 0.2, where.z, 24, radius * 0.4, 0.2, radius * 0.4, 0.15);

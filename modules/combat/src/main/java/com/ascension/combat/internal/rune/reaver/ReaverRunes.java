@@ -15,7 +15,7 @@ public final class ReaverRunes {
     public static void register(IEventBus bus) {
         AmbushEffects.register(bus);
         DeadeyeEffects.register(bus);
-        SilentStepEffects.register(bus);
+        PredatorEffects.register(bus);
         PounceEffects.register(bus);
         DropInEffects.register(bus);
         VanishEffects.register(bus);

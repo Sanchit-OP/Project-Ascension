@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  * marks those as critical arrows; a crossbow's always are). That is what makes it a rhythm rune:
  * mashing the attack button never builds it, waiting for each swing does.
  *
- * <p>Its numbers are the rune's data: {@code hits}, {@code window_seconds}, {@code bonus_damage},
+ * <p>Its numbers are the rune's data: {@code hits}, {@code window_seconds}, {@code bonus_percent},
  * {@code exposed_seconds} and {@code exposed_amplify}.
  */
 public final class CadenceEffects {
@@ -60,9 +60,9 @@ public final class CadenceEffects {
             return;
         }
 
-        event.setAmount(event.getAmount() + (float) values.value("bonus_damage", 3.0));
-        victim.getData(RuneAttachments.EXPOSED.get()).expose(now, now + values.ticks("exposed_seconds", 5.0),
-                (float) values.value("exposed_amplify", 0.10));
+        event.setAmount(event.getAmount() * (1.0f + (float) values.value("bonus_percent", 0.40)));
+        victim.getData(RuneAttachments.EXPOSED.get()).expose(now, now + values.ticks("exposed_seconds", 6.0),
+                (float) values.value("exposed_amplify", 0.20));
         level.sendParticles(ParticleTypes.ENCHANTED_HIT, victim.getX(), victim.getY(0.6), victim.getZ(),
                 16, 0.3, 0.4, 0.3, 0.3);
         level.playSound(null, victim.getX(), victim.getY(), victim.getZ(),

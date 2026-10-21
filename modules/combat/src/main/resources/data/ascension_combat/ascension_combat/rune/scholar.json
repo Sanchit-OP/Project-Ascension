@@ -6,8 +6,8 @@
   "icon": "ascension_combat:rune/scholar",
   "effect": "ascension_combat:scholar",
   "values": {
-    "xp_bonus": 0.5,
-    "enchant_discount": 1
+    "xp_bonus": 0.75,
+    "enchant_discount": 2
   },
   "numbers": [
     {

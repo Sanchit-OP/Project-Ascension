@@ -49,6 +49,50 @@
 	"quest.407F6003A93FC43F.title": "Look up"
 	"quest.407F6003A93FC43F.quest_subtitle": "The Planets page has changed"
 	"quest.407F6003A93FC43F.quest_desc": ["Open the Planets page. A world you had only heard of now has a name.", "The page also shows where you are, on the ground and between the worlds."]
+	"chapter.52BAAB3373E20AD2.title": "Runes and Skill Points"
+	"chapter.52BAAB3373E20AD2.chapter_subtitle": ["Two screens, one character."]
+	"quest.231B9DE4FDB1282D.title": "What skill points are"
+	"quest.231B9DE4FDB1282D.quest_subtitle": "Permanent, and spent on you"
+	"quest.231B9DE4FDB1282D.quest_desc": ["A skill point makes you stronger for good. You earn them for firsts: never for kills or hours played, so nothing can be farmed.", "There are 41 in all. You will not fill the whole web, so choose."]
+	"quest.7DBDD51CA7C31B66.title": "Points from bosses"
+	"quest.7DBDD51CA7C31B66.quest_subtitle": "3 each, once, for the whole team"
+	"quest.7DBDD51CA7C31B66.quest_desc": ["The first time your team beats each boss, every player on it gains 3 points.", "The Warden, the Wither, the Ender Golem, the Ender Guardian, the Netherite Monstrosity, Ignis and the Ender Dragon.", "Beating the same boss again gives nothing. A friend who joins later is given the points too."]
+	"quest.3983A847E6B83CA8.title": "Points from gates"
+	"quest.3983A847E6B83CA8.quest_subtitle": "2 each, once, for the whole team"
+	"quest.3983A847E6B83CA8.quest_desc": ["Every gate you light gives every player 2 points: Earth's, the Moon's, the Nether's and the End's.", "A lit gate stays lit, so these come once too."]
+	"quest.3A169BE756F1B40C.title": "Points from places"
+	"quest.3A169BE756F1B40C.quest_subtitle": "1 each, for the first of a kind"
+	"quest.3A169BE756F1B40C.quest_desc": ["The first time you find each kind of place, you gain a point.", "A deep city, a trial chamber, a mansion, a monument, a fortress, a bastion, a few ruins, and every new world you land on.", "A hundred of the same kind give one point. These are yours alone; bosses and gates are shared."]
+	"quest.0FB0E7741D93E932.title": "The Skill Web"
+	"quest.0FB0E7741D93E932.quest_subtitle": "K"
+	"quest.0FB0E7741D93E932.quest_desc": ["Press K. A gold note above your health row tells you when you have points to spend.", "Click a node to mark it, click again to unmark, then press Confirm. Hover a node for what it gives.", "A node costs one point and must touch one you already hold, or sit in the ring round the centre."]
+	"quest.429C425E53ACA485.title": "What each corner gives"
+	"quest.429C425E53ACA485.quest_subtitle": "Power, Fury, Guard, Wayfarer"
+	"quest.429C425E53ACA485.quest_desc": ["Power: Attack Damage, Lethality and Penetration. Fury: Attack Speed and Omnivamp.", "Guard: Health, Armor and Magic Resist. Wayfarer: Move Speed, mining speed, reach and safe falls.", "A small node is about 3% of what a geared player has: +1 Attack Damage, +3 Health or +5 Armor.", "Notables and the outer ring give several times that. The corners shade into one another, so you can drift."]
+	"quest.41F78D9CDB3575A5.title": "Change your mind"
+	"quest.41F78D9CDB3575A5.quest_subtitle": "Twenty levels, out of a fight"
+	"quest.41F78D9CDB3575A5.quest_desc": ["The Respec button returns every point to spend again. It works anywhere out of combat and costs 20 experience levels.", "It moves points; it never makes them. Death takes nothing from the web."]
+	"quest.678C04AABCCA8FC6.title": "The rune page"
+	"quest.678C04AABCCA8FC6.quest_subtitle": "R"
+	"quest.678C04AABCCA8FC6.quest_desc": ["Press R. Runes change how you fight, not how strong you are: skill points are numbers, runes are behaviours.", "Your page holds a main path, a second path and three stat shards. Nothing is kept until you press Save, and Reset takes you back to the page you saved."]
+	"quest.3ED688C8E8F5D437.title": "Four paths"
+	"quest.3ED688C8E8F5D437.quest_subtitle": "Pick how you play"
+	"quest.3ED688C8E8F5D437.quest_desc": ["Vanguard keeps hitting: damage that grows the longer a fight lasts. Reaver strikes first and finishes fast.", "Aetherwright makes the magic do more. Bulwark stands in front: defence, pets and the team.", "Every rune can be tried from the first minute; only the slots are locked."]
+	"quest.2C168EA9DEC4569D.title": "Keystones"
+	"quest.2C168EA9DEC4569D.quest_subtitle": "The rune that sets your style"
+	"quest.2C168EA9DEC4569D.quest_desc": ["Your main path gives one keystone and one small rune from each of its two rows. Each path has three keystones: two for fighting and a third that stands apart.", "The third one stands apart on the dial: vein mining, Lethality as damage, more experience, or healing that becomes a shield.", "Your second path gives two small runes and no keystone."]
+	"quest.728021FC304009D2.title": "Slots that open"
+	"quest.728021FC304009D2.quest_subtitle": "The page grows as you do"
+	"quest.728021FC304009D2.quest_desc": ["The main path is open from the start. Your team's first boss kill or lit gate opens the second path; the next three open the offence, flex and defence shards.", "Points from places do not open slots. A locked slot says what opens it."]
+	"quest.6BD7E3D3CE4837CC.title": "Changing a rune"
+	"quest.6BD7E3D3CE4837CC.quest_subtitle": "One chalk and three levels"
+	"quest.6BD7E3D3CE4837CC.quest_desc": ["Filling an empty slot is free. Removing or replacing a rune costs one Rune Chalk and 3 levels, once per save however many runes change, and only out of combat.", "Amethyst and calcite make chalk, and both come from geodes. Here are two to start."]
+	"quest.45B9AEE58941C962.title": "Runes that grow"
+	"quest.45B9AEE58941C962.quest_subtitle": "New kinds of enemy"
+	"quest.45B9AEE58941C962.quest_desc": ["Four runes grow: Blooded, Trophy Hunter, Gathering Charge and Deep Roots.", "Each new kind of enemy you defeat while one is on your page adds to it, up to 20 kinds.", "A farm cannot fill it, since a zombie is one kind however many fall. Swap the rune out and it starts again."]
+	"quest.5B50B1407AAF20F1.title": "Putting it together"
+	"quest.5B50B1407AAF20F1.quest_subtitle": "H"
+	"quest.5B50B1407AAF20F1.quest_desc": ["Gear is what you carry, skill points are who you are for good, and runes are how you fight today.", "The character sheet (H) shows all three and where every number comes from, so you can see what a node or a rune is really doing."]
 	"chapter.6236D6A3D7C8AE21.title": "Build the Gate"
 	"chapter.6236D6A3D7C8AE21.chapter_subtitle": ["Earth's ring, stone by stone."]
 	"quest.3E49DBC5FD0D27E5.title": "Read the plan"
@@ -442,7 +486,7 @@
 	"quest.3FA0DF670A7A9B34.quest_desc": ["Some items carry an ability. Z uses the one you wear or hold.", "Its cooldown shows on the item itself."]
 	"quest.494C69CF09D79CDC.title": "Skill points"
 	"quest.494C69CF09D79CDC.quest_subtitle": "Earned, never farmed"
-	"quest.494C69CF09D79CDC.quest_desc": ["Nothing here comes from kills or hours played. Bosses, lit rings and new kinds of place each give points, once.", "Open the web with K."]
+	"quest.494C69CF09D79CDC.quest_desc": ["Nothing here comes from kills or hours played. Bosses, lit rings and new kinds of place each give points, once.", "Open the web with K. The page \"Runes and Skill Points\" walks through it."]
 	"quest.6597430D4FA93FBC.title": "The web"
 	"quest.6597430D4FA93FBC.quest_subtitle": "Four directions, no dead ends"
 	"quest.6597430D4FA93FBC.quest_desc": ["Power, Fury, Guard and Wayfarer shade into one another. Every node costs a point and must touch one you already hold.", "Change your mind anywhere out of a fight, for twenty levels. Every point comes back."]
@@ -451,7 +495,7 @@
 	"quest.61DDD3B3B5319005.quest_desc": ["The first time you find each kind of place, you gain a point: a deep city, a mansion, a monument, a fortress, a bastion, and more.", "A second one of the same kind gives nothing, so go somewhere new."]
 	"quest.52B80A7ACBC831E3.title": "The rune page"
 	"quest.52B80A7ACBC831E3.quest_subtitle": "R"
-	"quest.52B80A7ACBC831E3.quest_desc": ["Pick a path, a keystone and two small runes. They change how you fight, not how strong you are.", "Open the page with R. Nothing is kept until you press Save."]
+	"quest.52B80A7ACBC831E3.quest_desc": ["Pick a path, a keystone and two small runes. They change how you fight, not how strong you are.", "Open the page with R. Nothing is kept until you press Save.", "The page \"Runes and Skill Points\" walks through it."]
 	"quest.41A77052D72ABFB2.title": "Rune chalk"
 	"quest.41A77052D72ABFB2.quest_subtitle": "The price of a change"
 	"quest.41A77052D72ABFB2.quest_desc": ["Removing or replacing a rune costs one chalk and a few levels. Filling an empty slot is free.", "Amethyst and calcite make chalk, and both come from geodes."]

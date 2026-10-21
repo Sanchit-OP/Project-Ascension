@@ -6,18 +6,19 @@
   "icon": "ascension_combat:rune/plating",
   "effect": "ascension_combat:plating",
   "values": {
-    "trigger_damage": 4,
-    "hits": 3,
-    "window_seconds": 3,
-    "reduction": 0.3,
-    "cooldown_seconds": 12
+    "hits": 4,
+    "window_seconds": 4,
+    "reduction": 0.4,
+    "cooldown_seconds": 8,
+    "trigger_fraction": 0.08
   },
   "numbers": [
     {
       "text": "rune.ascension_combat.plating.n0",
       "parts": [
         {
-          "value": "trigger_damage"
+          "value": "trigger_fraction",
+          "format": "percent"
         },
         {
           "value": "hits"

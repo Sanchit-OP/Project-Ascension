@@ -7,9 +7,9 @@
   "values": {
     "hits": 3,
     "window_seconds": 4,
-    "bonus_damage": 3.0,
-    "exposed_seconds": 5,
-    "exposed_amplify": 0.1
+    "exposed_seconds": 6,
+    "exposed_amplify": 0.2,
+    "bonus_percent": 0.4
   },
   "numbers": [
     {
@@ -27,8 +27,8 @@
       "text": "rune.ascension_combat.cadence.n1",
       "parts": [
         {
-          "value": "bonus_damage",
-          "format": "plus",
+          "value": "bonus_percent",
+          "format": "plus_percent",
           "stat": "attack_damage"
         }
       ]

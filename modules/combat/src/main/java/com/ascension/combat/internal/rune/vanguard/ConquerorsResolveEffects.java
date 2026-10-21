@@ -26,7 +26,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  *
  * <p>Active while it is the keystone on the player's page; its numbers are the rune's data
  * ({@code data/ascension_combat/ascension_combat/rune/conquerors_resolve.json}): {@code max_stacks},
- * {@code stack_seconds}, {@code attack_damage_per_stack}, {@code omnivamp_per_stack}.
+ * {@code stack_seconds}, {@code attack_damage_percent_per_stack}, {@code omnivamp_per_stack}.
  *
  * <p><b>The healing half, reworked 2026-09-20.</b> Used to heal the wielder directly in its own
  * {@code LivingDamageEvent.Post} listener. Now that {@link CombatAttributes#OMNIVAMP} is a real
@@ -67,7 +67,7 @@ public final class ConquerorsResolveEffects {
         CombatStackState state = player.getData(RuneAttachments.CONQUERORS_RESOLVE);
         long now = player.level().getGameTime();
         if (state.tryGainStack(now, values.count("max_stacks", 10), values.ticks("stack_seconds", 1.0))) {
-            applyModifier(player, state.stacks() * values.value("attack_damage_per_stack", 0.5));
+            applyModifier(player, state.stacks() * values.value("attack_damage_percent_per_stack", 0.02));
             applyOmnivamp(player, state.stacks() * values.value("omnivamp_per_stack", 0.01));
         }
     }
@@ -84,8 +84,9 @@ public final class ConquerorsResolveEffects {
     }
 
     private static void applyModifier(ServerPlayer player, double amount) {
+        // A percent of the whole Attack Damage (weapon, gear, growth), not a flat figure: it was +0.5 a stack against weapons of 12 to 34.
         RuneModifiers.set(player, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_MODIFIER_ID, amount,
-                AttributeModifier.Operation.ADD_VALUE);
+                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     private static void applyOmnivamp(ServerPlayer player, double amount) {

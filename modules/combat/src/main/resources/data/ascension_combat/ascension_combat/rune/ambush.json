@@ -5,8 +5,14 @@
   "icon": "ascension_combat:rune/ambush",
   "effect": "ascension_combat:ambush",
   "values": {
-    "bonus": 0.4,
-    "crit_bonus": 0.2
+    "bonus": 1.0,
+    "lethality_bonus": 0.02,
+    "crit_bonus": 0.2,
+    "armor_ignore": 0.25,
+    "lethality_ignore": 0.01,
+    "max_ignore": 0.75,
+    "idle_seconds": 6,
+    "primed_seconds": 5
   },
   "numbers": [
     {
@@ -15,11 +21,45 @@
         {
           "value": "bonus",
           "format": "plus_percent"
+        },
+        {
+          "value": "lethality_bonus",
+          "format": "plus_percent",
+          "stat": "lethality"
         }
       ]
     },
     {
       "text": "rune.ascension_combat.ambush.n1",
+      "parts": [
+        {
+          "value": "armor_ignore",
+          "format": "percent"
+        },
+        {
+          "value": "lethality_ignore",
+          "format": "plus_percent",
+          "stat": "lethality"
+        },
+        {
+          "value": "max_ignore",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.ambush.n2",
+      "parts": [
+        {
+          "value": "idle_seconds"
+        },
+        {
+          "value": "primed_seconds"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.ambush.n3",
       "parts": [
         {
           "value": "crit_bonus",

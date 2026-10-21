@@ -16,7 +16,7 @@ public final class BulwarkRunes {
     public static void register(IEventBus bus) {
         BraceEffects.register(bus);
         PackLeaderEffects.register(bus);
-        CatsEyeEffects.register(bus);
+        OverhealEffects.register(bus);
         PlatingEffects.register(bus);
         UnbowedEffects.register(bus);
         RiposteEffects.register(bus);

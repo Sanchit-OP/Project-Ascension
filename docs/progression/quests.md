@@ -385,3 +385,28 @@ The Moon's quest moves from x 2.663 to 2.282, the Nether's from (3.24, 4.627) to
 `chart_layout.json` and `ChartMath` did not change. **Seen only by arithmetic and unit tests so far**: the next look at the page, or
 `QuestScreenChecks`, should show each world just inside its distance ring and the marker ring centred on the world you stand on.
 Anything that adds a picture and an object on this page must remember there are two scales.
+
+## 16. Runes and Skill Points (2026-10-22)
+
+Sanchit: "we need a quest page explaining players what runes and the skill page are, as there is no guide for it." Gear and Growth had one
+short quest per idea (the points, the web, firsts, the rune page, chalk, slots) and said nothing of where points come from in full, what the
+four corners give, what a keystone is, or what is locked and why. **Runes and Skill Points** is a page of its own, second in the book (after
+First Days, so a player meets it with their first point), and it is a guide: 13 quests, every one a lesson with a checkmark and a small
+reward, in two columns that meet in one quest at the bottom.
+
+| Left (K): the Skill Web | Right (R): the rune page |
+|---|---|
+| What skill points are (earned for firsts, never farmed; 41 in all) | The rune page (behaviours, not numbers; Save and Reset) |
+| Points from bosses (3 each, seven bosses, the whole team) | Four paths (Vanguard, Reaver, Aetherwright, Bulwark) |
+| Points from gates (2 each, four gates) | Keystones (two to fight with, a third that stands apart: vein mining, Predator, Scholar, Overheal) |
+| Points from places (1 each, for the first of a kind; yours alone) | Slots that open (the second path at the first boss or gate, then three shards) |
+| The Skill Web (K; mark, Confirm; a node must touch one you hold) | Changing a rune (free to fill, one Rune Chalk and 3 levels to change; two chalk as the reward) |
+| What each corner gives (Power, Fury, Guard, Wayfarer; a small node is about 3%) | Runes that grow (four, up to 20 kinds of enemy since 2026-10-22; it was 12) |
+| Change your mind (respec: 20 levels, out of combat) | |
+
+The last quest, **Putting it together** (H, the character sheet), ties gear, points and runes. **Nothing is locked** (ADR-0018); there is
+nothing to detect in reading, so every quest is a checkmark. The places are described by kind, never named, so the page cannot name a place
+the player has not been to. The numbers are copied from `growth.md` and `rune-system.md` (it says so in the file); if 41, 20 levels, 3 levels
+or the slot unlocks move there, they must move in `pack/quests/runes_and_skills.py`. Gear and Growth's points and runes quests now point to
+the new page. **Checked:** the generator (14 pages), and the real FTB Quests on a dedicated server (13 chapter files, 152 of 152 dependencies
+kept, 0 failures). **Not seen in a client.** It reaches players with the next pack (the quest files are in `pack/config`).

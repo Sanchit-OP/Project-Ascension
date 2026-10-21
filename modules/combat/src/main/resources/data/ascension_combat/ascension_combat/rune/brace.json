@@ -6,14 +6,14 @@
   "effect": "ascension_combat:brace",
   "values": {
     "big_hit": 0.25,
-    "armor": 40,
-    "magic_resist": 40,
-    "seconds": 2.5,
-    "base_damage": 3,
-    "armor_ratio": 0.1,
+    "armor": 80,
+    "magic_resist": 80,
+    "seconds": 3,
+    "base_damage": 5,
+    "armor_ratio": 0.4,
     "radius": 4,
     "knockback": 1.0,
-    "cooldown_seconds": 12
+    "cooldown_seconds": 8
   },
   "numbers": [
     {

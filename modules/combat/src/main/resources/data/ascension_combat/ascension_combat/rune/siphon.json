@@ -6,7 +6,7 @@
   "icon": "ascension_combat:rune/siphon",
   "effect": "ascension_combat:siphon",
   "values": {
-    "heal": 0.1
+    "heal": 0.25
   },
   "numbers": [
     {

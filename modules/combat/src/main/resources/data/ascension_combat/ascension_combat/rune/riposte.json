@@ -6,9 +6,9 @@
   "icon": "ascension_combat:rune/riposte",
   "effect": "ascension_combat:riposte",
   "values": {
-    "parry_seconds": 0.5,
-    "stun_seconds": 1,
-    "crit_seconds": 2
+    "parry_seconds": 1.0,
+    "stun_seconds": 1.5,
+    "crit_seconds": 3
   },
   "numbers": [
     {

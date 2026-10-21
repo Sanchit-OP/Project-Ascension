@@ -5,20 +5,18 @@
   "icon": "ascension_combat:rune/starfall",
   "effect": "ascension_combat:starfall",
   "values": {
-    "base_damage": 4,
-    "ad_ratio": 0.2,
-    "radius": 2,
+    "base_damage": 0,
+    "ad_ratio": 1.5,
+    "radius": 3,
     "delay_seconds": 1,
-    "cooldown_seconds": 10,
-    "magic_hit_reduction_seconds": 1
+    "cooldown_seconds": 8,
+    "magic_hit_reduction_seconds": 1,
+    "shorten_gap_seconds": 1
   },
   "numbers": [
     {
       "text": "rune.ascension_combat.starfall.n0",
       "parts": [
-        {
-          "value": "base_damage"
-        },
         {
           "value": "ad_ratio",
           "format": "percent",
@@ -45,6 +43,9 @@
         },
         {
           "value": "magic_hit_reduction_seconds"
+        },
+        {
+          "value": "shorten_gap_seconds"
         }
       ]
     }

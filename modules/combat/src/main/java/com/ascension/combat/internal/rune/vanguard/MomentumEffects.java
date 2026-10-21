@@ -58,6 +58,8 @@ public final class MomentumEffects {
         }
         state.refresh(rune.get().count("max_stacks", 5), now + rune.get().ticks("chain_seconds", 2.0));
 
-        attacker.heal(event.getNewDamage() * (float) rune.get().value("heal_per_stack", 0.01) * state.stacks());
+        // The hit as it was before Armor cut it: the heal is the rune's, not the boss's (a Wither lets 29% of a hit through).
+        float beforeArmor = event.getNewDamage() + event.getReduction(net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction.ARMOR);
+        attacker.heal(beforeArmor * (float) rune.get().value("heal_per_stack", 0.015) * state.stacks());
     }
 }

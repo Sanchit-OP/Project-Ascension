@@ -6,7 +6,7 @@
   "icon": "ascension_combat:rune/quickening",
   "effect": "ascension_combat:quickening",
   "values": {
-    "haste": 0.2
+    "haste": 0.25
   },
   "numbers": [
     {

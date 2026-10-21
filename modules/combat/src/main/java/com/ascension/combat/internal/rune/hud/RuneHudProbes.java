@@ -12,6 +12,7 @@ import com.ascension.combat.internal.rune.aetherwright.StarfallState;
 import com.ascension.combat.internal.rune.bulwark.BraceState;
 import com.ascension.combat.internal.rune.bulwark.PlatingState;
 import com.ascension.combat.internal.rune.hud.RuneHudEntry.Kind;
+import com.ascension.combat.internal.rune.reaver.AmbushState;
 import com.ascension.combat.internal.rune.vanguard.CadenceState;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,13 @@ public final class RuneHudProbes {
                         needed, 0L);
             }),
 
+            new Registered(Runes.id("ambush"), (p, r, id, path, now) -> {
+                int idle = (int) r.ticks("idle_seconds", 6.0);
+                AmbushState s = p.getData(RuneAttachments.AMBUSH);
+                return new RuneHudEntry(id, path, Kind.CHARGE, (int) s.readiness(now, idle), idle, 0L);
+            }),
+            new Registered(Runes.id("predator"), (p, r, id, path, now) ->
+                    stacking(p.getData(RuneAttachments.PREDATOR), r.count("max_stacks", 5), id, path, now)),
             // Time until it can fire again.
             new Registered(Runes.id("second_wind"), (p, r, id, path, now) ->
                     cooldown(p.getData(RuneAttachments.SECOND_WIND_COOLDOWN), id, path)),

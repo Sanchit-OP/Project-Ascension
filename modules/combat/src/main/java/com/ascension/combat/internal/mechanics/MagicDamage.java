@@ -96,6 +96,26 @@ public final class MagicDamage {
     }
 
     /**
+     * Like {@link #applyStandalone}, for a strike that lands by itself while the attacker is also hitting the target: a falling
+     * star, a bolt of lightning, a shockwave (2026-10-22). Vanilla gives a target invulnerability frames after every hit, and a
+     * second hit inside them only counts for what it adds over the first, so a strike that landed in the half second after a
+     * sword swing was mostly swallowed, and the strike's own frames then swallowed the player's next swing. The frames are
+     * therefore put to nothing for the strike and given back as they were, so it does its whole damage and costs the swing nothing.
+     */
+    public static float applyStrike(LivingEntity target, DamageSource source, float rawAmount) {
+        float mitigated = mitigate(rawAmount, target, source.getEntity());
+        int frames = target.invulnerableTime;
+        target.invulnerableTime = 0;
+        try {
+            hurtSettled(target, source, mitigated);
+        } finally {
+            target.invulnerableTime = frames;
+        }
+        notifyDealt(source.getEntity(), target, mitigated);
+        return mitigated;
+    }
+
+    /**
      * The one hit {@link #hurtSettled} is delivering right now, so {@link PhysicalDamage} can leave it
      * alone. Server thread only, set and cleared inside one call, never kept past it.
      */

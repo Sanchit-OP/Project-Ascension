@@ -81,7 +81,7 @@ CHAPTER = Chapter(
             text=[
                 'Nothing here comes from kills or hours played. Bosses, lit rings and new kinds of place each give '
                 'points, once.',
-                'Open the web with K.',
+                'Open the web with K. The page "Runes and Skill Points" walks through it.',
             ],
             tasks=[checkmark()],
             rewards=[give('minecraft:cooked_beef', 6)],
@@ -124,6 +124,7 @@ CHAPTER = Chapter(
             text=[
                 'Pick a path, a keystone and two small runes. They change how you fight, not how strong you are.',
                 'Open the page with R. Nothing is kept until you press Save.',
+                'The page "Runes and Skill Points" walks through it.',
             ],
             tasks=[checkmark()],
             rewards=[give('minecraft:cooked_beef', 6)],

@@ -6,7 +6,7 @@
   "icon": "ascension_combat:rune/attunement",
   "effect": "ascension_combat:attunement",
   "values": {
-    "bonus": 0.12
+    "bonus": 0.15
   },
   "numbers": [
     {

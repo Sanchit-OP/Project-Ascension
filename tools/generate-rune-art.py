@@ -479,20 +479,14 @@ def k_deadeye():
     return s
 
 
-def k_silent_step():
-    """A feather: light enough that nothing hears it land."""
+def k_predator():
+    """Three claw marks raked down from the upper left: Lethality is the edge, and it is yours."""
     s = Shape(20)
-    spine = [(3.0, 17.6), (7.0, 12.0), (11.0, 7.0), (16.6, 2.0)]
-    vane = [(2.8, 15.0), (5.0, 10.0), (9.0, 5.4), (14.0, 2.2), (17.6, 1.4), (17.0, 5.0), (14.0, 9.6),
-            (10.0, 13.4), (5.6, 16.4)]
-    s.poly(vane)
-    s.stroke([(1.6, 19.0), (4.0, 16.2)], 1.2)
-    s.cut_stroke([(14.8, 8.4), (16.8, 7.4)], 0.8)
-    s.cut_stroke([(5.4, 9.4), (4.4, 8.6)], 0.8)
-    s.groove(spine, 0.9)
-    for (x, y) in ((7.0, 12.0), (9.4, 9.0), (11.8, 6.4), (14.2, 4.0)):
-        s.groove([(x, y), (x + 2.4, y + 0.6)], 0.6)
-    s.shine([(4.6, 11.2), (8.6, 6.4)], 0.8)
+    for o in (0.0, 4.8, 9.6):
+        s.poly(taper([(2.6 + o, 0.8), (4.4 + o, 6.6), (5.9 + o, 12.8), (6.6 + o, 19.2)], [0.3, 1.9, 1.7, 0.3]))
+    s.shine([(3.4, 3.2), (4.6, 7.0)], 0.7)
+    s.shine([(8.2, 3.2), (9.4, 7.0)], 0.7)
+    s.shine([(13.0, 3.2), (14.2, 7.0)], 0.7)
     return s
 
 
@@ -553,17 +547,15 @@ def k_pack_leader():
     return s
 
 
-def k_cats_eye():
-    """A cat, sitting, seen from the side: the creatures that see what you can't."""
+def k_overheal():
+    """A shield with a heart cut into it: healing that has nowhere left to go becomes armour."""
     s = Shape(20)
-    s.ellipse(11.4, 13.2, 5.6, 5.8)
-    s.ellipse(6.2, 6.6, 3.6, 3.4)
-    s.poly([(3.0, 5.0), (3.2, 1.0), (5.8, 3.6)])
-    s.poly([(6.8, 3.4), (8.8, 0.8), (9.4, 4.6)])
-    s.poly([(4.6, 8.2), (9.4, 7.6), (8.4, 15.0), (6.6, 18.8), (5.4, 18.8)])
-    s.poly([(5.4, 17.6), (16.6, 17.6), (16.6, 19.2), (5.4, 19.2)])
-    s.stroke([(16.2, 17.6), (18.6, 13.2), (18.6, 9.0), (17.0, 6.6)], 1.4)
-    s.shine([(8.6, 9.6), (12.0, 8.0)], 0.9)
+    s.poly([(3.4, 1.8), (16.6, 1.8), (16.6, 10.4), (10.0, 18.6), (3.4, 10.4)])
+    s.cut_ellipse(7.8, 7.2, 2.3)
+    s.cut_ellipse(12.2, 7.2, 2.3)
+    s.cut_poly([(5.6, 8.6), (14.4, 8.6), (10.0, 14.0)])
+    s.groove([(10.0, 3.2), (10.0, 5.0)], 0.8)
+    s.shine([(4.8, 3.2), (4.8, 9.0)], 0.8)
     return s
 
 
@@ -837,9 +829,9 @@ def m_challenge():
 
 GLYPHS = {
     'conquerors_resolve': k_conquerors_resolve, 'cadence': k_cadence, 'vein_breaker': k_vein_breaker,
-    'ambush': k_ambush, 'deadeye': k_deadeye, 'silent_step': k_silent_step,
+    'ambush': k_ambush, 'deadeye': k_deadeye, 'predator': k_predator,
     'starfall': k_starfall, 'arc': k_arc, 'scholar': k_scholar,
-    'brace': k_brace, 'pack_leader': k_pack_leader, 'cats_eye': k_cats_eye,
+    'brace': k_brace, 'pack_leader': k_pack_leader, 'overheal': k_overheal,
     'second_wind': m_second_wind, 'momentum': m_momentum, 'blooded': m_blooded,
     'relentless_strikes': m_relentless_strikes, 'killing_surge': m_killing_surge,
     'giant_slayer': m_giant_slayer,
@@ -1077,7 +1069,7 @@ RUNES = {
                   ('giant_slayer', 'Giant Slayer')]],
     },
     'reaver': {
-        'keystones': [('ambush', 'Ambush'), ('deadeye', 'Deadeye'), ('silent_step', 'Silent Step')],
+        'keystones': [('ambush', 'Ambush'), ('deadeye', 'Deadeye'), ('predator', 'Predator')],
         'rows': [[('pounce', 'Pounce'), ('drop_in', 'Drop In'), ('vanish', 'Vanish')],
                  [('finishing_blow', 'Finishing Blow'), ('overkill', 'Overkill'),
                   ('trophy_hunter', 'Trophy Hunter')]],
@@ -1088,7 +1080,7 @@ RUNES = {
                  [('siphon', 'Siphon'), ('quickening', 'Quickening'), ('gathering_charge', 'Gathering Charge')]],
     },
     'bulwark': {
-        'keystones': [('brace', 'Brace'), ('pack_leader', 'Pack Leader'), ('cats_eye', "Cat's Eye")],
+        'keystones': [('brace', 'Brace'), ('pack_leader', 'Pack Leader'), ('overheal', 'Overheal')],
         'rows': [[('plating', 'Plating'), ('unbowed', 'Unbowed'), ('deep_roots', 'Deep Roots')],
                  [('riposte', 'Riposte'), ('revitalize', 'Revitalize'), ('challenge', 'Challenge')]],
     },
@@ -1105,15 +1097,15 @@ BLURB = {
     'conquerors_resolve': 'Every second in a fight: more Attack Damage and healing, up to 10 stacks.',
     'cadence': 'Three charged hits on one enemy: the third hits hard and Exposes it.',
     'vein_breaker': 'Sneak and mine: the connected ore or logs break with it.',
-    'ambush': 'Hit an enemy that has not seen you for far more damage.',
+    'ambush': 'Your first hit after a quiet spell, or after you move in, hits far harder and cuts through armour.',
     'deadeye': 'An arrow near the head is a headshot, stronger from afar.',
-    'silent_step': 'You make no vibrations; sneaking, mobs notice you only up close.',
+    'predator': 'Lethality is damage: every point sharpens every hit, and every kill feeds it.',
     'starfall': 'Charged hits and magic call a falling star down on the target.',
     'arc': 'Every fourth hit throws lightning that jumps between enemies.',
     'scholar': 'More experience from everything; enchanting costs a level less.',
     'brace': 'Block or take a big hit: huge defences, then a shockwave.',
     'pack_leader': 'Your pets share your defences, hit harder, and heal with you.',
-    'cats_eye': 'Creepers and phantoms keep away from you, as they do from cats.',
+    'overheal': 'Healing becomes a shield: what you heal past full, and a share of the rest.',
 }
 
 # The pages the mockups show. `secondary` None: not open yet. `shards` None per row: not chosen;

@@ -5,7 +5,7 @@
   "icon": "ascension_combat:shard/hp",
   "effect": "ascension_combat:shard/health",
   "values": {
-    "amount": 2
+    "amount": 3
   },
   "numbers": [
     {
