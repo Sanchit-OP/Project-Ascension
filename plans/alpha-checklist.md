@@ -377,6 +377,13 @@ destination screen, no credits); a lore pass first (`docs/lore/the-end.md`, now 
   crouching opens a single door; it can chain connected doors up to 10 blocks. Not installed: add to `pack/curseforge-extras.json`, rerun
   `tools/check-curseforge-ids.py`, put both jars on the server, and note it in the changelog. Quark also has this feature if it is ever added
   (Serilum's mod edits Quark's config to avoid a double run).
+- **A grave mod**: on death a grave holds your items so they are easy to get back. **Candidates, not yet checked on CurseForge** (ids and files
+  unverified): GraveStone Mod (a search shows NeoForge 1.21.1 builds), Death Keeper, Funny Graveyards (needs the client too). Questions for the pick
+  and the test: (1) **a death in space or over the End's void**: a grave needs ground, and our space dimension is void, so check where it is
+  placed and that nothing is lost (our `VoidFall` hands a player falling out of the End back to space); (2) **retrieving from another world**
+  means a ship trip, so a recovery compass or a long timer matters; (3) **the carry limits**: a grave holding three oxygen tanks, or two
+  legendary weapons, is swept by `TankRules` and the item rules when picked up, so say so in the book; (4) **Soulbound** (our enchantment)
+  and Curios/backpack contents must still behave; (5) a server config for grave lifetime and who may open one (teams).
 - **Curios slots** (prompt 11): still not built; only Curios' `back` slot exists, through Sophisticated Backpacks.
 
 ## Still open for Sanchit
