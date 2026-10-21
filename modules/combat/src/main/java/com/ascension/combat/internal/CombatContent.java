@@ -434,7 +434,9 @@ public final class CombatContent {
                     List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, id))),
                     0.0f, 0.0f);
         });
-        return () -> new ArmorItem(material, type, legendary(id));
+        // Diamond's durability (multiplier 33): without any, the piece is not damageable, and vanilla lets only damageable items
+        // take an enchantment at the table, so none of our armour could be enchanted (found 2026-10-22).
+        return () -> new ArmorItem(material, type, legendary(id).durability(type.getDurability(33)));
     }
 
     public static void register(IEventBus modBus) {

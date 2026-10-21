@@ -36,9 +36,17 @@ requirements (ADR-0018).
 - **Sharpness is flat and large against our weapons.** V adds +3 damage (the data is `linear`, base 1.0
   plus 0.5 per level above the first). On a diamond sword (7) that is +43%.
   It adds to the sword's hit only, so it does not feed anything that scales off Attack Damage.
-- **Nothing of ours enchants anything yet.** Which of the 26 combat items accept which enchantments is
-  decided by vanilla's item tags (`#minecraft:enchantable/*`) and by their enchantability value, and
+- **Nothing of ours enchants anything yet** (written 2026-10-18; **fixed 2026-10-22**, see below). Which of the 26 combat items accept which
+  enchantments is decided by vanilla's item tags (`#minecraft:enchantable/*`) and by their enchantability value, and
   was never chosen.
+- **Fixed 2026-10-22 (Sanchit found it in play: the legendary items could not be enchanted).** The eight swords are in `#minecraft:swords`,
+  the armour in `#minecraft:head_armor`, `chest_armor`, `leg_armor` and `foot_armor`, and the three bows in `enchantable/bow` and
+  `enchantable/durability` (`data/minecraft/tags/item/` in `ascension-combat`), so vanilla's own enchantable tags reach them: a sword takes
+  Sharpness, Keen Edge, Leech, Mending, Unbreaking and Soulbound, a bow Power, armour Protection and the rest, boots Feather Falling. **Armour had
+  no durability at all**, and vanilla lets only a damageable item take an enchantment at the table, so it now has diamond's (multiplier 33:
+  helmet 363, chestplate 528, leggings 495, boots 429). It can now wear out, which Mending and Unbreaking answer. The two off-hand relics
+  (Zonia's Hourglass, Sterak's Harness) are plain, undamageable items and stay unenchantable. Proved on a dedicated server by `damage-checks`
+  (now 245 checks, 0 failures; the new ones failed on every item before the tags, 13 on the armour before the durability). Not seen in a client.
 - **Atmosphere already planned for it:** `atmosphere-api.md` lists "Respiration enchantment → a
   `gearEfficiency` contribution". Lung capacity grows from gear, and a tank is never extended by an
   enchantment (rule from the atmosphere module).

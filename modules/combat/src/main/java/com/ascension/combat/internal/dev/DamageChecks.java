@@ -104,6 +104,8 @@ public final class DamageChecks {
             guarded(() -> runPlayer(server.overworld()));
         } else if (settle == 300) {
             guarded(DamageChecks::checkEndlessHungerCeiling);
+        } else if (settle == 310) {
+            guarded(DamageChecks::checkEnchantable);
         } else if (settle == 320) {
             guarded(DamageChecks::checkEndlessHungerBase);
             finished = true;
@@ -311,6 +313,62 @@ public final class DamageChecks {
     }
 
     /** At the weapon's own Attack Damage it swings at about 2.2 a second: slow and heavy, not the 4.3 it used to. */
+    /**
+     * Every one of the 26 combat items says whether the game lets it take an enchantment, by role: a sword takes the
+     * weapon set (Sharpness, Keen Edge), a bow Power, armour Protection, boots Feather Falling, and all of them Mending and
+     * Soulbound; the two off-hand relics are not damageable items, so they take nothing (vanilla enchants only damageable
+     * items). Found missing on 2026-10-22: none of our items was in vanilla's enchantable tags.
+     */
+    private static void checkEnchantable() {
+        var enchantments = server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        var legendary = BuiltInRegistries.ITEM.getTag(net.minecraft.tags.TagKey.create(Registries.ITEM,
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "legendary")));
+        if (legendary.isEmpty()) {
+            fail("the legendary item tag is missing");
+            return;
+        }
+        int seen = 0;
+        for (Holder<net.minecraft.world.item.Item> holder : legendary.get()) {
+            seen++;
+            ItemStack stack = new ItemStack(holder);
+            String id = holder.unwrapKey().orElseThrow().location().getPath();
+            var item = stack.getItem();
+            boolean sword = item instanceof net.minecraft.world.item.SwordItem;
+            boolean bow = item instanceof net.minecraft.world.item.BowItem;
+            boolean armour = item instanceof net.minecraft.world.item.ArmorItem;
+            boolean boots = armour && ((net.minecraft.world.item.ArmorItem) item).getType()
+                    == net.minecraft.world.item.ArmorItem.Type.BOOTS;
+            boolean relic = !sword && !bow && !armour;
+            expect(id + " is enchantable", stack.isEnchantable(), !relic);
+            if (relic) {
+                continue;
+            }
+            expect(id + " takes Mending", supports(enchantments, stack, "minecraft", "mending"), true);
+            expect(id + " takes Unbreaking", supports(enchantments, stack, "minecraft", "unbreaking"), true);
+            expect(id + " takes Soulbound", supports(enchantments, stack, "ascension_combat", "soulbound"), true);
+            if (sword) {
+                expect(id + " takes Sharpness", supports(enchantments, stack, "minecraft", "sharpness"), true);
+                expect(id + " takes Keen Edge", supports(enchantments, stack, "ascension_combat", "keen_edge"), true);
+                expect(id + " takes Leech", supports(enchantments, stack, "ascension_combat", "leech"), true);
+            } else if (bow) {
+                expect(id + " takes Power", supports(enchantments, stack, "minecraft", "power"), true);
+                expect(id + " refuses Sharpness", supports(enchantments, stack, "minecraft", "sharpness"), false);
+            } else {
+                expect(id + " takes Protection", supports(enchantments, stack, "minecraft", "protection"), true);
+                expect(id + " refuses Sharpness", supports(enchantments, stack, "minecraft", "sharpness"), false);
+                expect(id + (boots ? " takes" : " refuses") + " Feather Falling",
+                        supports(enchantments, stack, "minecraft", "feather_falling"), boots);
+            }
+        }
+        expectCount("legendary items seen", seen, 26);
+    }
+
+    private static boolean supports(net.minecraft.core.HolderLookup.RegistryLookup<net.minecraft.world.item.enchantment.Enchantment> enchantments,
+                                    ItemStack stack, String namespace, String path) {
+        return enchantments.getOrThrow(ResourceKey.create(Registries.ENCHANTMENT,
+                ResourceLocation.fromNamespaceAndPath(namespace, path))).value().isSupportedItem(stack);
+    }
+
     private static void checkEndlessHungerBase() {
         tickStandIn();
         double speed = standIn.getAttributeValue(Attributes.ATTACK_SPEED);
