@@ -80,6 +80,56 @@
       "side": "client",
       "added": "2026-10-21",
       "why": "drag and spread items in any inventory"
+    },
+    {
+      "name": "Double Doors",
+      "slug": "double-doors",
+      "projectID": 348831,
+      "fileID": 9255519,
+      "file": "doubledoors-1.21.1-7.5.jar",
+      "side": "both",
+      "added": "2026-10-22",
+      "why": "click one door and its neighbour follows (alpha.2)"
+    },
+    {
+      "name": "Collective",
+      "slug": "collective",
+      "projectID": 342584,
+      "fileID": 9280929,
+      "file": "collective-1.21.1-8.62.jar",
+      "side": "both",
+      "added": "2026-10-22",
+      "why": "library needed by Double Doors"
+    },
+    {
+      "name": "GraveStone Mod",
+      "slug": "gravestone-mod",
+      "projectID": 238551,
+      "fileID": 8671622,
+      "file": "gravestone-neoforge-1.21.1-1.0.40.jar",
+      "side": "both",
+      "added": "2026-10-22",
+      "why": "a grave holds your items on death (alpha.2)"
+    },
+    {
+      "name": "FallingTree",
+      "slug": "falling-tree",
+      "projectID": 349559,
+      "fileID": 6835168,
+      "file": "FallingTree-1.21.1-1.21.1.11.jar",
+      "side": "both",
+      "added": "2026-10-22",
+      "why": "chop one log, the tree falls (alpha.2); its config sets sneak, durability and hunger costs"
+    },
+    {
+      "name": "Gliders",
+      "slug": "gliders",
+      "projectID": 828331,
+      "fileID": 6850529,
+      "file": "gliders-1.21.1-neoforge-1.1.8.jar",
+      "side": "both",
+      "added": "2026-10-22",
+      "why": "craftable hang gliders, a Curios accessory or worn (alpha.2)"
     }
   ]
 }
