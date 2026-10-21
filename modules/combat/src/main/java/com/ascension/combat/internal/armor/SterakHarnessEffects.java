@@ -1,5 +1,6 @@
 package com.ascension.combat.internal.armor;
 
+import com.ascension.combat.api.WornStacks;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.particles.ParticleTypes;
 import com.ascension.combat.internal.mechanics.Presence;
@@ -12,7 +13,6 @@ import com.ascension.combat.internal.mechanics.Shield;
 import com.ascension.core.api.CombatStateRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -81,7 +81,7 @@ public final class SterakHarnessEffects {
             return;
         }
 
-        boolean wearing = player.getItemBySlot(EquipmentSlot.OFFHAND).is(CombatContent.STERAKS_HARNESS.get());
+        boolean wearing = WornStacks.isWorn(player, CombatContent.STERAKS_HARNESS.get());
         applyAttackDamage(player, wearing);
         applyLifestealOmnivamp(player, wearing);
     }
@@ -131,7 +131,7 @@ public final class SterakHarnessEffects {
         }
 
         if (event.getEntity() instanceof ServerPlayer target
-                && target.getItemBySlot(EquipmentSlot.OFFHAND).is(CombatContent.STERAKS_HARNESS.get())) {
+                && WornStacks.isWorn(target, CombatContent.STERAKS_HARNESS.get())) {
             maybeTrigger(target, event.getNewDamage());
         }
     }

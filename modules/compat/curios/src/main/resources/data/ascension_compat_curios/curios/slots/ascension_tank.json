@@ -1,0 +1,7 @@
+{
+  "order": 30,
+  "size": 1,
+  "icon": "ascension_compat_curios:slot/empty_tank_slot",
+  "add_cosmetic": false,
+  "validators": ["curios:tag"]
+}

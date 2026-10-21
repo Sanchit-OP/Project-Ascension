@@ -36,4 +36,4 @@ include(":modules:compat:sable")
 include(":modules:compat:ftbteams")
 include(":modules:compat:ftbquests")
 include(":modules:compat:jei")
-// include(":modules:compat:curios")  // next, once Curios is installed in the test instance
+include(":modules:compat:curios")
