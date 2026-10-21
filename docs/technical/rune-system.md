@@ -8,6 +8,9 @@
 >
 > Replaces `combat-api.md` §7. Every number is a placeholder (`combat-api.md` §3): Sanchit balances
 > by playing, and every number lives in a data file.
+>
+> **Audited 2026-10-22:** every rune has a verdict and a proposed change in [`docs/progression/rune-audit.md`](../progression/rune-audit.md)
+> (most numbers were sized for a 7-damage sword and have gone stale; nothing is changed yet).
 
 ## 1. In short
 
