@@ -22,6 +22,14 @@
 > **Not done:** polishing the node icons (G5), the performance-log reading (G6), and §13 questions 6 to
 > 10, built on the first option.
 
+> **Numbers raised 2026-10-22 (Sanchit: "+0.5 Attack Damage or 1 Lethality is nothing in the bigger picture, or 1 HP; something meaningful but not
+> broken, in moderation").** The nodes were sized on 2026-10-15 against a 7-damage sword and a 20-health player; the legendary weapons are
+> now 12 to 34 damage and a kitted player has about 100 health, so a +0.25 node was worth under 1% of a hit. Every flat node is about
+> four times what it was, so one node is again about 3% of what a late player has in that stat; notables and capstones rose less (section 5
+> has the table, section 8 the new yardstick). Attack speed, step height and reach were left alone: 3% attack speed a node was already 3%
+> more damage. Proved on a dedicated server (`damage-checks.txt`, 288 checks: a stand-in player earns two boss milestones, takes six nodes
+> and its attributes move by exactly the new numbers). Points, rules and the shape of the web are unchanged.
+
 ## 1. In short
 
 **Every bit of growth is a skill point, and every skill point is spent in a tree.** Points come
@@ -176,28 +184,33 @@ Small nodes: one stat each, a unit's worth.
 
 | Theme | Small nodes |
 |---|---|
-| **Power** | Might +0.25 Attack Damage, Edge +2 Lethality, Piercing +2% Armor Pen |
-| **Fury** | Tempo +3% Attack Speed, Hunger +1% Omnivamp, Swiftness +2% Move Speed |
-| **Guard** | Vitality +1 HP, Plating +4 Armor, Warding +4 Magic Resist |
-| **Wayfarer** | Pace +2% Move Speed, Delving +15% mining speed, Long Arm +0.5 reach, Soft Landing +1 safe fall |
+| **Power** | Might +1 Attack Damage, Edge +3 Lethality, Piercing +3% Armor Pen |
+| **Fury** | Tempo +3% Attack Speed, Hunger +2% Omnivamp, Swiftness +3% Move Speed |
+| **Guard** | Vitality +3 HP, Plating +5 Armor, Warding +5 Magic Resist |
+| **Wayfarer** | Pace +3% Move Speed, Delving +20% mining speed, Long Arm +0.5 reach, Soft Landing +2 safe fall |
 
 Notables, round the web (the top is Power and Fury, and so on clockwise):
 
 | Where | Ring 3 notable (3 points out) | Ring 4 capstone (4 points out) |
 |---|---|---|
-| Top (Power and Fury) | **Rampage:** +0.5 Attack Damage, +6% Attack Speed | **Sunder:** +8% Armor Pen, +8% Magic Pen |
+| Top (Power and Fury) | **Rampage:** +1 Attack Damage, +6% Attack Speed | **Sunder:** +10% Armor Pen, +10% Magic Pen |
 | Top right (Fury) | **Frenzy:** +12% Attack Speed | **Whirlwind:** +18% Attack Speed |
-| Right (Fury and Guard) | **Bloodthirst:** +4% Omnivamp | **Lifeblood:** +3% Omnivamp, +4 HP |
-| Bottom right (Guard) | **Stout Heart:** +4 HP | **Unbroken:** +6 HP |
-| Bottom (Guard and Wayfarer) | **Bastion:** +8 Armor, +8 Magic Resist | **Ironwalk:** +4 Armor, +4 Magic Resist, +3% Move Speed |
-| Bottom left (Wayfarer) | **Sure Foot:** step height to a full block | **Pioneer:** +6% Move Speed, +2 safe fall |
-| Left (Wayfarer and Power) | **Trailblazer:** +4% Move Speed, +0.5 Attack Damage | **Pathbreaker:** +0.75 Attack Damage, +6% Move Speed |
-| Top left (Power) | **Heavy Hand:** +1 Attack Damage | **Executioner:** +1.5 Attack Damage |
+| Right (Fury and Guard) | **Bloodthirst:** +8% Omnivamp | **Lifeblood:** +5% Omnivamp, +8 HP |
+| Bottom right (Guard) | **Stout Heart:** +10 HP | **Unbroken:** +14 HP |
+| Bottom (Guard and Wayfarer) | **Bastion:** +10 Armor, +10 Magic Resist | **Ironwalk:** +5 Armor, +5 Magic Resist, +4% Move Speed |
+| Bottom left (Wayfarer) | **Sure Foot:** step height to a full block | **Pioneer:** +9% Move Speed, +4 safe fall |
+| Left (Wayfarer and Power) | **Trailblazer:** +6% Move Speed, +1 Attack Damage | **Pathbreaker:** +1.5 Attack Damage, +9% Move Speed |
+| Top left (Power) | **Heavy Hand:** +2 Attack Damage | **Executioner:** +3 Attack Damage |
 
-**The whole web would give** (all 56 points, which nobody has): +18 HP, +24 Armor, +20 Magic Resist,
-+5.5 Attack Damage, 8 Lethality, 10% Armor Pen and 8% Magic Pen, +54% Attack Speed, 10% Omnivamp,
-+29% Move Speed, +60% mining speed, +0.5 reach, +4 safe fall and a full-block step. With 35 points a
-player has about 62% of that, which is what makes the choice real.
+**The whole web would give** (all 56 nodes, which nobody has): +44 HP, +30 Armor, +25 Magic Resist,
++13.5 Attack Damage, 12 Lethality, 13% Armor Pen and 10% Magic Pen, +54% Attack Speed, 19% Omnivamp,
++43% Move Speed, +80% mining speed, +0.5 reach, +8 safe fall and a full-block step (it was +18 HP, +24 Armor, +20 Magic Resist,
++5.5 Attack Damage, 8 Lethality, 10% and 8% Pen, 10% Omnivamp, +29% Move Speed). `tools/check-balance.py` holds those totals. With 41 points a
+player holds 73% of the nodes: a whole corner pair and a little more, which is what makes the choice real. **A Power and Fury player**
+(30 nodes) has about +13 Attack Damage, 12 Lethality, 13% and 10% Pen, +54% Attack Speed and 19% Omnivamp, which on a kitted
+weapon (about 32 Attack Damage) is roughly 40% more per hit and 50% more hits, about double the damage of the same player with no
+growth. **A Guard player** (the 13-node corner, then Lifeblood) has +44 HP, +30 Armor and +25 Magic Resist: on 100 health,
+about 70% more to chew through, a little less against magic.
 
 - **Deep Lungs** needs `ascension-atmosphere` to read a lung-capacity attribute (§11, §13 question
   7). Until that is decided it is not in the data; if Sanchit wants oxygen in the tree it is one more
@@ -257,11 +270,11 @@ them), vanilla XP levels (spent on enchanting), endless paragon levels (a treadm
 So the stats session can price items against growth, everything is measured in **units**. One
 small node, one point, is one unit.
 
-| 1 unit is about | 1 HP | 4 Armor | 4 Magic Resist | 0.25 Attack Damage | 3% Attack Speed | 1% Omnivamp | 2 Lethality | 2% Penetration | 2% Move Speed |
+| 1 unit is about | 3 HP | 5 Armor | 5 Magic Resist | 1 Attack Damage | 3% Attack Speed | 2% Omnivamp | 3 Lethality | 3% Penetration | 3% Move Speed |
 |---|---|---|---|---|---|---|---|---|---|
 
-Rough reasoning: at 30 HP, +1 HP is about 3% more survival, and +0.25 Attack Damage on a diamond
-sword (7) is about 3.6% more damage.
+Rough reasoning, redone 2026-10-22: a late player has about 100 HP, 32 Attack Damage and 100 Armor, so a unit is about 3% of each: +3 HP, +1 Attack Damage, +3% hits, +5 Armor (each point of Armor is 0.7% less damage taken, so about 3.5%) and 3 Lethality (each point is 0.7% more damage against armour). Before the raise a unit was 1 HP and 0.25 Attack Damage, sized for a 20-health player holding a 7-damage sword; against a 24-damage legendary +0.25 was under 1%.
+A notable is about 3 to 4 units and a capstone 4 to 6, except Attack Damage, whose notables are 2 to 3 units: it is the stat the weapons' abilities scale off, so a point of it counts for more than its 3%.
 
 ### A fully grown v1 player
 
@@ -298,8 +311,8 @@ and his "these stats will be used in the items' scaling as well".
 
 ### The hearts on screen
 
-A Guard player reaches about 35 HP, under two rows of hearts, which vanilla draws fine. A health
-bar with a number (`player-power.md` §3.5) can wait until real numbers pass that.
+A Guard player reaches about 65 HP on their own (20 and the web's 44), more than three rows of hearts, and more again in legendary armour. Whether the
+health display reads well at that size is for the next client run (`docs/technical/hud.md`).
 
 ## 9. Storage and sync
 

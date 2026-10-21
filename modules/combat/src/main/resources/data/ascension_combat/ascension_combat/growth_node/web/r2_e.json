@@ -14,7 +14,7 @@
   "stats": [
     {
       "attribute": "minecraft:generic.max_health",
-      "amount": 1
+      "amount": 3
     }
   ]
 }

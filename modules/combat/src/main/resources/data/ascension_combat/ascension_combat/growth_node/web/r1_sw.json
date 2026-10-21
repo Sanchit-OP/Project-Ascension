@@ -14,7 +14,7 @@
   "stats": [
     {
       "attribute": "minecraft:generic.movement_speed",
-      "amount": 0.02,
+      "amount": 0.03,
       "operation": "add_multiplied_base"
     }
   ]

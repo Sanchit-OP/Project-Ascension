@@ -16,15 +16,15 @@
   "stats": [
     {
       "attribute": "ascension_combat:armor",
-      "amount": 4
+      "amount": 5
     },
     {
       "attribute": "ascension_combat:magic_resist",
-      "amount": 4
+      "amount": 5
     },
     {
       "attribute": "minecraft:generic.movement_speed",
-      "amount": 0.03,
+      "amount": 0.04,
       "operation": "add_multiplied_base"
     }
   ]

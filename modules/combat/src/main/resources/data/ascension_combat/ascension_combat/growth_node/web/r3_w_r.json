@@ -13,7 +13,7 @@
   "stats": [
     {
       "attribute": "ascension_combat:armor_penetration_percent",
-      "amount": 0.02
+      "amount": 0.03
     }
   ]
 }

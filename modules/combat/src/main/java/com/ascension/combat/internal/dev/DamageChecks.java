@@ -114,6 +114,8 @@ public final class DamageChecks {
             guarded(() -> checkLootingAndSweeping(server.overworld()));
         } else if (settle == 350) {
             guarded(() -> checkLegendaryWeapons(server.overworld()));
+        } else if (settle == 360) {
+            guarded(DamageChecks::checkGrowthNodes);
             finished = true;
             log("RESULT: " + checks + " checks, " + failures + " failures");
             server.halt(false);
@@ -613,6 +615,53 @@ public final class DamageChecks {
         standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
         standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         zombie.discard();
+    }
+
+    /**
+     * The skill tree's raised numbers (2026-10-22, Sanchit: +0.5 Attack Damage, 1 Lethality and 1 HP were nothing in the bigger picture)
+     * reach a real player. The stand-in earns two boss milestones the way the game awards them (3 points each), takes six nodes by the rules
+     * (three along the Power side to a notable, three Guard and Fury starts), and its attributes are read before and after: Attack Damage
+     * +1 and +2 (the notable Heavy Hand), Lethality +3, Max Health +3, Magic Resist +5, Omnivamp +2%.
+     */
+    private static void checkGrowthNodes() {
+        log("--- the skill tree's numbers on a player");
+        var server = standIn.server;
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        tickStandIn();
+        double health = standIn.getMaxHealth();
+        double attackDamage = standIn.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        double lethality = standIn.getAttributeValue(CombatAttributes.LETHALITY);
+        double magicResist = standIn.getAttributeValue(CombatAttributes.MAGIC_RESIST);
+        double omnivamp = standIn.getAttributeValue(CombatAttributes.OMNIVAMP);
+
+        for (String boss : List.of("warden", "wither")) {
+            var advancement = server.getAdvancements().get(ResourceLocation.fromNamespaceAndPath("ascension_combat", "growth/" + boss));
+            if (advancement == null) {
+                fail("no growth advancement for the " + boss);
+                return;
+            }
+            com.ascension.combat.internal.growth.PlayerGrowth.awardIfMissing(standIn, advancement);
+        }
+        int points = com.ascension.combat.internal.growth.PlayerGrowth.pointsAvailable(standIn);
+        log("the stand-in has " + points + " skill points to spend");
+        expect("the two boss milestones leave at least the 6 points the six nodes cost", points >= 6, true);
+
+        List<ResourceLocation> nodes = java.util.stream.Stream.of("r1_nw", "r2_nw", "r3_nw", "r1_se", "r1_s", "r1_e")
+                .map(name -> ResourceLocation.fromNamespaceAndPath("ascension_combat", "web/" + name)).toList();
+        var failure = com.ascension.combat.internal.growth.PlayerGrowth.takeAll(standIn, nodes);
+        expect("the six nodes are all taken by the rules" + (failure == null ? "" : " (stopped at " + failure + ")"), failure == null, true);
+        tickStandIn();
+
+        expectNear("Might and Heavy Hand add 3 Attack Damage (1 and 2)",
+                (float) (standIn.getAttributeValue(Attributes.ATTACK_DAMAGE) - attackDamage), 3.0f);
+        expectNear("Edge adds 3 Lethality", (float) (standIn.getAttributeValue(CombatAttributes.LETHALITY) - lethality), 3.0f);
+        expectNear("Vitality adds 3 Max Health", (float) (standIn.getMaxHealth() - health), 3.0f);
+        expectNear("Warding adds 5 Magic Resist", (float) (standIn.getAttributeValue(CombatAttributes.MAGIC_RESIST) - magicResist), 5.0f);
+        expectNear("Hunger adds 2% Omnivamp", (float) (standIn.getAttributeValue(CombatAttributes.OMNIVAMP) - omnivamp), 0.02f);
+        com.ascension.combat.internal.growth.PlayerGrowth.reset(standIn);
+        tickStandIn();
+        expectNear("a respec gives it all back: Max Health is as it was", (float) standIn.getMaxHealth(), (float) health);
     }
 
     /** Two attacks by the stand-in in the same tick: the first at {@code aimed}, then one at {@code extra}. Returns what each lost. */

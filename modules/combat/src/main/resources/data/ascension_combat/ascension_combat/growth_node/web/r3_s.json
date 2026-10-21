@@ -15,11 +15,11 @@
   "stats": [
     {
       "attribute": "ascension_combat:armor",
-      "amount": 8
+      "amount": 10
     },
     {
       "attribute": "ascension_combat:magic_resist",
-      "amount": 8
+      "amount": 10
     }
   ]
 }

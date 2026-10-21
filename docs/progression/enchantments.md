@@ -133,7 +133,9 @@ A reworked enchantment replaces its damage effect with a `minecraft:attributes` 
 
 Growth's yardstick (`growth.md` §8): one unit = 1 HP, 4 Armor, 4 Magic Resist, 0.25 Attack Damage, 3%
 Attack Speed, 1% Omnivamp, 2 Lethality, 2% Penetration or 2% Move Speed. A fully grown v1 player has
-about 35 units of growth, a legendary item 8 to 10.
+about 35 units of growth, a legendary item 8 to 10. (*The skill tree's units were raised on 2026-10-22 to 3 HP, 5 Armor,
+5 Magic Resist, 1 Attack Damage, 2% Omnivamp, 3 Lethality, 3% Penetration and 3% Move Speed; the enchantments
+were raised on their own the same day, see the buff box above, so this proposal table is history.*)
 
 **Proposal (placeholders):**
 

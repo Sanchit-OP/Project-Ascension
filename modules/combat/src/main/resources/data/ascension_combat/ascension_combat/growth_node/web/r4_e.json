@@ -16,11 +16,11 @@
   "stats": [
     {
       "attribute": "ascension_combat:omnivamp",
-      "amount": 0.03
+      "amount": 0.05
     },
     {
       "attribute": "minecraft:generic.max_health",
-      "amount": 4
+      "amount": 8
     }
   ]
 }

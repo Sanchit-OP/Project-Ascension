@@ -15,12 +15,12 @@
   "stats": [
     {
       "attribute": "minecraft:generic.movement_speed",
-      "amount": 0.04,
+      "amount": 0.06,
       "operation": "add_multiplied_base"
     },
     {
       "attribute": "minecraft:generic.attack_damage",
-      "amount": 0.5
+      "amount": 1.0
     }
   ]
 }

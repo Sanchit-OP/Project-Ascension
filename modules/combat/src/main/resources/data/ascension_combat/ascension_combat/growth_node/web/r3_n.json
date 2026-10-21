@@ -15,7 +15,7 @@
   "stats": [
     {
       "attribute": "minecraft:generic.attack_damage",
-      "amount": 0.5
+      "amount": 1.0
     },
     {
       "attribute": "minecraft:generic.attack_speed",

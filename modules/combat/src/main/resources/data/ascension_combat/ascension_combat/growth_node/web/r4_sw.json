@@ -16,12 +16,12 @@
   "stats": [
     {
       "attribute": "minecraft:generic.movement_speed",
-      "amount": 0.06,
+      "amount": 0.09,
       "operation": "add_multiplied_base"
     },
     {
       "attribute": "minecraft:generic.safe_fall_distance",
-      "amount": 2
+      "amount": 4
     }
   ]
 }

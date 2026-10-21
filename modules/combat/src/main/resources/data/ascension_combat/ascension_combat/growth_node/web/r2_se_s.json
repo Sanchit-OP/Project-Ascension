@@ -15,7 +15,7 @@
   "stats": [
     {
       "attribute": "minecraft:generic.safe_fall_distance",
-      "amount": 1
+      "amount": 2
     }
   ]
 }

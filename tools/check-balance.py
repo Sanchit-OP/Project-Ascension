@@ -108,6 +108,44 @@ CATACLYSM = {
 }
 
 
+# The skill tree (docs/progression/growth.md section 8): what all 56 nodes add up to, written down. Raised on 2026-10-22
+# (Sanchit: "+0.5 AD or 1 lethality or 1 HP is nothing in the bigger picture"): the nodes were sized against a 7-damage
+# sword and a 20-health player, and the legendary weapons are 12 to 34. Nobody holds the whole web (41 points of 56
+# nodes), so a committed player has about two corners of it. Attack speed was left as it was: 3% a node is already 3%
+# more damage.
+GROWTH = os.path.join(BASE, 'combat', 'src', 'main', 'resources', 'data', 'ascension_combat', 'ascension_combat', 'growth_node', 'web')
+WEB_TOTAL = {
+    'max_health': 44, 'armor': 30, 'magic_resist': 25, 'attack_damage': 13.5, 'lethality': 12, 'armor_penetration_percent': 0.13,
+    'magic_penetration_percent': 0.10, 'attack_speed': 0.54, 'omnivamp': 0.19, 'movement_speed': 0.43,
+}
+GROWTH_POINTS = 41
+
+
+def check_growth(problems):
+    totals, by_theme = {}, {}
+    nodes = 0
+    for name in sorted(os.listdir(GROWTH)):
+        with open(os.path.join(GROWTH, name), encoding='utf-8') as f:
+            node = json.load(f)
+        nodes += 1
+        for stat in node['stats']:
+            key = stat['attribute'].split(':')[-1].replace('generic.', '')
+            totals[key] = totals.get(key, 0.0) + stat['amount']
+            theme = by_theme.setdefault(node['arm'], {})
+            theme[key] = theme.get(key, 0.0) + stat['amount']
+    print('Skill tree: %d nodes, %d points to spend; the whole web adds up to:' % (nodes, GROWTH_POINTS))
+    for key, written in WEB_TOTAL.items():
+        got = totals.get(key, 0.0)
+        flag = '' if abs(got - written) < 1e-6 else '   <-- off'
+        print('  %-28s %8.2f %8.2f%s' % (key, got, written, flag))
+        if flag:
+            problems.append('the skill tree gives %s %.3f in all, written %.3f' % (key, got, written))
+    for theme in sorted(by_theme):
+        shown = ', '.join('%s %.2f' % (k, v) for k, v in sorted(by_theme[theme].items())
+                          if k in WEB_TOTAL)
+        print('  %-9s %s' % (theme, shown))
+
+
 def score(entry):
     return sum(WEIGHTS[s] * x for s, x in entry.get('stats', {}).items())
 
@@ -208,6 +246,8 @@ def main():
         print('  %-8s %-26s %6.1f  %3.0f%%%s' % (slot, name, s, share * 100, flag))
         if flag:
             problems.append('%s is %.0f%% of its slot budget, over %.0f%%' % (name, share * 100, CEILING * 100))
+
+    check_growth(problems)
 
     for p in problems:
         print('balance: ' + p)
