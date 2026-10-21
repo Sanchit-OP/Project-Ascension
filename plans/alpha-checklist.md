@@ -369,6 +369,14 @@ destination screen, no credits); a lore pass first (`docs/lore/the-end.md`, now 
 - **A parachute mod.** Check where it is worn: many use a back or chest slot, which would fight Sophisticated Backpacks in Curios' `back`
   slot. Check it against our rules: falling out of the End's bottom (`VoidFall`) and the ascent carry must behave as before, and a ship
   landing must not change.
+- **A double-door mod**: click one door and its neighbour opens or closes with it. **Candidate: Serilum's Double Doors**, CurseForge project
+  348831, file 9255519 (`doubledoors-1.21.1-7.5.jar`, NeoForge 1.21.1, 2026-10-19; 7.4 is 9225695). It is **server-side** (a client without it still
+  works, the second door just opens a moment later), and it needs Serilum's library **Collective**, project 342584, file 9276274
+  (`collective-1.21.1-8.61.jar`, NeoForge 1.21.1, 2026-10-21). Both are "All Rights Reserved" with a note that any modpack may use them while
+  the download stays on CurseForge or Modrinth, which a manifest by id does. Config: fence gates and trapdoors are off by default, doors on;
+  crouching opens a single door; it can chain connected doors up to 10 blocks. Not installed: add to `pack/curseforge-extras.json`, rerun
+  `tools/check-curseforge-ids.py`, put both jars on the server, and note it in the changelog. Quark also has this feature if it is ever added
+  (Serilum's mod edits Quark's config to avoid a double run).
 - **Curios slots** (prompt 11): still not built; only Curios' `back` slot exists, through Sophisticated Backpacks.
 
 ## Still open for Sanchit
