@@ -613,8 +613,9 @@ public final class DamageChecks {
         float magic = (float) MagicDamage.passThrough(zombie, standIn);
 
         float veigo = swing(new ItemStack(CombatContent.VEIGOS_BLADE.get()), zombie);
-        expectNear("a swing of Veigo's Blade takes 16.5 plus 4% + 0.075% x 16.5 of 1,000 health, after Armor", veigo,
-                (16.5f + 1000.0f * (0.04f + 0.00075f * 16.5f)) * armor);
+        // The zombie's health is not the 1,000 set above: the world difficulty scales a mob's health (mob_difficulty/*.json), 800 on Easy.
+        expectNear("a swing of Veigo's Blade takes 16.5 plus 4% + 0.075% x 16.5 of its health, after Armor", veigo,
+                (16.5f + zombie.getMaxHealth() * (0.04f + 0.00075f * 16.5f)) * armor);
 
         // The first hit of a Ragefang is not its third, so its magic is single; the pair swings with the second copy in the off hand.
         float ragefang = swing(new ItemStack(CombatContent.RAGEFANG.get()), zombie);
