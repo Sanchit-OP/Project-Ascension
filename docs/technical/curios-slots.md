@@ -31,3 +31,13 @@ Built 2026-10-22, branch `curios-slots`, **compiled and unit-built only: not see
 6. Die with Soulbound and without; relog; reload the world: both slots keep their contents.
 7. Wear a backpack in `back` and a glider in its slot at the same time.
 8. Dedicated server: the same jars on the server (Curios is the example in `dev-environment.md` of a mod both sides must carry).
+
+## Slots a player has (2026-10-22, Sanchit: only slots we have a use for)
+
+Kept: `ascension_tank`, `ascension_relic` (ours); `back` (Sophisticated Backpacks, Icarus wings); `glider` (Gliders); `head`
+(Create's goggles); `belt` (Tom's Storage wireless terminal). Curios' own ten definitions assign nothing to the player.
+
+Removed: Cataclysm's `necklace`, `rings`, `waist`, `talisman`, `hands`, `feet` (its amulets, ankh, ring, belts, gloves, boots and
+skull talisman can no longer be worn; they stay as loot). `ascension-compat-cataclysm` overrides Cataclysm's own
+`data/cataclysm/curios/entities/slots.json` with an empty list; it loads after Cataclysm (`ordering = "AFTER"`), so ours wins.
+**Not yet seen in a client:** check the Curios screen lists exactly the seven above (the head slot also stays, from Create).
