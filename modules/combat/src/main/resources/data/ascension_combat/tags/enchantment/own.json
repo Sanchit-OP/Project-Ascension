@@ -5,6 +5,9 @@
     "ascension_combat:leech",
     "ascension_combat:warding",
     "ascension_combat:vitality",
-    "ascension_combat:fleet"
+    "ascension_combat:fleet",
+    "ascension_combat:arcane_edge",
+    "ascension_combat:aether_tip",
+    "ascension_combat:spellpiercing"
   ]
 }

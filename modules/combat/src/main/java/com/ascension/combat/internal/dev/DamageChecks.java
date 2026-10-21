@@ -526,6 +526,19 @@ public final class DamageChecks {
         expectNear("Sweeping Edge adds nothing to the target the swing was aimed at", sweepHits[0] - plainHits[0], 0.0f);
         expectNear("Sweeping Edge III adds its magic damage to the extra target, after Magic Resist", sweepHits[1] - plainHits[1], magic * through);
 
+        // Arcane Edge: adds magic to the aimed target too (unlike Sweeping Edge), cut by Magic Resist.
+        ItemStack arcaneSword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        arcaneSword.enchant(enchantments.getOrThrow(net.minecraft.resources.ResourceKey.create(
+                net.minecraft.core.registries.Registries.ENCHANTMENT,
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "arcane_edge"))), 3);
+        float[] arcaneHits = sweepPair(arcaneSword, aimed, extra);
+        float arcane = 3.0f * (com.ascension.combat.internal.enchanting.ArcaneEnchantEffects.BASE_PER_LEVEL
+                + com.ascension.combat.internal.enchanting.ArcaneEnchantEffects.PER_LEVEL_PER_AD * ad);
+        float arcaneThrough = (float) MagicDamage.passThrough(aimed, standIn);
+        log("Arcane Edge III: aimed target " + plainHits[0] + " -> " + arcaneHits[0] + " (adds " + arcane + " magic, " + arcaneThrough
+                + " of it gets through)");
+        expectNear("Arcane Edge III adds its magic damage to the target hit, after Magic Resist", arcaneHits[0] - plainHits[0], arcane * arcaneThrough);
+
         standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(
                 ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing2"));
         standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);

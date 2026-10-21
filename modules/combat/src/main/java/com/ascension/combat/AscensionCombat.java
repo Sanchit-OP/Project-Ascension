@@ -113,6 +113,7 @@ public final class AscensionCombat {
         com.ascension.combat.internal.mechanics.MagicHitNotifier.register(NeoForge.EVENT_BUS);
         OmnivampHealing.register(NeoForge.EVENT_BUS);
         com.ascension.combat.internal.enchanting.SweepingEdgeEffects.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.internal.enchanting.ArcaneEnchantEffects.register(NeoForge.EVENT_BUS);
 
         VeigosBladeEffects.register(NeoForge.EVENT_BUS);
         DariusAxeEffects.register(NeoForge.EVENT_BUS);

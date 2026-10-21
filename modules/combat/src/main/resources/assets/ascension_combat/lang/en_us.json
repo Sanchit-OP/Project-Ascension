@@ -485,5 +485,11 @@
   "tooltip.ascension_combat.steraks_harness.1": "Passive, Might: Gain Attack Damage equal to 10% of your max health.",
   "tooltip.ascension_combat.steraks_harness.2": "Passive, Lifeline: Dropping below half health shields you for half your max health and gives 10% omnivamp for 10 seconds. 60 second cooldown.",
   "tooltip.ascension_combat.ragefang.3": "Dual wield: Carry one in each hand and both count: their stats and damage add up, and Better Combat swings the hands in turn.",
-  "tooltip.ascension_combat.endless_hunger.3": "Dual wield: Carry one in each hand and both count: their stats, damage and Omnivamp add up, and Better Combat swings the hands in turn."
+  "tooltip.ascension_combat.endless_hunger.3": "Dual wield: Carry one in each hand and both count: their stats, damage and Omnivamp add up, and Better Combat swings the hands in turn.",
+  "enchantment.ascension_combat.arcane_edge": "Arcane Edge",
+  "enchantment.ascension_combat.arcane_edge.desc": "Your melee hits add magic damage, cut by the target's Magic Resist.",
+  "enchantment.ascension_combat.aether_tip": "Aether Tip",
+  "enchantment.ascension_combat.aether_tip.desc": "Your arrows add magic damage, cut by the target's Magic Resist.",
+  "enchantment.ascension_combat.spellpiercing": "Spellpiercing",
+  "enchantment.ascension_combat.spellpiercing.desc": "Your magic damage ignores part of the target's Magic Resist."
 }

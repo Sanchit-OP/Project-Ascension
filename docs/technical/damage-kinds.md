@@ -45,12 +45,13 @@ directly; magic types vanilla runs through armour (blasts, fireballs) take Armor
 |---|---|
 | Creeper, TNT, ghast and any other **blast** (`#minecraft:is_explosion`) | Every mob's **melee** (`mob_attack`): zombie, spider, Warden's fist, Ravager, Vex, the dragon's wings |
 | **Fire**: burning, lava, standing in fire, a campfire, blaze and ghast fireballs (`#minecraft:is_fire`) | **Arrows and tridents**, a pillager's crossbow, a bogged's arrow |
-| **Lightning** (`#minecraft:is_lightning`) | A shulker's bullet, a llama's spit, a breeze's wind charge |
+| **Lightning** (`#minecraft:is_lightning`) | A llama's spit, a breeze's wind charge |
 | A witch's potions, poison and instant damage (`magic`, `indirect_magic`) | Thorns, a player's attack |
 | An evoker's fangs and a guardian's beam (`indirect_magic`) | |
 | The Wither's decay and its skulls (`wither`, `wither_skull`) | **Neither:** falling, drowning, starving, suffocation, cactus, the void, powder snow |
 | The dragon's breath (`dragon_breath`) | |
 | The Warden's sonic boom (`sonic_boom`) | |
+| A shulker's bullet (entity tag, 2026-10-22) | |
 
 The *damage types* here were read from the game's own tags and checked on a server. Which mob uses which
 type is from knowing vanilla; the server check tests the types, not each mob.

@@ -1,0 +1,12 @@
+{
+  "anvil_cost": 4,
+  "description": { "translate": "enchantment.ascension_combat.aether_tip" },
+  "effects": {},
+  "max_cost": { "base": 50, "per_level_above_first": 10 },
+  "max_level": 3,
+  "min_cost": { "base": 15, "per_level_above_first": 10 },
+  "slots": ["mainhand"],
+  "supported_items": "#ascension_combat:enchantable/ranged",
+  "weight": 3,
+  "primary_items": "#ascension_combat:enchantable/ranged"
+}
