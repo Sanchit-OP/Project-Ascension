@@ -82,8 +82,8 @@ no cap), not its stats.
 | *Pair* | Ragefang, one in each hand | 42 | 33 | Both copies count |
 | *Pair* | Endless Hunger, one in each hand | 46 | 32 | Both copies count |
 | | *netherite sword* | 230 | 109 | |
-| | *mace (vanilla's 6 at 0.6 was 787 s alone, 319 kit)* | 121 | 87 | Rebalanced 2026-10-22 (Sanchit: basic and trash): **26 at 0.9**, a heavy hit; its smash attack, Density, Wind Burst and Breach are untouched on top |
-| | *trident (vanilla's 9 at 1.1 was 286 s alone, 143 kit)* | 145 | 85 | Rebalanced 2026-10-22: **13 at 1.5**; throwing, Riptide, Loyalty and Channeling untouched. A thrown trident also carries the thrower's Attack Damage, as arrows do |
+| | *mace (vanilla's 6 at 0.6 was 787 s alone, 319 kit)* | 295 | 167 | Rebalanced 2026-10-22 (Sanchit: basic and trash): **12 at 0.8**. First set to 26 at 0.9 and cut: the mace is meant to win by **jumping and smashing** (a fall adds flat damage, 4 a block for the first three, 2 for the next five, and Density adds more), not by plain swings, so this figure is its flat swing only and says little about its worth |
+| | *trident (vanilla's 9 at 1.1 was 286 s alone, 143 kit)* | 126 | 78 | Rebalanced 2026-10-22: **15 at 1.5** (Sanchit: a rare item, let it be a little good); throwing, Riptide, Loyalty and Channeling untouched. A thrown trident also carries the thrower's Attack Damage, as arrows do |
 
 **What uncapped does against a late boss.** On the Wither (4225 HP after the 2026-10-19 cut, 180 Armor, 110 Magic
 Resist), alone, kit in brackets: Veigo's Blade 171 s (122), Ragefang 179 (108), Spear of Shojin 179 (143), Divine

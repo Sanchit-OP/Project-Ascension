@@ -1,18 +1,20 @@
 package com.ascension.combat.internal.armor;
 
-import com.ascension.combat.AscensionCombat;
 import com.ascension.combat.internal.CombatContent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.enchanting.GetEnchantmentLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
@@ -25,34 +27,37 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * Ragefang's on-hit magic is added in should still execute, not be judged against the base hit
  * alone.
  *
- * <p><b>The Looting-level bonus is a placeholder translation, not a skipped mechanic.</b> Checked
- * against 1.21.1's actual entity-death loot resolution ({@code LivingEntity#dropFromLootTable}):
- * it builds its {@code LootParams} from {@code Player#getLuck()} (a direct read of {@code
- * Attributes.LUCK}) and never populates a tool-enchantment loot-context parameter for a standard
- * mob kill at all. So "counts as one Looting level higher" is implemented as a one-tick {@code
- * Attributes.LUCK} boost on the exact kill: granted the instant the execute is applied (still
- * present when {@code die()} resolves that kill's loot moments later in the same synchronous call
- * chain, before the wearer's own next tick ever runs) and cleared on the wearer's very next tick.
- * The Luck-per-Looting-level equivalence is a genuine placeholder (combat-api.md section 3), since
- * vanilla defines no such conversion.
+ * <p><b>Looting.</b> While worn, the wearer's weapon counts as one Looting level higher on every kill: a Looting III sword acts as IV
+ * (Sanchit, 2026-10-22). Vanilla 1.21.1 reads the level from the killer's equipment when a mob's loot table runs ({@code
+ * enchanted_count_increase}, {@code random_chance_with_enchanted_bonus}), so the bonus is added there, virtually: the kill opens a window at
+ * {@link LivingDeathEvent} (the moment before the loot is rolled) for the killer's main-hand stack, NeoForge's {@link
+ * GetEnchantmentLevelEvent} adds one level to that stack's Looting while the window is open, and {@link LivingDropsEvent} (the end of the
+ * same call) closes it. Nothing on the item changes. (The first version of this class boosted Luck instead, which loot tables of this
+ * version do not read for Looting, so it did nothing.) The one piece of state is the window: a flag and the identity of one stack, no
+ * player or world.
  */
 public final class CollectorsPantsEffects {
 
     /** Catalog-specified: below 5% max HP executes. */
     private static final float EXECUTE_THRESHOLD_PERCENT = 0.05f;
 
-    /** Placeholder -- combat-api.md section 3: Sanchit tunes by playing, not by spec. */
-    private static final double EXECUTE_LUCK_BONUS = 1.0;
+    /** Levels of Looting the pants add on top of the weapon's own. */
+    private static final int EXTRA_LOOTING_LEVELS = 1;
 
-    private static final ResourceLocation EXECUTE_LUCK_MODIFIER_ID = ResourceLocation
-            .fromNamespaceAndPath(AscensionCombat.MOD_ID, "collectors_pants_execute_luck");
+    /** True while a wearer's kill is rolling its loot; {@link #windowStack} is the killer's main-hand stack then. */
+    private static boolean windowOpen;
+    private static int windowStack;
 
     private CollectorsPantsEffects() {
     }
 
     public static void register(IEventBus bus) {
         bus.addListener(EventPriority.LOWEST, CollectorsPantsEffects::onDamagePre);
+        bus.addListener(CollectorsPantsEffects::onDeath);
+        bus.addListener(CollectorsPantsEffects::onEnchantmentLevel);
+        bus.addListener(EventPriority.LOWEST, CollectorsPantsEffects::onDrops);
         bus.addListener(CollectorsPantsEffects::onPlayerTick);
+        bus.addListener((ServerStoppedEvent event) -> windowOpen = false);
     }
 
     private static void onDamagePre(LivingDamageEvent.Pre event) {
@@ -75,32 +80,38 @@ public final class CollectorsPantsEffects {
         }
 
         event.setNewDamage(target.getHealth());
-        grantExecuteLuck(attacker);
     }
 
-    private static void grantExecuteLuck(Player attacker) {
-        AttributeInstance luck = attacker.getAttribute(Attributes.LUCK);
-        if (luck == null) {
+    /** A wearer's kill is about to roll its loot: open the window for the weapon in their main hand. */
+    private static void onDeath(LivingDeathEvent event) {
+        if (!(event.getSource().getEntity() instanceof Player killer)
+                || !killer.getItemBySlot(EquipmentSlot.LEGS).is(CombatContent.COLLECTORS_PANTS.get())) {
             return;
         }
-
-        luck.removeModifier(EXECUTE_LUCK_MODIFIER_ID);
-        luck.addTransientModifier(new AttributeModifier(
-                EXECUTE_LUCK_MODIFIER_ID, EXECUTE_LUCK_BONUS, AttributeModifier.Operation.ADD_VALUE));
+        ItemStack weapon = killer.getMainHandItem();
+        if (weapon.isEmpty()) {
+            return;
+        }
+        windowOpen = true;
+        windowStack = System.identityHashCode(weapon);
     }
 
+    /** While the window is open, the killer's weapon reads one Looting level higher. */
+    private static void onEnchantmentLevel(GetEnchantmentLevelEvent event) {
+        if (!windowOpen || System.identityHashCode(event.getStack()) != windowStack) {
+            return;
+        }
+        Holder<Enchantment> looting = event.getLookup().getOrThrow(Enchantments.LOOTING);
+        event.getEnchantments().set(looting, event.getEnchantments().getLevel(looting) + EXTRA_LOOTING_LEVELS);
+    }
+
+    /** The loot has been rolled. */
+    private static void onDrops(LivingDropsEvent event) {
+        windowOpen = false;
+    }
+
+    /** A safety: a window that somehow outlived its kill closes on the next player tick. */
     private static void onPlayerTick(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-
-        if (!player.getItemBySlot(EquipmentSlot.LEGS).is(CombatContent.COLLECTORS_PANTS.get())) {
-            return;
-        }
-
-        AttributeInstance luck = player.getAttribute(Attributes.LUCK);
-        if (luck != null) {
-            luck.removeModifier(EXECUTE_LUCK_MODIFIER_ID);
-        }
+        windowOpen = false;
     }
 }

@@ -464,8 +464,8 @@ disagrees; **Test** = needs a look in a real game; **Decide** = a design choice 
 | Riptide, Loyalty, Channeling | movement and utility | Fine |
 | Knockback, Punch, Flame, Infinity, Multishot, Piercing, Quick Charge | utility; no crossbow of ours | Fine |
 | Fire Aspect | burning is fire damage, which is magic here, so Magic Resist cuts it and fire-proof bosses ignore it | Weak against bosses, fine as utility |
-| Looting | overlaps Collector's Pants | **Decide** (the usual answer: allowed, in the same exclusive set) |
-| Sweeping Edge | Better Combat has its own sweep settings | **Test** that it does anything |
+| Looting | **Decided 2026-10-22 (Sanchit):** Collector's Pants add one Looting level on top of the weapon's, so a Looting III sword acts as IV. Built on NeoForge's `GetEnchantmentLevelEvent`, opened for the wearer's kill only (`CollectorsPantsEffects`); proved on a dedicated server (reads 3 without the pants, 4 in them, 3 afterwards, the item untouched). The first version boosted Luck, which this version's loot tables do not read for Looting, so it never worked | Done |
+| Sweeping Edge | **Decided 2026-10-22 (Sanchit: magic damage with sweeps):** every extra target of a sweep (vanilla's or Better Combat's: any hit by the same player in the tick of the swing, on someone other than the aimed target) takes **3 + 15% of the wielder's Attack Damage, per level, as magic damage** (`SweepingEdgeEffects`); the aimed target gets nothing extra. Proved on a dedicated server with two hits in one tick; **not yet seen with Better Combat in a client** | Done; **Test** with Better Combat |
 | Protection (+5 Armor a level), Projectile (+6), Fire and Blast (+5 Magic Resist), Warding (ours, +5 Magic Resist), Vitality (ours, +5 Health) | the defensive side, buffed | Done |
 | Feather Falling | vanilla fall protection | Fine (more useful with a mace and ships) |
 | Thorns | reflect damage is physical, so a mob's Armor cuts it | Weak against bosses; low priority |

@@ -110,6 +110,8 @@ public final class DamageChecks {
             guarded(DamageChecks::checkEndlessHungerBase);
         } else if (settle == 330) {
             guarded(() -> checkEnchantDamage(server.overworld()));
+        } else if (settle == 340) {
+            guarded(() -> checkLootingAndSweeping(server.overworld()));
             finished = true;
             log("RESULT: " + checks + " checks, " + failures + " failures");
             server.halt(false);
@@ -443,13 +445,103 @@ public final class DamageChecks {
         // The mace and the trident were vanilla's 6 at 0.6 and 9 at 1.1, which took 787 s and 286 s to kill the standard boss (a netherite sword: 222 s).
         standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.MACE));
         tickStandIn();
-        expectNear("the mace hits for 26", (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), 26.0f);
-        expectNear("the mace swings at 0.9 a second", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED), 0.9f);
+        expectNear("the mace hits for 12 (its smash from a fall is on top)", (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), 12.0f);
+        expectNear("the mace swings at 0.8 a second", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED), 0.8f);
         standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.TRIDENT));
         tickStandIn();
-        expectNear("the trident hits for 13", (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), 13.0f);
+        expectNear("the trident hits for 15", (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), 15.0f);
         expectNear("the trident swings at 1.5 a second", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED), 1.5f);
         standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+    }
+
+    /**
+     * Collector's Pants add one Looting level while their wearer's kill rolls its loot, and Sweeping Edge adds magic damage to the extra targets of
+     * a swing (2026-10-22). Looting is read by asking the game what level the killer's weapon has, from a listener that runs after the pants'
+     * own, at the moment of the kill; Sweeping Edge by hitting two zombies in the same tick, the second as a sweep's extra target.
+     */
+    private static void checkLootingAndSweeping(ServerLevel level) {
+        log("--- Collector's Pants and Sweeping Edge");
+        var enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        var looting = enchantments.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.LOOTING);
+        standIn.getAttribute(Attributes.ATTACK_SPEED).addTransientModifier(new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing2"), 1000.0,
+                AttributeModifier.Operation.ADD_VALUE));
+
+        // Looting: a Looting III sword, with and without the pants, read inside the kill.
+        ItemStack sword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        sword.enchant(looting, 3);
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, sword);
+        int[] inside = {-1};
+        java.util.function.Consumer<net.neoforged.neoforge.event.entity.living.LivingDeathEvent> reader =
+                event -> inside[0] = net.minecraft.world.item.enchantment.EnchantmentHelper.getEnchantmentLevel(looting, standIn);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.LOWEST, reader);
+        try {
+            standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, ItemStack.EMPTY);
+            Zombie plainKill = EntityType.ZOMBIE.create(level);
+            plainKill.moveTo(standIn.getX() + 1.0, standIn.getY(), standIn.getZ());
+            level.addFreshEntity(plainKill);
+            plainKill.hurt(level.damageSources().playerAttack(standIn), 100000.0f);
+            expectCount("a kill without the pants reads Looting 3", inside[0], 3);
+
+            standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, new ItemStack(CombatContent.COLLECTORS_PANTS.get()));
+            inside[0] = -1;
+            Zombie pantsKill = EntityType.ZOMBIE.create(level);
+            pantsKill.moveTo(standIn.getX() + 1.0, standIn.getY(), standIn.getZ());
+            level.addFreshEntity(pantsKill);
+            pantsKill.hurt(level.damageSources().playerAttack(standIn), 100000.0f);
+            expectCount("a kill in the pants reads Looting 4 on a Looting 3 sword", inside[0], 4);
+            expectCount("and afterwards the sword is back to Looting 3", net.minecraft.world.item.enchantment.EnchantmentHelper
+                    .getEnchantmentLevel(looting, standIn), 3);
+            expectCount("and the stack itself never changed", net.minecraft.world.item.enchantment.EnchantmentHelper
+                    .getItemEnchantmentLevel(looting, sword), 3);
+        } finally {
+            net.neoforged.neoforge.common.NeoForge.EVENT_BUS.unregister(reader);
+            standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, ItemStack.EMPTY);
+        }
+
+        // Sweeping Edge: two zombies hit in the same tick, the second well out of vanilla's sweep reach.
+        Zombie aimed = EntityType.ZOMBIE.create(level);
+        Zombie extra = EntityType.ZOMBIE.create(level);
+        aimed.moveTo(standIn.getX() + 1.0, standIn.getY(), standIn.getZ());
+        extra.moveTo(standIn.getX() - 6.0, standIn.getY(), standIn.getZ());
+        for (Zombie zombie : new Zombie[] {aimed, extra}) {
+            level.addFreshEntity(zombie);
+            zombie.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100000.0);
+        }
+        ItemStack plainSword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        ItemStack sweepSword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        sweepSword.enchant(enchantments.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SWEEPING_EDGE), 3);
+        float[] plainHits = sweepPair(plainSword, aimed, extra);
+        float[] sweepHits = sweepPair(sweepSword, aimed, extra);
+        float ad = com.ascension.combat.internal.mechanics.AbilityScaling.attackDamage(standIn);
+        float magic = 3.0f * (com.ascension.combat.internal.enchanting.SweepingEdgeEffects.MAGIC_PER_LEVEL
+                + com.ascension.combat.internal.enchanting.SweepingEdgeEffects.MAGIC_PER_LEVEL_PER_AD * ad);
+        float through = (float) MagicDamage.passThrough(extra, standIn);
+        log("aimed target " + plainHits[0] + " -> " + sweepHits[0] + ", extra target " + plainHits[1] + " -> " + sweepHits[1]
+                + " (Sweeping Edge III adds " + magic + " magic, " + through + " of it gets through)");
+        expectNear("Sweeping Edge adds nothing to the target the swing was aimed at", sweepHits[0] - plainHits[0], 0.0f);
+        expectNear("Sweeping Edge III adds its magic damage to the extra target, after Magic Resist", sweepHits[1] - plainHits[1], magic * through);
+
+        standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing2"));
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        aimed.discard();
+        extra.discard();
+    }
+
+    /** Two attacks by the stand-in in the same tick: the first at {@code aimed}, then one at {@code extra}. Returns what each lost. */
+    private static float[] sweepPair(ItemStack weapon, Zombie aimed, Zombie extra) {
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, weapon);
+        tickStandIn();
+        aimed.setHealth(aimed.getMaxHealth());
+        extra.setHealth(extra.getMaxHealth());
+        aimed.invulnerableTime = 0;
+        extra.invulnerableTime = 0;
+        float aimedBefore = aimed.getHealth();
+        float extraBefore = extra.getHealth();
+        standIn.attack(aimed);
+        standIn.attack(extra);
+        return new float[] {aimedBefore - aimed.getHealth(), extraBefore - extra.getHealth()};
     }
 
     /** One full-strength swing of {@code weapon} by the stand-in player at {@code target}, and how much health the target lost. */

@@ -479,7 +479,7 @@
   "tooltip.ascension_combat.gargoyle_stoneplate.1": "Active, Stone Skin (20s cooldown): Gain a shield of 4 for every enemy within 12 blocks, up to 40. Both grow with your Armor (+0.05 per enemy, +0.4 to the cap, for each point).",
   "tooltip.ascension_combat.guardian_wing.1": "Passive, Second Life: A killing blow puts you in stasis for 4 seconds, then you revive at half health. 5 minute cooldown.",
   "tooltip.ascension_combat.rocketbelt.1": "Active, Rocket Jump (15s cooldown): Dash 6 blocks. A moment later a burst deals 6 damage (+0.5 per Attack Damage) to every enemy within 4 blocks.",
-  "tooltip.ascension_combat.collectors_pants.1": "Passive, Execute: A hit that leaves an enemy below 5% of its max health kills it outright, and the kill counts as one Looting level higher.",
+  "tooltip.ascension_combat.collectors_pants.1": "Passive, Looting: your weapon counts as one Looting level higher on every kill (a Looting III weapon acts as IV). Passive, Execute: A hit that leaves an enemy below 5% of its max health kills it outright.",
   "tooltip.ascension_combat.unending_despair.1": "Passive, Anguish: After 10 seconds in the same fight, you pulse every 2 seconds for 12 magic damage (+0.1 per point of Health) to enemies within 6 blocks, healing you for the same amount.",
   "tooltip.ascension_combat.zonias_hourglass.1": "Active, Stasis (30s cooldown): Right-click to freeze yourself for 3 seconds, untargetable but unable to move.",
   "tooltip.ascension_combat.steraks_harness.1": "Passive, Might: Gain Attack Damage equal to 10% of your max health.",
