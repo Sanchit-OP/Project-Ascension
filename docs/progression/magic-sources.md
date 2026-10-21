@@ -42,3 +42,14 @@ Tip has none yet (an arrow needs a stand-in shooter).
   for each further), up to the limit. Placeholders. **Proved:** the compatibility and the anvil limit (damage-checks, 296 checks). **Not
   proved:** the table's extra rolls (needs the enchanting menu in a client).
 - **Library (not built):** see the question to Sanchit.
+
+## The Enchantment Library (built 2026-10-22; server-checked, **not seen in a client**)
+
+A block (`ascension_combat:enchantment_library`; recipe: 4 obsidian... see `recipe/enchantment_library.json`: obsidian, book, lapis block,
+bookshelf). Right-click: put enchanted books in the first slot and they join the library at once (two equal levels make the next one up,
+like an anvil; the higher level replaces a lower). The list on the left shows what it holds; click enchantments to pick a combination
+(they must be compatible with each other, at most 6), put a blank book in the middle slot and press Take: the book appears in the third
+slot and costs experience levels equal to the sum of the picked levels. Taking never uses the library up. Breaking the block returns
+its contents as one enchanted book per stored enchantment. No packets of our own: contents and picks travel as menu data slots, clicks
+as vanilla menu-button presses. `damage-checks` proves put-in, joining, compatibility, cost and the result (311 checks, 0 failures);
+the screen (flat-drawn, no texture) and the block's look are untested until a client run.

@@ -540,6 +540,7 @@ public final class DamageChecks {
         expectNear("Arcane Edge III adds its magic damage to the target hit, after Magic Resist", arcaneHits[0] - plainHits[0], arcane * arcaneThrough);
 
         checkEnchantmentLimits(level, enchantments);
+        checkEnchantmentLibrary(level, enchantments);
 
         standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(
                 ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing2"));
@@ -880,5 +881,72 @@ public final class DamageChecks {
         net.neoforged.neoforge.event.AnvilUpdateEvent anvil = new net.neoforged.neoforge.event.AnvilUpdateEvent(left, right, "", 0, standIn);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(anvil);
         return anvil.isCanceled();
+    }
+
+    /** The Enchantment Library: books go in and join, a combination that fits comes out on a blank book for experience levels. */
+    private static void checkEnchantmentLibrary(ServerLevel level,
+            net.minecraft.core.HolderGetter<net.minecraft.world.item.enchantment.Enchantment> enchantments) {
+        log("--- the Enchantment Library");
+        var ench = (java.util.function.Function<String, net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment>>) path ->
+                enchantments.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.ENCHANTMENT,
+                        ResourceLocation.parse(path)));
+        var library = new com.ascension.combat.internal.enchanting.library.EnchantmentLibraryBlockEntity(
+                standIn.blockPosition(), com.ascension.combat.internal.enchanting.library.LibraryContent.BLOCK.get().defaultBlockState());
+        var menu = new com.ascension.combat.internal.enchanting.library.LibraryMenu(
+                1, standIn.getInventory(), library, net.minecraft.world.inventory.ContainerLevelAccess.NULL);
+        ItemStack sharp = new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK);
+        sharp.enchant(ench.apply("minecraft:sharpness"), 3);
+        menu.getSlot(com.ascension.combat.internal.enchanting.library.LibraryMenu.INPUT).set(sharp.copy());
+        expectCount("a Sharpness III book put in is stored at III", library.store().level("minecraft:sharpness"), 3);
+        expectCount("and the input slot is empty again", menu.getSlot(0).getItem().isEmpty() ? 1 : 0, 1);
+        menu.getSlot(0).set(sharp.copy());
+        expectCount("a second Sharpness III joins into IV", library.store().level("minecraft:sharpness"), 4);
+        ItemStack keen = new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK);
+        keen.enchant(ench.apply("ascension_combat:keen_edge"), 2);
+        menu.getSlot(0).set(keen);
+        ItemStack prot = new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK);
+        prot.enchant(ench.apply("minecraft:protection"), 4);
+        menu.getSlot(0).set(prot);
+        ItemStack warding = new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK);
+        warding.enchant(ench.apply("ascension_combat:warding"), 2);
+        menu.getSlot(0).set(warding);
+        menu.broadcastChanges();
+
+        var catalog = menu.catalog();
+        int sharpness = -1;
+        int keenEdge = -1;
+        int protection = -1;
+        int wardingIndex = -1;
+        for (int i = 0; i < catalog.size(); i++) {
+            String id = catalog.get(i).getKey().location().toString();
+            switch (id) {
+                case "minecraft:sharpness" -> sharpness = i;
+                case "ascension_combat:keen_edge" -> keenEdge = i;
+                case "minecraft:protection" -> protection = i;
+                case "ascension_combat:warding" -> wardingIndex = i;
+                default -> { }
+            }
+        }
+        expectCount("Sharpness is picked", menu.clickMenuButton(standIn, sharpness) ? 1 : 0, 1);
+        expectCount("Keen Edge is picked beside it", menu.clickMenuButton(standIn, keenEdge) ? 1 : 0, 1);
+        expectCount("Protection is picked too", menu.clickMenuButton(standIn, protection) ? 1 : 0, 1);
+        expectCount("Warding is refused beside Protection", menu.clickMenuButton(standIn, wardingIndex) ? 1 : 0, 0);
+        expectCount("taking without a blank book gives nothing", menu.clickMenuButton(standIn, catalog.size()) ? 1 : 0, 0);
+
+        menu.getSlot(com.ascension.combat.internal.enchanting.library.LibraryMenu.BLANK)
+                .set(new ItemStack(net.minecraft.world.item.Items.BOOK));
+        standIn.experienceLevel = 0;
+        expectCount("without the levels it is refused", menu.clickMenuButton(standIn, catalog.size()) ? 1 : 0, 0);
+        standIn.experienceLevel = 30;
+        expectCount("with the levels it is taken", menu.clickMenuButton(standIn, catalog.size()) ? 1 : 0, 1);
+        ItemStack made = menu.getSlot(com.ascension.combat.internal.enchanting.library.LibraryMenu.OUTPUT).getItem();
+        var stored = made.getOrDefault(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS,
+                net.minecraft.world.item.enchantment.ItemEnchantments.EMPTY);
+        expectCount("the book holds three enchantments", stored.size(), 3);
+        expectCount("Sharpness on it is IV", stored.getLevel(ench.apply("minecraft:sharpness")), 4);
+        expectCount("the blank book was used up", menu.getSlot(1).getItem().isEmpty() ? 1 : 0, 1);
+        expectCount("it cost 4 + 2 + 4 = 10 levels", standIn.experienceLevel, 20);
+        expectCount("and the library still holds Sharpness IV", library.store().level("minecraft:sharpness"), 4);
+        standIn.experienceLevel = 0;
     }
 }

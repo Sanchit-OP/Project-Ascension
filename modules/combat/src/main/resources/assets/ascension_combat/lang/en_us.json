@@ -491,5 +491,14 @@
   "enchantment.ascension_combat.aether_tip": "Aether Tip",
   "enchantment.ascension_combat.aether_tip.desc": "Your arrows add magic damage, cut by the target's Magic Resist.",
   "enchantment.ascension_combat.spellpiercing": "Spellpiercing",
-  "enchantment.ascension_combat.spellpiercing.desc": "Your magic damage ignores part of the target's Magic Resist."
+  "enchantment.ascension_combat.spellpiercing.desc": "Your magic damage ignores part of the target's Magic Resist.",
+  "block.ascension_combat.enchantment_library": "Enchantment Library",
+  "container.ascension_combat.enchantment_library": "Enchantment Library",
+  "container.ascension_combat.enchantment_library.take": "Take",
+  "container.ascension_combat.enchantment_library.empty": "Put enchanted books in.",
+  "container.ascension_combat.enchantment_library.in": "Books in",
+  "container.ascension_combat.enchantment_library.blank": "Blank book",
+  "container.ascension_combat.enchantment_library.out": "Result",
+  "container.ascension_combat.enchantment_library.cost": "%s levels",
+  "container.ascension_combat.enchantment_library.too_costly": "You need %s experience levels."
 }

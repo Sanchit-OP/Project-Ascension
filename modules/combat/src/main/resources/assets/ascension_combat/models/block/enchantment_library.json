@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "ascension_combat:block/enchantment_library_top",
+    "side": "ascension_combat:block/enchantment_library_side"
+  }
+}

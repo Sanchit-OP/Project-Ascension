@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["OBO", "LSL", "OOO"],
+  "key": {
+    "O": { "item": "minecraft:obsidian" },
+    "B": { "item": "minecraft:book" },
+    "L": { "item": "minecraft:lapis_block" },
+    "S": { "item": "minecraft:bookshelf" }
+  },
+  "result": { "id": "ascension_combat:enchantment_library", "count": 1 }
+}

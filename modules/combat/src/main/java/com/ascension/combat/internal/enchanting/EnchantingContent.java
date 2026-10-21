@@ -39,6 +39,7 @@ public final class EnchantingContent {
         ITEMS.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         EnchantingAttachments.register(modBus);
+        com.ascension.combat.internal.enchanting.library.LibraryContent.register(modBus);
         modBus.addListener(EnchantingContent::addToCreativeTabs);
         TomeAnvil.register(gameBus);
         Soulbound.register(gameBus);

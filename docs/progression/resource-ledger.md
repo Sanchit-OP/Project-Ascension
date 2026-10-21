@@ -261,6 +261,11 @@ No survival source, on purpose. The rules say why.
 **Zonia's Hourglass** · `ascension_combat:zonias_hourglass`
 - From: Crafting: Seeker's Armguard + Kindlegem + Heart of the Netherite Monstrosity
 
+### Blocks
+
+**Enchantment Library** · `ascension_combat:enchantment_library`
+- From: Crafting: Obsidian + Book + Lapis Block + Bookshelf
+
 ## ascension-worlds
 
 ### Materials
