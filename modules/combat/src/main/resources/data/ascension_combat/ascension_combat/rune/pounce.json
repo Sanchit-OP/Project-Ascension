@@ -6,7 +6,7 @@
   "icon": "ascension_combat:rune/pounce",
   "effect": "ascension_combat:pounce",
   "values": {
-    "crit_multiplier": 1.75
+    "crit_multiplier": 2.0
   },
   "numbers": [
     {

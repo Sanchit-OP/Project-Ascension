@@ -6,7 +6,7 @@
   "icon": "ascension_combat:rune/drop_in",
   "effect": "ascension_combat:drop_in",
   "values": {
-    "seconds": 4,
+    "seconds": 5,
     "lethality": 10,
     "penetration": 10,
     "fall_blocks": 4

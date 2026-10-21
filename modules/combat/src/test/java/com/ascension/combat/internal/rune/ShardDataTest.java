@@ -57,6 +57,6 @@ class ShardDataTest {
         assertEquals("attack_speed", ShardEffects.statOf(read("shard_offence_attack_speed")).get().name());
         assertEquals(8.0, read("shard_offence_attack_speed").value("amount", 0), "+8% attack speed, written as 8");
         assertEquals("health", ShardEffects.statOf(read("shard_defence_health")).get().name());
-        assertEquals(2.0, read("shard_defence_health").value("amount", 0));
+        assertEquals(3.0, read("shard_defence_health").value("amount", 0));
     }
 }

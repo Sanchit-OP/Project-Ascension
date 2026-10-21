@@ -6,17 +6,17 @@
   "icon": "ascension_combat:rune/second_wind",
   "effect": "ascension_combat:second_wind",
   "values": {
-    "heal": 1.0,
     "interval_seconds": 1,
-    "below_health": 0.5
+    "below_health": 0.5,
+    "heal_fraction": 0.025
   },
   "numbers": [
     {
       "text": "rune.ascension_combat.second_wind.n0",
       "parts": [
         {
-          "value": "heal",
-          "format": "plus",
+          "value": "heal_fraction",
+          "format": "percent",
           "stat": "health"
         },
         {

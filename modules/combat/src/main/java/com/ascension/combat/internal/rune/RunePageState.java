@@ -59,9 +59,25 @@ public final class RunePageState {
     }
 
     private RunePageState(RunePage page, Map<ResourceLocation, List<ResourceLocation>> growth, boolean legacy) {
-        this.page = legacy ? renameLegacyIds(page) : page;
+        this.page = replaceRemovedKeystone(legacy ? renameLegacyIds(page) : page);
         this.legacy = legacy;
         growth.forEach((rune, kinds) -> this.growth.put(rune, new LinkedHashSet<>(kinds)));
+    }
+
+    /**
+     * 2026-10-22: Silent Step and Cat's Eye were replaced (Predator and Overheal took their places on the dial). A page saved with one
+     * of them keeps a keystone in that place, so nobody is left with an empty socket and a refusal at their next Save.
+     */
+    private static RunePage replaceRemovedKeystone(RunePage page) {
+        return page.keystone().map(id -> {
+            if (id.getPath().equals("silent_step")) {
+                return page.withKeystone(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "predator"));
+            }
+            if (id.getPath().equals("cats_eye")) {
+                return page.withKeystone(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "overheal"));
+            }
+            return page;
+        }).orElse(page);
     }
 
     public RunePage page() {

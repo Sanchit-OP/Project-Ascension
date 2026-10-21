@@ -11,9 +11,41 @@ import org.junit.jupiter.api.Test;
 class ReaverMathTest {
 
     @Test
-    void ambushIsTheBaseAndMoreOnACrit() {
-        assertEquals(0.40f, AmbushEffects.bonus(0.40, 0.20, false), 1e-6);
-        assertEquals(0.60f, AmbushEffects.bonus(0.40, 0.20, true), 1e-6);
+    void ambushIsABaseAndMoreForEveryPointOfLethalityAndMoreOnACrit() {
+        // +100% base, +2% a point: 25 Lethality is the +150% it was asked for.
+        assertEquals(1.0f, AmbushEffects.bonus(1.0, 0.02, 0.2, 0.0, false), 1e-6);
+        assertEquals(1.5f, AmbushEffects.bonus(1.0, 0.02, 0.2, 25.0, false), 1e-6);
+        assertEquals(1.7f, AmbushEffects.bonus(1.0, 0.02, 0.2, 25.0, true), 1e-6);
+        assertEquals(1.0f, AmbushEffects.bonus(1.0, 0.02, 0.2, -5.0, false), 1e-6, "negative Lethality adds nothing");
+    }
+
+    @Test
+    void ambushIgnoresAShareOfArmorThatGrowsWithLethalityUpToACeiling() {
+        assertEquals(0.25f, AmbushEffects.armorIgnored(0.25, 0.01, 0.75, 0.0), 1e-6);
+        assertEquals(0.50f, AmbushEffects.armorIgnored(0.25, 0.01, 0.75, 25.0), 1e-6);
+        assertEquals(0.75f, AmbushEffects.armorIgnored(0.25, 0.01, 0.75, 100.0), 1e-6);
+    }
+
+    @Test
+    void ambushIsPrimedAfterAQuietSpellOrAMoveAndASpentHitStartsItAgain() {
+        AmbushState state = new AmbushState();
+        assertTrue(state.primed(1000, 120), "a fresh player is ready");
+        state.hit(1000);
+        assertFalse(state.primed(1050, 120), "a hit 50 ticks ago is not a quiet spell");
+        assertTrue(state.primed(1120, 120), "six seconds of quiet");
+        state.prime(1200);
+        assertTrue(state.primed(1150, 120), "a dash opened the way");
+        state.hit(1150);
+        assertFalse(state.primed(1160, 120), "the hit spent the priming");
+        assertEquals(10, state.readiness(1160, 120));
+        assertEquals(120, state.readiness(1300, 120), "full once a hit would be primed");
+    }
+
+    @Test
+    void predatorAddsAShareOfDamageForEveryPointOfLethality() {
+        assertEquals(1.0f, PredatorEffects.multiplier(0.0, 0.004), 1e-6);
+        assertEquals(1.24f, PredatorEffects.multiplier(60.0, 0.004), 1e-6);
+        assertEquals(1.0f, PredatorEffects.multiplier(-10.0, 0.004), 1e-6);
     }
 
     @Test

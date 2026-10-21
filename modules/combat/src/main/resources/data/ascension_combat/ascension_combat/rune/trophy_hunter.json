@@ -5,7 +5,7 @@
   "position": 2,
   "icon": "ascension_combat:rune/trophy_hunter",
   "effect": "ascension_combat:trophy_hunter",
-  "growth_cap": 12,
+  "growth_cap": 20,
   "values": {
     "lethality_per_kind": 1
   },

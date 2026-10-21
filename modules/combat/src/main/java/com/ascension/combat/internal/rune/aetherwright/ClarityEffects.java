@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * com.ascension.combat.internal.mechanics.MagicDamage.Booster} that asks the same question when the
  * damage is dealt.
  *
- * <p>Its numbers are the rune's data: {@code above_health} (a fraction), {@code attack_damage},
+ * <p>Its numbers are the rune's data: {@code above_health} (a fraction), {@code attack_damage_percent},
  * {@code magic_bonus}.
  */
 public final class ClarityEffects {
@@ -66,8 +66,9 @@ public final class ClarityEffects {
         Optional<RuneDefinition> rune = Runes.active(player, ID);
         boolean want = rune.isPresent() && isClear(player, rune.get());
         if (want != attackDamage.hasModifier(MODIFIER_ID)) {
-            RuneModifiers.setStat(player, CombatStats.ATTACK_DAMAGE, MODIFIER_ID,
-                    want ? rune.get().value("attack_damage", 1.0) : 0.0);
+            RuneModifiers.set(player, CombatStats.ATTACK_DAMAGE.attribute(), MODIFIER_ID,
+                    want ? rune.get().value("attack_damage_percent", 0.08) : 0.0,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         }
     }
 

@@ -117,4 +117,22 @@ class BulwarkTest {
         assertEquals(1.20f, RevitalizeEffects.multiplier(7.0, 20.0, 0.10, 0.20, 0.40), 1e-6);
         assertEquals(1.10f, RevitalizeEffects.multiplier(8.0, 20.0, 0.10, 0.20, 0.40), 1e-6, "exactly 40% is not below");
     }
+
+    // --- Overheal
+
+    @Test
+    void overhealTurnsWhatIsHealedPastFullIntoAShieldAndAShareOfTheRest() {
+        // A heal of 30 with 10 missing: 20 over, plus 30% of the 10 that filled the health.
+        assertEquals(23.0f, OverhealEffects.shieldFrom(30.0f, 10.0f, 0.3), 1e-5);
+        // At full health every point is over.
+        assertEquals(12.0f, OverhealEffects.shieldFrom(12.0f, 0.0f, 0.3), 1e-5);
+        // Far from full: only the share.
+        assertEquals(3.0f, OverhealEffects.shieldFrom(10.0f, 50.0f, 0.3), 1e-5);
+    }
+
+    @Test
+    void theOverhealShieldIsAShareOfMaxHealthNeverAboveTheCeiling() {
+        assertEquals(40.0f, OverhealEffects.cap(100.0f, 0.4, 100.0), 1e-5);
+        assertEquals(100.0f, OverhealEffects.cap(400.0f, 0.4, 100.0), 1e-5);
+    }
 }

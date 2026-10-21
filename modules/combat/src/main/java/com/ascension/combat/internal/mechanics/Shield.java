@@ -55,6 +55,20 @@ public final class Shield {
         entity.setAbsorptionAmount(Math.max(entity.getAbsorptionAmount(), scaled));
     }
 
+    /**
+     * Adds {@code amount} of shield (after boosters) on top of whatever the entity already has, up to {@code cap} and no further.
+     * {@link #grant} sets a shield to a figure; this is for a source that tops one up a little at a time (Overheal).
+     */
+    public static void add(LivingEntity entity, float amount, float cap) {
+        ensureCeiling(entity);
+        float scaled = amount;
+        for (Booster booster : BOOSTERS) {
+            scaled = booster.scale(entity, scaled);
+        }
+        float room = Math.max(0.0f, cap - entity.getAbsorptionAmount());
+        entity.setAbsorptionAmount(entity.getAbsorptionAmount() + Math.min(scaled, room));
+    }
+
     private static void ensureCeiling(LivingEntity entity) {
         AttributeInstance maxAbsorption = entity.getAttribute(Attributes.MAX_ABSORPTION);
         if (maxAbsorption == null || maxAbsorption.hasModifier(CEILING_MODIFIER_ID)) {

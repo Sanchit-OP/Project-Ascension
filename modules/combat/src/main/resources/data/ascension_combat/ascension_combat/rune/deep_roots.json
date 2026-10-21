@@ -5,9 +5,9 @@
   "position": 2,
   "icon": "ascension_combat:rune/deep_roots",
   "effect": "ascension_combat:deep_roots",
-  "growth_cap": 12,
+  "growth_cap": 20,
   "values": {
-    "health_per_kind": 0.5
+    "health_per_kind": 1.5
   },
   "numbers": [
     {

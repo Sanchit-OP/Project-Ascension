@@ -7,7 +7,7 @@
   "effect": "ascension_combat:momentum",
   "values": {
     "max_stacks": 5,
-    "heal_per_stack": 0.01,
+    "heal_per_stack": 0.015,
     "chain_seconds": 2
   },
   "numbers": [

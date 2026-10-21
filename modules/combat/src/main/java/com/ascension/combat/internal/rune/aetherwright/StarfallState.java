@@ -13,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 public final class StarfallState {
 
     private long cooldownUntil;
+    private long lastShortenedAt = Long.MIN_VALUE / 2;
     private long strikeAt = -1L;
     private Vec3 where;
 
@@ -36,6 +37,18 @@ public final class StarfallState {
     /** Takes {@code ticks} off the cooldown; a magic hit does this. */
     public void shorten(long ticks) {
         cooldownUntil -= ticks;
+    }
+
+    /**
+     * Takes {@code ticks} off the cooldown for a magic hit, but at most once every {@code gapTicks}: a weapon that lands a magic hit
+     * on every swing (Ragefang at 7.5 a second, or any melee weapon with Arcane Edge) would otherwise empty a ten second cooldown in
+     * a second and a half and call a star at once, forever.
+     */
+    public void shorten(long ticks, long now, long gapTicks) {
+        if (now - lastShortenedAt >= gapTicks) {
+            lastShortenedAt = now;
+            cooldownUntil -= ticks;
+        }
     }
 
     public boolean falling() {

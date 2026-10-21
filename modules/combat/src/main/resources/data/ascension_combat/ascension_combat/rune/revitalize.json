@@ -6,8 +6,8 @@
   "icon": "ascension_combat:rune/revitalize",
   "effect": "ascension_combat:revitalize",
   "values": {
-    "bonus": 0.1,
-    "low_bonus": 0.2,
+    "bonus": 0.15,
+    "low_bonus": 0.3,
     "low_health": 0.4
   },
   "numbers": [

@@ -5,9 +5,9 @@
   "position": 2,
   "icon": "ascension_combat:rune/blooded",
   "effect": "ascension_combat:blooded",
-  "growth_cap": 12,
+  "growth_cap": 20,
   "values": {
-    "omnivamp_per_kind": 0.5
+    "omnivamp_per_kind": 0.75
   },
   "numbers": [
     {

@@ -18,7 +18,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  * <p>Read late in the damage event ({@link EventPriority#LOW}) so it sees the amount after other
  * bonuses, and softens by a plain share of what is left.
  *
- * <p>Its numbers are the rune's data: {@code trigger_damage}, {@code hits}, {@code window_seconds},
+ * <p>Its numbers are the rune's data: {@code trigger_fraction} (of maximum health), {@code hits}, {@code window_seconds},
  * {@code reduction} (a fraction), {@code cooldown_seconds}.
  */
 public final class PlatingEffects {
@@ -48,7 +48,7 @@ public final class PlatingEffects {
         if (state.active(now)) {
             state.consume();
             event.setAmount(event.getAmount() * (1.0f - (float) values.value("reduction", 0.30)));
-        } else if (state.ready(now) && event.getAmount() >= values.value("trigger_damage", 4.0)) {
+        } else if (state.ready(now) && event.getAmount() >= player.getMaxHealth() * values.value("trigger_fraction", 0.08)) {
             state.start(now, values.count("hits", 3), values.ticks("window_seconds", 3.0), values.ticks("cooldown_seconds", 12.0));
         }
     }

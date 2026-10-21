@@ -5,9 +5,9 @@
   "position": 2,
   "icon": "ascension_combat:rune/gathering_charge",
   "effect": "ascension_combat:gathering_charge",
-  "growth_cap": 12,
+  "growth_cap": 20,
   "values": {
-    "bonus_per_kind": 0.01
+    "bonus_per_kind": 0.0125
   },
   "numbers": [
     {

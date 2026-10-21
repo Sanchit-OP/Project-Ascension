@@ -23,7 +23,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
  * already checks for a lapsed expiry before refreshing, so there's nothing to clean up in the
  * background between hits.
  *
- * <p>Its numbers are the rune's data: {@code max_stacks}, {@code damage_per_stack},
+ * <p>Its numbers are the rune's data: {@code max_stacks}, {@code damage_percent_per_stack},
  * {@code decay_seconds}.
  */
 public final class RelentlessStrikesEffects {
@@ -63,6 +63,6 @@ public final class RelentlessStrikesEffects {
         }
         state.refresh(rune.get().count("max_stacks", 4), now + rune.get().ticks("decay_seconds", 3.0));
 
-        event.setAmount(event.getAmount() + state.stacks() * (float) rune.get().value("damage_per_stack", 0.75));
+        event.setAmount(event.getAmount() * (1.0f + state.stacks() * (float) rune.get().value("damage_percent_per_stack", 0.04)));
     }
 }

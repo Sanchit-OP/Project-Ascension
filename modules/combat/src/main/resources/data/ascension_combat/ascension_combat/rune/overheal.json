@@ -1,0 +1,38 @@
+{
+  "path": "bulwark",
+  "slot": "keystone",
+  "world": true,
+  "position": 2,
+  "icon": "ascension_combat:rune/overheal",
+  "effect": "ascension_combat:overheal",
+  "values": {
+    "shield_cap": 0.4,
+    "convert_share": 0.3,
+    "cap_absolute": 100
+  },
+  "numbers": [
+    {
+      "text": "rune.ascension_combat.overheal.n0",
+      "parts": []
+    },
+    {
+      "text": "rune.ascension_combat.overheal.n1",
+      "parts": [
+        {
+          "value": "convert_share",
+          "format": "percent"
+        }
+      ]
+    },
+    {
+      "text": "rune.ascension_combat.overheal.n2",
+      "parts": [
+        {
+          "value": "shield_cap",
+          "format": "percent",
+          "stat": "health"
+        }
+      ]
+    }
+  ]
+}

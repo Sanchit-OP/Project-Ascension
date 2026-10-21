@@ -5,11 +5,12 @@
   "icon": "ascension_combat:rune/arc",
   "effect": "ascension_combat:arc",
   "values": {
-    "hits": 4,
-    "base_damage": 3,
-    "ad_ratio": 0.15,
-    "jumps": 3,
-    "jump_radius": 5
+    "hits": 3,
+    "strikes": 4,
+    "ad_ratio": 0.05,
+    "falloff": 0.7,
+    "jump_radius": 5,
+    "bolt_gap_seconds": 0.3
   },
   "numbers": [
     {
@@ -24,7 +25,7 @@
       "text": "rune.ascension_combat.arc.n1",
       "parts": [
         {
-          "value": "base_damage"
+          "value": "strikes"
         },
         {
           "value": "ad_ratio",
@@ -37,10 +38,14 @@
       "text": "rune.ascension_combat.arc.n2",
       "parts": [
         {
-          "value": "jumps"
+          "value": "strikes"
         },
         {
           "value": "jump_radius"
+        },
+        {
+          "value": "falloff",
+          "format": "percent"
         }
       ]
     }

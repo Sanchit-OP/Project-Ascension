@@ -116,6 +116,8 @@ public final class DamageChecks {
             guarded(() -> checkLegendaryWeapons(server.overworld()));
         } else if (settle == 360) {
             guarded(DamageChecks::checkGrowthNodes);
+        } else if (settle == 370) {
+            guarded(() -> checkRunes(server.overworld()));
             finished = true;
             log("RESULT: " + checks + " checks, " + failures + " failures");
             server.halt(false);
@@ -662,6 +664,196 @@ public final class DamageChecks {
         com.ascension.combat.internal.growth.PlayerGrowth.reset(standIn);
         tickStandIn();
         expectNear("a respec gives it all back: Max Health is as it was", (float) standIn.getMaxHealth(), (float) health);
+    }
+
+    /**
+     * The runes that were reworked or replaced on 2026-10-22, on a real server with the stand-in player holding each on a page: Ambush's
+     * primed strike with Lethality (+100% and 25% of Armor ignored, +2% and +1% a point), Predator (+0.4% damage a Lethality point and 4
+     * Lethality a kill), Momentum healing from the damage before Armor, Overheal's shield, Arc's four strikes (one enemy takes them all,
+     * two share them), a strike inside invulnerability frames doing its whole damage, and Vein Breaker following an ore across stone and
+     * deepslate, keeping half the wear and sending the drops to the player.
+     */
+    private static void checkRunes(ServerLevel level) {
+        log("--- the reworked runes");
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        ResourceLocation swingId = ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing4");
+        standIn.getAttribute(Attributes.ATTACK_SPEED).addTransientModifier(
+                new AttributeModifier(swingId, 1000.0, AttributeModifier.Operation.ADD_VALUE));
+
+        Zombie zombie = EntityType.ZOMBIE.create(level);
+        Zombie second = EntityType.ZOMBIE.create(level);
+        zombie.moveTo(standIn.getX() + 1.0, standIn.getY(), standIn.getZ());
+        second.moveTo(standIn.getX() + 40.0, standIn.getY(), standIn.getZ());
+        for (Zombie z : new Zombie[] {zombie, second}) {
+            level.addFreshEntity(z);
+            z.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100000.0);
+            z.getAttribute(Attributes.ARMOR).setBaseValue(0.0);
+            z.getAttribute(CombatAttributes.ARMOR).setBaseValue(100.0);
+        }
+        double armorValue = zombie.getAttributeValue(CombatAttributes.ARMOR);
+        float m = (float) com.ascension.combat.internal.mechanics.DefenseFormula.multiplier(armorValue);
+        ItemStack sword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+
+        // ---- Ambush
+        setPage(null, null);
+        float plain = swing(sword, zombie);
+        float raw = plain / m;
+        log("armor " + armorValue + " lets " + m + " through; a plain swing " + plain + ", " + raw + " before Armor");
+        setPage(com.ascension.combat.api.rune.RunePath.REAVER, "ambush");
+        float primed = swing(sword, zombie);
+        expectNear("an Ambush hit on an enemy that is not targeting you deals double and ignores 25% of its Armor", primed,
+                raw * 2.0f * (0.25f + 0.75f * m));
+        ResourceLocation lethalityId = ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_lethality");
+        standIn.getAttribute(CombatAttributes.LETHALITY).addTransientModifier(
+                new AttributeModifier(lethalityId, 25.0, AttributeModifier.Operation.ADD_VALUE));
+        float mLethal = (float) com.ascension.combat.internal.mechanics.DefenseFormula.multiplier(Math.max(0.0, armorValue - 25.0));
+        float withLethality = swing(sword, zombie);
+        expectNear("with 25 Lethality the same hit deals 2.5 times and ignores half of the Armor Lethality left", withLethality,
+                raw * 2.5f * (0.5f + 0.5f * mLethal));
+        zombie.setTarget(standIn);
+        float notPrimed = swing(sword, zombie);
+        expectNear("a hit just after it, on an enemy that targets you, is a plain hit (its Armor cut by Lethality)", notPrimed, raw * mLethal);
+        standIn.removeData(com.ascension.combat.internal.rune.RuneAttachments.AMBUSH.get());
+        float afterQuiet = swing(sword, zombie);
+        expectNear("a hit after a quiet spell is primed even against an enemy that targets you", afterQuiet,
+                raw * 2.5f * (0.5f + 0.5f * mLethal));
+        standIn.getAttribute(CombatAttributes.LETHALITY).removeModifier(lethalityId);
+        zombie.setTarget(null);
+
+        // ---- Predator
+        standIn.getAttribute(CombatAttributes.LETHALITY).addTransientModifier(
+                new AttributeModifier(lethalityId, 50.0, AttributeModifier.Operation.ADD_VALUE));
+        zombie.setTarget(standIn);
+        setPage(null, null);
+        float plainLethal = swing(sword, zombie);
+        setPage(com.ascension.combat.api.rune.RunePath.REAVER, "predator");
+        float predator = swing(sword, zombie);
+        expectNear("Predator adds 0.4% damage for each of 50 Lethality (+20%)", predator, plainLethal * 1.2f);
+        double lethalityBefore = standIn.getAttributeValue(CombatAttributes.LETHALITY);
+        Zombie victim = EntityType.ZOMBIE.create(level);
+        victim.moveTo(standIn.getX() - 2.0, standIn.getY(), standIn.getZ());
+        level.addFreshEntity(victim);
+        victim.hurt(level.damageSources().playerAttack(standIn), 100000.0f);
+        expectNear("a kill gives Predator 4 Lethality", (float) (standIn.getAttributeValue(CombatAttributes.LETHALITY) - lethalityBefore), 4.0f);
+        standIn.removeData(com.ascension.combat.internal.rune.RuneAttachments.PREDATOR.get());
+        standIn.getAttribute(CombatAttributes.LETHALITY).removeModifier(lethalityId);
+        standIn.getAttribute(CombatAttributes.LETHALITY).removeModifier(
+                ResourceLocation.fromNamespaceAndPath("ascension_combat", "rune/predator_lethality"));
+
+        // ---- Momentum: heals from the damage before Armor
+        ResourceLocation adId = ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_ad4");
+        standIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(
+                new AttributeModifier(adId, 100.0, AttributeModifier.Operation.ADD_VALUE));
+        setPage(null, null);
+        float bigPlain = swing(sword, zombie);
+        float bigRaw = bigPlain / m;
+        setPage(com.ascension.combat.api.rune.RunePath.VANGUARD, null, "momentum");
+        standIn.setHealth(5.0f);
+        swing(sword, zombie);
+        expectNear("Momentum's first stack heals 1.5% of the hit before Armor (" + bigRaw + ")", standIn.getHealth() - 5.0f, bigRaw * 0.015f);
+        standIn.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(adId);
+        standIn.setHealth(standIn.getMaxHealth());
+
+        // ---- Overheal
+        setPage(com.ascension.combat.api.rune.RunePath.BULWARK, "overheal");
+        float max = standIn.getMaxHealth();
+        standIn.setAbsorptionAmount(0.0f);
+        standIn.setHealth(max);
+        standIn.heal(5.0f);
+        expectNear("Overheal turns a heal at full health into a shield", standIn.getAbsorptionAmount(), 5.0f);
+        standIn.heal(50.0f);
+        expectNear("and the shield stops at 40% of maximum health", standIn.getAbsorptionAmount(), max * 0.4f);
+        standIn.setAbsorptionAmount(0.0f);
+        standIn.setHealth(max - 10.0f);
+        standIn.heal(4.0f);
+        expectNear("a heal that fills missing health adds 30% of it as a shield", standIn.getAbsorptionAmount(), 1.2f);
+        standIn.setAbsorptionAmount(0.0f);
+
+        // ---- Arc: three hits charge it, then every hit throws four strikes
+        setPage(com.ascension.combat.api.rune.RunePath.AETHERWRIGHT, "arc");
+        standIn.removeData(com.ascension.combat.internal.rune.RuneAttachments.ARC.get());
+        zombie.setTarget(standIn);
+        float adStat = com.ascension.combat.internal.mechanics.AbilityScaling.attackDamage(standIn);
+        float through = (float) MagicDamage.passThrough(zombie, standIn);
+        float armed = swing(sword, zombie);
+        swing(sword, zombie);
+        swing(sword, zombie);
+        expect("three hits charge the weapon", standIn.getData(com.ascension.combat.internal.rune.RuneAttachments.ARC.get()).charged(), true);
+        float bolt = swing(sword, zombie);
+        float loneExtra = 0.05f * adStat * (1.0f + 0.7f + 0.49f + 0.343f) * through;
+        expectNear("with a lone enemy the bolt strikes it four times (100%, 70%, 49%, 34% of 5% of Attack Damage as magic)",
+                bolt - armed, loneExtra);
+        standIn.removeData(com.ascension.combat.internal.rune.RuneAttachments.ARC.get());
+        standIn.getData(com.ascension.combat.internal.rune.RuneAttachments.ARC.get()).charge();
+        second.moveTo(standIn.getX() + 3.0, standIn.getY(), standIn.getZ());
+        second.setHealth(second.getMaxHealth());
+        second.invulnerableTime = 0;
+        float secondBefore = second.getHealth();
+        float twoTargets = swing(sword, zombie);
+        float pairShare = 0.05f * adStat * 1.7f * through;
+        expectNear("with two enemies the first takes 1.7 strikes' worth", twoTargets - armed, pairShare);
+        expectNear("and the second takes the same", secondBefore - second.getHealth(),
+                pairShare * (float) (MagicDamage.passThrough(second, standIn) / through));
+
+        // ---- A strike inside invulnerability frames still does its whole damage, and gives the frames back
+        zombie.setHealth(zombie.getMaxHealth());
+        zombie.invulnerableTime = 0;
+        standIn.attack(zombie);
+        int frames = zombie.invulnerableTime;
+        float before = zombie.getHealth();
+        MagicDamage.applyStrike(zombie, level.damageSources().indirectMagic(standIn, standIn), 40.0f);
+        expectNear("a strike straight after a sword hit does its whole damage", before - zombie.getHealth(), 40.0f * through);
+        expectCount("and the sword hit's frames are as they were", zombie.invulnerableTime, frames);
+
+        standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(swingId);
+        setPage(null, null);
+        zombie.discard();
+        second.discard();
+
+        checkVeinBreaker(level);
+    }
+
+    /** A page with a primary path, a keystone and some minors of that path; a null path is an empty page. */
+    private static void setPage(com.ascension.combat.api.rune.RunePath path, String keystone, String... minors) {
+        com.ascension.combat.internal.rune.RunePage page = path == null ? com.ascension.combat.internal.rune.RunePage.EMPTY
+                : new com.ascension.combat.internal.rune.RunePage(java.util.Optional.of(path),
+                        keystone == null ? java.util.Optional.empty() : java.util.Optional.of(com.ascension.combat.internal.rune.Runes.id(keystone)),
+                        java.util.Arrays.stream(minors).map(com.ascension.combat.internal.rune.Runes::id).toList(),
+                        java.util.Optional.empty(), List.of(), List.of());
+        standIn.getData(com.ascension.combat.internal.CombatAttachments.RUNE_PAGE).set(page);
+        com.ascension.combat.internal.rune.RuneModifiers.refresh(standIn);
+        tickStandIn();
+    }
+
+    private static void checkVeinBreaker(ServerLevel level) {
+        setPage(com.ascension.combat.api.rune.RunePath.VANGUARD, "vein_breaker");
+        net.minecraft.core.BlockPos origin = net.minecraft.core.BlockPos.containing(standIn.getX() + 8.0, standIn.getY() + 2.0, standIn.getZ());
+        List<net.minecraft.core.BlockPos> vein = new java.util.ArrayList<>();
+        for (int x = 0; x < 6; x++) {
+            for (int y = 0; y < 2; y++) {
+                net.minecraft.core.BlockPos pos = origin.offset(x, y, 0);
+                vein.add(pos);
+                level.setBlock(pos, (x < 3 ? net.minecraft.world.level.block.Blocks.IRON_ORE
+                        : net.minecraft.world.level.block.Blocks.DEEPSLATE_IRON_ORE).defaultBlockState(), 3);
+            }
+        }
+        ItemStack pickaxe = new ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE);
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, pickaxe);
+        standIn.setShiftKeyDown(true);
+        boolean broken = standIn.gameMode.destroyBlock(origin);
+        long left = vein.stream().filter(pos -> !level.getBlockState(pos).isAir()).count();
+        log("Vein Breaker: first block " + broken + ", ore left " + left + " of " + vein.size() + ", tool wear " + pickaxe.getDamageValue());
+        expectCount("Vein Breaker takes the whole vein, across stone and deepslate", (int) left, 0);
+        expect("and the pickaxe took about half the wear of twelve blocks (got " + pickaxe.getDamageValue() + ")",
+                pickaxe.getDamageValue() >= 5 && pickaxe.getDamageValue() <= 9, true);
+        long near = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, standIn.getBoundingBox().inflate(2.0)).size();
+        expect("the drops flew to the player (" + near + " item stacks beside them)", near >= 1, true);
+        level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, standIn.getBoundingBox().inflate(40.0))
+                .forEach(Entity::discard);
+        standIn.setShiftKeyDown(false);
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        setPage(null, null);
     }
 
     /** Two attacks by the stand-in in the same tick: the first at {@code aimed}, then one at {@code extra}. Returns what each lost. */

@@ -9,6 +9,7 @@ import com.ascension.combat.internal.rune.aetherwright.StarfallState;
 import com.ascension.combat.internal.rune.bulwark.BraceState;
 import com.ascension.combat.internal.rune.bulwark.ChallengeState;
 import com.ascension.combat.internal.rune.bulwark.PlatingState;
+import com.ascension.combat.internal.rune.reaver.AmbushState;
 import com.ascension.combat.internal.rune.reaver.HeadshotMark;
 import com.ascension.combat.internal.rune.vanguard.CadenceState;
 import java.util.function.Supplier;
@@ -51,6 +52,16 @@ public final class RuneAttachments {
     public static final Supplier<AttachmentType<HeadshotMark>> HEADSHOT = TYPES.register(
             "headshot",
             () -> AttachmentType.builder(HeadshotMark::new).build());
+
+    /** Ambush's last hit and any priming from a dash, blink or pearl, on the player. */
+    public static final Supplier<AttachmentType<AmbushState>> AMBUSH = TYPES.register(
+            "ambush",
+            () -> AttachmentType.builder(AmbushState::new).build());
+
+    /** Predator's kill stacks, on the player: each is Lethality for a while, refreshed by the next kill. */
+    public static final Supplier<AttachmentType<StackingChargeState>> PREDATOR = TYPES.register(
+            "predator_stacks",
+            () -> AttachmentType.builder(StackingChargeState::new).build());
 
     /** Drop In's window, on the player: until when they cut through armour. */
     public static final Supplier<AttachmentType<DurationState>> DROP_IN = TYPES.register(

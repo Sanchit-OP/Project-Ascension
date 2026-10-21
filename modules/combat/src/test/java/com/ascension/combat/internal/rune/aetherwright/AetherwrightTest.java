@@ -64,36 +64,73 @@ class AetherwrightTest {
     // --- Arc
 
     @Test
-    void everyFourthHitChargesTheWeapon() {
+    void everyThirdHitChargesTheWeaponAndItStaysCharged() {
         ArcState state = new ArcState();
-        for (int i = 0; i < 3; i++) {
-            state.count(4);
+        for (int i = 0; i < 2; i++) {
+            state.count(3);
             assertFalse(state.charged());
         }
-        state.count(4);
+        state.count(3);
         assertTrue(state.charged());
+        assertTrue(state.boltReady(100, 6), "charged and never thrown: ready");
     }
 
     @Test
-    void releasingSpendsTheChargeAndStartsTheCountAgain() {
+    void aBoltLeavesAtMostOnceInTheGapAndTheChargeSurvivesIt() {
         ArcState state = new ArcState();
-        for (int i = 0; i < 4; i++) {
-            state.count(4);
-        }
-        state.release();
+        state.charge();
+        state.bolt(100);
+        assertFalse(state.boltReady(103, 6), "too soon after the last bolt");
+        assertTrue(state.boltReady(106, 6));
+        assertTrue(state.charged(), "a bolt does not spend the charge");
+    }
+
+    @Test
+    void theEndOfTheFightDischargesAndTheCountStartsAgain() {
+        ArcState state = new ArcState();
+        state.count(3);
+        state.count(3);
+        state.count(3);
+        state.discharge();
         assertFalse(state.charged());
         assertEquals(0, state.hits());
-        state.count(4);
-        assertFalse(state.charged());
+        assertFalse(state.boltReady(1000, 6), "an uncharged weapon throws nothing");
     }
 
     @Test
     void anItemsActiveChargesAtOnce() {
         ArcState state = new ArcState();
-        state.count(4);
+        state.count(3);
         state.charge();
         assertTrue(state.charged());
         assertEquals(0, state.hits());
+    }
+
+    @Test
+    void fourStrikesGoRoundTheEnemiesAndEachRoundIsWeaker() {
+        float[] lone = ArcEffects.shares(1, 4, 0.7f);
+        assertEquals(1, lone.length);
+        assertEquals(1.0f + 0.7f + 0.49f + 0.343f, lone[0], 1e-5);
+        float[] pair = ArcEffects.shares(2, 4, 0.7f);
+        assertEquals(1.7f, pair[0], 1e-5);
+        assertEquals(1.7f, pair[1], 1e-5);
+        float[] four = ArcEffects.shares(4, 4, 0.7f);
+        for (float share : four) {
+            assertEquals(1.0f, share, 1e-6);
+        }
+    }
+
+    @Test
+    void starfallsCooldownIsShortenedAtMostOnceInTheGap() {
+        StarfallState state = new StarfallState();
+        state.call(0, Vec3.ZERO, 20, 160);
+        long start = state.cooldownUntil();
+        state.shorten(20, 100, 20);
+        assertEquals(start - 20, state.cooldownUntil());
+        state.shorten(20, 105, 20);
+        assertEquals(start - 20, state.cooldownUntil(), "a second magic hit inside the gap shortens nothing");
+        state.shorten(20, 120, 20);
+        assertEquals(start - 40, state.cooldownUntil());
     }
 
     // --- Scholar

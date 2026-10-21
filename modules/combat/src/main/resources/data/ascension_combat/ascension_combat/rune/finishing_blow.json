@@ -7,7 +7,7 @@
   "effect": "ascension_combat:finishing_blow",
   "values": {
     "below_health": 0.4,
-    "bonus": 0.12
+    "bonus": 0.2
   },
   "numbers": [
     {

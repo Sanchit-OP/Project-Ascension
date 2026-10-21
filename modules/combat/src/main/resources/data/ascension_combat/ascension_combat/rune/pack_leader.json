@@ -6,7 +6,7 @@
   "effect": "ascension_combat:pack_leader",
   "values": {
     "share": 0.5,
-    "bonus_damage": 3,
+    "bonus_damage": 6,
     "heal_share": 0.25,
     "heal_radius": 32,
     "save_cooldown_seconds": 180

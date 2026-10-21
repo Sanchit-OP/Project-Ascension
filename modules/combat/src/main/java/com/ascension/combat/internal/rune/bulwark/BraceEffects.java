@@ -110,12 +110,12 @@ public final class BraceEffects {
     }
 
     private static void shockwave(ServerPlayer player, ServerLevel level, RuneDefinition values) {
-        float damage = (float) (values.value("base_damage", 3.0)
-                + values.value("armor_ratio", 0.10) * StatReader.value(player, CombatStats.ARMOR));
+        float damage = (float) (values.value("base_damage", 5.0)
+                + values.value("armor_ratio", 0.40) * StatReader.value(player, CombatStats.ARMOR));
         double radius = values.value("radius", 4.0);
         double knockback = values.value("knockback", 1.0);
         for (LivingEntity foe : RuneTargets.foes(level, player, player.getBoundingBox().inflate(radius))) {
-            MagicDamage.applyStandalone(foe, level.damageSources().indirectMagic(player, player), damage);
+            MagicDamage.applyStrike(foe, level.damageSources().indirectMagic(player, player), damage);
             foe.knockback(knockback, player.getX() - foe.getX(), player.getZ() - foe.getZ());
         }
         level.sendParticles(ParticleTypes.EXPLOSION, player.getX(), player.getY(0.2), player.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
