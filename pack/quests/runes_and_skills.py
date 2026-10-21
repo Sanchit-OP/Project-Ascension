@@ -156,8 +156,8 @@ CHAPTER = Chapter(
             deps=['paths'],
             text=[
                 'Your main path gives one keystone and one small rune from each of its two rows. Each path has three '
-                'keystones: two for fighting and one for the wider world.',
-                'The world ones are vein mining, a silent step, more experience and creepers that keep away.',
+                'keystones: two for fighting and a third that stands apart.',
+                'The third one stands apart on the dial: vein mining, Lethality as damage, more experience, or healing that becomes a shield.',
                 'Your second path gives two small runes and no keystone.',
             ],
             tasks=[checkmark()],
@@ -199,7 +199,7 @@ CHAPTER = Chapter(
             deps=['chalk'],
             text=[
                 'Four runes grow: Blooded, Trophy Hunter, Gathering Charge and Deep Roots.',
-                'Each new kind of enemy you defeat while one is on your page adds to it, up to 12 kinds.',
+                'Each new kind of enemy you defeat while one is on your page adds to it, up to 20 kinds.',
                 'A farm cannot fill it, since a zombie is one kind however many fall. Swap the rune out and it starts again.',
             ],
             tasks=[checkmark()],

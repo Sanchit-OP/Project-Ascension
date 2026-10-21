@@ -398,10 +398,10 @@ reward, in two columns that meet in one quest at the bottom.
 |---|---|
 | What skill points are (earned for firsts, never farmed; 41 in all) | The rune page (behaviours, not numbers; Save and Reset) |
 | Points from bosses (3 each, seven bosses, the whole team) | Four paths (Vanguard, Reaver, Aetherwright, Bulwark) |
-| Points from gates (2 each, four gates) | Keystones (two to fight with, one for the wider world) |
+| Points from gates (2 each, four gates) | Keystones (two to fight with, a third that stands apart: vein mining, Predator, Scholar, Overheal) |
 | Points from places (1 each, for the first of a kind; yours alone) | Slots that open (the second path at the first boss or gate, then three shards) |
 | The Skill Web (K; mark, Confirm; a node must touch one you hold) | Changing a rune (free to fill, one Rune Chalk and 3 levels to change; two chalk as the reward) |
-| What each corner gives (Power, Fury, Guard, Wayfarer; a small node is about 3%) | Runes that grow (four, up to 12 kinds of enemy) |
+| What each corner gives (Power, Fury, Guard, Wayfarer; a small node is about 3%) | Runes that grow (four, up to 20 kinds of enemy since 2026-10-22; it was 12) |
 | Change your mind (respec: 20 levels, out of combat) | |
 
 The last quest, **Putting it together** (H, the character sheet), ties gear, points and runes. **Nothing is locked** (ADR-0018); there is

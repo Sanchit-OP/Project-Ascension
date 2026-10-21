@@ -4,6 +4,12 @@
 > game good to feel." Done the way the enchantments were (`enchantments.md` section 12): every one of the 45 runes read from its data
 > file, its code and its tooltip, each given a verdict and a proposal. **Nothing is changed yet**: the proposals are numbers and wording
 > waiting for his word, and four decisions are his (section 4). Design reference: [`rune-system.md`](../technical/rune-system.md).
+>
+> **Applied the same day (Sanchit's answers).** Ambush: primed strike, +100% and +2% a Lethality point (25 Lethality is his +150%), ignores 25% of Armor and +1% a
+> point; Momentum from the damage before Armor; Revitalize kept (healing builds) and **Overheal** built as a keystone in **Cat's Eye's** place (he called creepers and
+> phantoms a gimmick); Riposte's window 1 s; growing runes cap 20; Vein Breaker and Cadence buffed; **Predator** (Lethality is damage) replaced **Silent Step**; Arc
+> redesigned (charged until the fight ends, four strikes a bolt); Scholar a small buff. What was built is in `rune-system.md`; the Curios branch is not merged, so the
+> shield and off-hand conflict stands until it is.
 
 ## 1. The verdicts at a glance
 

@@ -80,7 +80,7 @@
 	"quest.3ED688C8E8F5D437.quest_desc": ["Vanguard keeps hitting: damage that grows the longer a fight lasts. Reaver strikes first and finishes fast.", "Aetherwright makes the magic do more. Bulwark stands in front: defence, pets and the team.", "Every rune can be tried from the first minute; only the slots are locked."]
 	"quest.2C168EA9DEC4569D.title": "Keystones"
 	"quest.2C168EA9DEC4569D.quest_subtitle": "The rune that sets your style"
-	"quest.2C168EA9DEC4569D.quest_desc": ["Your main path gives one keystone and one small rune from each of its two rows. Each path has three keystones: two for fighting and one for the wider world.", "The world ones are vein mining, a silent step, more experience and creepers that keep away.", "Your second path gives two small runes and no keystone."]
+	"quest.2C168EA9DEC4569D.quest_desc": ["Your main path gives one keystone and one small rune from each of its two rows. Each path has three keystones: two for fighting and a third that stands apart.", "The third one stands apart on the dial: vein mining, Lethality as damage, more experience, or healing that becomes a shield.", "Your second path gives two small runes and no keystone."]
 	"quest.728021FC304009D2.title": "Slots that open"
 	"quest.728021FC304009D2.quest_subtitle": "The page grows as you do"
 	"quest.728021FC304009D2.quest_desc": ["The main path is open from the start. Your team's first boss kill or lit gate opens the second path; the next three open the offence, flex and defence shards.", "Points from places do not open slots. A locked slot says what opens it."]
@@ -89,7 +89,7 @@
 	"quest.6BD7E3D3CE4837CC.quest_desc": ["Filling an empty slot is free. Removing or replacing a rune costs one Rune Chalk and 3 levels, once per save however many runes change, and only out of combat.", "Amethyst and calcite make chalk, and both come from geodes. Here are two to start."]
 	"quest.45B9AEE58941C962.title": "Runes that grow"
 	"quest.45B9AEE58941C962.quest_subtitle": "New kinds of enemy"
-	"quest.45B9AEE58941C962.quest_desc": ["Four runes grow: Blooded, Trophy Hunter, Gathering Charge and Deep Roots.", "Each new kind of enemy you defeat while one is on your page adds to it, up to 12 kinds.", "A farm cannot fill it, since a zombie is one kind however many fall. Swap the rune out and it starts again."]
+	"quest.45B9AEE58941C962.quest_desc": ["Four runes grow: Blooded, Trophy Hunter, Gathering Charge and Deep Roots.", "Each new kind of enemy you defeat while one is on your page adds to it, up to 20 kinds.", "A farm cannot fill it, since a zombie is one kind however many fall. Swap the rune out and it starts again."]
 	"quest.5B50B1407AAF20F1.title": "Putting it together"
 	"quest.5B50B1407AAF20F1.quest_subtitle": "H"
 	"quest.5B50B1407AAF20F1.quest_desc": ["Gear is what you carry, skill points are who you are for good, and runes are how you fight today.", "The character sheet (H) shows all three and where every number comes from, so you can see what a node or a rune is really doing."]
