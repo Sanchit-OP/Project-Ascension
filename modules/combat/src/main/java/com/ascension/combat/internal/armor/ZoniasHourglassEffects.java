@@ -1,12 +1,12 @@
 package com.ascension.combat.internal.armor;
 
+import com.ascension.combat.api.WornStacks;
 import com.ascension.combat.internal.CombatAttachments;
 import com.ascension.combat.internal.mechanics.ItemAbilities;
 import com.ascension.combat.internal.CombatContent;
 import com.ascension.combat.internal.mechanics.DurationState;
 import com.ascension.combat.internal.mechanics.Stasis;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -38,7 +38,7 @@ public final class ZoniasHourglassEffects {
     }
 
     public static void tryActivate(ServerPlayer player) {
-        if (!player.getItemBySlot(EquipmentSlot.OFFHAND).is(CombatContent.ZONIAS_HOURGLASS.get())) {
+        if (!WornStacks.isWorn(player, CombatContent.ZONIAS_HOURGLASS.get())) {
             return;
         }
 

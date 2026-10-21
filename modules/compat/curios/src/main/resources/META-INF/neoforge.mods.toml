@@ -1,0 +1,52 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Curios"
+authors = "${mod_authors}"
+description = '''
+Two Curios slots. A tank slot: the oxygen or helium tank worn there feeds your lungs without a valve to open.
+A relic slot: Zonia's Hourglass and Sterak's Harness work from it exactly as they do in the off hand.
+
+Optional. Without Curios installed, this jar simply is not present; the tank still works from the inventory
+and the relics from the off hand.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "ascension_atmosphere"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "ascension_combat"
+type = "required"
+versionRange = "[0.1.0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "curios"
+type = "required"
+versionRange = "${curios_version_range}"
+ordering = "AFTER"
+side = "BOTH"
