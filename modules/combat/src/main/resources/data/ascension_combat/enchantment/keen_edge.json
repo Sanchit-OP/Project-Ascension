@@ -10,8 +10,8 @@
         "attribute": "ascension_combat:lethality",
         "amount": {
           "type": "minecraft:linear",
-          "base": 5.0,
-          "per_level_above_first": 5.0
+          "base": 8.0,
+          "per_level_above_first": 8.0
         },
         "operation": "add_value"
       }

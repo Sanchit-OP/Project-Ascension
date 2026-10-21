@@ -37,8 +37,8 @@
         "attribute": "ascension_combat:armor",
         "amount": {
           "type": "minecraft:linear",
-          "base": 4.0,
-          "per_level_above_first": 4.0
+          "base": 6.0,
+          "per_level_above_first": 6.0
         },
         "operation": "add_value"
       }

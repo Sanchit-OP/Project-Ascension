@@ -20,8 +20,8 @@
         "attribute": "ascension_combat:magic_resist",
         "amount": {
           "type": "minecraft:linear",
-          "base": 3.0,
-          "per_level_above_first": 3.0
+          "base": 5.0,
+          "per_level_above_first": 5.0
         },
         "operation": "add_value"
       }

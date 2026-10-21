@@ -401,8 +401,24 @@ public final class DamageChecks {
         log("plain " + plain + ", Sharpness V " + sharpDamage + ", Smite V " + smiteDamage + ", the zombie lets "
                 + String.format("%.4f", through) + " through");
         expect("a plain swing does damage (got " + plain + ")", plain > 0.0f, true);
-        expectNear("Sharpness V adds 5 damage to a swing, after the zombie's Armor", sharpDamage - plain, 5.0f * through);
+        expectNear("Sharpness V adds 7.5 damage to a swing, after the zombie's Armor", sharpDamage - plain, 7.5f * through);
         expectNear("Smite V adds 12.5 damage to a swing at the undead, after its Armor", smiteDamage - plain, 12.5f * through);
+        // Smite is Attack Damage on the hit, so it reaches the abilities that scale off it: Veigo's Blade takes a share of the target's
+        // current health for each point, so the same Veigo with Smite V must beat the plain one by more than the flat 12.5.
+        ItemStack veigo = new ItemStack(CombatContent.VEIGOS_BLADE.get());
+        float veigoPlain = swing(veigo, zombie);
+        ItemStack veigoSmite = new ItemStack(CombatContent.VEIGOS_BLADE.get());
+        veigoSmite.enchant(enchantments.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SMITE), 5);
+        float veigoSmiteDamage = swing(veigoSmite, zombie);
+        log("Veigo's Blade plain " + veigoPlain + ", with Smite V " + veigoSmiteDamage);
+        expect("Smite V makes Veigo's Blade hit for more than the flat 12.5 (its Attack Damage scaling saw the bonus)",
+                veigoSmiteDamage - veigoPlain > 12.5f * through + 50.0f, true);
+        // A zombie is not an arthropod: Bane of Arthropods adds nothing against it.
+        ItemStack bane = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+        bane.enchant(enchantments.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.BANE_OF_ARTHROPODS), 5);
+        expectNear("Bane of Arthropods adds nothing against a zombie", swing(bane, zombie) - plain, 0.0f);
+        expect("the temporary Attack Damage is gone after the tick", standIn.getAttribute(Attributes.ATTACK_DAMAGE)
+                .getModifier(ResourceLocation.fromNamespaceAndPath("ascension_combat", "smite_or_bane_hit")) == null, true);
 
         standIn.getAttribute(Attributes.ATTACK_SPEED).removeModifier(
                 ResourceLocation.fromNamespaceAndPath("ascension_combat", "damage_checks_swing"));
@@ -421,7 +437,7 @@ public final class DamageChecks {
         double with = standIn.getMaxHealth();
         float itemHealth = (float) (with - healthBefore);
         log("Max Health " + healthBefore + " -> " + with + " with a Vitality III helmet over the same helmet plain");
-        expectNear("Vitality III on a piece adds 12 Max Health", itemHealth, 12.0f);
+        expectNear("Vitality III on a piece adds 15 Max Health", itemHealth, 15.0f);
         standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, ItemStack.EMPTY);
     }
 

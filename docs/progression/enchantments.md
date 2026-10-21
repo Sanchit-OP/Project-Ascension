@@ -148,15 +148,29 @@ the Protection problem comes back by another route.
 
 ### 3.3 The reworks in numbers (placeholders)
 
-> **Buffed 2026-10-22 (Sanchit: "0.5 a level ain't it"; the human side gets stronger, the mobs stay as they are).** The tables below are the
-> first pass; where they disagree, this box wins. Sharpness is **+1 Attack Damage a level (V: +5)**, up from 0.5 (V: +2.5); Power the same.
-> **Smite and Bane of Arthropods stay exactly vanilla: +2.5 a level against what they name (V: +12.5)**, so against the undead (skeletons,
-> zombies, the Wither, phantoms) Smite is plainly the better pick, as in vanilla, and most of what the campaign throws at you is undead.
-> Keen Edge is **+5 Lethality a level (III: 15)**, up from 2 (6). Vitality is **+4 Health a level (III: +12 a piece, +48 on a set)**, up from
-> +1. Leech is **+3% Omnivamp a level (III: 9%)**, up from 1%. Protection, Warding, Fleet and Breach are unchanged. Proved on a dedicated
-> server with real swings by `damage-checks` (Sharpness V +5 and Smite V +12.5 before the target's Armor; Vitality III +12 a piece). **Not yet
-> balanced against the bosses**: `tools/time-to-kill.py` does not count enchantments, so a fully enchanted kit is a good deal faster than the
-> kill times in `balance.md` say, and Smite V against the Wither (+12.5 on a 9-damage swing) needs a look when it is played.
+> **Buffed twice on 2026-10-22 (Sanchit: "0.5 a level ain't it"; the human side gets stronger, the mobs stay as they are; a player cannot fight a boss
+> optimally, so kill times that assume it are too hopeful).** The tables below are the first pass; where they disagree, this box wins.
+>
+> | Enchantment | First pass (2026-10-18) | Now (per level, top level) |
+> |---|---|---|
+> | Sharpness | +0.5 Attack Damage (V +2.5) | **+1.5 (V +7.5)** |
+> | Power | +0.5 Attack Damage (V +2.5) | **+1.5 (V +7.5)** |
+> | Smite, Bane of Arthropods | vanilla flat damage | **+2.5 Attack Damage against what they name (V +12.5)**, as vanilla, but as Attack Damage on the hit |
+> | Keen Edge | +2 Lethality (III 6) | **+8 (III 24)** |
+> | Leech | +1% Omnivamp (III 3%) | **+4% (III 12%)** |
+> | Vitality | +1 Health (III +3) | **+5 (III +15 a piece, +60 a set)** |
+> | Protection | +3 Armor (IV 12) | **+5 (IV 20 a piece)**, the 2.25% cut unchanged |
+> | Projectile Protection | +4 Armor (IV 16) | **+6 (IV 24)** |
+> | Fire, Blast Protection, Warding | +3 Magic Resist (IV 12) | **+5 (IV 20)** |
+> | Fleet, Breach | | unchanged |
+>
+> **Smite and Bane are code now, not data.** Vanilla's flat damage could not be seen by the items whose abilities scale off Attack Damage, so
+> `SmiteAndBane` gives the attacker one temporary Attack Damage modifier on the swing, when the target is what the enchantment names (undead,
+> arthropods), and removes it at the end of the tick; the enchantments' own flat effect is gone from their data so it does not count twice.
+> Against the undead (skeletons, zombies, the Wither, phantoms) Smite is plainly better than Sharpness, as in vanilla. Proved on a dedicated
+> server with real swings by `damage-checks` (252 checks, 0 failures): Sharpness V +7.5, Smite V +12.5 before the target's Armor, Bane nothing
+> against a zombie, Veigo's Blade hitting 595 harder with Smite V (its Attack Damage scaling saw the bonus), Vitality III +15 a piece. **Not yet
+> balanced against the bosses**: `tools/time-to-kill.py` does not count enchantments, and Smite V against the Wither needs a look when played.
 
 | Enchantment | Becomes | Per level | Top level | Units |
 |---|---|---|---|---|
