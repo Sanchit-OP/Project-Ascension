@@ -369,8 +369,9 @@ too.
 **What Earth's Create still has:**
 - **Power and transmission:** shafts, cogs, gearboxes, clutches and gearshifts; water wheels,
   windmills, steam engines.
-- **Processing:** presses, unheated mixers, millstones, fans (washing, smelting, smoking; no
-  haunting), saws, drills, ploughs.
+- **Processing:** presses, unheated mixers, millstones, fans (washing, smelting, smoking; haunting only after soul sand
+  is found: an Ancient City has soul sand blocks, soul fire and soul lanterns, and its chests give soul torches, so Earth is not
+  fully without it; checked 2026-10-21 in the vanilla 1.21.1 data), saws, drills, ploughs.
 - **Moving things:** bearings, rope pulleys, gantries, chassis and stickers.
 - **Logistics:** belts, chutes, andesite funnels and tunnels, depots.
 - **Fluids:** pumps, spouts, item drains, fluid tanks.

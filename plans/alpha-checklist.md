@@ -356,6 +356,21 @@ pilot. The growth total rose from 35 to 41 points (`growth.md` section 1).
 Breathable air in the End; the predator world slides to Planet 5; the Dragon's exit portal is the End's gate (it opens the
 destination screen, no credits); a lore pass first (`docs/lore/the-end.md`, now prose).
 
+## Ideas queue (Sanchit, 2026-10-21): for alpha.2, none built
+
+- **HUD rings missing (revisit only if it keeps happening).** In a real game on the PebbleHost server the XP ring (level badge) and the food ring
+  (hunger badge) did not draw at all, not even the faint track; the disc, number and drumstick did. **The rings came back during combat, while
+  rune stacks were building.** Our own test pictures of 2026-10-18 (`run/client/screenshots/hud-*.png`) drew both rings, so something changed
+  since: the mods added after that day, or the render state a neighbouring HUD element leaves. Both rings use `HudSprites.ringFrame`
+  (`ring.png`, a 576-texel sheet, blur). First tries: F3+T; single-player against the server; then a dev client with the instance's mods and the
+  `hud-screenshots.txt` script. Nothing in the code reads food wrongly (`VitalsElement`, line 143).
+- **A tree-felling mod**: chop one log, the whole tree comes down. Several exist; pick one that supports NeoForge 1.21.1 and has a server
+  config. Check against Create's saw, which already fells trees, and against durability and hunger so it is a convenience, not a free pass.
+- **A parachute mod.** Check where it is worn: many use a back or chest slot, which would fight Sophisticated Backpacks in Curios' `back`
+  slot. Check it against our rules: falling out of the End's bottom (`VoidFall`) and the ascent carry must behave as before, and a ship
+  landing must not change.
+- **Curios slots** (prompt 11): still not built; only Curios' `back` slot exists, through Sophisticated Backpacks.
+
 ## Still open for Sanchit
 
 1. **The licence**: add a `LICENSE` file (MIT is what `gradle.properties` already says) or choose another.
