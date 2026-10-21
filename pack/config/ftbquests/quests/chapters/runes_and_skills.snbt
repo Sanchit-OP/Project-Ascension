@@ -1,0 +1,373 @@
+{
+	id: "52BAAB3373E20AD2"
+	group: ""
+	order_index: 1
+	filename: "runes_and_skills"
+	default_quest_shape: "ascension_star"
+	icon: {
+		id: "minecraft:amethyst_shard"
+		count: 1
+	}
+	quests: [
+		{
+			id: "231B9DE4FDB1282D"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:experience_bottle"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "3CC9A14A589A60B0"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "18B07549FC0D8F2A"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "7DBDD51CA7C31B66"
+			x: 0.0d
+			y: 2.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:wither_skeleton_skull"
+				count: 1
+			}
+			dependencies: ["231B9DE4FDB1282D"]
+			tasks: [
+				{
+					id: "6C5A205B8E78BEDE"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "51AA16AF3D3E489E"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "3983A847E6B83CA8"
+			x: 0.0d
+			y: 4.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:ender_eye"
+				count: 1
+			}
+			dependencies: ["7DBDD51CA7C31B66"]
+			tasks: [
+				{
+					id: "15407D149176D80C"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "11B5AB1E6EDB8675"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "3A169BE756F1B40C"
+			x: 0.0d
+			y: 6.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:spyglass"
+				count: 1
+			}
+			dependencies: ["3983A847E6B83CA8"]
+			tasks: [
+				{
+					id: "00CCDFD9CCDCF2BD"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "735E34EED004E9CF"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "0FB0E7741D93E932"
+			x: 0.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:amethyst_cluster"
+				count: 1
+			}
+			dependencies: ["3A169BE756F1B40C"]
+			tasks: [
+				{
+					id: "4B8C2EC5DAB6CB17"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "25353555D9697D72"
+					type: "item"
+					item: "minecraft:experience_bottle"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "429C425E53ACA485"
+			x: 0.0d
+			y: 10.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:iron_chestplate"
+				count: 1
+			}
+			dependencies: ["0FB0E7741D93E932"]
+			tasks: [
+				{
+					id: "169EA734B00C575B"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "036297B8A2E98012"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "41F78D9CDB3575A5"
+			x: 0.0d
+			y: 12.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:experience_bottle"
+				count: 1
+			}
+			dependencies: ["429C425E53ACA485"]
+			tasks: [
+				{
+					id: "192DF4F38A3C8AED"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "03387C22AB429DFA"
+					type: "item"
+					item: "minecraft:experience_bottle"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "678C04AABCCA8FC6"
+			x: 5.0d
+			y: 0.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:amethyst_shard"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "5A939A21CD41C210"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "169A79F74B0890AF"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "3ED688C8E8F5D437"
+			x: 5.0d
+			y: 2.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:netherite_sword"
+				count: 1
+			}
+			dependencies: ["678C04AABCCA8FC6"]
+			tasks: [
+				{
+					id: "7BEA56213C286664"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "6B8656342198A16E"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "2C168EA9DEC4569D"
+			x: 5.0d
+			y: 4.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:nether_star"
+				count: 1
+			}
+			dependencies: ["3ED688C8E8F5D437"]
+			tasks: [
+				{
+					id: "5A870EB477A1AAD3"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "71706CDEB4E1B2B7"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "728021FC304009D2"
+			x: 5.0d
+			y: 6.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:ender_eye"
+				count: 1
+			}
+			dependencies: ["2C168EA9DEC4569D"]
+			tasks: [
+				{
+					id: "2A1422A4DAC5AB3C"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "651FF837C6F04EA2"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "6BD7E3D3CE4837CC"
+			x: 5.0d
+			y: 8.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_combat:rune_chalk"
+				count: 1
+			}
+			dependencies: ["728021FC304009D2"]
+			tasks: [
+				{
+					id: "338A9AD077DF2A46"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "4C6EE3D258422512"
+					type: "item"
+					item: "ascension_combat:rune_chalk"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "45B9AEE58941C962"
+			x: 5.0d
+			y: 10.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:sculk_catalyst"
+				count: 1
+			}
+			dependencies: ["6BD7E3D3CE4837CC"]
+			tasks: [
+				{
+					id: "4B6912CF208F7D1F"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "37C8FBC22D6E9D1A"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "5B50B1407AAF20F1"
+			x: 2.5d
+			y: 14.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "minecraft:book"
+				count: 1
+			}
+			dependencies: ["41F78D9CDB3575A5", "45B9AEE58941C962"]
+			tasks: [
+				{
+					id: "2670B222759D6DEC"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "60AAB6D4AF57E115"
+					type: "item"
+					item: "minecraft:experience_bottle"
+					count: 16
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [ ]
+}

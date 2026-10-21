@@ -1,7 +1,7 @@
 {
 	id: "62B8C7928B93CDB4"
 	group: ""
-	order_index: 7
+	order_index: 8
 	filename: "ship_fly"
 	default_quest_shape: "ascension_nova"
 	icon: {

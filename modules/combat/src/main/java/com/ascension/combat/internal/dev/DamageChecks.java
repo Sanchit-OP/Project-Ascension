@@ -761,6 +761,10 @@ public final class DamageChecks {
             expectNear(name + " has " + (int) scale.healthTotal() + " health on " + level.getDifficulty().getKey()
                     + ", and starts full", living.getMaxHealth(), (float) scale.healthTotal());
             expectNear(name + " starts at full health", living.getHealth(), (float) scale.healthTotal());
+            var attackDamage = living.getAttribute(Attributes.ATTACK_DAMAGE);
+            log("   " + name + " on " + level.getDifficulty().getKey() + ": health " + living.getMaxHealth() + ", Armor "
+                    + living.getAttributeValue(CombatAttributes.ARMOR) + ", Magic Resist " + living.getAttributeValue(CombatAttributes.MAGIC_RESIST)
+                    + ", Attack Damage " + (attackDamage == null ? "none (fixed hits)" : String.valueOf(attackDamage.getValue())));
             living.discard();
         }
     }

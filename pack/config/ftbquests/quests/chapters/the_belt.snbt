@@ -1,7 +1,7 @@
 {
 	id: "504C0902F6F03067"
 	group: ""
-	order_index: 10
+	order_index: 11
 	filename: "the_belt"
 	default_quest_shape: "ascension_nova"
 	icon: {

@@ -1,7 +1,7 @@
 {
 	id: "5A50CCBE03C8C558"
 	group: ""
-	order_index: 4
+	order_index: 5
 	filename: "create_power"
 	default_quest_shape: "ascension_nova"
 	icon: {
