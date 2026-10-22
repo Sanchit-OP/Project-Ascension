@@ -79,9 +79,10 @@ Air is a resource you make, carry and spend.
 
 ## A quest book that teaches
 
-Press **J**. Thirteen pages and roughly 150 quests teach the whole road: first days on Earth, building the gate, four pages teaching
+Press **J**. Fourteen pages and roughly 165 quests teach the whole road: first days on Earth, building the gate, four pages teaching
 Create and Aeronautics from nothing, the Moon, the rot, gear and growth, the End, and a page for playing together. A star chart of the
-worlds shows where you are, even in space. It says what and where. It never blocks you.
+worlds shows where you are, even in space. A page of its own, **Runes and Skill Points**, explains the two character screens. It says what and
+where. It never blocks you.
 
 ## A game you can read
 
@@ -113,7 +114,6 @@ Everything below is **planned, not promised**: the order and the details can cha
 - **Ships that hold air, proven.** The Air Dispenser works on the ground; aboard a moving ship it is built and unseen.
 - **Two players at once, properly tested.** Parties, sharing air and late joiners are built and unproven.
 - **Shaders that work in space.** The clouds that shaders draw where there should be none, and the toothed planet edges.
-- **Curios slots.** One for your oxygen tank, one for Zonia's Hourglass or Sterak's Harness instead of the off hand, one for your backpack.
 - **A starter ship** you can copy, so the first flight is less of a puzzle.
 - **The End's own sky,** and a proper look at its haze.
 - **Cataclysm's weapons** brought into the same balance as ours, and more boss tuning from your fights.
@@ -155,7 +155,8 @@ have the roofless Nether or the End as a planet.
 ## Known issues, in short
 
 Shaders are not supported in space yet. Ships holding air are not proven. Two players at once are not proven. The Curios slots are not
-built, so Zonia's Hourglass and Sterak's Harness work in the off hand for now. The full list, and what to do about each, is in
+seen in a game yet (the oxygen tank and Zonia's Hourglass or Sterak's Harness have them). The legendary weapons, the skill tree and the runes
+were all raised and have not met a real boss. The full list, and what to do about each, is in
 KNOWN_ISSUES.md.
 
 ## Reporting a bug

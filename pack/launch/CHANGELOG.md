@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.1.0-alpha.2 (not yet published)
+
+The player was far too weak against the bosses, so this alpha is mostly about power, and about the gear and screens that make a character.
+Minecraft 1.21.1, NeoForge 21.1.249. **A world made on alpha.1 still loads** (a saved rune page that held Silent Step or Cat's Eye is moved to the
+keystone that replaced it), but the numbers below apply to it at once.
+
+**Combat and power**
+- **The 11 legendary weapons are stronger**, in base damage and in what their abilities scale with: a weapon kills the standard boss in about
+  two thirds of the old time and the Wither in about half. The flat-damage weapons (Darius's Axe, Wraithblade, Mortal Reminder, Endless Hunger)
+  rose furthest. Both dual-wield weapons (Ragefang, Endless Hunger) were checked as a pair. The mace and the trident were rebalanced.
+- **The skill tree gives about four times as much.** A small node is +1 Attack Damage, +3 Health, +5 Armor, +3 Lethality (it was +0.25, +1, +4, +2).
+- **Enchantments are bigger, and the legendary items can be enchanted** (they could not). Sharpness and Power +1.5 Attack Damage a level, Smite and
+  Bane +1 Attack Damage a level on top of their bonus, Sweeping Edge adds magic damage to every extra target, Collector's Pants add a real Looting level.
+- **Three magic enchantments:** Arcane Edge (melee), Aether Tip (bows) and Spellpiercing, so magic damage has sources beyond a few items. Keen Edge goes with
+  Sharpness; an item takes at most 6 enchantments (7 on a legendary); the enchanting table can add more; a new **Enchantment Library** block stores books.
+- **The runes were audited and reworked.** Flat numbers became percentages of your stats. Ambush is a primed strike that grows with Lethality; Momentum
+  heals from damage before Armor; Arc stays charged until the fight ends and throws four strikes a hit; Starfall is far bigger; Vein Breaker takes whole
+  veins; **Predator** (Lethality is damage) replaced Silent Step and **Overheal** (healing becomes a shield) replaced Cat's Eye. Growing runes cap at 20.
+- A fix: strikes that landed just after a sword hit (stars, lightning, shockwaves) were mostly swallowed by the game's invulnerability frames.
+
+**Slots and quality of life**
+- **Curios slots:** one for an oxygen tank (a worn tank is an open source, no valve) and one for Zonia's Hourglass or Sterak's Harness, which no
+  longer need the off hand. Cataclysm's six accessory slots were removed.
+- **New mods:** FallingTree (a tree comes down in one go), Gliders, Double Doors (with Collective) and GraveStone Mod.
+- **ImmediatelyFast was removed:** it is the likeliest cause of the level ring and hunger badge vanishing from the HUD. If they still vanish, tell us.
+
+**The quest book** has a new page, **Runes and Skill Points**, a guide to the two screens (K and R): where the 41 points come from and what everything does.
+Fourteen pages in all.
+
 ## 0.1.0-alpha.1 (not yet published)
 
 The first alpha. Minecraft 1.21.1, NeoForge 21.1.249.

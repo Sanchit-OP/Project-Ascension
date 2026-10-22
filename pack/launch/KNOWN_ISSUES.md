@@ -1,4 +1,4 @@
-# Known issues: Project Ascension 0.1.0-alpha.1
+# Known issues: Project Ascension 0.1.0-alpha.2
 
 The alpha rule is **no dead ends**: if something that should work does not, there is a way around it. Each line says what is wrong
 and what to do. Anything that says "not seen" has been built and checked by machine and never watched in a game.
@@ -27,13 +27,16 @@ and what to do. Anything that says "not seen" has been built and checked by mach
   unproven. A player who joins a party that is ahead gets the worlds but not the gear to survive them.
 - **The End.** Its sky is still vanilla's. Flying fast over the outer islands makes the game generate new land and can stutter. The
   Elytra on an End city ship has not been seen in a real city.
-- **Slots.** The oxygen tank works from your inventory (right-click it to open its valve) and Zonia's Hourglass and Sterak's
-  Harness work in the **off hand**. Curios slots for them are planned, not built.
+- **Slots.** The oxygen tank and Zonia's Hourglass or Sterak's Harness each have a **Curios slot** now (the tank still works from your
+  inventory, and the two items still work in the off hand). The slots have been checked on a server and **not seen in a game**.
 - **Storage.** Sophisticated Storage, Sophisticated Backpacks and Tom's Simple Storage are installed and have not been played with.
   Very many Sophisticated chests in one place can cost frames: use fewer, bigger ones.
 - **Waystones.** They carry you within a world and are set to refuse any trip between worlds. The refusal has not been seen.
-- **Balance.** The Cataclysm weapons are untouched and out of step with ours. Boss health was cut by a third on 2026-10-19 and has not
-  been fought at every difficulty.
+- **Balance.** The Cataclysm weapons are untouched and out of step with ours. The legendary weapons, the skill tree and the runes were all
+  raised on 2026-10-22 and **have not been fought against a real boss**: expect the numbers to move. Boss health was cut by a third on
+  2026-10-19 and has not been fought at every difficulty.
+- **The HUD's level ring and hunger badge** used to vanish at random. A mod that batches the HUD's drawing (ImmediatelyFast) was removed as the
+  likeliest cause; if it still happens, press F3+T and tell us whether it is a single-player world or a server.
 - **Other launchers.** Three mods (Create Aeronautics, Entity Culling and Keybind Atlas) do not allow other programs to download them.
   The CurseForge app handles them; another launcher may ask you to fetch them by hand.
 - **Old worlds.** Start a new world. A world keeps the dimensions it was made with.

@@ -793,6 +793,11 @@ public final class DamageChecks {
         zombie.setTarget(standIn);
         float adStat = com.ascension.combat.internal.mechanics.AbilityScaling.attackDamage(standIn);
         float through = (float) MagicDamage.passThrough(zombie, standIn);
+        // The world spawns mobs of its own; one wandering within the bolt's radius would take a strike and skew the shares.
+        for (net.minecraft.world.entity.LivingEntity stray : level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class,
+                zombie.getBoundingBox().inflate(16.0), e -> e != zombie && e != second && e != standIn)) {
+            stray.discard();
+        }
         float armed = swing(sword, zombie);
         swing(sword, zombie);
         swing(sword, zombie);

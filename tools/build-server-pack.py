@@ -5,7 +5,7 @@
 
 What goes in, and why it differs from the CurseForge pack (that one names mods by id; a server needs the files):
 
-  mods/       every jar of the test instance's mods folder that belongs on a server, plus our own 17: the same set the dev server
+  mods/       every jar of the test instance's mods folder that belongs on a server, plus our own 18: the same set the dev server
               loads (`syncDevMods` in buildSrc/.../ascension.mod-conventions.gradle.kts), so what is tested is what runs. A jar is
               left off when its neoforge.mods.toml declares only CLIENT-side dependencies (Sodium, Iris, Entity Culling ...) or its
               name is in `dev_mods_server_exclude` in gradle.properties. The three mods whose third-party distribution is off

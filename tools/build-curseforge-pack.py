@@ -42,6 +42,10 @@ def gradle_property(name):
     sys.exit('%s not found in gradle.properties' % name)
 
 
+# Our own mods: 17 until 2026-10-22, when ascension-compat-curios became the 18th.
+EXPECTED_OUR_JARS = 18
+
+
 def instance_dir():
     return os.path.dirname(gradle_property('dev_mods_dir').replace('/', os.sep))
 
@@ -126,6 +130,11 @@ def main():
     problems, notes = [], []
 
     tracked, shaders = tracked_mods(instance, settings, problems)
+    # Mods the launcher's record still tracks but the pack must not carry (pack.json "leave_out_mods": name -> why).
+    for name, why in settings.get('leave_out_mods', {}).items():
+        if any(m['name'] == name for m in tracked):
+            tracked = [m for m in tracked if m['name'] != name]
+            notes.append('%s is left out of the manifest: %s' % (name, why))
     apply_pins(tracked, problems, notes)
     extras = extra_mods()
     ours = our_jars()
@@ -153,8 +162,8 @@ def main():
         if mod['allowDistribution'] is False:
             notes.append('%s has third-party distribution off: listed by id, never bundled (our server needs it by hand)' % mod['name'])
 
-    if len(ours) != 17:
-        problems.append('expected 17 built ascension jars, found %d (run ./gradlew build)' % len(ours))
+    if len(ours) != EXPECTED_OUR_JARS:
+        problems.append('expected %d built ascension jars, found %d (run ./gradlew build)' % (EXPECTED_OUR_JARS, len(ours)))
 
     files = sorted(tracked + extras, key=lambda m: (m['projectID'], m['fileID']))
     manifest = {
