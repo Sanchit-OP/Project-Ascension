@@ -110,7 +110,7 @@ max-players=10
 pvp=true
 spawn-protection=0
 sync-chunk-writes=false
-motd=Project Ascension 0.1.0-alpha.1
+motd=Project Ascension @VERSION@
 """
 
 JVM_ARGS = """# Generational ZGC, the collector the pack was tested with (both flags are needed on Java 21).
@@ -131,7 +131,8 @@ jars (three of them from mods that forbid redistribution). It is for your own se
 1. In the host's panel choose **Minecraft 1.21.1 with NeoForge {neoforge}** and **Java 21**. If the panel has no NeoForge picker,
    upload the installer ({installer}) and run `java -jar neoforge-{neoforge}-installer.jar --installServer` in the server's folder.
 2. Stop the server. Upload this zip's contents (`mods/`, `config/`, `server.properties`, `user_jvm_args.txt`) into the server's
-   root folder, replacing what is there. Use the panel's "unarchive"/extract if it has one, or SFTP.
+   root folder. Use the panel's "unarchive"/extract if it has one, or SFTP. (Updating a server that already has a world? Use
+   "Updating" below instead: it keeps your settings and clears the old jars.)
 3. Accept the EULA yourself (the panel's EULA button, or `eula.txt` with `eula=true`).
 4. Give the server **6 GB or more** (the plan's memory, leaving a little for the system) and the two flags in `user_jvm_args.txt`
    if the panel does not already use ZGC.
@@ -144,7 +145,20 @@ jars (three of them from mods that forbid redistribution). It is for your own se
 - Join with the CurseForge pack (the same version). A mismatch refuses the connection and names the missing mod.
 - Do **not** start Chunky pre-generation (`/chunky ...`) with players online; see serverpack/README.md in the repository.
 
-## Updating
+## Updating a server that already has a world
+
+A world made on alpha.1 loads on alpha.2 as it is: **do not wipe it**. Nothing about the dimensions, the structures or the saved data
+changed (the only removals are two runes, and a saved rune page is moved to what replaced them). Chests nobody has opened yet roll the
+new loot when they are first opened; chests already opened keep what they gave.
+
+1. Tell players to leave, then stop the server.
+2. **Back up the world** (the panel's backup, or download the `world/` folder). It takes a minute and undoes any surprise.
+3. In `mods/`, **delete every jar** and upload this zip's `mods/` in their place. Old jars left behind next to the new ones are
+   the usual cause of a server that will not start after an update.
+4. Upload this zip's `config/` over the server's `config/` (it holds the quest book and the tuned mod settings).
+5. **Leave alone:** `world/`, `whitelist.json`, `ops.json`, `banned-*.json`, `eula.txt`, and your own `server.properties` and
+   `user_jvm_args.txt` (this zip's copies are for a first install only; take just the `motd` line if you want it).
+6. Start it and watch the console end with `Done` and no `ERROR` mod-loading lines. Players must update their pack to the same version.
 
 Every pack update means the same jars here: rebuild this zip with `python tools/build-server-pack.py`.
 """
@@ -156,7 +170,7 @@ def build():
     config = collect_config()
     entries = [('mods/' + n, p) for n, p in mods] + config
     text = {
-        'server.properties': SERVER_PROPERTIES,
+        'server.properties': SERVER_PROPERTIES.replace('@VERSION@', version),
         'user_jvm_args.txt': JVM_ARGS,
         'SERVER-README.md': README.format(version=version, neoforge=neoforge, installer=NEOFORGE_INSTALLER % (neoforge, neoforge)),
     }

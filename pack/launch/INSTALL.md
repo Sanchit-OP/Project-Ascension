@@ -9,8 +9,9 @@ For friends and testers. The pack is a normal CurseForge modpack: the CurseForge
    The app may warn that **about 35 files are not from CurseForge**. They are ours: 18 mod jars (`ascension_*.jar`, the mods we wrote) and
    the quest-book files. Accept and continue.
 3. **Give it memory.** In the profile's settings set the allocation to **6 GB or more** (8 GB if you can spare it).
-4. **Play, and start a new world.** An old world keeps the dimensions it was made with and will not have the roofless Nether or the End
-   as a planet. Press **J** for the quest book.
+4. **Play.** A world made on alpha.1 loads as it is (back it up first, as for any update); a world made on a development build from
+   before alpha.1 keeps the dimensions it was made with and will not have the roofless Nether or the End as a planet, so start a new one.
+   Press **J** for the quest book.
 5. **If it will not start,** send us `logs/latest.log` (and the newest file in `crash-reports/`) from the profile's folder
    (the app's *Open folder* button).
 
@@ -21,4 +22,6 @@ The keys, what the alpha is, and what is known to be wrong are in the pack's des
 `python tools/build-server-pack.py` writes `build/server/ProjectAscension-server-<version>.zip` and its `SERVER-README.md` has the steps
 (NeoForge 21.1.249, Java 21, 6 GB or more, EULA accepted by the owner, `online-mode=true`, a whitelist). That zip carries other authors' jars,
 three of them from mods that forbid redistribution: **never share it or publish it**, only upload it to our own server. A friend joins with the
-same pack version and a Minecraft name that has been added with `whitelist add <name>`.
+same pack version and a Minecraft name that has been added with `whitelist add <name>`. **Updating a server that already has a world**
+does not need a wipe: its `SERVER-README.md` has the steps (back up the world, delete the old jars, upload the new `mods/` and `config/`,
+keep the world and your own `server.properties`).

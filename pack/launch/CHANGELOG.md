@@ -29,7 +29,7 @@ keystone that replaced it), but the numbers below apply to it at once.
 **Slots and quality of life**
 - **Curios slots:** one for an oxygen tank (a worn tank is an open source, no valve) and one for Zonia's Hourglass or Sterak's Harness, which no
   longer need the off hand. Cataclysm's six accessory slots were removed.
-- **New mods:** FallingTree (a tree comes down in one go), Gliders, Double Doors (with Collective) and GraveStone Mod.
+- **Also in the pack:** FallingTree (a tree comes down in one go), Gliders, Double Doors (with Collective) and GraveStone Mod.
 - **ImmediatelyFast was removed:** it is the likeliest cause of the level ring and hunger badge vanishing from the HUD. If they still vanish, tell us.
 
 **The quest book** has a new page, **Runes and Skill Points**, a guide to the two screens (K and R): where the 41 points come from and what everything does.
