@@ -9,8 +9,8 @@ keystone that replaced it), but the numbers below apply to it at once.
 **Combat and power**
 - **The 11 legendary weapons are stronger**, in base damage and in what their abilities scale with: a weapon kills the standard boss in about
   two thirds of the old time and the Wither in about half. The flat-damage weapons (Darius's Axe, Wraithblade, Mortal Reminder, Endless Hunger)
-  rose furthest. Both dual-wield weapons (Ragefang, Endless Hunger) were checked as a pair. The mace and the trident were rebalanced.
-- **The skill tree gives about four times as much.** A small node is +1 Attack Damage, +3 Health, +5 Armor, +3 Lethality (it was +0.25, +1, +4, +2).
+  rose furthest. Both dual-wield weapons (Ragefang, Endless Hunger) were checked as a pair.
+- **The skill tree gives a lot more.** A small node is now +1 Attack Damage (it was +0.25), +3 Health (was +1), +5 Armor (was +4) and +3 Lethality (was +2), and the notables and capstones were raised too.
 - **Enchantments are bigger, and the legendary items can be enchanted** (they could not). Sharpness and Power +1.5 Attack Damage a level, Smite and
   Bane +1 Attack Damage a level on top of their bonus, Sweeping Edge adds magic damage to every extra target, Collector's Pants add a real Looting level.
 - **Three magic enchantments:** Arcane Edge (melee), Aether Tip (bows) and Spellpiercing, so magic damage has sources beyond a few items. Keen Edge goes with
