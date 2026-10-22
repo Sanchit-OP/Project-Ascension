@@ -2,8 +2,7 @@
 
 Paste the summary into the project's summary box (it takes about 200 characters) and everything under "Description" into the
 description. The page's editor is rich text, so paste `curseforge-description.html` rather than this file: open it in a browser,
-select all, copy, paste into the editor. Upload `logo-poster-512.jpg` (under 100 KB) or `logo.png` (512 x 512, made by
-`tools/generate-pack-logo.py`; `logo-1024.png` is the master) as the project's logo. Keep this file as the source: change it here,
+select all, copy, paste into the editor. Upload the logo (a picture under 100 KB, kept outside this repository) as the project's logo. Keep this file as the source: change it here,
 then regenerate the HTML (`python tools/pack-description-to-html.py`) and paste again. **Nothing here has been published.**
 
 ## Summary

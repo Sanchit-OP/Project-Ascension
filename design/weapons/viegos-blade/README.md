@@ -4,8 +4,8 @@
 > and drawn by the combat module's `WeaponRenderer` (a jade, glowing redo with real proportions
 > and new hand transforms); see
 > `docs/technical/combat-art.md`, "3D in-hand models", and the preview
-> `design/combat-items/3d/veigos_blade_hand.png`. `tools/generate-viegos-blade.mjs` now refuses to
-> run, so it can't overwrite that. Everything below describes the first model and is kept for
+> `design/combat-items/3d/veigos_blade_hand.png`. The script that made the first model (`generate-viegos-blade.mjs`) was
+> deleted on 2026-10-22; `tools/generate-combat-models.py` draws the model now. Everything below describes the first model and is kept for
 > history: the `.bbmodel` files here no longer match what the game loads.
 >
 > One correction to the history: `first-person.png` (2026-09-09) shows a pose close to vanilla's
@@ -40,8 +40,7 @@ element coordinates between -16 and 32. Export the Block/Item JSON to the runtim
 Keep the texture resource location `ascension_combat:item/veigos_blade_3d`.
 Do not add `minecraft:item/handheld` as a parent: its generated geometry replaces cuboid elements.
 
-`node tools/generate-viegos-blade.mjs` recreates the initial geometry, atlas, and display settings.
-This overwrites the editable source and runtime assets; preserve any manual Blockbench edits first.
+The script that recreated the initial geometry, atlas, and display settings is gone (see the note at the top).
 The existing red sword texture remains available at `textures/item/veigos_blade.png`.
 
 ## Verification — 2026-09-09

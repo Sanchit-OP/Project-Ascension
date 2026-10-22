@@ -147,8 +147,8 @@ Directions for the next session to weigh with Sanchit:
 - **Weight:** chunkier, bolder crescent guards so the silhouette reads at a glance.
 - **Hotbar:** a dedicated inventory sprite (a 2D GUI model) separate from the in-hand 3D model,
   so it doesn't read as a line.
-- **Source of truth:** keep the Blockbench project (`tools/generate-viegos-blade.mjs` makes
-  the starting geometry), or move to a generator in the style of the art guide.
+- **Source of truth:** a generator in the style of the art guide (`tools/generate-combat-models.py` draws the
+  3D models), not a hand-edited Blockbench project.
 
 ## Turning a League icon into a Minecraft item
 
