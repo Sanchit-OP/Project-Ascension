@@ -7,7 +7,8 @@ One table of numbers in this file, written out as plain data:
     vanilla treasure, `ascension_combat:planet/<planet>` the components and enchantment books), and
   * a `neoforge:add_table` loot modifier per table, carrying `ascension_core:chest_table` (any chest, from
     any mod, Lootr's included) and a dimension check, so no chest table is ever named, and
-  * one `ascension_core:strip` modifier that takes the junk tag out of chests on those planets.
+  * one `ascension_core:strip` modifier that takes the junk tag out of chests on those planets, and a milder one
+    (seeds, rotten flesh, poisonous potatoes) for Earth's chests, which get no bonus.
 
 Edit the numbers here, run the script, commit the JSON. `--check` fails if the files on disk differ.
 """
@@ -200,6 +201,13 @@ STRIP = {
 }
 
 
+STRIP_EARTH = {
+    'type': 'ascension_core:strip',
+    'conditions': [{'condition': 'ascension_core:chest_table'}, location('minecraft:overworld')],
+    'tag': 'ascension_core:chest_junk_mild',
+}
+
+
 def outputs():
     """Every file this script owns: path (from the repo root) -> JSON value."""
     files = {}
@@ -209,6 +217,7 @@ def outputs():
             files[base + 'loot_table/planet/%s.json' % planet] = body
             files[base + 'loot_modifiers/planet_%s.json' % planet] = modifier(namespace, planet)
     files['modules/worlds/src/main/resources/data/ascension_worlds/loot_modifiers/planet_chest_junk.json'] = STRIP
+    files['modules/worlds/src/main/resources/data/ascension_worlds/loot_modifiers/earth_chest_junk.json'] = STRIP_EARTH
     return files
 
 
@@ -216,7 +225,7 @@ def registered():
     """The `entries` each module's global_loot_modifiers.json must carry for these files."""
     return {
         'modules/worlds/src/main/resources/data/neoforge/loot_modifiers/global_loot_modifiers.json':
-            ['ascension_worlds:planet_%s' % p for p in PLANETS] + ['ascension_worlds:planet_chest_junk'],
+            ['ascension_worlds:planet_%s' % p for p in PLANETS] + ['ascension_worlds:planet_chest_junk', 'ascension_worlds:earth_chest_junk'],
         'modules/combat/src/main/resources/data/neoforge/loot_modifiers/global_loot_modifiers.json':
             ['ascension_combat:planet_%s' % p for p in PLANETS],
     }

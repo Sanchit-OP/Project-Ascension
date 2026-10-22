@@ -1,16 +1,11 @@
 {
   "replace": false,
   "values": [
+    "#ascension_core:chest_junk_mild",
     "minecraft:wheat",
-    "minecraft:wheat_seeds",
-    "minecraft:melon_seeds",
-    "minecraft:pumpkin_seeds",
-    "minecraft:beetroot_seeds",
     "minecraft:beetroot",
     "minecraft:bread",
     "minecraft:bone",
-    "minecraft:rotten_flesh",
-    "minecraft:poisonous_potato",
     "minecraft:bowl"
   ]
 }

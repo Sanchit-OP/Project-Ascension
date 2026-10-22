@@ -93,6 +93,7 @@ public final class LootChecks {
         int chests;
         int stacks;
         int junk;
+        int mildJunk;
         int titanium;
         int helium;
         int diamonds;
@@ -108,6 +109,9 @@ public final class LootChecks {
             stacks++;
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
             String name = id.toString();
+            if (name.endsWith("_seeds") || name.equals("minecraft:rotten_flesh") || name.equals("minecraft:poisonous_potato")) {
+                mildJunk++;
+            }
             if (name.equals("minecraft:wheat") || name.equals("minecraft:bone") || name.equals("minecraft:rotten_flesh")
                     || name.endsWith("_seeds") || name.equals("minecraft:bread")) {
                 junk++;
@@ -180,10 +184,11 @@ public final class LootChecks {
         }
         ServerPlayer player = FakePlayerFactory.get(earth, new GameProfile(UUID.fromString("00000000-0000-0000-0000-00000000100f"), "[loot-checks]"));
 
-        log("--- chests on Earth are as vanilla made them");
+        log("--- chests on Earth lose only the mild junk and gain nothing");
         Tally earthDungeon = fill(earth, player, SIMPLE_DUNGEON);
         log("Earth, simple_dungeon: " + earthDungeon.describe());
-        expect("Earth's dungeon chests still hold junk", earthDungeon.junk > 0, true);
+        expect("Earth's dungeon chests hold no seeds, rotten flesh or poisonous potatoes (the mild strip)", earthDungeon.mildJunk == 0, true);
+        expect("but still hold wheat, bread and bones, which are food and bone meal", earthDungeon.junk > 0, true);
         expect("and none of the planets' loot: no raw titanium, raw helium, build-path components or diamonds",
                 earthDungeon.titanium == 0 && earthDungeon.helium == 0 && earthDungeon.components == 0 && earthDungeon.diamonds == 0, true);
 

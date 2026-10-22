@@ -19,8 +19,9 @@ Every **chest** on the Moon, the Nether (Planet 3) and the End (Planet 4), from 
 2. **Takes the junk out.** The item tag `ascension_core:chest_junk` (wheat, seeds, beetroot, bread, bones, rotten flesh,
    poisonous potato, bowls) is removed from what the table rolled.
 
-Earth is untouched: its chests are vanilla's. Block drops, mob drops and fishing are untouched; boss hearts are as they
-were. Nothing is replaced (resource-economy principle 5): the bonus is **added** and only the junk is taken away.
+**Earth gets only a mild clean-up and no bonus** (Sanchit, 2026-10-22): seeds, rotten flesh and poisonous potatoes are taken out
+(`ascension_core:chest_junk_mild`); wheat, bread and bones stay, as food and bone meal. Block drops, mob drops and fishing are
+untouched; boss hearts are as they were. Nothing is replaced (resource-economy principle 5): the bonus is **added** and only the junk is taken away.
 
 ### The bonus, per chest
 
@@ -34,7 +35,8 @@ The enchant levels of the gear and books rise with the planet (Moon 20 to 30, Ne
 
 ### What that comes to (400 chests each, the Citadel's tables)
 
-Per 100 chests. Earth's `simple_dungeon` is the baseline: 691 junk stacks, no titanium, helium, diamonds or components.
+Per 100 chests. Earth's `simple_dungeon` is the baseline: 15.1 stacks with 691 junk before the mild clean-up, 11.4 stacks and 320 junk after
+(wheat, bread and bones stay), and no titanium, helium, diamonds or components either way.
 
 | | stacks a chest | junk | raw titanium | raw helium | diamonds | experience bottles | netherite | enchanted books | components |
 |---|---|---|---|---|---|---|---|---|---|
@@ -68,7 +70,8 @@ bottles of the Moon's.
 | Make a planet richer or poorer | the weights and the `chance` of its pools in `generate-planet-loot.py`, then run it |
 | Add a planet | a block in `WORLDS` and `COMBAT`, its dimension in `PLANETS`; no Java |
 | Add or drop a junk item | `data/ascension_core/tags/item/chest_junk.json` |
-| Give Earth a bonus | add a modifier file with the Overworld's dimension (not done: Earth's loot is vanilla's on purpose) |
+| Give Earth a bonus | add an `add_table` modifier with the Overworld's dimension (not done: Earth only loses its mild junk) |
+| Change what Earth loses | `data/ascension_core/tags/item/chest_junk_mild.json` (the planets' tag includes it) |
 | Make one structure special | a modifier with `neoforge:loot_table_id` for its table, as the Archive's enchantments do |
 
 ## Open
@@ -76,7 +79,7 @@ bottles of the Moon's.
 - **Components in chests are a choice.** They let a lucky chest skip a crafting step (a Moon epic is the work of two
   basics and three raw helium). Set the component weights to zero in `COMBAT` (keeping the books) if Sanchit would rather
   the build paths stay craft-only. Legendary items are never in chests, and a boss's heart only from the boss.
-- **Not touched, by choice:** mob and boss drops, fishing, block drops, Earth's chests, and Cataclysm's own tables (the
+- **Not touched, by choice:** mob and boss drops, fishing, block drops, Earth's bonus (it has none), and Cataclysm's own tables (the
   Citadel's rewards come from the planet bonus, not from changing Cataclysm). Boss kills could pay more (diamonds, a book);
   ask before doing it.
 - **Not seen in a game.** Seen on a dedicated server with a stand-in player and a placed chest. A client check is owed: open

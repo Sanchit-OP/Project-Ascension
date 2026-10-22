@@ -36,5 +36,6 @@ nothing observable, which is the test ADR-0011 sets.
 
 - A chest on the Moon, the Nether or the End gains the planet's bonus and loses the junk, whatever mod or structure owns it.
   A new planet is data (a pool block in `tools/generate-planet-loot.py` and its dimension), not a class.
-- Earth, mob drops, block drops and fishing are untouched.
+- Earth's chests lose only a mild junk tag (seeds, rotten flesh, poisonous potatoes) and gain nothing. Mob drops, block drops and
+  fishing are untouched.
 - The numbers, the odds measured on a dedicated server and how to change them are in `docs/progression/loot.md`.

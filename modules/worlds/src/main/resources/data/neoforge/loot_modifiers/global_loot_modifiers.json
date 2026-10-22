@@ -5,6 +5,7 @@
     "ascension_worlds:planet_moon",
     "ascension_worlds:planet_nether",
     "ascension_worlds:planet_end",
-    "ascension_worlds:planet_chest_junk"
+    "ascension_worlds:planet_chest_junk",
+    "ascension_worlds:earth_chest_junk"
   ]
 }

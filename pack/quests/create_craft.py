@@ -78,9 +78,10 @@ CHAPTER = Chapter(
             text=[
                 'Items carried by a fan are changed by what its air passes through. Water washes, fire smokes, lava blasts and soul fire haunts.',
                 'Put the block in front of the fan, with the items between.',
+                'Soul fire burns only on soul sand or soul soil, and Earth has little of either, so here is one block to light it on.',
             ],
             tasks=[advancement('create:fan_processing')],
-            rewards=[give('minecraft:bucket', 1)],
+            rewards=[give('minecraft:bucket', 1), give('minecraft:soul_sand', 1)],
         ),
 
         # ---- Mixing and pressing (x 6) -----------------------------------------------------------

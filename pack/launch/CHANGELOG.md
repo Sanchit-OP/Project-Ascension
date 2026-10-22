@@ -24,7 +24,7 @@ keystone that replaced it), but the numbers below apply to it at once.
 - **Every chest on the Moon, the Nether and the End now pays out.** Wheat, seeds, bones and rotten flesh are taken out of them, and each gets a
   bonus that grows with the planet: raw titanium and helium, diamonds, experience bottles, netherite, enchanted gear and books, our five
   enchantment books, and the build paths' components (the epics are rare finds). The Ender Golem's arena on the Moon is the example.
-  It works for every chest from every mod, and with Lootr each player gets their own. Earth's chests, mob drops and boss drops are as they were.
+  It works for every chest from every mod, and with Lootr each player gets their own. Earth's chests only lose their seeds and rotten flesh; mob drops and boss drops are as they were.
 
 **Slots and quality of life**
 - **Curios slots:** one for an oxygen tank (a worn tank is an open source, no valve) and one for Zonia's Hourglass or Sterak's Harness, which no

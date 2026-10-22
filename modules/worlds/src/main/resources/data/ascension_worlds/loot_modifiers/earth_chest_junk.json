@@ -1,0 +1,15 @@
+{
+  "type": "ascension_core:strip",
+  "conditions": [
+    {
+      "condition": "ascension_core:chest_table"
+    },
+    {
+      "condition": "minecraft:location_check",
+      "predicate": {
+        "dimension": "minecraft:overworld"
+      }
+    }
+  ],
+  "tag": "ascension_core:chest_junk_mild"
+}

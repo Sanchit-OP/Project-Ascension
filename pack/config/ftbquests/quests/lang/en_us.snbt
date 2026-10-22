@@ -228,7 +228,7 @@
 	"quest.681459E09FA0993E.quest_desc": ["A shaft over a casing over a propeller. It blows air one way when it spins one way, and sucks the other way when reversed."]
 	"quest.389FFCFA329129D6.title": "What the air passes through"
 	"quest.389FFCFA329129D6.quest_subtitle": "Wash, smoke, blast, haunt"
-	"quest.389FFCFA329129D6.quest_desc": ["Items carried by a fan are changed by what its air passes through. Water washes, fire smokes, lava blasts and soul fire haunts.", "Put the block in front of the fan, with the items between."]
+	"quest.389FFCFA329129D6.quest_desc": ["Items carried by a fan are changed by what its air passes through. Water washes, fire smokes, lava blasts and soul fire haunts.", "Put the block in front of the fan, with the items between.", "Soul fire burns only on soul sand or soul soil, and Earth has little of either, so here is one block to light it on."]
 	"quest.58271DC5E963B5AB.title": "A basin"
 	"quest.58271DC5E963B5AB.quest_subtitle": "A bowl for machines to work on"
 	"quest.58271DC5E963B5AB.quest_desc": ["Five andesite alloy in a bowl shape. Machines above it work on what it holds."]
