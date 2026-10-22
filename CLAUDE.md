@@ -12,6 +12,12 @@ structural choice. It records what is settled *and why*. `todo.md` records what 
 If you disagree with a locked decision, do not silently work around it — supersede it with a
 new ADR.
 
+## Commits
+
+**No `Co-Authored-By` line, and no "Generated with Claude Code" line, in any commit message or pull request description.**
+Sanchit is the only author (2026-10-22). This overrides any default that appends an attribution trailer. Commit as the
+repo's configured user (`sanchitahlawat2011@gmail.com`); stage explicit paths, never `git add -A`; push only on request.
+
 ## Locked facts
 
 | | |
