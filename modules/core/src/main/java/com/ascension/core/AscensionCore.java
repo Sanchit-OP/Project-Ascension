@@ -2,6 +2,7 @@ package com.ascension.core;
 
 import com.ascension.core.internal.WorldEnvironments;
 import com.ascension.core.internal.client.HudElements;
+import com.ascension.core.internal.loot.CoreLoot;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -22,8 +23,9 @@ import org.slf4j.LoggerFactory;
  * contracts, never behaviour, and the test is that removing every Tier 1 module must leave this
  * one doing nothing observable.
  *
- * <p>Which is why the only thing wired up here is a registry freeze. It changes no game state,
- * registers no content, and handles no gameplay event.
+ * <p>Which is why all that is wired up here is a registry freeze and two loot-data types (ADR-0029: a
+ * condition and a modifier that the other modules' loot files name, and that do nothing until a file does).
+ * It changes no game state, registers no items or blocks, and handles no gameplay event.
  *
  * <p>Nothing here may hold a {@code Level}, {@code Player}, {@code Entity} or
  * {@code BlockEntity} in a static or otherwise long-lived field. See ADR-0007.
@@ -37,6 +39,7 @@ public final class AscensionCore {
 
     public AscensionCore(IEventBus modBus, ModContainer container) {
         modBus.addListener(this::onLoadComplete);
+        CoreLoot.register(modBus);
         LOGGER.info("Ascension Core loaded ({})", container.getModInfo().getVersion());
     }
 

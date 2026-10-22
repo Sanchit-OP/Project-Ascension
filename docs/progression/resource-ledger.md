@@ -52,26 +52,40 @@ No survival source, on purpose. The rules say why.
 
 **Boots** · `ascension_combat:basic_boots`
 - From: Crafting: Leather + anything in `#c:ingots/titanium`
+- From: Any chest on The Moon: 1, 45% chance, weight 6 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 3 of 49
 - Used: Crafting into Berserker's Greaves, Mercury Treads, Ninja Tabi, Swifty, Tasted Blood, Wizard's Agony
 
 **B. F. Sword** · `ascension_combat:bf_sword`
 - From: Crafting: Long Sword + Netherite Ingot
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Darken Blade, Divine Sunderer, Endless Hunger
 
 **Caulfield's Warhammer** · `ascension_combat:caulfields_warhammer`
 - From: Crafting: Long Sword + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Darius's Axe, Divine Sunderer
 
 **Chain Vest** · `ascension_combat:chain_vest`
 - From: Crafting: Cloth Armor + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Gargoyle Stoneplate, Guardian's Wing, The Protean Mask
 
 **Cloth Armor** · `ascension_combat:cloth_armor`
 - From: Crafting: Leather
+- From: Any chest on The Moon: 1, 45% chance, weight 10 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 5 of 49
 - Used: Crafting into Chain Vest, Collector's Pants, Gargoyle Stoneplate, Giant's Belt, Ninja Tabi, Seeker's Armguard
 
 **Dagger** · `ascension_combat:dagger`
 - From: Crafting: anything in `#c:ingots/titanium` + Stick
+- From: Any chest on The Moon: 1, 45% chance, weight 10 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 5 of 49
 - Used: Crafting into Berserker's Greaves, Edge of Night, Executioner's Calling, Hearthbound Axe, Last Whisper, Noonquiver, Pickaxe, Ragefang, Recurve Bow, Seeker's Armguard, Serrated Dirk, Spear of Shojin, Swifty, Wraithblade
 
 **Heart of the Ender Golem** · `ascension_combat:ender_golem_heart`
@@ -84,14 +98,21 @@ No survival source, on purpose. The rules say why.
 
 **Executioner's Calling** · `ascension_combat:executioners_calling`
 - From: Crafting: Long Sword + Dagger + Wither Skeleton Skull
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Collector's Pants, Mortal Reminder
 
 **Giant's Belt** · `ascension_combat:giants_belt`
 - From: Crafting: Ruby Crystal + Cloth Armor + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Endless Hunger, Rocketbelt, Sterak's Harness, Unending Despair
 
 **Hearthbound Axe** · `ascension_combat:hearthbound_axe`
 - From: Crafting: Long Sword + Dagger + Blaze Rod
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 2 of 49
 - Used: Crafting into Spear of Shojin
 
 **Heart of Ignis** · `ascension_combat:ignis_heart`
@@ -100,18 +121,27 @@ No survival source, on purpose. The rules say why.
 
 **Kindlegem** · `ascension_combat:kindlegem`
 - From: Crafting: Ruby Crystal + Magma Cream
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 2 of 49
 - Used: Crafting into Galeforce, Rocketbelt, Zonia's Hourglass
 
 **Last Whisper** · `ascension_combat:last_whisper`
 - From: Crafting: Long Sword + Dagger + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Mortal Reminder, Spear of Shojin, Wraithblade
 
 **Long Sword** · `ascension_combat:long_sword`
 - From: Crafting: anything in `#c:ingots/titanium` + Stick
+- From: Any chest on The Moon: 1, 45% chance, weight 10 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 5 of 49
 - Used: Crafting into B. F. Sword, Caulfield's Warhammer, Executioner's Calling, Hearthbound Axe, Last Whisper, Phage, Pickaxe, Vampiric Scepter, Veigo's Blade
 
 **Negatron Cloak** · `ascension_combat:negatron_cloak`
 - From: Crafting: Null-Magic Mantle + Glowstone Dust
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 2 of 49
 - Used: Crafting into Edge of Night, Gargoyle Stoneplate
 
 **Heart of the Netherite Monstrosity** · `ascension_combat:netherite_monstrosity_heart`
@@ -120,42 +150,66 @@ No survival source, on purpose. The rules say why.
 
 **Noonquiver** · `ascension_combat:noonquiver`
 - From: Crafting: Dagger + String + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Galeforce, Heartwood of Pallas
 
 **Null-Magic Mantle** · `ascension_combat:null_magic_mantle`
 - From: Crafting: Amethyst Shard + Echo Shard
+- From: Any chest on The Moon: 1, 45% chance, weight 6 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 3 of 49
 - Used: Crafting into Mercury Treads, Negatron Cloak, Spectre's Cowl
 
 **Phage** · `ascension_combat:phage`
 - From: Crafting: Long Sword + Ruby Crystal + Blaze Powder
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 2 of 49
 - Used: Crafting into Darius's Axe, Ragefang
 
 **Pickaxe** · `ascension_combat:pickaxe`
 - From: Crafting: Long Sword + Dagger + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Darken Blade, Ragefang, Veigo's Blade
 
 **Recurve Bow** · `ascension_combat:recurve_bow`
 - From: Crafting: Bow + Dagger + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Galeforce, Heartwood of Pallas, Mortal Reminder
 
 **Ruby Crystal** · `ascension_combat:ruby_crystal`
 - From: Crafting: Diamond + Redstone
+- From: Any chest on The Moon: 1, 45% chance, weight 8 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 4 of 49
 - Used: Crafting into Giant's Belt, Kindlegem, Phage, The Protean Mask, Rocketbelt, Spectre's Cowl
 
 **Seeker's Armguard** · `ascension_combat:seekers_armguard`
 - From: Crafting: Cloth Armor + Dagger + anything in `#c:raw_materials/helium`
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Moon: 1, 45% chance, weight 1 of 58
+- From: Any chest on The Nether: 1, 45% chance, weight 1 of 49
 - Used: Crafting into Collector's Pants, Edge of Night, Zonia's Hourglass
 
 **Serrated Dirk** · `ascension_combat:serrated_dirk`
 - From: Crafting: Dagger + Quartz
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 2 of 49
 - Used: Crafting into Veigo's Blade, Wraithblade
 
 **Spectre's Cowl** · `ascension_combat:spectres_cowl`
 - From: Crafting: Null-Magic Mantle + Ruby Crystal + Nether Wart
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 2 of 49
 - Used: Crafting into Guardian's Wing, Heartwood of Pallas, The Protean Mask, Unending Despair
 
 **Vampiric Scepter** · `ascension_combat:vampiric_scepter`
 - From: Crafting: Long Sword + Ghast Tear
+- From: Any chest on The End: 1, 50% chance, weight 2 of 34
+- From: Any chest on The Nether: 1, 45% chance, weight 2 of 49
 - Used: Crafting into Darken Blade, Endless Hunger, Sterak's Harness
 
 **Heart of the Warden** · `ascension_combat:warden_heart`
@@ -273,12 +327,18 @@ No survival source, on purpose. The rules say why.
 **Raw Helium Crystal** · `ascension_worlds:raw_helium`
 - From: Chests in the Lunar Archive (the Moon): 1 to 4, weight 3 of 11, 3 to 5 rolls
 - From: Mined from Lunar Helium Ore: The Moon's rock, y −64 to 24, needs an iron pickaxe or better
+- From: Any chest on The End: 3 to 6, weight 5 of 59, 1 to 2 rolls
+- From: Any chest on The Moon: 2 to 5, weight 10 of 79, 1 to 2 rolls
+- From: Any chest on The Nether: 2 to 5, weight 4 of 84, 1 to 2 rolls
 - Used: Tank Upgrade into Helium Oxygen Tank
 - Used: Crafting into Caulfield's Warhammer, Chain Vest, Giant's Belt, Last Whisper, Noonquiver, Pickaxe, Recurve Bow, Seeker's Armguard, Wizard's Agony
 
 **Raw Titanium** · `ascension_worlds:raw_titanium`
 - From: Chests in the Lunar Archive (the Moon): 2 to 5, weight 3 of 11, 3 to 5 rolls
 - From: Mined from Titanium Ore: Earth's rock, y −64 to 0, needs a diamond pickaxe or better
+- From: Any chest on The End: 3 to 6, weight 5 of 59, 1 to 2 rolls
+- From: Any chest on The Moon: 2 to 6, weight 10 of 79, 1 to 2 rolls
+- From: Any chest on The Nether: 2 to 5, weight 4 of 84, 1 to 2 rolls
 - Used: Blast furnace into Titanium Ingot
 - Used: Furnace into Titanium Ingot
 
@@ -381,6 +441,7 @@ No survival source, on purpose. The rules say why.
 - From: Crafting: Polished Deepslate or Polished Lunar Basalt + Sculk or Echo Shard
 - From: Chests in the Lunar Archive (the Moon): 2 to 6, weight 3 of 11, 3 to 5 rolls
 - From: Mined: the Lunar Archive (the Moon), built into it
+- From: Any chest on The Moon: 2 to 5, weight 4 of 79, 1 to 2 rolls
 - Used: Builds a gateway frame (Gateway)
 
 **Lunar Helium Ore** · `ascension_worlds:lunar_helium_ore`

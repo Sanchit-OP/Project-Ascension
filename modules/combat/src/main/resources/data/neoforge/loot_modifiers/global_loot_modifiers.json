@@ -4,6 +4,9 @@
     "ascension_combat:archive_enchantments",
     "ascension_combat:colony_enchantments",
     "ascension_combat:warden_heart",
-    "ascension_combat:wither_heart"
+    "ascension_combat:wither_heart",
+    "ascension_combat:planet_moon",
+    "ascension_combat:planet_nether",
+    "ascension_combat:planet_end"
   ]
 }

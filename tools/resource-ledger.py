@@ -391,15 +391,24 @@ for _, _, f in data('loot_modifiers'):
     if f.replace(os.sep, '/').endswith('neoforge/loot_modifiers/global_loot_modifiers.json'):
         REGISTERED |= set(load(f).get('entries', []))
 MOB_OF_TABLE = {}
+PLANET_TABLE = collections.defaultdict(set)   # table -> planets whose chests all roll it (docs/progression/loot.md)
 for _, mid, f in data('loot_modifiers'):
     mod = load(f)
-    if mod.get('type') != 'neoforge:add_table':
+    if mid == 'neoforge:global_loot_modifiers':
         continue
     if mid not in REGISTERED:
         ERRORS.append(f'loot modifier {mid} is not in global_loot_modifiers.json, so it never runs')
-    for c in mod.get('conditions', []):
+    if mod.get('type') != 'neoforge:add_table':
+        continue
+    conditions = mod.get('conditions', [])
+    for c in conditions:
         if c.get('condition') == 'neoforge:loot_table_id':
             MOB_OF_TABLE[mod['table']] = c['loot_table_id']
+    if any(c.get('condition') == 'ascension_core:chest_table' for c in conditions):
+        for c in conditions:
+            if c.get('condition') == 'minecraft:location_check' and 'dimension' in c.get('predicate', {}):
+                dim = c['predicate']['dimension']
+                PLANET_TABLE[mod['table']].add(PLANET_OF_DIM.get(dim, pretty(dim)))
 
 
 def count_text(functions):
@@ -471,6 +480,8 @@ for tid, table in sorted(TABLES.items()):
             lines = [f'Dropped by the {name(mob)}: {how}']
         elif TABLE_PLACES.get(tid):
             lines = [f'Chests in {place}: {how}' for place in sorted(TABLE_PLACES[tid])]
+        elif PLANET_TABLE.get(tid):
+            lines = [f'Any chest on {planet}: {how}' for planet in sorted(PLANET_TABLE[tid])]
         else:
             ERRORS.append(f'loot table {tid} gives {item} but nothing we ship uses the table')
         for line in lines:

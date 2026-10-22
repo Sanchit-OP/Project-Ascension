@@ -1,0 +1,145 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:pickaxe",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:caulfields_warhammer",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:giants_belt",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:recurve_bow",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:chain_vest",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:seekers_armguard",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:last_whisper",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:noonquiver",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:bf_sword",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:phage",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:kindlegem",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:vampiric_scepter",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:serrated_dirk",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:negatron_cloak",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:spectres_cowl",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:hearthbound_axe",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "ascension_combat:executioners_calling",
+          "weight": 2
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.5
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:book",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "#ascension_combat:own"
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.5
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:book",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "ascension_combat:soulbound"
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.12
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "ascension_core:chest_table"
+    },
+    {
+      "condition": "minecraft:location_check",
+      "predicate": {
+        "dimension": "minecraft:the_nether"
+      }
+    }
+  ],
+  "table": "ascension_combat:planet/nether"
+}

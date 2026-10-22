@@ -238,6 +238,7 @@ the combat session.
 | Our structures' chests | Our own tables (`archive/stores`, `nether_colony/stores`) |
 | Mob and boss drops, including the hearts | `add_table` modifiers. A boss's drop lives in that boss's compat jar, or in ours for vanilla bosses. |
 | Vanilla chests | `add_table` modifiers on vanilla's tables, where a component or a material should turn up |
+| Every chest on a planet | The planet's bonus tables and the junk strip (`loot.md`, ADR-0029): no chest table is named |
 
 **The ledger (built 2026-10-12).** `tools/resource-ledger.py` writes
 [`resource-ledger.md`](resource-ledger.md): every item we register, where a player gets it, and what

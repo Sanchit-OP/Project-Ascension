@@ -99,6 +99,8 @@ decided by the *attack*, not the mob: a Warden's fist is physical and its sonic 
 (`#ascension_combat:magic` for damage types, `magic_attack` for projectiles that share a generic type) decide it, and Cataclysm's
 attacks are sorted in its compat jar. A magic hit on a player shows a faint blue screen-edge tint (`ascension_combat-client.toml`, `magicHitTint`). Seen on a dedicated server (`damage-checks.txt`, 75 checks, which also prove the six bosses reach their balanced health), not in a client.
 
+**Loot (2026-10-22; `docs/progression/loot.md`, ADR-0029):** every chest on the Moon, the Nether and the End, from any mod, gets a bonus that grows with the planet (materials, treasure, enchanted books, the build paths' components) and loses its junk (wheat, seeds, bones). No chest table is named: `core` registers a `chest_table` condition and a `strip` modifier, each module adds its own `neoforge:add_table` files, written by `tools/generate-planet-loot.py`. Lootr fills through `LootTable.fill`, so it is covered. Proved on a dedicated server (`loot-checks.txt`), not seen in a client.
+
 **Teams (ADR-0023, 2026-10-18; `docs/progression/teams.md`):** progress has three owners: the world (gates,
 the mark), your team (bosses, quest progress: an FTB Teams party, a solo player being a party of one) and
 you. `core`'s `TeamRegistry` says who is on which team (everyone is one team when nothing answers),
