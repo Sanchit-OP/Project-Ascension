@@ -257,6 +257,8 @@ Two checks that need a game, both dormant until their trigger file exists in the
   2026-10-18: about two minutes, 14 checks, 4 failures, all from the check's own space stop landing on the Moon;
   what it found is in `docs/progression/quests.md` section 12, and the pictures are in `design/quest-book/`.
 
+- **`gallery-shots.txt`** (a client, five to ten minutes, a game window opens): `client/dev/GalleryShots` plays the script in `run/client/gallery-plan.txt` in a copy of the test world named `gallery-world` (copy `run/server/runes-test` to `run/client/saves/gallery-world`). One command a line: `size`, `fov`, `dist`, `hide`/`show`, `cmd` (a server command run with full permission), `tp`, `ground`, `wait`, `shot`, `locate`, `bbox` (a structure's boxes, to aim at it), `view` and `viewg` (move, wait for the chunks, photograph), `quit`. Pictures are saved as `screenshots/gallery-<name>.png` at the window's size (1920 x 1080). Start the script with `cmd gamerule doWeatherCycle false` and `cmd gamerule doDaylightCycle false` and set the time per scene, or the Moon's dust storm and the sun's drift spoil the pictures. The CurseForge page's pictures were made this way on 2026-10-22 (`pack/launch/GALLERY.md`).
+
 ### Use `runDevServer`, not a module's own `runServer`
 
 Each module also has its own `runClient` / `runServer`, and **each loads only itself and what it

@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -35,6 +36,13 @@ public final class PlanetWeatherMechanics {
             return;
         }
         PlanetWeatherState state = level.getData(SpaceAttachments.WEATHER_STATE);
+        // Weather obeys the game's own weather-cycle rule, so an admin (or a photograph) can have none: a storm ends and no new one starts.
+        if (!level.getGameRules().getBoolean(GameRules.RULE_WEATHER_CYCLE)) {
+            if (state.halt()) {
+                PacketDistributor.sendToPlayersInDimension(level, new PlanetWeatherSyncPayload(false));
+            }
+            return;
+        }
         if (state.tick(weather, level.getRandom())) {
             PacketDistributor.sendToPlayersInDimension(level, new PlanetWeatherSyncPayload(state.active()));
         }

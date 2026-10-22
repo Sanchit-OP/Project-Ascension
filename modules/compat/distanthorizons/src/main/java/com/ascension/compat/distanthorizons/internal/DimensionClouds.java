@@ -15,19 +15,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Turns Distant Horizons' LOD clouds off in any dimension that has no clouds of its own.
+ * Turns Distant Horizons' LOD clouds off, in every dimension.
  *
- * <p><strong>Why this is needed.</strong> Vanilla's rule for clouds is the dimension's special
- * effects: a NaN cloud height means none, which is how the Nether, the End, the Moon and space all
- * say it. Distant Horizons switches vanilla's clouds off and draws its own, and as of 2.4.5 it
- * decides where by a rule of its own ({@code AbstractDhLevel}): every dimension except one with a
- * ceiling or one named {@code the_end}. So it drew clouds over the Moon and in space.
+ * <p><strong>Why this is needed.</strong> Distant Horizons draws its own clouds and ignores both the
+ * vanilla cloud setting and a dimension's special effects (a NaN cloud height means none, which is how
+ * the Nether, the End, the Moon and space all say it). As of 2.4.5 it decides where by a rule of its
+ * own ({@code AbstractDhLevel}): every dimension except one with a ceiling or one named {@code the_end}.
+ * So it drew clouds over the Moon and in space. Since 2026-10-22 the pack has no clouds at all
+ * (Sanchit; {@code ascension-worlds}' {@code NoClouds} holds the vanilla setting off), so this is
+ * now unconditional rather than per dimension.
  *
  * <p><strong>How.</strong> Through DH's public api, never its internals: the cloud switch is an
  * {@code IDhApiConfigValue}, which another mod may override in memory without touching the
- * player's config file, and which DH re-reads every frame. Entering a cloudless dimension sets the
- * override to off; entering one with clouds clears the override, so the player's own setting
- * applies again. Only an override this class set is ever cleared.
+ * player's config file, and which DH re-reads every frame. The override is set once DH's api is
+ * ready and cleared on logout. Only an override this class set is ever cleared.
  *
  * <p>Checked once per client tick against the last dimension handled, which costs a key
  * comparison. A tick rather than a level event because DH's api is filled in late
@@ -62,16 +63,12 @@ public final class DimensionClouds {
         if (clouds == null) {
             return;
         }
-        if (Float.isNaN(level.effects().getCloudHeight())) {
+        if (!overriding) {
+            overriding = clouds.setValue(false);
             if (!overriding) {
-                overriding = clouds.setValue(false);
-                if (!overriding) {
-                    LOGGER.warn("Distant Horizons refused the cloud override; its clouds will show in {}",
-                            level.dimension().location());
-                }
+                LOGGER.warn("Distant Horizons refused the cloud override; its clouds will show in {}",
+                        level.dimension().location());
             }
-        } else {
-            release(clouds);
         }
         appliedFor = level.dimension();
     }

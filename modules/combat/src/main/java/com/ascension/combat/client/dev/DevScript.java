@@ -27,6 +27,7 @@ final class DevScript {
     }
 
     private final String tag;
+    private final String world;
     private final List<Step> steps = new ArrayList<>();
     private int next;
     private int wait;
@@ -34,7 +35,13 @@ final class DevScript {
     private boolean opening;
 
     DevScript(String tag) {
+        this(tag, WORLD);
+    }
+
+    /** A script that opens the save named {@code world} instead of the shared test world. */
+    DevScript(String tag, String world) {
         this.tag = tag;
+        this.world = world;
     }
 
     /** Whether the trigger file {@code name} is in the game directory; it is deleted, so it arms one run. */
@@ -86,8 +93,8 @@ final class DevScript {
             }
             if (!this.opening && mc.getOverlay() == null && mc.screen != null && this.menuTicks > 100) {
                 this.opening = true;
-                log("opening world " + WORLD);
-                mc.createWorldOpenFlows().openWorld(WORLD, () -> mc.setScreen(new TitleScreen()));
+                log("opening world " + this.world);
+                mc.createWorldOpenFlows().openWorld(this.world, () -> mc.setScreen(new TitleScreen()));
             }
             return;
         }

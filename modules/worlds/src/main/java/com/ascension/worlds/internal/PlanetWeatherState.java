@@ -45,6 +45,13 @@ final class PlanetWeatherState {
         return ticksUntilChange;
     }
 
+    /** Ends a storm that is on and reports whether there was one: the {@code doWeatherCycle} game rule is off. */
+    boolean halt() {
+        boolean was = active;
+        active = false;
+        return was;
+    }
+
     /** Forces the next {@link #tick} to flip {@link #active} immediately. Debug command only. */
     void forceChange() {
         ticksUntilChange = 0;

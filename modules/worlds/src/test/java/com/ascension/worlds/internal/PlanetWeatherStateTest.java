@@ -70,6 +70,19 @@ class PlanetWeatherStateTest {
     }
 
     @Test
+    void haltEndsAStormAndReportsIt() {
+        PlanetWeatherState state = new PlanetWeatherState();
+        RandomSource random = RandomSource.create(1);
+        while (!state.tick(CONFIG, random)) {
+            // run the calm period out
+        }
+        assertTrue(state.active());
+        assertTrue(state.halt(), "there was a storm to end");
+        assertFalse(state.active());
+        assertFalse(state.halt(), "a second halt finds nothing to end");
+    }
+
+    @Test
     void codecRoundTripsThroughJson() {
         PlanetWeatherState state = new PlanetWeatherState();
         state.tick(CONFIG, RandomSource.create(1));

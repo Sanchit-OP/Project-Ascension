@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0-alpha.2 (not yet published)
+## 0.1.0-alpha.2
 
 The player was far too weak against the bosses, so this alpha is mostly about power, and about the gear and screens that make a character.
 Minecraft 1.21.1, NeoForge 21.1.249. **A world made on alpha.1 still loads** (a saved rune page that held Silent Step or Cat's Eye is moved to the
@@ -30,12 +30,18 @@ keystone that replaced it), but the numbers below apply to it at once.
 - **Curios slots:** one for an oxygen tank (a worn tank is an open source, no valve) and one for Zonia's Hourglass or Sterak's Harness, which no
   longer need the off hand. Cataclysm's six accessory slots were removed.
 - **Also in the pack:** FallingTree (a tree comes down in one go), Gliders, Double Doors (with Collective) and GraveStone Mod.
+- **No clouds, anywhere.** The Moon, space and the End were getting Distant Horizons' clouds; the pack now turns clouds off in every world,
+  the game's own and Distant Horizons'.
+- **The Moon's dust storms obey the `doWeatherCycle` game rule:** `/gamerule doWeatherCycle false` ends a storm and stops new ones.
 - **ImmediatelyFast was removed:** it is the likeliest cause of the level ring and hunger badge vanishing from the HUD. If they still vanish, tell us.
 
 **The quest book** has a new page, **Runes and Skill Points**, a guide to the two screens (K and R): where the 41 points come from and what everything does.
-Fourteen pages in all.
+Fourteen pages in all. The Create fan quest now also hands you a block of soul sand, so you can light soul fire and try haunting.
 
-## 0.1.0-alpha.1 (not yet published)
+**Updating:** a world made on alpha.1 needs no wipe. Back it up, then update the pack (or, on a server, delete the old `mods` folder contents and
+upload the new ones; `SERVER-README.md` in the server zip has the steps).
+
+## 0.1.0-alpha.1
 
 The first alpha. Minecraft 1.21.1, NeoForge 21.1.249.
 

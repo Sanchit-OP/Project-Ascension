@@ -11,3 +11,7 @@
 	# default, FEATURES, corrupted already-generated chunks against our own worldgen
 	# (docs/technical/optimisation-stack.md).
 	distantGeneratorMode = "PRE_EXISTING_ONLY"
+
+[client.advanced.graphics.genericRendering]
+	# No clouds anywhere in the pack (Sanchit, 2026-10-22). DH draws its own and ignores the vanilla setting.
+	enableCloudRendering = false

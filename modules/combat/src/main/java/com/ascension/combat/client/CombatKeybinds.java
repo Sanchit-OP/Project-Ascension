@@ -77,6 +77,7 @@ public final class CombatKeybinds {
     public static void register(IEventBus modBus) {
         modBus.addListener(CombatKeybinds::onRegisterKeyMappings);
         com.ascension.combat.client.dev.RuneScreenshots.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.client.dev.GalleryShots.register(NeoForge.EVENT_BUS);
         com.ascension.combat.client.dev.RuneEffectChecks.register(NeoForge.EVENT_BUS);
         com.ascension.combat.client.dev.IntegrationChecks.register(NeoForge.EVENT_BUS);
         com.ascension.combat.client.dev.KeybindAudit.register(NeoForge.EVENT_BUS);

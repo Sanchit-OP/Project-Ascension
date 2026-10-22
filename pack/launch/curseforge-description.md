@@ -3,7 +3,7 @@
 Paste the summary into the project's summary box (it takes about 200 characters) and everything under "Description" into the
 description. The page's editor is rich text, so paste `curseforge-description.html` rather than this file: open it in a browser,
 select all, copy, paste into the editor. Upload the logo (a picture under 100 KB, kept outside this repository) as the project's logo. Keep this file as the source: change it here,
-then regenerate the HTML (`python tools/pack-description-to-html.py`) and paste again. **Nothing here has been published.**
+then regenerate the HTML (`python tools/pack-description-to-html.py`) and paste again.
 
 ## Summary
 
@@ -59,14 +59,25 @@ Air is a resource you make, carry and spend.
 
 - **Twenty-six legendary items**, each with a build path across worlds: components from many places, and for the strongest, a boss's
   heart. They have tooltips, abilities, sound and a light beam when dropped. **Z** uses the one you wear.
-- **Runes.** Forty-five runes arranged on pages in an orrery screen (**R**), opening as your team clears bosses and lights gates.
+- **Runes.** Forty-five runes arranged on pages in an orrery screen (**R**), opening as your team clears bosses and lights gates. Ambush
+  hits harder the more Lethality you have, Predator turns Lethality into damage, Arc throws lightning at four enemies at once, and Overheal
+  turns healing past full into a shield.
 - **Growth.** A web of fifty-six nodes fed by skill points (**K**). Points come only from bosses, lit gates and the notable places you
-  find first, so every one is earned.
+  find first, so every one is earned, and each node is worth having: a small one is +1 Attack Damage, +3 Health, +5 Armor or +3 Lethality.
+- **Enchantments that count.** Sharpness and Power add real Attack Damage, three magic enchantments (Arcane Edge, Aether Tip and
+  Spellpiercing) feed the magic side, the legendary items can be enchanted, and an Enchantment Library block stores your books.
 - **Two kinds of damage.** Every hit is physical (cut by Armor) or magic (cut by Magic Resist), decided by the attack, not the mob. A
   Warden's fist is physical and its sonic boom is magic.
 - **Six bosses** with their own Armor, Magic Resist, health and damage on each world difficulty, and mobs that scale with it.
   Cataclysm's bosses (such as the Ender Golem and the Ender Guardian) are rebalanced to fit.
 - **Better Combat** with dual wielding for the items that suit it, and enchantments rebuilt to feed the same stat system.
+
+## Loot worth the trip
+
+Chests on the Moon, the Nether and the End pay out in proportion to the journey. The junk is gone (no more wheat in a boss arena), and each
+world adds its own treasure: raw titanium and helium, diamonds, experience, netherite, enchanted gear and books, our own enchantment books
+and, as rare finds, the components of the legendary items' build paths. The further out you go, the richer the chest. It covers every
+chest from every mod, and Lootr gives each player their own.
 
 ## Together
 
@@ -97,6 +108,7 @@ Atlas are in to make the controls bearable.
 - **Combat and bosses:** L_Ender's Cataclysm, Better Combat, Enderman Overhaul, Caelus API and Icarus for the Elytra.
 - **Quests and teams:** FTB Quests, FTB Teams, FTB Chunks, FTB Library.
 - **Storage and travel:** Sophisticated Storage, Backpacks and Core, Tom's Simple Storage, Lootr, Waystones, Curios API.
+- **Small comforts:** FallingTree (a tree comes down in one go), Gliders, Double Doors (with Collective) and GraveStone Mod.
 - **Information and interface:** JEI, Just Enough Resources, Jade, Immersive Damage Indicators, Controlling, Keybind Atlas,
   Mouse Tweaks, Ok Zoomer, Default Options, Iris.
 - **Performance:** Sodium, Lithium, FerriteCore, ModernFix, Alternate Current, BadOptimizations, Entity Culling,
@@ -112,7 +124,7 @@ Everything below is **planned, not promised**: the order and the details can cha
 
 - **Ships that hold air, proven.** The Air Dispenser works on the ground; aboard a moving ship it is built and unseen.
 - **Two players at once, properly tested.** Parties, sharing air and late joiners are built and unproven.
-- **Shaders that work in space.** The clouds that shaders draw where there should be none, and the toothed planet edges.
+- **Shaders that work in space.** The toothed planet edges, and what a shader pack does to a sky it was not made for.
 - **A starter ship** you can copy, so the first flight is less of a puzzle.
 - **The End's own sky,** and a proper look at its haze.
 - **Cataclysm's weapons** brought into the same balance as ours, and more boss tuning from your fights.
@@ -148,8 +160,9 @@ Planets are data, not code, so new ones are mostly authoring: terrain, a surviva
 ## Requirements
 
 Minecraft 1.21.1, NeoForge 21.1.249, Java 21 (the CurseForge app supplies it). Give the game **6 GB or more**, 8 GB if you can; we
-have not measured the least that works. **Start a new world:** a world keeps the dimensions it was made with, so an old world will not
-have the roofless Nether or the End as a planet.
+have not measured the least that works. **A world made on alpha.1 loads as it is** (back it up first, as for any update). A world made on a
+development build from before alpha.1 keeps the dimensions it was made with, so start a new one: it will not have the roofless Nether or the
+End as a planet.
 
 ## Known issues, in short
 

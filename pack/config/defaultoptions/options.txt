@@ -2,3 +2,4 @@ onboardAccessibility:false
 tutorialStep:none
 narrator:0
 skipMultiplayerWarning:true
+renderClouds:"false"

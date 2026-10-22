@@ -17,9 +17,10 @@ and what to do. Anything that says "not seen" has been built and checked by mach
 
 ## Things that are known to be wrong or missing
 
-- **Shaders.** Iris is installed but **no shader pack is**. With one on, a shader draws its own clouds in space, our planets are drawn
-  with toothed edges, and Create Aeronautics warns of its own problems with Iris. Shaders are not supported in space. Turn them off
-  there.
+- **Shaders.** Iris is installed but **no shader pack is**. With one on, our planets are drawn with toothed edges, and Create
+  Aeronautics warns of its own problems with Iris. Shaders are not supported in space. Turn them off there.
+- **No clouds, on purpose.** The pack turns clouds off everywhere (the game's setting, held off, and Distant Horizons' own clouds). If you
+  see one, tell us which mod drew it.
 - **Ships and air (Air Dispenser aboard a ship): not seen.** It works on the ground. Aboard a moving ship it rests on three
   assumptions about Create Aeronautics that nobody has tested.
 - **A ship built from survival parts has never flown the whole road.** Every crossing so far was built by command.
