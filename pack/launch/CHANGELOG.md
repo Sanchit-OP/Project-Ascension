@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.1.0-alpha.3 (in progress, not released)
+
+Written as the work lands; the version number and the date go on it when it is built.
+
+**Combat**
+- **Cataclysm's gear was rebalanced.** Ignitium, Cursium and the Monstrous Helm are smithed from a netherite piece, and several came out worse than the
+  piece they used up: each is now at least that netherite piece in Armor, Magic Resist and Health (a full Ignitium set is 84 / 60 / 40, Cursium 76 / 53 / 42,
+  netherite 69 / 49 / 40). Its boss weapons hit harder, about as hard as a rare trident, and still well under any legendary. Three more of their
+  abilities (Ceraunus' waves, Tidal Claws' tentacle, the Ancient Spear's sandstorm) now deal magic damage.
+- **Bows and crossbows add damage:** the bow +5 Attack Damage and the crossbow +4, so an arrow is the size of a sword hit. Hitting with a bow in your hand is slow
+  now, which closes a way round the swords.
+- **One key for each ability.** The single "activate armor ability" key fired every worn active at once. There are four, one for each place: **Z** the legs
+  (Rocketbelt), **X** the chest (Gargoyle Stoneplate), **mouse button 4** the off hand and relic slot (Zonia's Hourglass), **mouse button 5** the item in
+  your hand (Galeforce). Rebind them in Controls; an item's tooltip says which it uses. The old key is gone, and an old install picks up the four new ones
+  with these defaults.
+
+**Notes for the release**
+- The network protocol changed (the ability keys), so an alpha.2 client cannot join an alpha.3 server, and the reverse. Update both together.
+- The page description's **Keys** list still says `Z: use a worn item's ability`, which is true of alpha.2. Change it to the four keys when alpha.3 is published.
+
 ## 0.1.0-alpha.2
 
 The player was far too weak against the bosses, so this alpha is mostly about power, and about the gear and screens that make a character.
@@ -19,16 +39,6 @@ keystone that replaced it), but the numbers below apply to it at once.
   heals from damage before Armor; Arc stays charged until the fight ends and throws four strikes a hit; Starfall is far bigger; Vein Breaker takes whole
   veins; **Predator** (Lethality is damage) replaced Silent Step and **Overheal** (healing becomes a shield) replaced Cat's Eye. Growing runes cap at 20.
 - A fix: strikes that landed just after a sword hit (stars, lightning, shockwaves) were mostly swallowed by the game's invulnerability frames.
-- **Cataclysm's gear was rebalanced.** Ignitium, Cursium and the Monstrous Helm are smithed from a netherite piece, and several came out worse than the
-  piece they used up: each is now at least that netherite piece in Armor, Magic Resist and Health (a full Ignitium set is 84 / 60 / 40, Cursium 76 / 53 / 42,
-  netherite 69 / 49 / 40). Its boss weapons hit harder, about as hard as a rare trident, and still well under any legendary. Three more of their
-  abilities (Ceraunus' waves, Tidal Claws' tentacle, the Ancient Spear's sandstorm) now deal magic damage.
-- **Bows and crossbows add damage:** the bow +5 Attack Damage and the crossbow +4, so an arrow is the size of a sword hit. Hitting with a bow in your hand is slow
-  now, which closes a way round the swords.
-- **One key for each ability.** The single "activate armor ability" key fired every worn active at once. There are four, one for each place: **Z** the legs
-  (Rocketbelt), **X** the chest (Gargoyle Stoneplate), **mouse button 4** the off hand and relic slot (Zonia's Hourglass), **mouse button 5** the item in
-  your hand (Galeforce). Rebind them in Controls; an item's tooltip says which it uses. The old key is gone, and an old install picks up the four new ones
-  with these defaults.
 
 **Loot**
 - **Every chest on the Moon, the Nether and the End now pays out.** Wheat, seeds, bones and rotten flesh are taken out of them, and each gets a
