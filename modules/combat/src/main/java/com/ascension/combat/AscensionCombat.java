@@ -112,6 +112,7 @@ public final class AscensionCombat {
         PhysicalDamage.register(NeoForge.EVENT_BUS);
         com.ascension.combat.internal.dev.DamageChecks.register(NeoForge.EVENT_BUS);
         com.ascension.combat.internal.dev.LootChecks.register(NeoForge.EVENT_BUS);
+        com.ascension.combat.internal.dev.ItemAudit.register(NeoForge.EVENT_BUS);
         com.ascension.combat.internal.mechanics.MagicHitNotifier.register(NeoForge.EVENT_BUS);
         OmnivampHealing.register(NeoForge.EVENT_BUS);
         com.ascension.combat.internal.enchanting.SweepingEdgeEffects.register(NeoForge.EVENT_BUS);

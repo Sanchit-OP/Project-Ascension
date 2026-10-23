@@ -242,6 +242,11 @@ Two checks that need a game, both dormant until their trigger file exists in the
   (`LootTable.fill` with a stand-in player and a position), 400 chests a table, on Earth, the Moon, the Nether and the End, and
   prints what came out per 100 chests (`docs/progression/loot.md`): no junk on a planet, the bonus there, none of it on Earth or
   in a zombie's drops, and a real chest block opened on the Moon. Prints `[loot-checks]` lines. Seen 2026-10-22: 15 checks.
+- **`item-audit.txt`** (a dedicated server, about a minute, no window): asks every registered item for the attribute modifiers the game really
+  gives it (so our data, the armour conversions and other mods' own numbers are all in it) and writes `item-audit.csv` (weapons, bows, tools, armour
+  and off-hand pieces, with the stats a player ends up with and a flag where one looks wrong), `item-audit-recipes.csv` (recipes that make an item out of a
+  stronger one) and `item-audit-others.csv` (every other mod item) into the server folder. It measures and does not fail. Run 2026-10-23; what it found is
+  in `docs/progression/item-audit.md`.
 - **`end-checks.txt`** (a dedicated server, no window, leaves the server running): a stand-in player plays Planet 4 (ADR-0028): the Dragon's
   health, her death lighting the End's gate, the exit portal holding the player and opening the destination screen, gate travel to Earth and back,
   and falling out of the bottom into space. Prints `[end-checks]` lines. Seen 2026-10-20: 18 checks, 0 failures. Use a new `level-name` for
