@@ -1,5 +1,5 @@
 {
-  "_comment": "Cataclysm's armour at two thirds of what the mod gave it, with boss sets lifted in Health to sit near 55% of their slots (docs/progression/balance.md section 3). A stat named here replaces the conversion for that stat, so each entry writes the whole Armor, Magic Resist and Health. Its weapons are not touched yet: their attack speed has never been measured, and a weapon's damage can only be replaced together with its speed. tools/check-balance.py reads this file.",
+  "_comment": "Cataclysm's gear (docs/progression/balance.md section 3 and docs/progression/item-audit.md). Armour that is smithed from a netherite piece (Ignitium, Cursium, the Monstrous Helm) is at least that piece in Armor, Magic Resist and Health, Ignitium the best, and under 70% of the legendary slot budget; a stat named here replaces the conversion for that stat, so each entry writes the whole Armor, Magic Resist and Health. The boss weapons carry the mod's own attack speed with a damage that makes a plain-hit kill of the standard boss take about 130 seconds (115 for a fusion of two bosses' weapons), where a netherite sword takes 221 and the slowest legendary 54 with its ability. The Cursed Bow is left as the mod made it: it fires three arrows and each carries the shooter's Attack Damage. Crafted gear (Black Steel, Khopesh, Athame, Coral) is untouched. tools/check-balance.py reads this file.",
   "values": {
     "cataclysm:ignitium_helmet": {
       "neoforge:conditions": [
@@ -11,7 +11,7 @@
       "stats": {
         "armor": 14,
         "magic_resist": 10,
-        "health": 8
+        "health": 10
       }
     },
     "cataclysm:ignitium_chestplate": {
@@ -22,8 +22,8 @@
         }
       ],
       "stats": {
-        "armor": 25,
-        "magic_resist": 18,
+        "armor": 33,
+        "magic_resist": 24,
         "health": 10
       }
     },
@@ -35,9 +35,9 @@
         }
       ],
       "stats": {
-        "armor": 21,
-        "magic_resist": 15,
-        "health": 8
+        "armor": 25,
+        "magic_resist": 18,
+        "health": 10
       }
     },
     "cataclysm:ignitium_boots": {
@@ -48,9 +48,9 @@
         }
       ],
       "stats": {
-        "armor": 14,
-        "magic_resist": 10,
-        "health": 7
+        "armor": 12,
+        "magic_resist": 8,
+        "health": 10
       }
     },
     "cataclysm:ignitium_elytra_chestplate": {
@@ -61,8 +61,8 @@
         }
       ],
       "stats": {
-        "armor": 25,
-        "magic_resist": 18,
+        "armor": 33,
+        "magic_resist": 24,
         "health": 10
       }
     },
@@ -74,7 +74,7 @@
         }
       ],
       "stats": {
-        "armor": 11,
+        "armor": 12,
         "magic_resist": 8,
         "health": 11
       }
@@ -87,8 +87,8 @@
         }
       ],
       "stats": {
-        "armor": 23,
-        "magic_resist": 17,
+        "armor": 30,
+        "magic_resist": 21,
         "health": 11
       }
     },
@@ -100,8 +100,8 @@
         }
       ],
       "stats": {
-        "armor": 19,
-        "magic_resist": 13,
+        "armor": 23,
+        "magic_resist": 16,
         "health": 10
       }
     },
@@ -115,7 +115,7 @@
       "stats": {
         "armor": 11,
         "magic_resist": 8,
-        "health": 7
+        "health": 10
       }
     },
     "cataclysm:bone_reptile_helmet": {
@@ -165,9 +165,189 @@
         }
       ],
       "stats": {
-        "armor": 7,
-        "magic_resist": 5,
-        "health": 5
+        "armor": 12,
+        "magic_resist": 8,
+        "health": 10
+      }
+    },
+    "cataclysm:infernal_forge": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 22.0,
+        "speed": 1.0
+      }
+    },
+    "cataclysm:astrape": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 15.5,
+        "speed": 1.4
+      }
+    },
+    "cataclysm:ceraunus": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 31.0,
+        "speed": 0.7
+      }
+    },
+    "cataclysm:soul_render": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 20.5,
+        "speed": 1.05
+      }
+    },
+    "cataclysm:the_incinerator": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 15.5,
+        "speed": 1.4
+      }
+    },
+    "cataclysm:the_annihilator": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 13.5,
+        "speed": 1.6
+      }
+    },
+    "cataclysm:meat_shredder": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 15.5,
+        "speed": 1.4
+      }
+    },
+    "cataclysm:ancient_spear": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 15.5,
+        "speed": 1.4
+      }
+    },
+    "cataclysm:tidal_claws": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 13.5,
+        "speed": 1.6
+      }
+    },
+    "cataclysm:gauntlet_of_guard": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 13.5,
+        "speed": 1.6
+      }
+    },
+    "cataclysm:brontes": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 24.5,
+        "speed": 1.0
+      }
+    },
+    "cataclysm:void_forge": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 24.5,
+        "speed": 1.0
+      }
+    },
+    "cataclysm:the_immolator": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 15.5,
+        "speed": 1.6
+      }
+    },
+    "cataclysm:gauntlet_of_bulwark": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 15.5,
+        "speed": 1.6
+      }
+    },
+    "cataclysm:gauntlet_of_maelstrom": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "cataclysm"
+        }
+      ],
+      "weapon": {
+        "damage": 15.5,
+        "speed": 1.6
       }
     }
   }

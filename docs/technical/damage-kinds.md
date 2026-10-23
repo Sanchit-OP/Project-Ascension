@@ -69,6 +69,16 @@ are in the entity tag.
 | **Ignis** | its sword swings | fireballs and the abyss fireball (entity tag); the flame strike (`cataclysm:flame_strike`) |
 | **Netherite Monstrosity** | its slams and punches | the flame jet and flare bomb (entity tag) |
 
+**The weapons' abilities (2026-10-23, `docs/progression/item-audit.md`).** Read from the classes of the abilities a player's Cataclysm weapon
+fires. Most were magic already: Soul Render's phantom halberds (`maledictio_magicae`), Astrape's lightning spear (`lightning`),
+Ceraunus' thrown anchor (`player_ceraunus`), Void Forge's runes (`indirect_magic`), the Incinerator's and the Immolator's flame strikes
+(`flame_strike`), the Ancient Spear's sandstorm. Three were a physical hit from the generic projectile type and are now in the entity tag:
+Ceraunus' waves (`cataclysm:wave`), Tidal Claws' tentacle (`cataclysm:tidal_tentacle`) and the Ancient Spear's shot
+(`cataclysm:sandstorm_projectile`). **The swing itself stays physical** (Armor), as a League auto-attack does; the Infernal Forge's slam,
+the Meat Shredder, the Annihilator and the Immolator's blows, the Cursed Bow's arrows and the thrown coral weapons are physical on purpose. A
+weapon whose every swing is magic would be one tag and about half as much again against a boss (a boss has less Magic Resist than Armor),
+and its time to kill would be set again.
+
 The other Cataclysm entries are a **first pass**, kept for the planets that will use those bosses: lasers,
 EMP, lightning, storm, abyssal burn and the soul and magic curses (`maledictio_magicae`, `maledictio_anima`)
 are magic by type; the Harbinger's and Prowler's missiles and howitzers and the Leviathan's abyss orb are in the

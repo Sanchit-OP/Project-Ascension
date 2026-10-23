@@ -1,9 +1,13 @@
 package com.ascension.combat.client;
 
-import com.ascension.combat.internal.net.ActivateArmorAbilityPayload;
+import com.ascension.combat.internal.net.AbilitySlot;
+import com.ascension.combat.internal.net.ActivateAbilityPayload;
 import com.mojang.blaze3d.platform.InputConstants;
+import java.util.EnumMap;
+import java.util.Map;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -11,16 +15,16 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
- * The shared "activate armor ability" key (docs/technical/combat-api.md section 6). One key for
- * every worn item with an active, mirroring how a single item slot in League always means
- * "activate whatever is here" rather than each item needing its own bind. Gargoyle Stoneplate is
- * the first consumer; Rocketbelt and Zonia's Hourglass followed, and Galeforce (2026-09-20) is the
- * first <em>held</em> weapon to use it, after sneak+right-click proved unreliable whenever aimed at
- * an entity &mdash; confirming this key was never really armor-specific, just "whatever's equipped
- * with an active you'd rather press a dedicated button for."
+ * The ability keys (docs/technical/combat-api.md section 6): one key for each place an item with an active can sit
+ * ({@link AbilitySlot}: the held item, the chest, the legs, the off hand and relic slot), the way each item slot in League
+ * has its own key. They were one key that fired every worn active at once (Gargoyle Stoneplate, Rocketbelt, Zonia's Hourglass
+ * and Galeforce together), so a player with a shield, a dash and a stasis could not use one without the others; Sanchit,
+ * 2026-10-23: that "does not sound right". Galeforce (2026-09-20) was the first <em>held</em> weapon to need a key, after
+ * sneak+right-click proved unreliable whenever aimed at an entity.
  *
- * <p>The ability key is unbound by default ({@link InputConstants#UNKNOWN}) &mdash; Sanchit binds it
- * himself in Controls rather than this claiming a key that might already mean something else to him.
+ * <p>The keys are unbound in code ({@link InputConstants#UNKNOWN}) &mdash; a player binds them in Controls rather than this
+ * claiming a key that might already mean something else to them; the pack ships defaults for a fresh install
+ * ({@code pack/config/defaultoptions/keybindings.txt}).
  * The three screens have keys: R for runes, K for growth (see {@code GrowthKeybind}), V for the
  * character sheet. While one is open the others' keys switch to them ({@code ScreenSwitch}).
  *
@@ -46,10 +50,14 @@ public final class CombatKeybinds {
 
     private static final String CATEGORY = "key.categories.ascension_combat";
 
-    private static final KeyMapping ACTIVATE_ARMOR_ABILITY = new KeyMapping(
-            "key.ascension_combat.activate_armor_ability",
-            InputConstants.UNKNOWN.getValue(),
-            CATEGORY);
+    /** One key for each {@link AbilitySlot}, named {@code key.ascension_combat.ability_<slot>}. */
+    private static final Map<AbilitySlot, KeyMapping> ABILITY_KEYS = new EnumMap<>(AbilitySlot.class);
+
+    static {
+        for (AbilitySlot slot : AbilitySlot.values()) {
+            ABILITY_KEYS.put(slot, new KeyMapping("key.ascension_combat.ability_" + slot.id(), InputConstants.UNKNOWN.getValue(), CATEGORY));
+        }
+    }
 
     private static final KeyMapping OPEN_RUNE_PAGE = new KeyMapping(
             "key.ascension_combat.open_rune_page",
@@ -62,6 +70,18 @@ public final class CombatKeybinds {
             CATEGORY);
 
     private CombatKeybinds() {
+    }
+
+    /**
+     * How an ability key reads in an item's tooltip: the key in brackets, or "(unbound)" while the player has not given it one,
+     * so the line is true whatever they chose.
+     */
+    public static String abilityKeyLabel(AbilitySlot slot) {
+        KeyMapping key = ABILITY_KEYS.get(slot);
+        if (key == null || key.isUnbound()) {
+            return I18n.get("tooltip.ascension_combat.key_unbound");
+        }
+        return "[" + key.getTranslatedKeyMessage().getString() + "]";
     }
 
     /** Whether a key press is the Open Rune Page key, so the rune screen can close on the key that opened it. */
@@ -86,15 +106,17 @@ public final class CombatKeybinds {
     }
 
     private static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(ACTIVATE_ARMOR_ABILITY);
+        ABILITY_KEYS.values().forEach(event::register);
         event.register(OPEN_RUNE_PAGE);
         event.register(OPEN_CHARACTER_SHEET);
     }
 
     private static void onClientTick(ClientTickEvent.Post event) {
-        while (ACTIVATE_ARMOR_ABILITY.consumeClick()) {
-            PacketDistributor.sendToServer(ActivateArmorAbilityPayload.INSTANCE);
-        }
+        ABILITY_KEYS.forEach((slot, key) -> {
+            while (key.consumeClick()) {
+                PacketDistributor.sendToServer(new ActivateAbilityPayload(slot));
+            }
+        });
         while (OPEN_RUNE_PAGE.consumeClick()) {
             Minecraft.getInstance().setScreen(new RuneScreen());
         }

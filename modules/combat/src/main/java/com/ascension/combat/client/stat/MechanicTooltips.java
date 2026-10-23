@@ -1,8 +1,11 @@
 package com.ascension.combat.client.stat;
 
 import com.ascension.combat.AscensionCombat;
+import com.ascension.combat.client.CombatKeybinds;
+import com.ascension.combat.internal.net.AbilitySlot;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,6 +38,16 @@ public final class MechanicTooltips {
     private static final TagKey<Item> LEGENDARY =
             TagKey.create(net.minecraft.core.registries.Registries.ITEM,
                     ResourceLocation.fromNamespaceAndPath(AscensionCombat.MOD_ID, "legendary"));
+
+    /**
+     * The ability key each item with an active is used from. A paragraph that writes {@code {key}} gets the player's own binding
+     * for it ("[Z]", or "(unbound)"), so the tooltip says which of the keys, whatever they have set.
+     */
+    private static final Map<String, AbilitySlot> ABILITY_SLOTS = Map.of(
+            "galeforce", AbilitySlot.HELD,
+            "gargoyle_stoneplate", AbilitySlot.CHEST,
+            "rocketbelt", AbilitySlot.LEGS,
+            "zonias_hourglass", AbilitySlot.OFF_HAND);
 
     private MechanicTooltips() {
     }
@@ -83,6 +96,10 @@ public final class MechanicTooltips {
                 return lines;
             }
             String text = I18n.get(key);
+            AbilitySlot slot = ABILITY_SLOTS.get(item);
+            if (slot != null) {
+                text = text.replace("{key}", CombatKeybinds.abilityKeyLabel(slot));
+            }
             int split = text.indexOf(": ");
             if (split < 0) {
                 lines.add(Component.literal(text).withStyle(ChatFormatting.GRAY));

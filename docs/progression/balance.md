@@ -171,11 +171,23 @@ purpose (Sanchit: too strong); Wizard's Agony and Tasted Blood are exactly their
 
 ### Other mods' gear
 
-Cataclysm's armour is two thirds of what the mod gave it, with boss sets lifted in Health to sit near 55% of
-their slots (its own `item_stats.json`, each entry with a `cataclysm` mod check; the check holds a ceiling of
-70%). **Its weapons are not touched yet:** a weapon's damage can only be replaced together with its attack
-speed, and Cataclysm's speeds have never been measured. Measuring them is the next step; then the boss
-weapons go to the same two thirds.
+Cataclysm's armour is under 70% of its slot's legendary budget (its own `item_stats.json`, each entry with a `cataclysm` mod check; the
+check holds the ceiling). **Revised 2026-10-23 (the item audit, `item-audit.md`):** Ignitium, Cursium and the Monstrous Helm are
+smithing upgrades that eat a netherite piece, and the two-thirds cut of 2026-10-19 had put most of them under it. Each is now at least
+the netherite piece in Armor, Magic Resist and Health (the check enforces it): a full Ignitium set is 84 / 60 / 40, Cursium 76 / 53 / 42
+and netherite 69 / 49 / 40.
+
+**Its boss weapons were raised the same day**, now that their attack speeds are measured and kept as the mod gave them. A base boss
+drop takes about 130 seconds of plain hits to kill the standard boss (Infernal Forge, Astrape, Ceraunus, Soul Render, the Incinerator, the
+Annihilator, the Meat Shredder, the Ancient Spear, Tidal Claws, the Gauntlet of Guard), a fusion of two bosses' weapons about 115 (Brontes, Void
+Forge, the Immolator, the Gauntlets of Bulwark and Maelstrom). A netherite sword takes 221 and a trident 126; the slowest legendary
+kills in 54 seconds with its ability, and the floor is more than twice that, because these weapons' abilities are Cataclysm's own numbers and
+are not modelled. The Cursed Bow is left alone: it fires three arrows and each carries the shooter's Attack Damage, so a bonus would be
+tripled. Crafted gear (Black Steel, Khopesh, Athame, Coral) is untouched. `check-balance.py` holds all of it.
+
+**The vanilla bow and crossbow** carry Attack Damage (+5 and +4, arrows of 12 and 10 plus the draw), and every bow, the legendary three
+included, is swung at 1 a second when hit with: a bow in hand used to swing at a bare hand's 4 a second with its whole Attack Damage in the
+blow, which for a legendary bow was a way round every sword.
 
 ### 3b. The weapons raised (2026-10-22)
 

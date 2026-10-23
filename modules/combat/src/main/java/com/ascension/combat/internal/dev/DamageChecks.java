@@ -42,6 +42,7 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.projectile.WitherSkull;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -118,6 +119,10 @@ public final class DamageChecks {
             guarded(DamageChecks::checkGrowthNodes);
         } else if (settle == 370) {
             guarded(() -> checkRunes(server.overworld()));
+        } else if (settle == 380) {
+            guarded(() -> checkItemAudit(server.overworld()));
+        } else if (settle == 390) {
+            guarded(DamageChecks::checkAbilityKeys);
             finished = true;
             log("RESULT: " + checks + " checks, " + failures + " failures");
             server.halt(false);
@@ -261,8 +266,9 @@ public final class DamageChecks {
         connection = new FakeConnection();
         standIn = new ServerPlayer(server, level, profile, ClientInformation.createDefault());
         server.getPlayerList().placeNewPlayer(connection, standIn, CommonListenerCookie.createInitial(profile, false));
-        // The test worlds default to creative, where nobody can be hurt.
+        // The test worlds default to creative, where nobody can be hurt. A stand-in saved in stasis (invulnerable) by an earlier run starts clean.
         standIn.setGameMode(GameType.SURVIVAL);
+        standIn.setInvulnerable(false);
     }
 
     /** Part two: the screen tint reaches a real player on a real (stand-in) connection, for magic hits only. */
@@ -918,6 +924,161 @@ public final class DamageChecks {
         expect("Endless Hunger on its own swings at 2 to 2.6 a second (got " + String.format("%.2f", speed)
                 + " at " + String.format("%.1f", damage) + " Attack Damage)", speed >= 2.0 && speed <= 2.6, true);
         expect("and hits for an Attack Damage of 24 (got " + String.format("%.1f", damage) + ")", Math.abs(damage - 24.0) < 0.5, true);
+    }
+
+    /**
+     * The item audit's fixes of 2026-10-23 (docs/progression/item-audit.md): a bow and a crossbow carry Attack Damage and, like the legendary
+     * bows, are swung at one a second so that hitting with one is no way round its arrows; Cataclysm's armour smithed from a netherite piece is at
+     * least that piece in Armor, Magic Resist and Health; its boss weapons carry the raised damage at the speed the mod gave each; and the three
+     * abilities that dealt physical damage are magic by their entity.
+     */
+    private static void checkItemAudit(ServerLevel level) {
+        log("--- the item audit's fixes");
+        standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        // The stand-in took growth nodes earlier in the run, one of them a share of Attack Speed, so a speed is read against a bare hand's 4.
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        tickStandIn();
+        float speedFactor = (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED) / 4.0f;
+
+        record Bow(String name, net.minecraft.world.item.Item item, float attackDamage) {
+        }
+        for (Bow bow : List.of(
+                new Bow("the bow", net.minecraft.world.item.Items.BOW, 6.0f),
+                new Bow("the crossbow", net.minecraft.world.item.Items.CROSSBOW, 5.0f),
+                new Bow("Mortal Reminder", CombatContent.MORTAL_REMINDER.get(), 24.5f),
+                new Bow("Heartwood of Pallas", CombatContent.HEARTWOOD_OF_PALLAS.get(), 22.5f),
+                new Bow("Galeforce", CombatContent.GALEFORCE.get(), 23.0f))) {
+            standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(bow.item()));
+            tickStandIn();
+            expectNear(bow.name() + " carries " + bow.attackDamage() + " Attack Damage (a bare hand's 1 and its stat)",
+                    (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), bow.attackDamage());
+            expectNear(bow.name() + " is swung at 1 a second, so a blow with it is slow", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED),
+                    speedFactor);
+        }
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+
+        if (!ModList.get().isLoaded("cataclysm")) {
+            log("SKIP Cataclysm is not loaded");
+            return;
+        }
+
+        // Armour: each upgrade is at least the netherite piece it is made from, in all three stats.
+        record Piece(net.minecraft.world.entity.EquipmentSlot slot, String netherite, List<String> upgrades) {
+        }
+        for (Piece piece : List.of(
+                new Piece(net.minecraft.world.entity.EquipmentSlot.HEAD, "minecraft:netherite_helmet",
+                        List.of("cataclysm:ignitium_helmet", "cataclysm:cursium_helmet", "cataclysm:monstrous_helm")),
+                new Piece(net.minecraft.world.entity.EquipmentSlot.CHEST, "minecraft:netherite_chestplate",
+                        List.of("cataclysm:ignitium_chestplate", "cataclysm:ignitium_elytra_chestplate", "cataclysm:cursium_chestplate")),
+                new Piece(net.minecraft.world.entity.EquipmentSlot.LEGS, "minecraft:netherite_leggings",
+                        List.of("cataclysm:ignitium_leggings", "cataclysm:cursium_leggings")),
+                new Piece(net.minecraft.world.entity.EquipmentSlot.FEET, "minecraft:netherite_boots",
+                        List.of("cataclysm:ignitium_boots", "cataclysm:cursium_boots")))) {
+            float[] base = worn(piece.slot(), piece.netherite());
+            for (String upgrade : piece.upgrades()) {
+                float[] stats = worn(piece.slot(), upgrade);
+                expect(upgrade + " (" + stats[0] + " / " + stats[1] + " / " + stats[2] + ") is at least " + piece.netherite() + " ("
+                                + base[0] + " / " + base[1] + " / " + base[2] + ") in Armor, Magic Resist and Health",
+                        stats[0] >= base[0] && stats[1] >= base[1] && stats[2] >= base[2], true);
+            }
+            standIn.setItemSlot(piece.slot(), ItemStack.EMPTY);
+        }
+        tickStandIn();
+
+        // Weapons: the raised damage at the speed the mod gave each.
+        record Weapon(String id, float damage, float speed) {
+        }
+        for (Weapon weapon : List.of(
+                new Weapon("infernal_forge", 22.0f, 1.0f), new Weapon("astrape", 15.5f, 1.4f), new Weapon("ceraunus", 31.0f, 0.7f),
+                new Weapon("soul_render", 20.5f, 1.05f), new Weapon("the_incinerator", 15.5f, 1.4f), new Weapon("the_annihilator", 13.5f, 1.6f),
+                new Weapon("meat_shredder", 15.5f, 1.4f), new Weapon("ancient_spear", 15.5f, 1.4f), new Weapon("tidal_claws", 13.5f, 1.6f),
+                new Weapon("gauntlet_of_guard", 13.5f, 1.6f), new Weapon("brontes", 24.5f, 1.0f), new Weapon("void_forge", 24.5f, 1.0f),
+                new Weapon("the_immolator", 15.5f, 1.6f), new Weapon("gauntlet_of_bulwark", 15.5f, 1.6f),
+                new Weapon("gauntlet_of_maelstrom", 15.5f, 1.6f))) {
+            net.minecraft.world.item.Item item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("cataclysm", weapon.id()));
+            standIn.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(item));
+            tickStandIn();
+            float seconds = 1000.0f / (weapon.damage() * weapon.speed() * (float) Math.pow(0.5, 1.5));
+            expectNear(weapon.id() + " hits for " + weapon.damage() + " (" + Math.round(seconds) + " s of plain hits to kill the standard boss)",
+                    (float) standIn.getAttributeValue(Attributes.ATTACK_DAMAGE), weapon.damage());
+            expectNear(weapon.id() + " keeps the attack speed the mod gave it", (float) standIn.getAttributeValue(Attributes.ATTACK_SPEED),
+                    weapon.speed() * speedFactor);
+            expect(weapon.id() + " takes more than twice as long as the slowest legendary (" + Math.round(seconds) + " s against 54)",
+                    seconds > 2.0f * 54.0f, true);
+        }
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+
+        // The abilities of Ceraunus, Tidal Claws and the Ancient Spear were physical hits from a generic projectile type.
+        for (String id : List.of("wave", "tidal_tentacle", "sandstorm_projectile")) {
+            ResourceLocation entityId = ResourceLocation.fromNamespaceAndPath("cataclysm", id);
+            if (!BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)) {
+                fail("cataclysm:" + id + " is not an entity");
+                continue;
+            }
+            expect("cataclysm:" + id + " is in the magic-attack list", BuiltInRegistries.ENTITY_TYPE.get(entityId).is(DamageKinds.MAGIC_ATTACK), true);
+        }
+    }
+
+    /**
+     * The ability keys (Sanchit, 2026-10-23: one key that fired every worn active at once "does not sound right"). A stand-in wearing
+     * Gargoyle Stoneplate, Rocketbelt and Zonia's Hourglass presses each key in turn, through the server's own entry point for the
+     * packet, and only that place's item goes on cooldown. Galeforce's key with nothing to fire does nothing and throws nothing.
+     */
+    private static void checkAbilityKeys() {
+        log("--- the ability keys");
+        var chest = CombatContent.GARGOYLE_STONEPLATE.get();
+        var legs = CombatContent.ROCKETBELT.get();
+        var hourglass = CombatContent.ZONIAS_HOURGLASS.get();
+        standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(chest));
+        standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, new ItemStack(legs));
+        standIn.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(hourglass));
+        standIn.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        tickStandIn();
+        for (var item : List.of(chest, legs, hourglass)) {
+            standIn.getCooldowns().removeCooldown(item);
+        }
+
+        var cooldowns = standIn.getCooldowns();
+        com.ascension.combat.internal.net.AbilityActivation.activate(standIn, com.ascension.combat.internal.net.AbilitySlot.CHEST);
+        expect("the chest key fires Gargoyle Stoneplate", cooldowns.isOnCooldown(chest), true);
+        expect("the chest key leaves the Rocketbelt alone", cooldowns.isOnCooldown(legs), false);
+        expect("the chest key leaves Zonia's Hourglass alone", cooldowns.isOnCooldown(hourglass), false);
+
+        com.ascension.combat.internal.net.AbilityActivation.activate(standIn, com.ascension.combat.internal.net.AbilitySlot.LEGS);
+        expect("the legs key fires the Rocketbelt", cooldowns.isOnCooldown(legs), true);
+        expect("the legs key leaves Zonia's Hourglass alone", cooldowns.isOnCooldown(hourglass), false);
+
+        com.ascension.combat.internal.net.AbilityActivation.activate(standIn, com.ascension.combat.internal.net.AbilitySlot.OFF_HAND);
+        expect("the off-hand key fires Zonia's Hourglass", cooldowns.isOnCooldown(hourglass), true);
+
+        // A key pressed with nothing to fire, and a number no slot has, do nothing.
+        com.ascension.combat.internal.net.AbilityActivation.activate(standIn, com.ascension.combat.internal.net.AbilitySlot.HELD);
+        com.ascension.combat.internal.net.AbilityActivation.activate(standIn, null);
+        expect("a number no slot has is no slot", com.ascension.combat.internal.net.AbilitySlot.byOrdinal(9) == null, true);
+
+        for (var item : List.of(chest, legs, hourglass)) {
+            cooldowns.removeCooldown(item);
+        }
+        // Leave nothing behind: the stand-in is saved with the world, and stasis would save it invulnerable.
+        standIn.getData(com.ascension.combat.internal.CombatAttachments.ZONIAS_HOURGLASS_STASIS).clear();
+        com.ascension.combat.internal.mechanics.Stasis.exit(standIn);
+        standIn.setAbsorptionAmount(0.0f);
+        standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, ItemStack.EMPTY);
+        standIn.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, ItemStack.EMPTY);
+        standIn.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+    }
+
+    /** Puts one item on the stand-in in a slot and returns what it adds: Armor, Magic Resist, Max Health. */
+    private static float[] worn(net.minecraft.world.entity.EquipmentSlot slot, String id) {
+        standIn.setItemSlot(slot, ItemStack.EMPTY);
+        tickStandIn();
+        float armor = (float) standIn.getAttributeValue(CombatAttributes.ARMOR);
+        float resist = (float) standIn.getAttributeValue(CombatAttributes.MAGIC_RESIST);
+        float health = (float) standIn.getMaxHealth();
+        standIn.setItemSlot(slot, new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(id))));
+        tickStandIn();
+        return new float[] {(float) standIn.getAttributeValue(CombatAttributes.ARMOR) - armor,
+                (float) standIn.getAttributeValue(CombatAttributes.MAGIC_RESIST) - resist, (float) standIn.getMaxHealth() - health};
     }
 
     /**

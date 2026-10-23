@@ -45,8 +45,9 @@ their contexts overlap (a `GUI` key and an `IN_GAME` key do not).
 | Left Alt | Create's three keys, **on purpose** (modifier, tool belt, tool menu) |
 | W | Create's Ponder hover key, which only acts over an item in a screen |
 
-And two things missing: **our own ability key has no default** (it is the one key for every worn
-item with an active, and for Galeforce), and **FTB Quests' quest book has no default**.
+**Our ability keys** are four, one for each place an item with an active sits (2026-10-23; it was one key that fired every
+worn active at once): legs, chest, off hand and relic slot, and the held item. See the table below.
+**FTB Quests' quest book** had no default of its own until the table below gave it one.
 
 Everything else that "collides" in the dump is a screen-only key (JEI, the FTB Quests editor) that
 cannot fire in play.
@@ -63,7 +64,10 @@ the average player never touches are unbound, and a player can bind them back in
 | Rune page | **R** | unchanged |
 | Skill tree | **K** | unchanged |
 | Character sheet | **H** (was V) | V is Cataclysm's; H for "hero". The HUD overhaul may retire the sheet. |
-| Activate item ability | **Z** (was unbound) | the one key every worn or held active uses |
+| Legs ability (Rocketbelt) | **Z** (was unbound; it was the one ability key) | the dash is the reflex, and Z is under the left hand |
+| Chest ability (Gargoyle Stoneplate) | **X** | X was freed on purpose for this (creative hotbar load) |
+| Off-hand and relic ability (Zonia's Hourglass) | **mouse button 4** (side) | the panic button, on the thumb; the left hand has no key left |
+| Held item ability (Galeforce) | **mouse button 5** (side) | the other thumb button; rebind it if the mouse has none |
 | Quest book (FTB Quests) | **J** (was unbound) | the journal |
 | Keybind Atlas | **B** (its own default is K) | K is the skill tree |
 
@@ -104,8 +108,8 @@ already has an `options.txt` needs its saved keys moved too:
 holds the old default (a key the player changed is reported and kept). On 2026-10-18 it moved four keys
 in the Ascension Dev instance (creative hotbar save and load, social interactions, Cataclysm's helmet
 ability), left Sanchit's own choices alone (ability on C, runes on `[`, sheet on `,`), and kept a
-backup beside `options.txt`. His ability key on C will meet Ok Zoomer's zoom, also C by default; the
-shipped default is Z, so only his own binding clashes.
+backup beside `options.txt`. His old ability key on C will meet Ok Zoomer's zoom, also C by default; the
+old key is gone (2026-10-23) and the four new ones start from the pack's defaults, so only a binding he gives them himself can clash.
 
 Default Options keeps the pack's defaults in `config/defaultoptions/` (`keybindings.txt`,
 `options.txt`). It is written by running `/defaultoptions saveAll` in a game set up the way we want, or

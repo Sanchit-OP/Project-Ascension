@@ -32,7 +32,10 @@ KEYS_FILE = os.path.join(PACK_CONFIG, 'defaultoptions', 'keybindings.txt')
 # What each key held before the pack changed it. A saved key is rewritten only if it still holds this.
 OLD_DEFAULTS = {
     'key.ascension_combat.open_character_sheet': 'key.keyboard.v',
-    'key.ascension_combat.activate_armor_ability': 'key.keyboard.unknown',
+    'key.ascension_combat.ability_legs': 'key.keyboard.unknown',
+    'key.ascension_combat.ability_chest': 'key.keyboard.unknown',
+    'key.ascension_combat.ability_off_hand': 'key.keyboard.unknown',
+    'key.ascension_combat.ability_held': 'key.keyboard.unknown',
     'key.ftbquests.quests': 'key.keyboard.unknown',
     'key.keybindatlas.open_keyboard': 'key.keyboard.k',
     'key.cataclysm.helmet_ability': 'key.keyboard.c',

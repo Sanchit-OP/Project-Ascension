@@ -1,5 +1,5 @@
 {
-  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. Balance, 2026-10-19: defensive stats are two thirds of the first pass (Sanchit: too strong); each weapon's damage is tuned so every legendary kills the standard boss in 36 to 56 seconds alone (tools/time-to-kill.py; raised on 2026-10-22, Sanchit: the player was far too weak against the bosses, it was 52 to 110), its utility paid for in time (Darius's shred, Endless Hunger's sustain, Wraithblade's blink are a little slower on purpose). Rules: a melee weapon's damage is one figure in `weapon`; bows carry damage only; Armor and Magic Penetration only on Wizard's Agony; Omnivamp on five items only. tools/check-balance.py fails the build on a drift. Placeholders Sanchit tunes by playing.",
+  "_comment": "Stats per item or item tag. An item's own entry beats a tag's, one stat at a time. docs/technical/item-stats.md section 4. Netherite names its own Health so the set gives +40 (diamond's +20 comes from toughness alone): Sanchit, 2026-10-15. Balance, 2026-10-19: defensive stats are two thirds of the first pass (Sanchit: too strong); each weapon's damage is tuned so every legendary kills the standard boss in 36 to 56 seconds alone (tools/time-to-kill.py; raised on 2026-10-22, Sanchit: the player was far too weak against the bosses, it was 52 to 110), its utility paid for in time (Darius's shred, Endless Hunger's sustain, Wraithblade's blink are a little slower on purpose). Rules: a melee weapon's damage is one figure in `weapon`; bows carry damage only; Armor and Magic Penetration only on Wizard's Agony; Omnivamp on five items only. tools/check-balance.py fails the build on a drift. Placeholders Sanchit tunes by playing. Bows (2026-10-23, docs/progression/item-audit.md): the vanilla bow and crossbow carry Attack Damage so their arrows are the size of a netherite sword's hit, and every bow swings slowly when hit with (`weapon` speed 1.0), because a bow in hand used to be swung at four a second with its whole Attack Damage in the blow.",
   "values": {
     "minecraft:netherite_helmet": {
       "stats": {
@@ -31,6 +31,24 @@
       "weapon": {
         "damage": 15,
         "speed": 1.5
+      }
+    },
+    "minecraft:bow": {
+      "weapon": {
+        "damage": 1.0,
+        "speed": 1.0
+      },
+      "stats": {
+        "attack_damage": 5
+      }
+    },
+    "minecraft:crossbow": {
+      "weapon": {
+        "damage": 1.0,
+        "speed": 1.0
+      },
+      "stats": {
+        "attack_damage": 4
       }
     },
     "ascension_combat:veigos_blade": {
@@ -105,16 +123,28 @@
       }
     },
     "ascension_combat:mortal_reminder": {
+      "weapon": {
+        "damage": 1.0,
+        "speed": 1.0
+      },
       "stats": {
         "attack_damage": 23.5
       }
     },
     "ascension_combat:heartwood_of_pallas": {
+      "weapon": {
+        "damage": 1.0,
+        "speed": 1.0
+      },
       "stats": {
         "attack_damage": 21.5
       }
     },
     "ascension_combat:galeforce": {
+      "weapon": {
+        "damage": 1.0,
+        "speed": 1.0
+      },
       "stats": {
         "attack_damage": 22.0,
         "move_speed": 8

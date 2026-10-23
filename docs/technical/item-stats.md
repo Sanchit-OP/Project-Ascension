@@ -386,6 +386,8 @@ more. The extras Sanchit picks go on top of these, in `ascension-compat-cataclys
 | tidal_claws | weapon | +7 |  |  |  |
 | void_forge | weapon | +13 |  |  |  |
 
+- **Superseded 2026-10-23:** this table is what the mod gave with no data of ours. Ignitium, Cursium and the Monstrous Helm now have data
+  that keeps each at least the netherite piece it is smithed from, and the boss weapons have raised damage (`docs/progression/item-audit.md`).
 - **Ignitium and Cursium carry 4 toughness a piece**, so each piece gives +10 Health, the same as
   netherite's own line. A full Ignitium set is 111 Armor, 79 Magic Resist and +40 Health, against
   netherite's 69 / 49 / +40, so the boss armour stays the better set.

@@ -2,7 +2,7 @@ item,class,category,slot,attack,speed,armor,magic_resist,health,lethality,armor_
 minecraft:elytra,ElytraItem,ARMOR,chest,1,4,0,0,0,0,0,0,0,0,0,0,0,0,0.00,"",NO_STATS
 minecraft:turtle_helmet,ArmorItem,ARMOR,head,1,4,7,5,0,0,0,0,0,0,0,2,0,6,0.32,"",
 minecraft:wolf_armor,AnimalArmorItem,ARMOR,body,1,4,38,27,0,0,0,0,0,0,0,11,0,32.50,,"",
-minecraft:bow,BowItem,RANGED,mainhand,1,4,0,0,0,0,0,0,0,0,0,0,0,0,,"",NO_DAMAGE
+minecraft:bow,BowItem,RANGED,mainhand,6,1,0,0,0,0,0,0,0,0,0,0,0,20,,"",
 minecraft:wooden_sword,SwordItem,WEAPON,mainhand,4,1.60,0,0,0,0,0,0,0,0,0,0,0,12,,"",
 minecraft:wooden_shovel,ShovelItem,TOOL,mainhand,2.50,1,0,0,0,0,0,0,0,0,0,0,0,6,,"",
 minecraft:wooden_pickaxe,PickaxeItem,TOOL,mainhand,2,1.20,0,0,0,0,0,0,0,0,0,0,0,4,,"",
@@ -64,18 +64,18 @@ minecraft:diamond_horse_armor,AnimalArmorItem,ARMOR,body,1,4,38,27,5,0,0,0,0,0,0
 minecraft:leather_horse_armor,AnimalArmorItem,ARMOR,body,1,4,10,7,0,0,0,0,0,0,0,3,0,8.50,,"",
 minecraft:shield,ShieldItem,OFFHAND,offhand,1,4,0,0,0,0,0,0,0,0,0,0,0,0,,"",
 minecraft:trident,TridentItem,WEAPON,mainhand,15,1.50,0,0,0,0,0,0,0,0,0,0,0,56,,"",
-minecraft:crossbow,CrossbowItem,RANGED,mainhand,1,4,0,0,0,0,0,0,0,0,0,0,0,0,,"",NO_DAMAGE
+minecraft:crossbow,CrossbowItem,RANGED,mainhand,5,1,0,0,0,0,0,0,0,0,0,0,0,16,,"",
 ascension_combat:veigos_blade,SwordItem,WEAPON,mainhand,16.50,1.60,0,0,0,0,0,0,4,0,0,0,0,62,,"",
 ascension_combat:darius_axe,SwordItem,WEAPON,mainhand,34,1,0,0,13,0,0,0,0,0,0,0,0,145,,"",
 ascension_combat:spear_of_shojin,SwordItem,WEAPON,mainhand,31,1.40,0,0,0,0,0,0,3,0,0,0,0,120,,"",
-ascension_combat:mortal_reminder,BowItem,RANGED,mainhand,24.50,4,0,0,0,0,0,0,0,0,0,0,0,94,,"",
+ascension_combat:mortal_reminder,BowItem,RANGED,mainhand,24.50,1,0,0,0,0,0,0,0,0,0,0,0,94,,"",
 ascension_combat:divine_sunderer,SwordItem,WEAPON,mainhand,25.50,1.20,0,0,10,0,0,0,3,0,0,0,0,108,,"",
 ascension_combat:darken_blade,SwordItem,WEAPON,mainhand,29,1.40,0,0,10,0,0,0,0,0,0,0,0,122,,"",
 ascension_combat:ragefang,SwordItem,WEAPON,mainhand,12,1.40,0,0,0,0,0,0,0,0,0,0,0,44,,"",
 ascension_combat:endless_hunger,SwordItem,WEAPON,mainhand,24,2,0,0,0,0,0,0,7,0,0,0,0,92,,"",
 ascension_combat:wraithblade,SwordItem,WEAPON,mainhand,32,1.60,0,0,0,40,0,0,0,0,8,0,0,184,,"",
-ascension_combat:heartwood_of_pallas,BowItem,RANGED,mainhand,22.50,4,0,0,0,0,0,0,0,0,0,0,0,86,,"",
-ascension_combat:galeforce,BowItem,RANGED,mainhand,23,4,0,0,0,0,0,0,0,0,8,0,0,100,,"",
+ascension_combat:heartwood_of_pallas,BowItem,RANGED,mainhand,22.50,1,0,0,0,0,0,0,0,0,0,0,0,86,,"",
+ascension_combat:galeforce,BowItem,RANGED,mainhand,23,1,0,0,0,0,0,0,0,0,8,0,0,100,,"",
 ascension_combat:protean_mask,ArmorItem,ARMOR,head,1,4,20,20,17,0,0,0,0,0,0,0,0,37,2.00,"",
 ascension_combat:edge_of_night,ArmorItem,ARMOR,head,2,4,13,13,10,7,0,0,0,0,0,0,0,35.40,1.91,"",
 ascension_combat:gargoyle_stoneplate,ArmorItem,ARMOR,chest,1,4,37,30,23,0,0,0,0,0,0,0,0,56.50,1.66,"",
@@ -103,34 +103,34 @@ cataclysm:black_steel_axe,AxeItem,WEAPON,mainhand,9,0.90,0,0,0,0,0,0,0,0,0,0,0,3
 cataclysm:black_steel_hoe,HoeItem,TOOL,mainhand,1,3,0,0,0,0,0,0,0,0,0,0,0,0,,"",
 cataclysm:black_steel_targe,Black_Steel_Targe,OFFHAND,offhand,1,4,0,0,0,0,0,0,0,0,0,0,0,0,,"",
 cataclysm:azure_sea_shield,Azure_sea_Shield,OFFHAND,offhand,1,4,0,0,0,0,0,0,0,0,0,0,0,0,,"",
-cataclysm:gauntlet_of_guard,Gauntlet_of_Guard,WEAPON,mainhand,11,1.60,10,7,7,0,0,0,0,0,0,3,3,55.50,,"minecraft:generic.knockback_resistance add_value 0.15",
-cataclysm:gauntlet_of_bulwark,Gauntlet_of_Bulwark,WEAPON,mainhand,11,1.60,10,7,7,0,0,0,0,0,0,3,3,55.50,,"minecraft:generic.knockback_resistance add_value 0.15",
-cataclysm:gauntlet_of_maelstrom,Gauntlet_of_Maelstrom,WEAPON,mainhand,11,1.60,10,7,7,0,0,0,0,0,0,3,3,55.50,,"minecraft:generic.knockback_resistance add_value 0.15",
-cataclysm:the_incinerator,The_Incinerator,WEAPON,mainhand,14,1.40,0,0,0,0,0,0,0,0,0,0,0,52,,"minecraft:player.entity_interaction_range add_value 2",
+cataclysm:gauntlet_of_guard,Gauntlet_of_Guard,WEAPON,mainhand,13.50,1.60,10,7,7,0,0,0,0,0,0,3,3,65.50,,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:gauntlet_of_bulwark,Gauntlet_of_Bulwark,WEAPON,mainhand,15.50,1.60,10,7,7,0,0,0,0,0,0,3,3,73.50,,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:gauntlet_of_maelstrom,Gauntlet_of_Maelstrom,WEAPON,mainhand,15.50,1.60,10,7,7,0,0,0,0,0,0,3,3,73.50,,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:the_incinerator,The_Incinerator,WEAPON,mainhand,15.50,1.40,0,0,0,0,0,0,0,0,0,0,0,58,,"minecraft:player.entity_interaction_range add_value 2",
 cataclysm:cursed_bow,Cursed_bow,RANGED,mainhand,1,4,0,0,0,0,0,0,0,0,0,0,0,0,,"",NO_DAMAGE
-cataclysm:soul_render,Soul_Render,WEAPON,mainhand,15,1.05,0,0,0,0,0,0,0,0,0,0,0,56,,"minecraft:player.entity_interaction_range add_value 2; minecraft:player.block_interaction_range add_value 2",
-cataclysm:the_annihilator,The_Annihilator,WEAPON,mainhand,8.50,1.60,0,0,0,0,0,0,0,0,0,0,0,30,,"cataclysm:additional_critical_damage add_value 75",
-cataclysm:astrape,Astrape,WEAPON,mainhand,10.50,1.40,0,0,0,0,0,0,0,0,0,0,0,38,,"minecraft:player.entity_interaction_range add_value 2",
-cataclysm:ceraunus,Ceraunus,WEAPON,mainhand,16,0.70,0,0,0,0,0,0,0,0,0,0,0,60,,"minecraft:player.entity_interaction_range add_value 1",
-cataclysm:brontes,Brontes,TOOL,mainhand,14,1,0,0,0,0,0,0,0,0,0,0,0,52,,"",
-cataclysm:the_immolator,The_Immolator,WEAPON,mainhand,8.50,1.60,0,0,0,0,0,0,0,0,0,0,0,30,,"cataclysm:additional_critical_damage add_value 60",
-cataclysm:meat_shredder,Meat_Shredder,WEAPON,mainhand,8.50,1.40,0,0,0,0,0,0,0,0,0,0,0,30,,"",
-cataclysm:void_forge,Void_forge,TOOL,mainhand,14,1,0,0,0,0,0,0,0,0,0,0,0,52,,"",
-cataclysm:tidal_claws,Tidal_Claws,WEAPON,mainhand,8,1.60,0,0,0,0,0,0,0,0,0,0,0,28,,"",
-cataclysm:infernal_forge,Infernal_forge,TOOL,mainhand,14,1,0,0,0,0,0,0,0,0,0,0,0,52,,"",
-cataclysm:ancient_spear,Ancient_Spear,WEAPON,mainhand,9.50,1.40,0,0,0,0,0,0,0,0,0,0,0,34,,"minecraft:player.entity_interaction_range add_value 2",
+cataclysm:soul_render,Soul_Render,WEAPON,mainhand,20.50,1.05,0,0,0,0,0,0,0,0,0,0,0,78,,"minecraft:player.entity_interaction_range add_value 2; minecraft:player.block_interaction_range add_value 2",
+cataclysm:the_annihilator,The_Annihilator,WEAPON,mainhand,13.50,1.60,0,0,0,0,0,0,0,0,0,0,0,50,,"cataclysm:additional_critical_damage add_value 75",
+cataclysm:astrape,Astrape,WEAPON,mainhand,15.50,1.40,0,0,0,0,0,0,0,0,0,0,0,58,,"minecraft:player.entity_interaction_range add_value 2",
+cataclysm:ceraunus,Ceraunus,WEAPON,mainhand,31,0.70,0,0,0,0,0,0,0,0,0,0,0,120,,"minecraft:player.entity_interaction_range add_value 1",
+cataclysm:brontes,Brontes,TOOL,mainhand,24.50,1,0,0,0,0,0,0,0,0,0,0,0,94,,"",
+cataclysm:the_immolator,The_Immolator,WEAPON,mainhand,15.50,1.60,0,0,0,0,0,0,0,0,0,0,0,58,,"cataclysm:additional_critical_damage add_value 60",
+cataclysm:meat_shredder,Meat_Shredder,WEAPON,mainhand,15.50,1.40,0,0,0,0,0,0,0,0,0,0,0,58,,"",
+cataclysm:void_forge,Void_forge,TOOL,mainhand,24.50,1,0,0,0,0,0,0,0,0,0,0,0,94,,"",
+cataclysm:tidal_claws,Tidal_Claws,WEAPON,mainhand,13.50,1.60,0,0,0,0,0,0,0,0,0,0,0,50,,"",
+cataclysm:infernal_forge,Infernal_forge,TOOL,mainhand,22,1,0,0,0,0,0,0,0,0,0,0,0,84,,"",
+cataclysm:ancient_spear,Ancient_Spear,WEAPON,mainhand,15.50,1.40,0,0,0,0,0,0,0,0,0,0,0,58,,"minecraft:player.entity_interaction_range add_value 2",
 cataclysm:bone_reptile_helmet,Bone_Reptile_Armor,ARMOR,head,1,4,14,10,4,0,0,0,0,0,0,6,2.50,16,0.86,"minecraft:generic.knockback_resistance add_value 0.15",BELOW_NETHERITE
 cataclysm:bone_reptile_chestplate,Bone_Reptile_Armor,ARMOR,chest,1,4,25,18,4,0,0,0,0,0,0,11,2.50,25.50,0.75,"minecraft:generic.knockback_resistance add_value 0.15",BELOW_NETHERITE
-cataclysm:ignitium_helmet,Ignitium_Armor,ARMOR,head,1,4,14,10,8,0,0,0,0,0,0,6,4,20,1.08,"minecraft:generic.knockback_resistance add_value 0.15",
-cataclysm:ignitium_chestplate,Ignitium_Armor,ARMOR,chest,1,4,25,18,10,0,0,0,0,0,0,11,4,31.50,0.93,"minecraft:generic.knockback_resistance add_value 0.15",BELOW_NETHERITE
-cataclysm:ignitium_elytra_chestplate,Ignitium_Elytra_ChestPlate,ARMOR,chest,1,4,25,18,10,0,0,0,0,0,0,11,4,31.50,0.93,"minecraft:generic.knockback_resistance add_value 0.15",BELOW_NETHERITE
-cataclysm:ignitium_leggings,Ignitium_Armor,ARMOR,legs,1,4,21,15,8,0,0,0,0,0,0,9,4,26,0.93,"minecraft:generic.knockback_resistance add_value 0.15",BELOW_NETHERITE
-cataclysm:ignitium_boots,Ignitium_Armor,ARMOR,feet,1,4,14,10,7,0,0,0,0,0,0,6,4,19,1.03,"minecraft:generic.knockback_resistance add_value 0.15",
-cataclysm:cursium_helmet,Cursium_Armor,ARMOR,head,1,4,11,8,11,0,0,0,0,0,0,5,4,20.50,1.11,"minecraft:generic.knockback_resistance add_value 0.05",
-cataclysm:cursium_chestplate,Cursium_ChestPlate,ARMOR,chest,1,4,23,17,11,0,0,0,0,0,0,10,4,31,0.91,"minecraft:generic.knockback_resistance add_value 0.05",BELOW_NETHERITE
-cataclysm:cursium_leggings,Cursium_Armor,ARMOR,legs,1,4,19,13,10,0,0,0,0,0,0,8,4,26,0.93,"minecraft:generic.knockback_resistance add_value 0.05",BELOW_NETHERITE
-cataclysm:cursium_boots,Cursium_Armor,ARMOR,feet,1,4,11,8,7,0,0,0,0,0,0,5,4,16.50,0.89,"minecraft:generic.knockback_resistance add_value 0.05",BELOW_NETHERITE
-cataclysm:monstrous_helm,Monstrous_Helm,ARMOR,head,1,4,7,5,5,0,0,0,0,0,0,3,3,11,0.59,"minecraft:generic.knockback_resistance add_value 0.10",BELOW_NETHERITE
+cataclysm:ignitium_helmet,Ignitium_Armor,ARMOR,head,1,4,14,10,10,0,0,0,0,0,0,6,4,22,1.19,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:ignitium_chestplate,Ignitium_Armor,ARMOR,chest,1,4,33,24,10,0,0,0,0,0,0,11,4,38.50,1.13,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:ignitium_elytra_chestplate,Ignitium_Elytra_ChestPlate,ARMOR,chest,1,4,33,24,10,0,0,0,0,0,0,11,4,38.50,1.13,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:ignitium_leggings,Ignitium_Armor,ARMOR,legs,1,4,25,18,10,0,0,0,0,0,0,9,4,31.50,1.13,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:ignitium_boots,Ignitium_Armor,ARMOR,feet,1,4,12,8,10,0,0,0,0,0,0,6,4,20,1.08,"minecraft:generic.knockback_resistance add_value 0.15",
+cataclysm:cursium_helmet,Cursium_Armor,ARMOR,head,1,4,12,8,11,0,0,0,0,0,0,5,4,21,1.14,"minecraft:generic.knockback_resistance add_value 0.05",
+cataclysm:cursium_chestplate,Cursium_ChestPlate,ARMOR,chest,1,4,30,21,11,0,0,0,0,0,0,10,4,36.50,1.07,"minecraft:generic.knockback_resistance add_value 0.05",
+cataclysm:cursium_leggings,Cursium_Armor,ARMOR,legs,1,4,23,16,10,0,0,0,0,0,0,8,4,29.50,1.05,"minecraft:generic.knockback_resistance add_value 0.05",
+cataclysm:cursium_boots,Cursium_Armor,ARMOR,feet,1,4,11,8,10,0,0,0,0,0,0,5,4,19.50,1.05,"minecraft:generic.knockback_resistance add_value 0.05",
+cataclysm:monstrous_helm,Monstrous_Helm,ARMOR,head,1,4,12,8,10,0,0,0,0,0,0,3,3,20,1.08,"minecraft:generic.knockback_resistance add_value 0.10",
 cataclysm:bloom_stone_pauldrons,Bloom_Stone_Pauldrons,ARMOR,chest,1,4,21,15,3,0,0,0,0,0,0,9,2,21,0.62,"cataclysm:nature_heal add_value 15; minecraft:generic.knockback_resistance add_value 0.10",BELOW_NETHERITE
 aeronautics:aviators_goggles,AviatorsGogglesItem,ARMOR,head,1,4,3,2,0,0,0,0,0,0,0,1,0,2.50,0.14,"",BELOW_NETHERITE
 endermanoverhaul:badlands_hood,HoodItem,ARMOR,chest,1,4,17,12,0,0,0,0,0,0,0,5,0,14.50,0.43,"",BELOW_NETHERITE

@@ -481,9 +481,9 @@
 	"quest.757321B50E1B3012.title": "Tomes"
 	"quest.757321B50E1B3012.quest_subtitle": "Unmake an enchantment, or move it"
 	"quest.757321B50E1B3012.quest_desc": ["A Tome of Scrapping wipes an item's enchantments at an anvil. A Tome of Extraction moves them onto a book in a crafting grid.", "Both are a book, lapis and a pinch of stone: flint for scrapping, an amethyst shard for extraction."]
-	"quest.3FA0DF670A7A9B34.title": "One key for abilities"
-	"quest.3FA0DF670A7A9B34.quest_subtitle": "Z"
-	"quest.3FA0DF670A7A9B34.quest_desc": ["Some items carry an ability. Z uses the one you wear or hold.", "Its cooldown shows on the item itself."]
+	"quest.3FA0DF670A7A9B34.title": "A key for each ability"
+	"quest.3FA0DF670A7A9B34.quest_subtitle": "Z, X and the side buttons"
+	"quest.3FA0DF670A7A9B34.quest_desc": ["Some items carry an ability. Every place you wear one has its own key, so two never fire together.", "Z is the legs, X the chest, mouse button 4 the off hand and the relic slot, mouse button 5 the item in your hand.", "Change them in Controls. Hover an item to see its key; its cooldown shows on the item itself."]
 	"quest.494C69CF09D79CDC.title": "Skill points"
 	"quest.494C69CF09D79CDC.quest_subtitle": "Earned, never farmed"
 	"quest.494C69CF09D79CDC.quest_desc": ["Nothing here comes from kills or hours played. Bosses, lit rings and new kinds of place each give points, once.", "Open the web with K. The page \"Runes and Skill Points\" walks through it."]

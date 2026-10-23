@@ -5,7 +5,7 @@ Built 2026-10-22, branch `curios-slots`, **compiled and unit-built only: not see
 | Slot | Holds | What it does |
 |---|---|---|
 | `ascension_tank` | oxygen tank, helium tank (tag `curios:ascension_tank`) | The worn tank is an oxygen source with no valve: wearing it is opening it. One slot, one worn tank. |
-| `ascension_relic` | Zonia's Hourglass, Sterak's Harness (tag `curios:ascension_relic`) | Works as the off hand does: the ability key, the passive, the stats. |
+| `ascension_relic` | Zonia's Hourglass, Sterak's Harness (tag `curios:ascension_relic`) | Works as the off hand does: the off-hand and relic ability key, the passive, the stats. |
 | `back` | a backpack | Sophisticated Backpacks assigns it itself; nothing of ours. Gliders brings its own `glider` slot, so the two do not compete. |
 
 ## Decisions (they differ from prompt 11, on Sanchit's word 2026-10-22)
@@ -26,7 +26,7 @@ Built 2026-10-22, branch `curios-slots`, **compiled and unit-built only: not see
 1. Both slots appear on the Curios screen (G) with their icons; the tank slot refuses a sword, the relic slot refuses a tank.
 2. Wear a filled tank in the tank slot on the Moon: the air bar drains from it with no valve opened; unequip it and it stops.
 3. A helium tank in the slot lasts twice as long. Two tanks: one worn, one in the inventory both drain (expected).
-4. Zonia's in the relic slot: the ability key starts stasis; the tooltip and stat sheet list its stats, labelled "Relic slot".
+4. Zonia's in the relic slot: the off-hand and relic ability key starts stasis; the tooltip and stat sheet list its stats, labelled "Relic slot".
 5. Sterak's in the relic slot: the attack-damage and lifesteal passives work; with Sterak's also in the off hand, stats count once.
 6. Die with Soulbound and without; relog; reload the world: both slots keep their contents.
 7. Wear a backpack in `back` and a glider in its slot at the same time.

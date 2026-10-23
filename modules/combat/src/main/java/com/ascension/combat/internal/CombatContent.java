@@ -235,8 +235,8 @@ public final class CombatContent {
     /**
      * Fourteenth out the door, and the first of two Chestplates (combat-api.md section 6). Flat
      * armor and magic resist while worn; the active grants a shield scaling with the number of
-     * nearby living entities, on a cooldown. The first item to use the shared
-     * {@link com.ascension.combat.internal.net.ActivateArmorAbilityPayload} key rather than a
+     * nearby living entities, on a cooldown. The first item to use an ability key (the chest
+     * one, {@link com.ascension.combat.internal.net.ActivateAbilityPayload}) rather than a
      * right-click, since it's worn, not held &mdash; see
      * {@link com.ascension.combat.client.CombatKeybinds}'s javadoc for why that needed a new
      * key instead of reusing any existing input. Applied by
@@ -261,7 +261,7 @@ public final class CombatContent {
 
     /**
      * Sixteenth out the door, and the first of three Leggings (combat-api.md section 6). Active
-     * (the shared armor-ability key, same as {@link #GARGOYLE_STONEPLATE}): a real, collidable
+     * (the legs ability key): a real, collidable
      * dash ({@link com.ascension.combat.internal.mechanics.Dash}, same as {@link #GALEFORCE}),
      * then an area burst of physical damage a short delay later, roughly where the dash ends.
      * Applied by {@link com.ascension.combat.internal.armor.RocketbeltEffects}. Same placeholder
@@ -348,10 +348,8 @@ public final class CombatContent {
      * Twenty-fifth out the door, and the first of two Off-hand items (combat-api.md section 6),
      * the catalog's last slot. A plain {@link Item}, not an {@link ArmorItem} &mdash; there is no
      * {@code ArmorItem.Type} for the off-hand slot, since vanilla doesn't treat it as armor (a
-     * shield isn't either). Active (the shared armor-ability key, same as {@link
-     * #GARGOYLE_STONEPLATE} and {@link #ROCKETBELT}): stasis for a short duration, on a cooldown.
-     * The third real consumer of that key, and the first not worn in a body-armor slot, confirming
-     * it was always "whatever's equipped with an active," not "armor specifically." Applied by
+     * shield isn't either). Active (the off-hand and relic ability key): stasis for a short
+     * duration, on a cooldown. The first active not worn in a body-armor slot. Applied by
      * {@link com.ascension.combat.internal.armor.ZoniasHourglassEffects}, reusing {@link
      * com.ascension.combat.internal.mechanics.Stasis} from {@link #GUARDIAN_WING}. No art yet, same
      * placeholder reasoning as {@link #DARIUS_AXE}.

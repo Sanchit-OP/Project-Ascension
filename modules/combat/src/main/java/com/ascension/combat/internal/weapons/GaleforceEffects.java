@@ -44,12 +44,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * that click. Dropped after Sanchit's test found the dash simply never fired: sneaking while aiming
  * at an entity (exactly when you'd want a targeted dash) routes through a different interaction
  * event entirely, one this listener never sees, so the whole combination was unreliable by
- * construction, not just awkward. {@link #tryActivate} is now the second consumer of the same
- * shared ability key {@link com.ascension.combat.internal.armor.GargoyleStoneplateEffects} and
- * {@link com.ascension.combat.internal.armor.RocketbeltEffects} already use &mdash; the first held
- * weapon to, confirming that key was always "whatever's equipped with an active you press a
- * dedicated button for," not armor-specifically. Plain right-click stays untouched vanilla bow
- * behaviour either way.
+ * construction, not just awkward. {@link #tryActivate} is the held-item ability key's entry point
+ * (the chest and legs keys fire other items, never this one). Plain right-click stays untouched
+ * vanilla bow behaviour either way.
  *
  * <p><b>Cooldown, also revised 2026-09-20.</b> Sanchit's next test found the bow itself unusable
  * for the whole cooldown after one activation. It had always tracked the cooldown via vanilla
@@ -108,7 +105,7 @@ public final class GaleforceEffects {
         bus.addListener(GaleforceEffects::onServerTick);
     }
 
-    /** Entry point for the shared ability key -- see this class's own javadoc for why. */
+    /** Entry point for the held-item ability key -- see this class's own javadoc for why. */
     public static void tryActivate(ServerPlayer player) {
         ItemStack stack = player.getMainHandItem();
         if (!stack.is(CombatContent.GALEFORCE.get())) {

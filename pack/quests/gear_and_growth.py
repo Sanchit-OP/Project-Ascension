@@ -60,13 +60,14 @@ CHAPTER = Chapter(
         ),
         Quest(
             slug='ability', x=0, y=6,
-            title='One key for abilities',
-            subtitle='Z',
+            title='A key for each ability',
+            subtitle='Z, X and the side buttons',
             icon=item_icon('minecraft:blaze_powder'), shape=LESSON, size=0.9,
             deps=['tomes'],
             text=[
-                'Some items carry an ability. Z uses the one you wear or hold.',
-                'Its cooldown shows on the item itself.',
+                'Some items carry an ability. Every place you wear one has its own key, so two never fire together.',
+                'Z is the legs, X the chest, mouse button 4 the off hand and the relic slot, mouse button 5 the item in your hand.',
+                'Change them in Controls. Hover an item to see its key; its cooldown shows on the item itself.',
             ],
             tasks=[checkmark()],
             rewards=[give('minecraft:cooked_beef', 8)],

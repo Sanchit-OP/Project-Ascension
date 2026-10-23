@@ -4,9 +4,12 @@
 > some armour from other mods is worse than the netherite piece it is made from). The numbers are not read from our data
 > files: `internal/dev/ItemAudit` asks every registered item for the attribute modifiers the game itself reads
 > (`ItemStack.getAttributeModifiers()`), so our data, the vanilla-armour conversions and every other mod's own numbers are
-> all in it. **Nothing here is changed yet.** Section 5 is the proposal, for Sanchit's nod.
+> all in it. **Sections 1 to 4 are the measurement; section 5 is what was changed because of it** (the same day, on Sanchit's word: apply the armour
+> and bow numbers, all Cataclysm boss weapons count, none better than a legendary, the abilities magic where they were not, and one ability
+> key for each place instead of one for all).
 
-Every item is in [`item-audit.csv`](item-audit.csv): 151 weapons, bows, tools, armour and off-hand pieces (the 26
+Every item is in [`item-audit.csv`](item-audit.csv), **as it stands after the changes of section 5** (sections 1 to 3 give the numbers from before; the
+recipes that turned a stronger piece into a weaker one went from 6 to 0): 151 weapons, bows, tools, armour and off-hand pieces (the 26
 legendaries and the vanilla, Cataclysm, Create, Enderman Overhaul and Aeronautics ones), with the stats a player ends up with, the
 vanilla armour behind them, and a flag where something looks wrong. To measure again:
 
@@ -93,10 +96,13 @@ a dozen seconds of one, and **Ceraunus (253) is no faster than a diamond sword**
 - **Not covered:** Curios items (Cataclysm's belts, rings, amulets, Ankh), Icarus wings and the paragliders. They are worn in Curios slots or used,
   not read through item attribute modifiers, so the audit cannot see their numbers.
 
-## 5. Proposal (not applied)
+## 5. What was changed (2026-10-23)
 
-**Armour.** Every Cataclysm piece that eats a netherite piece is at least that piece in Armor, Magic Resist and Health, with
-Ignitium the best, Cursium next and the Monstrous Helm a little over netherite. All stay under the 70% ceiling:
+All of it is data except the keys, held by `tools/check-balance.py` (the build runs it) and by `damage-checks` on a dedicated server (405 checks, 0
+failures, which now include the lines below).
+
+**Armour.** Every Cataclysm piece that eats a netherite piece is at least that piece in Armor, Magic Resist and Health, Ignitium the best,
+Cursium next and the Monstrous Helm a little over netherite. All stay under the 70% ceiling, and the check refuses a piece under netherite:
 
 | Piece | Armor / Magic Resist / Health | Share of the slot budget |
 |---|---|---|
@@ -110,15 +116,56 @@ Ignitium the best, Cursium next and the Monstrous Helm a little over netherite. 
 | Cursium boots | 11 / 8 / 10 | 65% |
 | Monstrous Helm | 12 / 8 / 10 | 54% |
 
-A full set becomes Ignitium 84 / 60 / 40 and Cursium 76 / 53 / 42 against netherite's 69 / 49 / 40. `tools/check-balance.py` gains a
-floor so this cannot drift again: no armour that is smithed from netherite may be under that netherite piece in any of the three
-stats.
+A full set is now Ignitium 84 / 60 / 40 and Cursium 76 / 53 / 42 against netherite's 69 / 49 / 40.
 
-**Bows.** An Attack Damage line, so the arrow is the size of the sword of the same standing: Bow +5 (an arrow of 12, 235 s, like a netherite sword), Crossbow +7
-(slower to load, 202 s), Cursed Bow +12 (arrow 19, 149 s, with the boss weapons of section 3). The check's bow rule (damage and Move Speed only) already allows it.
+**Bows.** The bow carries +5 Attack Damage (an arrow of 12, 235 s of plain arrows against the standard boss) and the crossbow +4 (an arrow of 10; with
+Multishot, three arrows each carrying the Attack Damage, it is about as slow to kill as a legendary bow, not faster). **The Cursed Bow is left as the mod
+made it**, because it fires three Phantom Arrows and each is an arrow that carries the shooter's Attack Damage: the +12 first proposed would have
+tripled into a bow that out-damaged the best legendary one. At three arrows a draw it already beats a vanilla bow three to one before any bonus (its own
+arrow damage is a Cataclysm config number, not ours).
 
-**Cataclysm's boss weapons.** Lift the boss and structure drops to the band of 100 to 150 seconds plain (about 1.7 times their damage, speed
-unchanged), still well under the legendaries once their abilities count. Not the crafted Black Steel gear, Khopesh, Athame or Coral gear. This one needs a
-list from Sanchit of which weapons count, since each has an ability nobody has fought with yet.
+**A bow in hand is swung slowly.** Found while checking that: a bow has no attack speed of its own, so hitting with one used a bare hand's 4 a
+second with the bow's whole Attack Damage in the blow. For a legendary bow that is 24.5 four times a second, about 35 a second against the standard
+boss, which kills it in 29 s, faster than any legendary. All five bows (the two vanilla ones and the three legendary) now carry `weapon` speed 1.0, so
+a blow with a bow is 1 a second. Their tooltips gain a grey "1 Attack Speed" line. The server check swings each one.
+
+**Cataclysm's boss weapons** keep the attack speed the mod gave them and take a damage that sets a plain-hit kill of the standard boss: about 130 s
+for a base boss drop and 115 s for a fusion of two bosses' weapons. A netherite sword takes 221, a trident 126, and the slowest legendary 54 *with* its
+ability. The abilities of these weapons are Cataclysm's own numbers and are not modelled, so the floor the check holds is more than twice the slowest
+legendary: nothing here can pass a legendary.
+
+| Base boss drop (130 s) | Damage x swings a second | Fusion (115 s) | Damage x swings a second |
+|---|---|---|---|
+| Infernal Forge (was 14) | 22 x 1.0 | Brontes (was 14) | 24.5 x 1.0 |
+| Astrape (was 10.5) | 15.5 x 1.4 | Void Forge (was 14) | 24.5 x 1.0 |
+| Ceraunus (was 16) | 31 x 0.7 | The Immolator (was 8.5) | 15.5 x 1.6 |
+| Soul Render (was 15) | 20.5 x 1.05 | Gauntlet of Bulwark (was 11) | 15.5 x 1.6 |
+| The Incinerator (was 14) | 15.5 x 1.4 | Gauntlet of Maelstrom (was 11) | 15.5 x 1.6 |
+| The Annihilator (was 8.5) | 13.5 x 1.6 | | |
+| Meat Shredder (was 8.5) | 15.5 x 1.4 | | |
+| Ancient Spear (was 9.5) | 15.5 x 1.4 | | |
+| Tidal Claws (was 8) | 13.5 x 1.6 | | |
+| Gauntlet of Guard (was 11) | 13.5 x 1.6 | | |
+
+Left as they were: the crafted Black Steel gear, Khopesh, Athame and the Coral gear, and the Cursed Bow (above).
+
+**Magic abilities.** Most of these weapons' abilities already dealt magic damage (Soul Render's halberds, Astrape's lightning, Ceraunus' anchor, Void Forge's
+runes, the Incinerator's and the Immolator's flame strikes). Three dealt a physical hit through the generic projectile type and are now magic by their
+entity: Ceraunus' waves, Tidal Claws' tentacle and the Ancient Spear's sandstorm shot (`damage-kinds.md`). The swings themselves stay physical.
+
+**One key for each ability (not one for all).** The "activate armor ability" key used to fire every worn active at once: Gargoyle Stoneplate,
+Rocketbelt, Zonia's Hourglass and Galeforce together. There are four keys now, one for each place an item with an active sits, and the packet says which:
+
+| Key (Controls name) | Fires | Default |
+|---|---|---|
+| Legs Ability | Rocketbelt | Z |
+| Chest Ability | Gargoyle Stoneplate | X |
+| Off-Hand and Relic Ability | Zonia's Hourglass, in the off hand or the relic slot | mouse button 4 |
+| Held Item Ability | Galeforce | mouse button 5 |
+
+The item's tooltip names its key, as the player has it bound ("[Z]", or "(unbound)"). Head and feet have no key until an item for them has an active.
+The Cataclysm's own helmet, weapon and boots keys (N, V) are the mod's and unchanged. `AbilitySlot`, `ActivateAbilityPayload` (one byte; the
+network version went from 6 to 7), `AbilityActivation`, `CombatKeybinds`. A client audit (`keybind-audit.txt`) showed the four keys registered with the
+pack's defaults and no clash; the keys have not been pressed in a client, only on the server.
 
 **Left alone.** Shields until there is a design for them, and the Curios items until someone reads them.

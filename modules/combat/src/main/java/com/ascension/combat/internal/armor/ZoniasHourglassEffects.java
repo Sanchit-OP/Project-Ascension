@@ -14,10 +14,9 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * Zonia's Hourglass's identity (docs/technical/combat-api.md section 6): stasis ({@link Stasis},
  * section 5) for a short duration, on a cooldown.
  *
- * <p>Triggered by {@link com.ascension.combat.internal.net.ActivateArmorAbilityPayload}, the same
- * shared key {@link GargoyleStoneplateEffects} and {@link RocketbeltEffects} use &mdash; the third
- * real consumer, and the first off-hand one, confirming the key was never really "armor-only,"
- * just "whatever's equipped with an active."
+ * <p>Triggered by {@link com.ascension.combat.internal.net.ActivateAbilityPayload} (the off-hand and relic key), a key of its
+ * own: the chest key fires {@link GargoyleStoneplateEffects} and the legs key {@link RocketbeltEffects}, never this. Worn in the
+ * off hand or in the relic slot, it is the same item and the same key.
  *
  * <p>Unlike {@link GuardianWingEffects}, exiting stasis here does nothing but turn it off: no
  * revive, no health change. Zonia's Hourglass is pure defensive stasis, not a death-prevention

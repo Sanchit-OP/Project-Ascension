@@ -152,7 +152,8 @@ Planets are data, not code, so new ones are mostly authoring: terrain, a surviva
 - **H**: character sheet
 - **K**: skill tree
 - **R**: rune page
-- **Z**: use a worn item's ability
+- **Z** and **X**: the ability of the leggings and of the chest piece
+- **Mouse buttons 4 and 5**: the ability of the off-hand or relic item, and of the item in your hand
 - **M**: map
 - **B**: every key, on screen
 - **N**: Cataclysm helmet ability

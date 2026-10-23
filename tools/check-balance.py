@@ -13,7 +13,9 @@ written time there, and a wider spread limit that says how far behind a flat wea
 
 Armour, boots and the off-hand are balanced by points: every stat is worth some points and every slot has
 one budget; a piece must land within 3 points of its slot's (or its own written target, for the few that
-are set by hand). No Cataclysm armour may pass 70% of its slot's budget, so a legendary stays well clear.
+are set by hand). No Cataclysm armour may pass 70% of its slot's budget, so a legendary stays well clear, and what is smithed
+from netherite may not be under it. Cataclysm's boss weapons take about 130 seconds (115 for a fusion) of plain hits to kill the
+standard boss, never under twice the slowest legendary, so none passes a legendary.
 
 Also rules a number cannot say: melee damage is one figure in `weapon`, bows carry damage only, Penetration
 only on Wizard's Agony, Omnivamp on five items.
@@ -105,7 +107,28 @@ CATACLYSM = {
     'cursium_helmet': ('helmet', 17, 12, 10), 'cursium_chestplate': ('chest', 35, 25, 10),
     'cursium_leggings': ('legs', 28, 20, 10), 'cursium_boots': ('boots', 17, 12, 10),
     'bone_reptile_chestplate': ('chest', 38, 27, 6), 'monstrous_helm': ('helmet', 10, 7, 7),
+    'ignitium_elytra_chestplate': ('chest', 38, 27, 10),
 }
+
+# Netherite, piece by piece (the vanilla armour points at 3.5 Armor and 2.5 Magic Resist, rounded down, and its own 10 Health): Armor, Magic
+# Resist, Health. Cataclysm's Ignitium, Cursium and Monstrous Helm are smithed out of a netherite piece, so each must be at least that piece in
+# all three (docs/progression/item-audit.md section 1: the two-thirds cut of 2026-10-19 had put most of them under it).
+NETHERITE = {'helmet': (10, 7, 10), 'chest': (28, 20, 10), 'legs': (21, 15, 10), 'boots': (10, 7, 10)}
+FROM_NETHERITE = ('ignitium_', 'cursium_', 'monstrous_helm')
+
+# Cataclysm's boss weapons (docs/progression/item-audit.md section 3): the attack speed the mod gave each (measured 2026-10-23), and the tier
+# the damage is set for. Plain hits only, against the standard boss: a base boss drop takes about 130 seconds, a fusion of two bosses' weapons 115,
+# where a netherite sword takes 221. The abilities are Cataclysm's own numbers and not modelled, so the floor is more than twice the slowest
+# legendary alone (which kills in about 54 seconds with its ability): no Cataclysm weapon can pass a legendary.
+CATACLYSM_WEAPONS = {
+    'infernal_forge': (1.0, 'base'), 'astrape': (1.4, 'base'), 'ceraunus': (0.7, 'base'), 'soul_render': (1.05, 'base'),
+    'the_incinerator': (1.4, 'base'), 'the_annihilator': (1.6, 'base'), 'meat_shredder': (1.4, 'base'),
+    'ancient_spear': (1.4, 'base'), 'tidal_claws': (1.6, 'base'), 'gauntlet_of_guard': (1.6, 'base'),
+    'brontes': (1.0, 'fusion'), 'void_forge': (1.0, 'fusion'), 'the_immolator': (1.6, 'fusion'),
+    'gauntlet_of_bulwark': (1.6, 'fusion'), 'gauntlet_of_maelstrom': (1.6, 'fusion'),
+}
+CATACLYSM_PLAIN_TARGET = {'base': 130, 'fusion': 115}
+CATACLYSM_FLOOR = 2.0   # times the slowest legendary alone
 
 
 # The skill tree (docs/progression/growth.md section 8): what all 56 nodes add up to, written down. Raised on 2026-10-22
@@ -246,6 +269,39 @@ def main():
         print('  %-8s %-26s %6.1f  %3.0f%%%s' % (slot, name, s, share * 100, flag))
         if flag:
             problems.append('%s is %.0f%% of its slot budget, over %.0f%%' % (name, share * 100, CEILING * 100))
+
+    print('Cataclysm armour smithed from netherite (at least the netherite piece in Armor / Magic Resist / Health):')
+    for name, (slot, armor, mr, hp) in CATACLYSM.items():
+        if not name.startswith(FROM_NETHERITE):
+            continue
+        named = extras.get('cataclysm:' + name, {}).get('stats', {})
+        have = (named.get('armor', armor), named.get('magic_resist', mr), named.get('health', hp))
+        floor = NETHERITE[slot]
+        flag = '' if all(h >= f for h, f in zip(have, floor)) else '   <-- under netherite'
+        print('  %-8s %-26s %2d / %2d / %2d   netherite %2d / %2d / %2d%s' % ((slot, name) + have + floor + (flag,)))
+        if flag:
+            problems.append('%s (%s) is under the netherite %s it is made from (%s)' % (name, have, slot, floor))
+
+    print('Cataclysm boss weapons: plain hits to kill the standard boss (%d HP, %d Armor), seconds:' % BOSS[:2])
+    slowest_legendary = max(alone.values())
+    for name, (speed, tier) in CATACLYSM_WEAPONS.items():
+        weapon = extras.get('cataclysm:' + name, {}).get('weapon')
+        if weapon is None:
+            problems.append('cataclysm:%s has no weapon entry' % name)
+            continue
+        damage = weapon['damage']
+        seconds = BOSS[0] / (damage * weapon['speed'] * 0.5 ** (BOSS[1] / 100.0))
+        target = CATACLYSM_PLAIN_TARGET[tier]
+        flag = ''
+        if weapon['speed'] != speed:
+            flag = '   <-- speed is not the %.2f Cataclysm gave it' % speed
+        elif abs(seconds - target) > target * TTK_TOLERANCE:
+            flag = '   <-- off its %d' % target
+        elif seconds < CATACLYSM_FLOOR * slowest_legendary:
+            flag = '   <-- too close to the legendaries'
+        print('  %-22s %5.1f x %.2f  %6.0f s  (%s %d)%s' % (name, damage, weapon['speed'], seconds, tier, target, flag))
+        if flag:
+            problems.append('%s: %.0f s plain, written %d (%s)%s' % (name, seconds, target, tier, flag.replace('<--', '').strip()))
 
     check_growth(problems)
 

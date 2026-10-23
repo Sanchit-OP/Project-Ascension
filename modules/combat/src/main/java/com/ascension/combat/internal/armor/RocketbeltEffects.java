@@ -20,9 +20,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * Rocketbelt's identity (docs/technical/combat-api.md section 6): a short dash into an area burst
  * of damage on landing.
  *
- * <p>Triggered by {@link com.ascension.combat.internal.net.ActivateArmorAbilityPayload}, same as
- * {@link GargoyleStoneplateEffects} &mdash; the second real consumer of the shared armor-ability
- * key, exactly what it was built for.
+ * <p>Triggered by {@link com.ascension.combat.internal.net.ActivateAbilityPayload} (the legs key). The chest key fires
+ * {@link GargoyleStoneplateEffects} and never this.
  *
  * <p><b>Dash mechanic, replaced 2026-09-20.</b> Originally {@code Dash.forward} (real, collidable
  * knockback-based movement), the same mechanic {@link

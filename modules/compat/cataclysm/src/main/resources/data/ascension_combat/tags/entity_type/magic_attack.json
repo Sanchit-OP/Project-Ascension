@@ -10,6 +10,9 @@
     { "id": "cataclysm:wither_missile", "required": false },
     { "id": "cataclysm:wither_homing_missile", "required": false },
     { "id": "cataclysm:wither_howitzer", "required": false },
-    { "id": "cataclysm:void_howitzer", "required": false }
+    { "id": "cataclysm:void_howitzer", "required": false },
+    { "id": "cataclysm:wave", "required": false },
+    { "id": "cataclysm:tidal_tentacle", "required": false },
+    { "id": "cataclysm:sandstorm_projectile", "required": false }
   ]
 }

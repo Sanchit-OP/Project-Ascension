@@ -18,7 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
  * entities, on a cooldown. The flat stats are data ({@code item_stats.json}) since 2026-10-16;
  * this class is only the active.
  *
- * <p>Triggered by {@link com.ascension.combat.internal.net.ActivateArmorAbilityPayload}, not a
+ * <p>Triggered by {@link com.ascension.combat.internal.net.ActivateAbilityPayload} (the chest key), not a
  * right-click &mdash; see that class and {@link com.ascension.combat.client.CombatKeybinds} for
  * why worn armor needed a new input path. {@link #tryActivate} is the entry point the network
  * handler calls; it re-checks the wearer still has this item equipped rather than trusting the
