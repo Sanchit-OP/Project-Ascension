@@ -1,8 +1,9 @@
 # Alpha 3
 
-Started 2026-10-23, the day after alpha.2 went out (`main` at `f29f397` was alpha.2; everything after it is alpha.3). Sanchit: the next
-plan is alpha.3, and **Iron's Spells needs a lot of care**. This page says what is in, what is proposed and how Iron's would be brought in
-without breaking the game. Nothing here under "Proposed" is decided.
+Started 2026-10-23, the day after alpha.2 went out (`main` at `f29f397` was alpha.2; everything after it is alpha.3).
+
+**Scope, decided by Sanchit on 2026-10-25 after he tested alpha.2 with friends: alpha.3 is the fixes and the ship/flight mods below. New
+structures, Iron's Spells 'n Spellbooks and guns/mechs are NOT in alpha.3**; their plans are kept at the bottom for alpha.4.
 
 ## In alpha.3 already (committed locally, not pushed)
 
@@ -13,13 +14,76 @@ without breaking the game. Nothing here under "Proposed" is decided.
 The unreleased changelog is the top section of `pack/launch/CHANGELOG.md`. The network version went from 6 to 7, so alpha.2 and alpha.3 cannot
 share a server.
 
+## Findings from the alpha.2 test with friends (Sanchit, 2026-10-25)
+
+Written down as he said them. "Status" is kept current as each lands; nothing is done until it is seen in a client or a dedicated server.
+
+### Server and launcher
+
+| # | Finding | Plan | Status |
+|---|---|---|---|
+| F1 | The whitelist is in the way: friends cannot join. | The server pack ships `white-list=false` and `enforce-whitelist=false`; the running server gets `whitelist off`. `online-mode=true` stays. | |
+| F2 | After every new version the main menu has Distant Horizons begging for an update. | Switch its update check and prompt off in the pack config. | |
+
+### Recipes and drops
+
+| # | Finding | Plan | Status |
+|---|---|---|---|
+| F3 | Brass is needed for a few things and Create only makes it with a Nether blaze. | A hand-crafting recipe for the brass ingot (no Nether), deliberately dearer than Create's mixing. Numbers are placeholders. | |
+| F4 | The Trial Chambers' mace item is too rare ("molten core"; assumed to be the Heavy Core, **confirm**). | Raise its drop rate a little, not a lot. | |
+
+### Bugs
+
+| # | Finding | Plan | Status |
+|---|---|---|---|
+| F5 | Create's Goggles and Create Aeronautics' aviator goggles will not go in the Curios head slot. | Tag them for the Curios head slot (compat jar). | |
+| F6 | Neither our Air Dispenser nor our Air Compressor can be broken properly. The compressor can at least be picked up with a wrench; the dispenser can only be destroyed and drops nothing. | Both mineable with a tool, both drop themselves, the dispenser wrenchable too. | |
+| F7 | The Air Dispenser on an Aeronautics ship kept saying "the block is open" while the ship was fully sealed. | Find why the sealed-room check fails in a ship's own space (`ascension-compat-sable` registers a ship space); fix and check with a real ship. | |
+| F8 | Closed doors do not count as a sealed wall: neither wooden doors nor Create's glass doors. | A closed door, trapdoor and gate seals; an open one does not. | |
+
+### Mods to replace (Sanchit's verdict; each needs research, then his pick, then a compat check)
+
+| # | Finding | Wanted |
+|---|---|---|
+| F9 | The paraglider mod is bad: costs too much, breaks easily, does not feel smooth. | A better one. |
+| F10 | The backpack mod is not good: it cannot hold a sleeping bag. A modpack he played had a backpack that did, "sleeping bags are so goated". | A backpack with a sleeping bag in it. |
+| F11 | Does not like Create Simulated's thrusters; has another mod in mind (not named yet; probably Create Propulsion below, **confirm**). | Better thrusters. |
+| F12 | No sorting for chests or inventory. | A sorting mod. |
+| F13 | No quiver. | A quiver slot in Curios. His question: do our special bows work with special arrows? (Already true for damage: an arrow adds the shooter's Attack Damage, any bow, any arrow. Quiver itself and tipped/special-arrow behaviour with our bows: to verify.) |
+
+### Mods to add (Sanchit asked for these by name)
+
+First flight to the Moon failed for the whole group, "so many issues". These are what he thinks will fix it:
+
+| Mod | Why he wants it |
+|---|---|
+| [Create Aeroworks](https://www.curseforge.com/minecraft/mc-mods/create-aeroworks) | Makes ships easy to control. |
+| [Create Propulsion (Simulated)](https://www.curseforge.com/minecraft/mc-mods/create-propulsion-simulated) | Better thrusters and controls; they run on fuels. |
+| [Create Crafts & Additions](https://www.curseforge.com/minecraft/mc-mods/createaddition) | Electricity: store power and run a ship from it. |
+| [Farmer's Delight](https://www.curseforge.com/minecraft/mc-mods/farmers-delight) | Food. |
+
+Per mod before it is installed: 1.21.1 NeoForge build exists; works with the Create, Simulated and Aeronautics versions we run; what its
+recipes and blocks do to `docs/progression/resource-ledger.md` (every material needs a use, every item a source); whether the rocket quests
+(ADR-0025: Simulated thrusters, helium fuel) must change, which means a new ADR; the jar goes into the CurseForge pack and the server pack
+(`pack/curseforge-extras.json`). The instance is shared with other sessions: compare its jars before writing to it.
+
+### Good to have in alpha.3 (not required)
+
+| # | Finding |
+|---|---|
+| F14 | The map and the team HUD: other mods or settings felt better. Seeing teammates on the map was easy elsewhere, with their health in the HUD. A minimap with Y-level layers (the map at different heights). |
+
 ## Left over from the audit
 
 - Curios items (Cataclysm's belts and rings are not worn any more; Icarus wings and the gliders) were not read; they are not item attributes.
 - Shields add nothing. A design question, not a bug.
 - A client look at the four keys, their tooltips and a bow's slow blow.
 
-## Proposed: more places to explore (structures from other mods)
+## Parked for alpha.4 (Sanchit, 2026-10-25: not in alpha.3)
+
+The three sections below are unchanged from 2026-10-23.
+
+### Proposed: more places to explore (structures from other mods)
 
 Low risk if it is one or two mods and each is brought in as the Cataclysm Ruined Citadel was: a biome tag in a compat jar says where it
 may generate, and the planet loot system already pays out every chest on the Moon, the Nether and the End. Candidates found on Modrinth for
@@ -28,7 +92,7 @@ Moog's Voyager Structures. Not Incendium (it replaces the Nether's biomes; Plane
 Costs to check for each: world generation time and pre-generation, pack size, and a tier tag for every mob it adds (a mob with no tier is paper
 next to our bosses).
 
-## Proposed: Iron's Spells 'n Spellbooks (the careful one)
+### Proposed: Iron's Spells 'n Spellbooks (the careful one)
 
 Why it is attractive: magic would stop being a few procs and a defence stat. Wizards that cast at the player make Magic Resist matter; the
 rarity ladder of its spells can follow our bosses, early weapons, mid spells, late guns and mechs. Facts checked: 1.21.1 NeoForge build 3.16.3
@@ -36,7 +100,7 @@ rarity ladder of its spells can follow our bosses, early weapons, mid spells, la
 our other such mods. **Iron's Spellbooks Tweaks** (MIT, server side) caps the rarity a player may cast and unlocks more by advancement or kill,
 from datapack files, which is the gate Sanchit asked for and fits ADR-0018 (bosses unlock capability; no world is locked).
 
-### Why care, specifically
+#### Why care, specifically
 
 1. **It is a one-way door for worlds.** Adding it to an existing world is harmless. A world played with it will not load cleanly without it. So
    it ships only when we mean to keep it.
@@ -50,7 +114,7 @@ from datapack files, which is the gate Sanchit asked for and fits ADR-0018 (boss
    Does a teammate who did not land the killing blow get the advancement? Unchecked.
 6. **It updates often**, and its config has had multiplayer sync problems that Tweaks works around with its own file.
 
-### How, in order (each step ends at a gate; no step is skipped)
+#### How, in order (each step ends at a gate; no step is skipped)
 
 0. **Decide, no code.** What do spells scale off: our Attack Damage, Magic Penetration and runes, or Iron's own spell power and mana? Is magic a
    *lane* (its own resource, its own armour) or a layer over the legendary kit? Sanchit's call; everything after depends on it.
@@ -68,20 +132,24 @@ from datapack files, which is the gate Sanchit asked for and fits ADR-0018 (boss
    (Iron's spawns many entities).
 6. **Only then** the quest page, the recipes that gate it, the page text.
 
-### Go or no-go
+#### Go or no-go
 
 If step 0 or step 2 turns up something we cannot answer (a mixin that fights ours, damage that skips the damage events, no per-player gate we can
-tie to a team), **Iron's does not ship in alpha.3**; it waits for alpha.4 and the sandbox branch stays. A cheaper alternative if magic is the
+tie to a team), **Iron's does not ship**; it waits and the sandbox branch stays. A cheaper alternative if magic is the
 point: grow our own magic lane (Arcane Edge, Aether Tip and Spellpiercing exist) and use Iron's only for its structures and mobs.
 
-## Proposed: guns and mechs (later than alpha.3)
+### Proposed: guns and mechs
 
 Guns exist for 1.21.1 NeoForge: TaCZ (guns are data, so their damage can be set), Superb Warfare (guns, tanks, helicopters), Create: Gunsmithing.
 No ready-made mech mod turned up in a Modrinth search; mechs may be ours, perhaps built on Sable. Open.
 
 ## Not decided (needs Sanchit)
 
-1. Spell scaling and lane (step 0 above).
-2. Structure mods: which one or two.
-3. Whether alpha.3 is "Iron's in" or "audit, structures and a client pass", with Iron's on a branch for alpha.4.
-4. The "few more things before we publish" and the "final rollout" list he mentioned, which still has not been told to me.
+For alpha.3:
+1. Which paraglider, backpack (with a sleeping bag), sorting mod and minimap/team-HUD mod (F9, F10, F12, F14). I research and propose, he picks.
+2. Is the thruster mod he has in mind Create Propulsion (F11)?
+3. Is "molten core" the Heavy Core (F4)?
+4. What exactly went wrong on the first flight to the Moon, beyond what the four mods fix: the failures, in the order they happened.
+5. The "few more things before we publish" and the "final rollout" list he mentioned earlier, which still have not been told to me.
+
+For alpha.4: spell scaling and lane (step 0 above), and which structure mods.
