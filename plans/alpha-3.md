@@ -67,6 +67,37 @@ recipes and blocks do to `docs/progression/resource-ledger.md` (every material n
 (ADR-0025: Simulated thrusters, helium fuel) must change, which means a new ADR; the jar goes into the CurseForge pack and the server pack
 (`pack/curseforge-extras.json`). The instance is shared with other sessions: compare its jars before writing to it.
 
+### What the research found (2026-10-25, from Modrinth's API; nothing downloaded or installed)
+
+We run Create 6.0.10, Create Aeronautics 1.3.2 (bundles Simulated, Aeronautics and Offroad) and Sable 2.0.5.
+
+| Mod | Version for 1.21.1 NeoForge | Needs | Notes |
+|---|---|---|---|
+| Create Aeroworks | 1.5.0 (2026-08-27), 790 KB | NeoForge 21.1.225+, Create 6.0.0+, Aeronautics 1.0.3+; both sides | **Gyroscope** (keeps a ship level, scales with RPM), **Joystick** (two axes out as redstone signals, keyboard mode), **modular control console** (lever, joystick, button, wheel, yoke, throttle). Custom licence ("LicenseRef-Create-Aeroworks-License"): read it before the server zip carries its jar. |
+| Create Propulsion: Simulated | 1.1.5 (2026-07-23), 1.7 MB, MIT | Sable and Aeronautics; both sides | **Thruster** (fuel), **Ion Thruster** (Forge Energy), multiblock thrusters 2x2x2 and 3x3x3, copycat wings, a solid-fuel thruster. Since 1.1.4 **fuels are data**, so helium can be added as a fuel by datapack (format to be read from the jar). Names Create Crafts & Additions among its fuel mods. |
+| Create Crafts & Additions | 1.7.2 (2026-10-01, beta), 1.8 MB | Create; both sides | Electricity: generators, batteries (Modular Accumulator), motors, wires, Tesla coil. **Wires do not work on a ship by themselves**: there is a small addon, *Create Additions - Sable Compat*, for that, and *Create Crafts & Additions and Aeronautics Compat* lets a docking connector pass energy. Both would be needed for "power on a ship". |
+| Farmer's Delight | 1.3.4 (2026-08-29), 3.2 MB | none; both sides | Food. Adds crops, a cooking pot and a cutting board, so the resource ledger gets new items; its villagers' trades and world generation are the things to watch. |
+
+**What changes with Propulsion**: ADR-0025 says rockets are ships with Create Simulated Thrusters and helium is their fuel, and the quest book, the journey map and
+`ascension-compat-create`'s helium fuel entry are written against that. Replacing the thrusters means a new ADR that supersedes it, a datapack making helium
+Propulsion's fuel, and the quest pages rewritten; Simulated Thrusters would be removed from the pack.
+
+**How they get in**: the CurseForge pack is built from the launcher's record of the Ascension Dev instance (`tools/build-curseforge-pack.py`), so each mod is added
+through the CurseForge app, then checked on a dedicated server, then the pack zips are rebuilt. Another session installs jars into that instance: compare before
+writing to it.
+
+### Candidates for the replacements (Modrinth, 1.21.1 NeoForge; Sanchit picks)
+
+| For | Candidate | What it is | Concerns |
+|---|---|---|---|
+| F9 paraglider | **Paragliders** (Tictim, GPL-3, 2.9M downloads) | A Breath-of-the-Wild glider with stamina, updrafts over fires, durability optional in config, speed configurable. | It adds Spirit Orbs and Goddess Statues that raise Max Health and stamina: those must be switched off (config says they can be) or they fight the growth tree. Not seen in play. |
+| F9 | the Gliders we have (Jeryn99's, `vc_gliders` 1.1.8) | Tiers wood to netherite plus reinforced paper. | Its recipes are data, so a cheaper tier or a cheaper recipe is a datapack change, no new mod. Whether durability is configurable: not read yet. |
+| F10 backpack with sleeping bag | **Traveler's Backpack** (21.9M downloads, updated 2026-10-23) | Upgradeable backpacks, Curios integration. | It is the one I know carries a sleeping bag inside the backpack; the Modrinth description does not say so, **confirm in its wiki** before swapping. Replaces Sophisticated Backpacks (and the `back` slot). |
+| F10 | Comforts (24M) or Sleeping Bags (55K) beside the backpack | Sleeping bags and hammocks that do not set the spawn. | Separate items, not inside a backpack. |
+| F12 sorting | **Inventory Profiles Next** (42M, client only) | Sorting, quick moving, slot locking, gear sets. | Client-side, so no server jar. Alternatives: Client Sort, Sort It Out!. Sophisticated Backpacks and Tom's Storage have their own sorting, not the player inventory's. |
+| F13 quiver | Nyf's Quivers (262K, five tiers) | Quivers as items. | Whether it has a Curios slot is not on its page; **ask for or check a Curios quiver slot** before choosing. |
+| F14 map | **Xaero's Minimap + World Map** (121M) | Shows players, mobs, waypoints, cave mode. | With **Open Parties and Claims** teammates show on the map; but we use FTB Teams and FTB Chunks (which has a map). JourneyMap (15.6M) is the other: it has underground slices by Y level. Team health on the HUD is ours to build (the HUD module's deferred T4), not a map mod's job. |
+
 ### Good to have in alpha.3 (not required)
 
 | # | Finding |
