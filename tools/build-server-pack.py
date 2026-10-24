@@ -5,11 +5,14 @@
 
 What goes in, and why it differs from the CurseForge pack (that one names mods by id; a server needs the files):
 
-  mods/       every jar of the test instance's mods folder that belongs on a server, plus our own 18: the same set the dev server
-              loads (`syncDevMods` in buildSrc/.../ascension.mod-conventions.gradle.kts), so what is tested is what runs. A jar is
-              left off when its neoforge.mods.toml declares only CLIENT-side dependencies (Sodium, Iris, Entity Culling ...) or its
+  mods/       every third-party jar of the test instance's mods folder that belongs on a server, plus our own 18 from the build
+              output (modules/*/build/libs, the same place the CurseForge pack takes them from; the instance's copies can be
+              old, which is how the alpha.2 server got the runes the pack had already replaced). A third-party jar is left off
+              when its neoforge.mods.toml declares only CLIENT-side dependencies (Sodium, Iris, Entity Culling ...) or its
               name is in `dev_mods_server_exclude` in gradle.properties. The three mods whose third-party distribution is off
               (Create Aeronautics, Entity Culling, Keybind Atlas) ARE here, copied from the instance: this is for your own server.
+              After writing, our jars are compared with the CurseForge pack of the same version in build/pack, and a
+              difference fails the run (build that pack first: `python tools/build-curseforge-pack.py`).
   config/     pack/config (the pack's settings, the quest book) and serverpack/config (Chunky), without the first-launch client
               options (pack/config/defaultoptions).
   server.properties, user_jvm_args.txt, SERVER-README.md
@@ -29,6 +32,7 @@ import zipfile
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 OUT = os.path.join(ROOT, 'build', 'server')
 FIXED_DATE = (2026, 10, 21, 0, 0, 0)
+EXPECTED_OUR_JARS = 18
 NEOFORGE_INSTALLER = 'https://maven.neoforged.net/releases/net/neoforged/neoforge/%s/neoforge-%s-installer.jar'
 
 
@@ -61,17 +65,32 @@ def read_pack():
     return pack['name'], pack['version'], pack['neoforge']
 
 
+def our_jars():
+    """Our own jars as the build wrote them; the same search as tools/build-curseforge-pack.py."""
+    version = gradle_property('mod_version')
+    found = {}
+    for folder, _, names in os.walk(os.path.join(ROOT, 'modules')):
+        if os.sep + 'build' + os.sep + 'libs' not in folder + os.sep:
+            continue
+        for name in names:
+            if re.fullmatch(r'ascension_[a-z_]+-%s\.jar' % re.escape(version), name):
+                found[name] = os.path.join(folder, name)
+    if len(found) != EXPECTED_OUR_JARS:
+        sys.exit('expected %d built ascension jars, found %d (run ./gradlew build)' % (EXPECTED_OUR_JARS, len(found)))
+    return sorted(found.items(), key=lambda item: item[0].lower())
+
+
 def collect_mods():
     mods_dir = gradle_property('dev_mods_dir').replace('/', os.sep)
     excludes = [e.strip().lower() for e in gradle_property('dev_mods_server_exclude', '').split(',') if e.strip()]
-    keep, skipped = [], []
+    keep, skipped = list(our_jars()), []
     for name in sorted(os.listdir(mods_dir), key=str.lower):
         path = os.path.join(mods_dir, name)
         if not name.endswith('.jar') or not os.path.isfile(path):
             continue
         if name.startswith('ascension_'):
-            keep.append((name, path))
-        elif any(e in name.lower() for e in excludes):
+            continue  # the instance's copy of ours is not trusted; see our_jars()
+        if any(e in name.lower() for e in excludes):
             skipped.append((name, 'named in dev_mods_server_exclude'))
         elif declares_client_only(path):
             skipped.append((name, 'declares only client-side dependencies'))
@@ -164,9 +183,30 @@ Every pack update means the same jars here: rebuild this zip with `python tools/
 """
 
 
+def client_pack_mismatch(version, mods):
+    """Names of our jars that differ from the CurseForge pack of the same version, or None when that pack is not built."""
+    pack_zip = os.path.join(ROOT, 'build', 'pack', 'ProjectAscension-%s.zip' % version)
+    if not os.path.isfile(pack_zip):
+        return None
+    wrong = []
+    with zipfile.ZipFile(pack_zip) as pack:
+        for name, path in mods:
+            if not name.startswith('ascension_'):
+                continue
+            with open(path, 'rb') as handle:
+                if pack.read('overrides/mods/' + name) != handle.read():
+                    wrong.append(name)
+    return wrong
+
+
 def build():
     name, version, neoforge = read_pack()
     mods, skipped = collect_mods()
+    wrong = client_pack_mismatch(version, mods)
+    if wrong:
+        sys.exit('our jars differ from build/pack/ProjectAscension-%s.zip, so clients and this server would run different code:\n  %s\n'
+                 'rebuild that pack from the same ./gradlew build (python tools/build-curseforge-pack.py), then this one.'
+                 % (version, '\n  '.join(wrong)))
     config = collect_config()
     entries = [('mods/' + n, p) for n, p in mods] + config
     text = {
@@ -191,6 +231,7 @@ def build():
     ours = sum(1 for n, _ in mods if n.startswith('ascension_'))
     print('%s %s for NeoForge %s' % (name, version, neoforge))
     print('  mods:   %d (%d third-party, %d ours)' % (len(mods), len(mods) - ours, ours))
+    print('  ours match the CurseForge pack: %s' % ('not checked (build/pack has no zip of this version)' if wrong is None else 'yes'))
     for n, why in skipped:
         print('  left off the server: %s (%s)' % (n, why))
     print('  config: %d files' % len(config))

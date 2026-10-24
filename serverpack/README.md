@@ -12,7 +12,8 @@ Files not listed here are left alone — Chunky's
 ## Putting it on a host
 
 `python tools/build-server-pack.py` writes `build/server/ProjectAscension-server-<version>.zip` (about 195 MB): `mods/` (the same 50 third-party
-jars the dev server loads, minus anything client-only, plus our 17), `config/` (this folder and `pack/config`), a `server.properties`
+jars the dev server loads, minus anything client-only, plus our 18 from `modules/*/build/libs`, never from the test instance, whose copies
+can be old; the script refuses to write when they differ from the CurseForge pack of the same version in `build/pack`, so build that first), `config/` (this folder and `pack/config`), a `server.properties`
 with the settings below, `user_jvm_args.txt` and a `SERVER-README.md` with the steps. It carries three mods that forbid redistribution
 (Create Aeronautics, Entity Culling, Keybind Atlas), so it is for our own server only and is never published. The EULA is accepted
 on the host by whoever owns the server. Booted from the built jars on a clean PebbleHost directory on 2026-10-20 (`Done` in 1.7 s, quests and growth loaded, a client joined);
