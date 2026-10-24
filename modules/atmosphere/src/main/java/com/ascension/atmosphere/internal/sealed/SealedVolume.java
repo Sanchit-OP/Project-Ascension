@@ -7,6 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
@@ -38,6 +41,10 @@ public final class SealedVolume {
             return positions.size();
         }
     }
+
+    /** Blocks that hold air whatever their collision shape; a data tag so a compat jar or a datapack can add to it. */
+    public static final TagKey<Block> AIRTIGHT = TagKey.create(Registries.BLOCK,
+            ResourceLocation.fromNamespaceAndPath("ascension_atmosphere", "airtight"));
 
     private SealedVolume() {
     }
@@ -113,17 +120,20 @@ public final class SealedVolume {
     /**
      * Whether air can move through this block.
      *
-     * <p>A full cube of collision seals, and so does a closed door or trapdoor; everything else
-     * leaks. Deliberately crude: a player can predict "solid blocks and shut doors hold air, slabs
-     * and fences do not" without a tooltip, and per {@code docs/gameplay/oxygen.md} a model too
-     * subtle to communicate is overdesigned.
+     * <p>A full cube of collision seals, and so do a closed door or trapdoor and any block in the
+     * {@link #AIRTIGHT} tag (slabs and glass panes, and whatever a compat jar or a datapack adds,
+     * such as a hot air balloon's burner); everything else leaks (stairs, iron bars, fences, walls,
+     * open doors). Deliberately crude: a player can predict "solid blocks, shut doors, slabs and
+     * panes hold air, stairs and bars do not" without a tooltip, and per
+     * {@code docs/gameplay/oxygen.md} a model too subtle to communicate is overdesigned. Slabs and
+     * panes were added on Sanchit's word, 2026-10-25.
      */
     private static boolean isOpen(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         if (state.isAir()) {
             return true;
         }
-        if (isClosedDoor(state)) {
+        if (isClosedDoor(state) || state.is(AIRTIGHT)) {
             return false;
         }
         return !state.isCollisionShapeFullBlock(level, pos);

@@ -13,11 +13,14 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -47,6 +50,7 @@ public final class ShipChecks {
     private static final BlockPos ORIGIN = new BlockPos(0, 200, 0);
     private static final int INTERIOR_MINUS_DISPENSER = 26;
     private static final int SETTLE_TICKS = 80;
+    private static final List<String> AUDITED = List.of("aeronautics", "simulated", "offroad", "create");
     private static final int FALL_TICKS = 100;
 
     private static MinecraftServer server;
@@ -102,6 +106,7 @@ public final class ShipChecks {
                     return;
                 }
                 checkLand(level);
+                auditBlocks(level);
                 assemble(level);
                 phase = 2;
                 wait = FALL_TICKS;
@@ -166,6 +171,50 @@ public final class ShipChecks {
         BlockPos dispenser = ORIGIN.offset(2, 1, 2);
         expect("on land the room is sealed (" + index.volumeSize(dispenser) + " blocks)", index.volumeSize(dispenser) == INTERIOR_MINUS_DISPENSER);
         expect("on land a cell of it is pressurised", index.isPressurised(ORIGIN.offset(2, 2, 2)));
+    }
+
+    /**
+     * Which blocks of the ship-building mods hold air when they are a wall (the alpha.2 test's ship had glass and a hot air balloon on top
+     * and the dispenser still read open). Each block's default state goes in one wall cell of the room and the room is asked again; the
+     * wall is put back. Informational: it prints two lists, it does not judge them.
+     */
+    private static void auditBlocks(ServerLevel level) {
+        SealedVolumeIndex index = level.getData(AtmosphereAttachments.SEALED_VOLUMES);
+        BlockPos dispenser = ORIGIN.offset(2, 1, 2);
+        BlockPos cell = ORIGIN.offset(3, 2, 0);
+        for (String namespace : AUDITED) {
+            List<String> seals = new ArrayList<>();
+            List<String> leaks = new ArrayList<>();
+            List<String> unplaceable = new ArrayList<>();
+            for (var entry : BuiltInRegistries.BLOCK.entrySet()) {
+                ResourceLocation id = entry.getKey().location();
+                if (!id.getNamespace().equals(namespace)) {
+                    continue;
+                }
+                try {
+                    level.setBlock(cell, entry.getValue().defaultBlockState(), 18);
+                    index.update(level, dispenser);
+                    (index.volumeSize(dispenser) == INTERIOR_MINUS_DISPENSER ? seals : leaks).add(id.getPath());
+                } catch (RuntimeException e) {
+                    unplaceable.add(id.getPath());
+                } finally {
+                    level.setBlock(cell, Blocks.IRON_BLOCK.defaultBlockState(), 18);
+                }
+            }
+            if (namespace.equals("aeronautics")) {
+                expect("the hot air balloon's adjustable burner holds air as a wall", seals.contains("adjustable_burner"));
+                expect("its envelope blocks hold air too", seals.contains("white_envelope"));
+            }
+            log("AUDIT " + namespace + ": " + seals.size() + " seal, " + leaks.size() + " leak, " + unplaceable.size() + " would not go in a wall");
+            log("AUDIT " + namespace + " LEAK: " + String.join(", ", leaks));
+            if (namespace.equals("aeronautics") || namespace.equals("simulated") || namespace.equals("offroad")) {
+                log("AUDIT " + namespace + " SEAL: " + String.join(", ", seals));
+            }
+            if (!unplaceable.isEmpty()) {
+                log("AUDIT " + namespace + " UNPLACEABLE: " + String.join(", ", unplaceable));
+            }
+        }
+        index.update(level, dispenser);
     }
 
     private static void assemble(ServerLevel level) {

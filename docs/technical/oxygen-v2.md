@@ -82,7 +82,13 @@ for five seconds. Result, on a dedicated server: the room is sealed with 26 bloc
 land is gone; the dispenser in the plot holds the room pressurised; `ShipSpace.toLocal` maps a point a rider would stand on, in the
 falling ship's world position, back to the right plot cell, and that cell reads pressurised. So the assumptions above held for this
 room: plot positions, the bulk-assembly refresh and the position lookup. Not covered: a ship carried to space, two ships overlapping, a
-ship turned over, a wall changed from outside the ship, and blocks that leak by design (glass panes, bars, stairs, slabs).
+ship turned over, a wall changed from outside the ship, and blocks that leak by design (stairs, iron bars, fences, walls, an open door).
+
+**What holds air as a wall (2026-10-25, Sanchit):** a full cube, a shut door or trapdoor, and every block in the data tag
+`ascension_atmosphere:airtight`, which holds slabs and glass panes and, from the Sable compat jar, Aeronautics' adjustable burner (the hot
+air balloon's). Add a block to the tag in a datapack to make it seal. `ship-checks` places every block of Aeronautics, Simulated, Offroad and
+Create in a wall and lists which seal; for Aeronautics only the propellers, propeller bearings, steam vent, mounted potato cannon and
+levitite blend still leak, none of them part of a cabin wall; the envelope blocks and levitite seal.
 
 The alpha.2 report ("the dispenser kept saying the block is open though the ship was sealed") is most likely the door: until
 2026-10-25 a door never counted as a wall, and an airlock is the first thing a ship has.

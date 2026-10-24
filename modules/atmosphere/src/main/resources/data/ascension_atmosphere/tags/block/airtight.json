@@ -1,0 +1,6 @@
+{
+  "values": [
+    "#minecraft:slabs",
+    { "id": "#c:glass_panes", "required": false }
+  ]
+}

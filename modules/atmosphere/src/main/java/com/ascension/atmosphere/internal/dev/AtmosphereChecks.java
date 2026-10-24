@@ -19,11 +19,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -72,6 +74,7 @@ public final class AtmosphereChecks {
         try {
             checkMachinesBreak(server);
             checkDoorsSeal(server);
+            checkWallBlocks(server);
         } catch (RuntimeException e) {
             fail("the checks threw " + e);
             e.printStackTrace();
@@ -162,6 +165,44 @@ public final class AtmosphereChecks {
             expect("a fence in the wall still leaks (" + what + " room)", index.volumeSize(dispenser) == 0);
             clearRoom(level, index);
         }
+    }
+
+    /** What a wall made of each kind of block does: slabs and panes seal (Sanchit, 2026-10-25), stairs, bars and fences still leak. */
+    private static void checkWallBlocks(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        for (int x = 0; x <= 4; x++) {
+            for (int z = 0; z <= 4; z++) {
+                level.getChunk(ORIGIN.offset(x, 0, z));
+            }
+        }
+        buildRoom(level);
+        BlockPos dispenser = ORIGIN.offset(2, 1, 2);
+        level.setBlock(dispenser, AtmosphereContent.AIR_DISPENSER.get().defaultBlockState(), 3);
+        SealedVolumeIndex index = level.getData(AtmosphereAttachments.SEALED_VOLUMES);
+        index.addEmitter(level, dispenser);
+        BlockPos cell = ORIGIN.offset(2, 2, 0);
+        record Wall(String name, BlockState state, boolean seals) {
+        }
+        List<Wall> walls = List.of(
+                new Wall("a full block of glass", Blocks.GLASS.defaultBlockState(), true),
+                new Wall("a bottom slab", Blocks.STONE_SLAB.defaultBlockState(), true),
+                new Wall("a top slab", Blocks.STONE_SLAB.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.TOP), true),
+                new Wall("a glass pane", Blocks.GLASS_PANE.defaultBlockState(), true),
+                new Wall("a stained glass pane", Blocks.RED_STAINED_GLASS_PANE.defaultBlockState(), true),
+                new Wall("an oak slab", Blocks.OAK_SLAB.defaultBlockState(), true),
+                new Wall("stairs", Blocks.STONE_STAIRS.defaultBlockState(), false),
+                new Wall("iron bars", Blocks.IRON_BARS.defaultBlockState(), false),
+                new Wall("a fence", Blocks.OAK_FENCE.defaultBlockState(), false),
+                new Wall("a cobblestone wall", Blocks.COBBLESTONE_WALL.defaultBlockState(), false),
+                new Wall("an open fence gate", Blocks.OAK_FENCE_GATE.defaultBlockState().setValue(BlockStateProperties.OPEN, true), false));
+        for (Wall wall : walls) {
+            level.setBlock(cell, wall.state(), 3);
+            index.update(level, dispenser);
+            boolean sealed = index.volumeSize(dispenser) == INTERIOR_MINUS_DISPENSER;
+            expect(wall.name() + " in the wall " + (wall.seals() ? "seals" : "leaks") + " (" + index.volumeSize(dispenser) + " blocks)",
+                    sealed == wall.seals());
+        }
+        clearRoom(level, index);
     }
 
     /** Lets the recomputes the events queued run, as the next server tick would: the flag task waits behind them. */
