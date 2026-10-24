@@ -1,5 +1,6 @@
 package com.ascension.compat.create;
 
+import com.ascension.compat.create.internal.AviatorGogglesCurios;
 import com.ascension.compat.create.internal.CreateContent;
 import com.ascension.compat.create.internal.RemovedItems;
 import com.ascension.compat.create.internal.dev.CreateChecks;
@@ -7,7 +8,9 @@ import java.util.List;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.slf4j.Logger;
@@ -25,6 +28,8 @@ import org.slf4j.LoggerFactory;
  *   <li>The Air Compressor (ADR-0026): a Create kinetic machine, the only source of air in the pack. It fills the
  *       standard air fluid of {@code ascension-atmosphere}'s api, so Create's tanks, pumps and pipes carry the air
  *       to an Air Dispenser with no Create code in Tier 1.</li>
+ *   <li>Recipes and tags for what the pack needs of Create: brass by hand, Create's wrench on the Air Dispenser, and, with Curios and
+ *       Aeronautics, the Aviator's Goggles in the Curios head slot ({@link AviatorGogglesCurios}).</li>
  * </ul>
  *
  * <p>Create's "wearable tank of pressurised air that drains while worn" is the exact idea
@@ -45,6 +50,12 @@ public final class AscensionCompatCreate {
     public AscensionCompatCreate(IEventBus modBus) {
         CreateContent.register(modBus);
         modBus.addListener(AscensionCompatCreate::hideFromCreativeMenu);
+        // Registries are filled by now. The class is only touched when both mods are there.
+        modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(() -> {
+            if (ModList.get().isLoaded("curios") && ModList.get().isLoaded("aeronautics")) {
+                AviatorGogglesCurios.register();
+            }
+        }));
         // Dormant unless its trigger file is in the game directory.
         CreateChecks.register(NeoForge.EVENT_BUS);
         LOGGER.info("Ascension Compat: Create loaded -- Air Compressor added, backtanks and diving gear removed");

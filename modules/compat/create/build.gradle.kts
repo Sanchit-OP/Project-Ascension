@@ -9,6 +9,7 @@ description =
     "machine that turns rotation into air (ADR-0026)."
 
 val createVersion: String = providers.gradleProperty("create_version").get()
+val curiosVersion: String = providers.gradleProperty("curios_version").get()
 
 repositories {
     // Create's own maven, only for the two libraries its jar carries inside itself (jar-in-jar),
@@ -30,6 +31,8 @@ dependencies {
     // never loads it without the real thing. Create's own Flywheel/Ponder/Registrate come inside
     // its jar (jar-in-jar) and are not needed for the few classes used here.
     compileOnly("maven.modrinth:create:$createVersion")
+    // Compile-only, and only used when Curios is loaded (AviatorGogglesCurios): the goggles-in-the-head-slot bridge.
+    compileOnly("top.theillusivec4.curios:curios-neoforge:$curiosVersion") { isTransitive = false }
 }
 
 evaluationDependsOn(":modules:core")

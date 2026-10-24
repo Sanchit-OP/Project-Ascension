@@ -24,8 +24,10 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import top.theillusivec4.curios.api.CuriosApi;
 
 /**
  * A development aid, dormant unless a file named {@code create-checks.txt} sits in the game directory: on a
@@ -134,6 +136,27 @@ public final class CreateChecks {
         }
         checkBrassByHand(server);
         checkMachinesBreak(server);
+        if (ModList.get().isLoaded("curios")) {
+            CuriosProbe.run(server.overworld(), ModList.get().isLoaded("aeronautics"));
+        }
+    }
+
+    /** Reads Curios' own API, so it is a class of its own and only loaded when Curios is. */
+    private static final class CuriosProbe {
+
+        /** The goggles go in the Curios head slot (alpha.2 test, 2026-10-25). Whether the aviator's goggles then count as goggles needs a player. */
+        static void run(ServerLevel level, boolean aeronautics) {
+            expect("players have a Curios head slot", CuriosApi.getPlayerSlots(level).containsKey("head"));
+            expect("Create's goggles go in the head slot", slotsOf(level, "create", "goggles").contains("head"));
+            if (aeronautics) {
+                expect("Aeronautics' aviator's goggles go in the head slot", slotsOf(level, "aeronautics", "aviators_goggles").contains("head"));
+            }
+        }
+
+        private static Set<String> slotsOf(ServerLevel level, String namespace, String path) {
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(namespace, path));
+            return CuriosApi.getItemStackSlots(new ItemStack(item), level).keySet();
+        }
     }
 
     /** The compressor breaks with a pickaxe and drops itself; Create's wrench lifts the dispenser (alpha.2 test, 2026-10-25). */
