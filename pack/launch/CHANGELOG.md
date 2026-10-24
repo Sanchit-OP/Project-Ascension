@@ -12,6 +12,7 @@ Written as the work lands; the version number and the date go on it when it is b
   could mine them, so they broke almost never and dropped nothing. A pickaxe now works and they drop themselves; Create's wrench lifts the
   Air Dispenser (sneak and use).
 - **Aeronautics' Aviator's Goggles go in the Curios head slot** and count as goggles there (they are not drawn on your head while in the slot).
+- **The Heavy Core (the mace's head) drops more often** from the Trial Chambers' ominous vaults: about 12% a vault instead of 7.5%.
 - **A shut door or trapdoor seals a room** (wooden, iron, copper, Create's glass and sliding doors). Opening one lets the air out and shutting it
   holds the air again, at once.
 

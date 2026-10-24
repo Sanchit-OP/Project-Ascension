@@ -74,6 +74,14 @@ bottles of the Moon's.
 | Change what Earth loses | `data/ascension_core/tags/item/chest_junk_mild.json` (the planets' tag includes it) |
 | Make one structure special | a modifier with `neoforge:loot_table_id` for its table, as the Archive's enchantments do |
 
+## The Heavy Core (the mace's head), 2026-10-25
+
+Not a planet bonus. The alpha.2 test found the Heavy Core "very hard to get": vanilla gives it only from an ominous vault (the
+Trial Chambers' second tier, behind an ominous key), as 1 of 10 shares in a pool rolled 75% of the time, **7.5% a vault**. The modifier
+`ascension_combat:trial_heavy_core` adds a separate 5% for a Heavy Core when the table `chests/trial_chambers/reward_ominous` is
+rolled, about **12.2% a vault** (measured 12.26% over 40,000 rolls by `loot-checks`). Normal vaults are unchanged. To change the rate,
+edit `chance` in `data/ascension_combat/loot_table/chests/trial_heavy_core.json`.
+
 ## Open
 
 - **Components in chests are a choice.** They let a lucky chest skip a crafting step (a Moon epic is the work of two

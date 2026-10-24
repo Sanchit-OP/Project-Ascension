@@ -30,7 +30,7 @@ Written down as he said them. "Status" is kept current as each lands; nothing is
 | # | Finding | Plan | Status |
 |---|---|---|---|
 | F3 | Brass is needed for a few things and Create only makes it with a Nether blaze. | A hand-crafting recipe for the brass ingot (no Nether), deliberately dearer than Create's mixing. Numbers are placeholders. | Done: 3 copper + 3 zinc make 2 brass (3 ingots per brass against the mixer's 1). `create-checks` 31/0. Not seen in a client. |
-| F4 | The Trial Chambers' mace item is too rare ("molten core"; assumed to be the Heavy Core, **confirm**). | Raise its drop rate a little, not a lot. | |
+| F4 | The Trial Chambers' mace item is too rare ("molten core"; assumed to be the Heavy Core, **confirm**). | Raise its drop rate a little, not a lot. | Done: the Heavy Core is only in the ominous vault (7.5% a vault); a separate 5% bonus makes it 12.2% (measured 12.26% by `loot-checks`, 17/0). Not seen in a client. Still **confirm** "molten core" meant this. |
 
 ### Bugs
 

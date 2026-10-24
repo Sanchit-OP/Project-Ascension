@@ -220,6 +220,9 @@ public final class LootChecks {
                 && endDungeon.books > 0 && endDungeon.components > 0, true);
         expect("the planets rise: the End's chests hold more diamonds than the Moon's", endDungeon.diamonds > moonDungeon.diamonds, true);
 
+        log("--- the Trial Chambers' ominous vault and the Heavy Core (the mace's head)");
+        checkHeavyCore(earth);
+
         log("--- only chests");
         LootTable zombieTable = server.reloadableRegistries().getLootTable(
                 ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.withDefaultNamespace("entities/zombie")));
@@ -269,6 +272,32 @@ public final class LootChecks {
         }
         moon.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         zombie.discard();
+    }
+
+    /**
+     * Vanilla: the ominous vault rolls its unique pool 75% of the time and the Heavy Core is 1 of 10 shares in it, 7.5% a vault. The
+     * modifier adds a separate 5% (alpha.2 test, 2026-10-25: "very hard to get"), so about 12.2% is expected; the band is wide enough
+     * for chance and narrow enough that neither the vanilla rate nor a doubled bonus would pass.
+     */
+    private static void checkHeavyCore(ServerLevel earth) {
+        LootTable vault = server.reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE,
+                ResourceLocation.withDefaultNamespace("chests/trial_chambers/reward_ominous")));
+        int rolls = 40_000;
+        int cores = 0;
+        for (int i = 0; i < rolls; i++) {
+            LootParams params = new LootParams.Builder(earth)
+                    .withParameter(LootContextParams.ORIGIN, Vec3.ZERO)
+                    .create(LootContextParamSets.VAULT);
+            for (ItemStack stack : vault.getRandomItems(params)) {
+                if (stack.is(Items.HEAVY_CORE)) {
+                    cores++;
+                }
+            }
+        }
+        double rate = cores / (double) rolls;
+        log("ominous vault: " + cores + " Heavy Cores in " + rolls + " rolls = " + String.format("%.2f%%", rate * 100));
+        expect("an ominous vault gives a Heavy Core about 12% of the time (between 10.5% and 14.5%; vanilla alone is 7.5%)",
+                rate > 0.105 && rate < 0.145, true);
     }
 
     private static void expect(String what, boolean actual, boolean expected) {
