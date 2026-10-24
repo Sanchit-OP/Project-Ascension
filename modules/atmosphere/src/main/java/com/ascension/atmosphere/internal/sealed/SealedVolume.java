@@ -7,7 +7,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 /**
  * Works out which blocks an emitter can pressurise.
@@ -109,15 +113,31 @@ public final class SealedVolume {
     /**
      * Whether air can move through this block.
      *
-     * <p>A full cube of collision seals; everything else leaks. Deliberately crude: a player can
-     * predict "solid blocks hold air, slabs and fences do not" without a tooltip, and per
-     * {@code docs/gameplay/oxygen.md} a model too subtle to communicate is overdesigned.
+     * <p>A full cube of collision seals, and so does a closed door or trapdoor; everything else
+     * leaks. Deliberately crude: a player can predict "solid blocks and shut doors hold air, slabs
+     * and fences do not" without a tooltip, and per {@code docs/gameplay/oxygen.md} a model too
+     * subtle to communicate is overdesigned.
      */
     private static boolean isOpen(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         if (state.isAir()) {
             return true;
         }
+        if (isClosedDoor(state)) {
+            return false;
+        }
         return !state.isCollisionShapeFullBlock(level, pos);
+    }
+
+    /**
+     * A shut door or trapdoor, of any material (wood, iron, copper, Create's glass and sliding doors
+     * are all {@link DoorBlock}s). A door is two thin blocks and never a full cube, which is why the
+     * collision test alone let air straight through every airlock (alpha.2 test, 2026-10-25).
+     */
+    static boolean isClosedDoor(BlockState state) {
+        Block block = state.getBlock();
+        return (block instanceof DoorBlock || block instanceof TrapDoorBlock)
+                && state.hasProperty(BlockStateProperties.OPEN)
+                && !state.getValue(BlockStateProperties.OPEN);
     }
 }

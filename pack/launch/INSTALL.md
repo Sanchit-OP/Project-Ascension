@@ -20,8 +20,8 @@ The keys, what the alpha is, and what is known to be wrong are in the pack's des
 ## For whoever is hosting the server (us)
 
 `python tools/build-server-pack.py` writes `build/server/ProjectAscension-server-<version>.zip` and its `SERVER-README.md` has the steps
-(NeoForge 21.1.249, Java 21, 6 GB or more, EULA accepted by the owner, `online-mode=true`, a whitelist). That zip carries other authors' jars,
+(NeoForge 21.1.249, Java 21, 6 GB or more, EULA accepted by the owner, `online-mode=true`, no whitelist). That zip carries other authors' jars,
 three of them from mods that forbid redistribution: **never share it or publish it**, only upload it to our own server. A friend joins with the
-same pack version and a Minecraft name that has been added with `whitelist add <name>`. **Updating a server that already has a world**
+same pack version; there is no whitelist (`whitelist on` and `whitelist add <name>` bring one back). **Updating a server that already has a world**
 does not need a wipe: its `SERVER-README.md` has the steps (back up the world, delete the old jars, upload the new `mods/` and `config/`,
 keep the world and your own `server.properties`).

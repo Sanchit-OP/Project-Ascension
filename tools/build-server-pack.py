@@ -117,8 +117,10 @@ def collect_config():
 SERVER_PROPERTIES = """# Project Ascension server. Every line here has a reason (serverpack/README.md in the repository).
 # eula.txt is NOT included: you accept Mojang's EULA yourself (https://aka.ms/MinecraftEULA).
 online-mode=true
-white-list=true
-enforce-whitelist=true
+# No whitelist (Sanchit, 2026-10-25: friends could not join). online-mode=true still checks every name with Mojang, so nobody
+# can join as someone else; the cost is that anyone who finds the address can join. `whitelist on` brings it back.
+white-list=false
+enforce-whitelist=false
 enforce-secure-profile=true
 # Ships: a player standing on a moving airship can look like "flying" to the server and be kicked for it.
 allow-flight=true
@@ -156,7 +158,8 @@ jars (three of them from mods that forbid redistribution). It is for your own se
 4. Give the server **6 GB or more** (the plan's memory, leaving a little for the system) and the two flags in `user_jvm_args.txt`
    if the panel does not already use ZGC.
 5. Start it. The first start generates the world and takes a few minutes; wait for "Done".
-6. In the console: `whitelist add <name>` for each player, and `op <your name>`.
+6. In the console: `op <your name>`. There is no whitelist: anyone with the address and a real Minecraft account can join. To close it,
+   `whitelist on` and then `whitelist add <name>` for each player.
 
 ## Check it
 

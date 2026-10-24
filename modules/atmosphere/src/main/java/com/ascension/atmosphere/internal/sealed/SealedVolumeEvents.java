@@ -9,7 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.VanillaGameEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 
@@ -41,6 +43,18 @@ public final class SealedVolumeEvents {
         gameBus.addListener(SealedVolumeEvents::onPlace);
         gameBus.addListener(SealedVolumeEvents::onBreak);
         gameBus.addListener(SealedVolumeEvents::onExplosion);
+        gameBus.addListener(SealedVolumeEvents::onGameEvent);
+    }
+
+    /**
+     * A door or trapdoor opening or closing: it swaps one state for another without placing or breaking anything, so the three
+     * events above never see it, and now that a shut door seals a room, the room has to be looked at again. Vanilla and Create's
+     * sliding doors both post {@code BLOCK_OPEN} / {@code BLOCK_CLOSE}, by hand and by redstone.
+     */
+    private static void onGameEvent(VanillaGameEvent event) {
+        if (event.getVanillaEvent().is(GameEvent.BLOCK_OPEN.key()) || event.getVanillaEvent().is(GameEvent.BLOCK_CLOSE.key())) {
+            scheduleRecompute(event.getLevel(), BlockPos.containing(event.getEventPosition()));
+        }
     }
 
     private static void onPlace(BlockEvent.EntityPlaceEvent event) {

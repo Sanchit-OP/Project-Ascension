@@ -227,7 +227,7 @@ folder (our configs, quests, `options.txt`, and our own jars). Found by reading 
 
 - Build the real server: NeoForge 21.1.x on Java 21, the same mods as the pack, including the three
   distribution-disabled jars, started with generational ZGC (`serverpack/README.md`), a restart script, and backups.
-- `online-mode=true` and `white-list=true` (the dev server runs `false`; see `serverpack/README.md`).
+- `online-mode=true`; `white-list=false` since 2026-10-25 (friends could not join; see `serverpack/README.md`).
 - **Chunky's pre-generation crash is unexplained** (a fresh server filled a 6 GB heap in six minutes). It is off by
   default, so a server is safe but new areas generate live. A busy server with several players travelling to a new
   planet will feel it. Find the cause, or pre-generate each planet by hand in small steps before opening.

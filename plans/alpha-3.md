@@ -22,14 +22,14 @@ Written down as he said them. "Status" is kept current as each lands; nothing is
 
 | # | Finding | Plan | Status |
 |---|---|---|---|
-| F1 | The whitelist is in the way: friends cannot join. | The server pack ships `white-list=false` and `enforce-whitelist=false`; the running server gets `whitelist off`. `online-mode=true` stays. | |
-| F2 | After every new version the main menu has Distant Horizons begging for an update. | Switch its update check and prompt off in the pack config. | |
+| F1 | The whitelist is in the way: friends cannot join. | The server pack ships `white-list=false` and `enforce-whitelist=false`; the running server gets `whitelist off`. `online-mode=true` stays. | Pack default and docs done 2026-10-25. The running server still needs `whitelist off` (Sanchit's console). |
+| F2 | After every new version the main menu has Distant Horizons begging for an update. | Switch its update check and prompt off in the pack config. | Done: `enableAutoUpdater` and `enableSilentUpdates` false in `pack/config/DistantHorizons.toml`. Not seen on a fresh client. |
 
 ### Recipes and drops
 
 | # | Finding | Plan | Status |
 |---|---|---|---|
-| F3 | Brass is needed for a few things and Create only makes it with a Nether blaze. | A hand-crafting recipe for the brass ingot (no Nether), deliberately dearer than Create's mixing. Numbers are placeholders. | |
+| F3 | Brass is needed for a few things and Create only makes it with a Nether blaze. | A hand-crafting recipe for the brass ingot (no Nether), deliberately dearer than Create's mixing. Numbers are placeholders. | Done: 3 copper + 3 zinc make 2 brass (3 ingots per brass against the mixer's 1). `create-checks` 31/0. Not seen in a client. |
 | F4 | The Trial Chambers' mace item is too rare ("molten core"; assumed to be the Heavy Core, **confirm**). | Raise its drop rate a little, not a lot. | |
 
 ### Bugs
@@ -37,9 +37,9 @@ Written down as he said them. "Status" is kept current as each lands; nothing is
 | # | Finding | Plan | Status |
 |---|---|---|---|
 | F5 | Create's Goggles and Create Aeronautics' aviator goggles will not go in the Curios head slot. | Tag them for the Curios head slot (compat jar). | |
-| F6 | Neither our Air Dispenser nor our Air Compressor can be broken properly. The compressor can at least be picked up with a wrench; the dispenser can only be destroyed and drops nothing. | Both mineable with a tool, both drop themselves, the dispenser wrenchable too. | |
+| F6 | Neither our Air Dispenser nor our Air Compressor can be broken properly. The compressor can at least be picked up with a wrench; the dispenser can only be destroyed and drops nothing. | Both mineable with a tool, both drop themselves, the dispenser wrenchable too. | Done: the cause was `requiresCorrectToolForDrops` with no pickaxe tag. Pickaxe tags for all four machines, `create:wrench_pickup` for the dispenser. `atmosphere-checks` and `create-checks` pass on a dedicated server. Not seen in a client. |
 | F7 | The Air Dispenser on an Aeronautics ship kept saying "the block is open" while the ship was fully sealed. | Find why the sealed-room check fails in a ship's own space (`ascension-compat-sable` registers a ship space); fix and check with a real ship. | |
-| F8 | Closed doors do not count as a sealed wall: neither wooden doors nor Create's glass doors. | A closed door, trapdoor and gate seals; an open one does not. | |
+| F8 | Closed doors do not count as a sealed wall: neither wooden doors nor Create's glass doors. | A closed door and trapdoor seal; an open one does not (gates left leaking). | Done: `SealedVolume.isClosedDoor`, and opening or closing is noticed through the game event. 26 checks, 0 failures on a dedicated server (wooden and iron door, trapdoor, fence still leaks). Create's sliding doors are `DoorBlock`s and post the same event (read from the jar). Not seen in a client. |
 
 ### Mods to replace (Sanchit's verdict; each needs research, then his pick, then a compat check)
 

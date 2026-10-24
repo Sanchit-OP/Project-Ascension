@@ -95,7 +95,7 @@ settings with a reason behind them:
 | Setting | Value | Why |
 |---|---|---|
 | `online-mode` | **`true`** | **The dev server runs `false` and a real one must not.** Offline mode authenticates nobody: anyone can connect as any username, including an operator's. |
-| `white-list` | `true` | With `online-mode=true` this is belt and braces; without it, it is the only thing standing between the server and the internet. |
+| `white-list` | `false` | Off since the alpha.2 test (2026-10-25): friends could not join. `online-mode=true` is what stops anyone using another player's name; the whitelist only decides who may try. Turn it on with `whitelist on` if strangers find the address. |
 | `view-distance` | `8` | Deliberately modest. Distant Horizons covers distance visually; raising this pays twice for one result. See [`optimisation-stack.md`](../docs/technical/optimisation-stack.md). |
 | `simulation-distance` | `6` | Ticking radius, which is the expensive one. |
 | `allow-nether` | either | Only stops portal travel into the Nether, which `ascension-worlds` already makes dormant (ADR-0014). The Nether is Planet 3 (ADR-0017) and still loads either way; ships and gateways reach it. See below. |

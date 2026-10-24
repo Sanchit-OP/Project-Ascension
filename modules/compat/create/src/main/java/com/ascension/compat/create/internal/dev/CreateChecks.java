@@ -5,17 +5,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -124,6 +131,60 @@ public final class CreateChecks {
                     holder != null && holder.value().parent()
                             .map(parent -> parent.equals(ResourceLocation.fromNamespaceAndPath("create", "steam_whistle")))
                             .orElse(false));
+        }
+        checkBrassByHand(server);
+        checkMachinesBreak(server);
+    }
+
+    /** The compressor breaks with a pickaxe and drops itself; Create's wrench lifts the dispenser (alpha.2 test, 2026-10-25). */
+    private static void checkMachinesBreak(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        BlockPos pos = new BlockPos(0, 200, 0);
+        level.getChunk(pos);
+        ItemStack wooden = new ItemStack(Items.WOODEN_PICKAXE);
+        Block compressor = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "air_compressor"));
+        BlockState state = compressor.defaultBlockState();
+        expect("the air compressor is mineable with a pickaxe", state.is(BlockTags.MINEABLE_WITH_PICKAXE));
+        expect("a wooden pickaxe harvests the air compressor", wooden.isCorrectToolForDrops(state));
+        List<ItemStack> drops = Block.getDrops(state, level, pos, null, null, wooden);
+        expect("the air compressor drops itself", drops.size() == 1 && drops.get(0).is(compressor.asItem()));
+        Block dispenser = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("ascension_atmosphere", "air_dispenser"));
+        expect("the air dispenser is in create:wrench_pickup",
+                dispenser.defaultBlockState().is(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("create", "wrench_pickup"))));
+    }
+
+    /** Brass at the crafting table (Sanchit, 2026-10-25): no Nether needed, and dearer per ingot than Create's heated mixing. */
+    private static void checkBrassByHand(MinecraftServer server) {
+        var recipes = server.getRecipeManager();
+        var byHand = recipes.byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "brass_ingot_by_hand"));
+        expect("brass by hand is a loaded recipe", byHand.isPresent());
+        if (byHand.isEmpty()) {
+            return;
+        }
+        ItemStack result = byHand.get().value().getResultItem(server.registryAccess());
+        Item brass = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "brass_ingot"));
+        Item zinc = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "zinc_ingot"));
+        expect("brass by hand makes brass ingots", result.is(brass));
+        var ingredients = byHand.get().value().getIngredients();
+        int copper = 0;
+        int zincCount = 0;
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.test(new ItemStack(Items.COPPER_INGOT))) {
+                copper++;
+            }
+            if (ingredient.test(new ItemStack(zinc))) {
+                zincCount++;
+            }
+        }
+        expect("brass by hand takes " + copper + " copper and " + zincCount + " zinc ingots", copper == 3 && zincCount == 3
+                && ingredients.size() == 6);
+        var mixing = recipes.byKey(ResourceLocation.fromNamespaceAndPath("create", "mixing/brass_ingot"));
+        expect("Create's own brass mixing recipe is still there", mixing.isPresent());
+        if (mixing.isPresent()) {
+            ItemStack mixed = mixing.get().value().getResultItem(server.registryAccess());
+            double handCost = ingredients.size() / (double) Math.max(1, result.getCount());
+            double mixingCost = mixing.get().value().getIngredients().size() / (double) Math.max(1, mixed.getCount());
+            expect("by hand costs " + handCost + " ingots per brass, the mixer " + mixingCost + ": dearer", handCost > mixingCost);
         }
     }
 

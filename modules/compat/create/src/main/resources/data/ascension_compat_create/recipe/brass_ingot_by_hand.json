@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "tag": "c:ingots/copper" },
+    { "tag": "c:ingots/copper" },
+    { "tag": "c:ingots/copper" },
+    { "tag": "c:ingots/zinc" },
+    { "tag": "c:ingots/zinc" },
+    { "tag": "c:ingots/zinc" }
+  ],
+  "result": {
+    "id": "create:brass_ingot",
+    "count": 2
+  }
+}

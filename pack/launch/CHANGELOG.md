@@ -4,6 +4,16 @@
 
 Written as the work lands; the version number and the date go on it when it is built.
 
+**Fixes from the alpha.2 test**
+- **The server pack has no whitelist** any more (it blocked friends from joining). Names are still checked with Mojang.
+- **Distant Horizons no longer asks for an update on the main menu.** The pack is updated as a whole.
+- **Brass can be crafted by hand**: 3 copper ingots and 3 zinc ingots make 2 brass, no Nether needed. Create's heated mixer is still far cheaper.
+- **Air machines can be broken and picked up.** The Air Dispenser, Air Compressor, Oxygen Emitter and Refill Station needed a tool but no tool
+  could mine them, so they broke almost never and dropped nothing. A pickaxe now works and they drop themselves; Create's wrench lifts the
+  Air Dispenser (sneak and use).
+- **A shut door or trapdoor seals a room** (wooden, iron, copper, Create's glass and sliding doors). Opening one lets the air out and shutting it
+  holds the air again, at once.
+
 **Combat**
 - **Cataclysm's gear was rebalanced.** Ignitium, Cursium and the Monstrous Helm are smithed from a netherite piece, and several came out worse than the
   piece they used up: each is now at least that netherite piece in Armor, Magic Resist and Health (a full Ignitium set is 84 / 60 / 40, Cursium 76 / 53 / 42,

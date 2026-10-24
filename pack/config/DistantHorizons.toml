@@ -15,3 +15,9 @@
 [client.advanced.graphics.genericRendering]
 	# No clouds anywhere in the pack (Sanchit, 2026-10-22). DH draws its own and ignores the vanilla setting.
 	enableCloudRendering = false
+
+[client.advanced.autoUpdater]
+	# The pack is updated as a whole through CurseForge, and DH asked every player for its own update on the main menu after each
+	# new pack version (alpha.2 test, 2026-10-25). Never check, never download.
+	enableAutoUpdater = false
+	enableSilentUpdates = false
