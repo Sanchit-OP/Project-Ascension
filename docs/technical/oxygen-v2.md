@@ -74,6 +74,19 @@ reads through `TankOxygenSource`, so the HUD rings need no new field. No level 3
   `toLocal(ServerLevel, Vec3)` because a ship space needs the level; and `api.AtmosphereAnchors`
   (register a space, ask for a refresh) is new. Old implementers are unaffected.
 
+## Ships: what the server check found (2026-10-25, `ship-checks`, 11 checks, 0 failures)
+
+`ShipChecks` (in `ascension-compat-sable`, dormant until `ship-checks.txt` is in the game directory) builds a sealed iron room with an
+Air Dispenser and a shut oak door, then turns it into a real ship with Sable's own `/sable assemble area` command and lets it fall
+for five seconds. Result, on a dedicated server: the room is sealed with 26 blocks on land and in the ship's plot; the old emitter on
+land is gone; the dispenser in the plot holds the room pressurised; `ShipSpace.toLocal` maps a point a rider would stand on, in the
+falling ship's world position, back to the right plot cell, and that cell reads pressurised. So the assumptions above held for this
+room: plot positions, the bulk-assembly refresh and the position lookup. Not covered: a ship carried to space, two ships overlapping, a
+ship turned over, a wall changed from outside the ship, and blocks that leak by design (glass panes, bars, stairs, slabs).
+
+The alpha.2 report ("the dispenser kept saying the block is open though the ship was sealed") is most likely the door: until
+2026-10-25 a door never counted as a wall, and an airlock is the first thing a ship has.
+
 ## Increments
 
 A look (art only, seeded script; amber-cream band for helium; shaft face on the compressor) ->

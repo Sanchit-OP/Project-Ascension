@@ -3,7 +3,9 @@ package com.ascension.compat.sable;
 import com.ascension.compat.sable.internal.SableCommands;
 import com.ascension.compat.sable.internal.ShipAir;
 import com.ascension.compat.sable.internal.ShipVoyages;
+import com.ascension.compat.sable.internal.dev.ShipChecks;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +33,8 @@ public final class AscensionCompatSable {
         ShipVoyages.register();
         ShipAir.register();
         SableCommands.register();
+        // Dormant unless its trigger file is in the game directory.
+        ShipChecks.register(NeoForge.EVENT_BUS);
         LOGGER.info("Ascension Compat: Sable loaded");
     }
 }
