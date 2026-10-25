@@ -33,10 +33,10 @@ journey is weakest.
 | 6 | Crafts gatestones and the keystone | 28 gatestones (8 polished deepslate and 1 sculk make 8), 4 diamonds, 2 echo shards, 2 sculk catalysts, a compass | Deep Dark loot, recipes | First Days | recipes **Checked** (load); **never crafted in a client** | Sculk needs Silk Touch; the quantities are heavy |
 | 7 | **Builds the ring** (15 wide, 7 deep, 20 high, 418 blocks) | About 250 cobbled deepslate, bone block pillars, quartz or calcite for the pale parts, the gatestones, the keystone | Earth materials; the **plan is now a picture in the book**, drawn from `gateway.json` | First Days (plan beside the gate quests) | The frame, activation and travel were **Seen** (2026-10-06) from the debug `build` command; **a player has never built it block by block** | Until now nothing taught the layout. Whether a hand-built frame passes every rule is unproven (front/rotation, "mirrored builds are not accepted") |
 | 8 | Lights it with a tendril | One tendril per gate | The Warden | First Days | **Seen** (gate lights; the mark steps) | A gate alone leads nowhere; the book says so |
-| 9 | Learns Create (alloy, casing, power, press) | Andesite, iron nuggets, logs, an iron block, a water wheel | Create 6.0.10 | The Road Up | **Read** (recipes read from the jar; advancement ids exist) | The cliff: Create is a mod of its own. The book leans on Ponder (hold W) and JEI |
-| 10 | Builds the ship: bearing, propeller, envelope and burner, assembler, wheel | 3 titanium, 9+ iron sheets, wool, coal blocks, alloy, a lever | Create, Simulated, Aeronautics, **our titanium bearing recipe** | The Road Up | Parts **Read**; the bearing recipe **Checked**; **a ship built from survival parts has never been flown** | **The biggest unknown.** See 5.1 |
-| 11 | Climbs past y 320 | Lift and thrust against thin air (about a third of sea level at the line) | Sable's `dimension_physics` data in `ascension-compat-sable` | The Road Up | The crossing **Seen** (2026-10-11) with a **command-built** ship | Same as above |
-| 12 | Is in space; steers to the Moon | Two tanks (space is a vacuum); the Planets page (point and arrow) | `SpaceEnvironment`, `ChartOverlay` | The Road Up, Planets | Space **Seen**; the marker in space **Checked** (pixels read back) | Range and air: 5.2. The in-space chart without opening the book: 5.3 |
+| 9 | Learns Create (alloy, casing, power, press) | Andesite, iron nuggets, logs, an iron block, a water wheel | Create 6.0.10 | Spin | **Read** (recipes read from the jar; advancement ids exist) | The cliff: Create is a mod of its own. The book leans on Ponder (hold W) and JEI |
+| 10 | Builds the ship: bearing, propeller, envelope and burner, assembler, wheel | 3 titanium, 9+ iron sheets, wool, coal blocks, alloy, a lever | Create, Simulated, Aeronautics, **our titanium bearing recipe** | Wings | Parts **Read**; the bearing recipe **Checked**; **a ship built from survival parts has never been flown** | **The biggest unknown.** See 5.1 |
+| 11 | Climbs past y 320 | Lift and thrust against thin air (about a third of sea level at the line) | Sable's `dimension_physics` data in `ascension-compat-sable` | Skyline | The crossing **Seen** (2026-10-11) with a **command-built** ship | Same as above |
+| 12 | Is in space; steers to the Moon | Two tanks (space is a vacuum); the Planets page (point and arrow) | `SpaceEnvironment`, `ChartOverlay` | Skyline, The Moon, Planets | Space **Seen**; the marker in space **Checked** (pixels read back) | Range and air: 5.2. The in-space chart without opening the book: 5.3 |
 | 13 | Comes down on the Moon | Nothing (the ship is carried down) | `ascension-compat-sable` | The Moon | **Seen** (2026-10-11) | None |
 | 14 | Lives without air; finds the Archive (-160, -256), the ring (-160, 0), the citadel (800, 0) | Tanks, a sealed room with an emitter for refills | Atmosphere, structure sets | The Moon | Archive, ring, Earthrise, dust storm **Seen**; the citadel's bosses **Seen** spawning and fighting | The Armor/Magic Resist fix on the bosses has not been seen |
 | 15 | Beats the Ender Golem and the Ender Guardian, takes the key | Armour, food, a bow | Cataclysm, `ascension-compat-cataclysm` | The Moon | **Seen** (2026-10-05) | Balance is untested |
@@ -45,7 +45,7 @@ journey is weakest.
 | 18 | Lives under the rot: one piece of gold armour in any slot | Gold | `PlanetHazardMechanics` | The Rot | **Checked** (dose timing unit-tested, headless); **not seen in a client** | Whole-world client test is still owed |
 | 19 | Finds the ring in the warped forest, the colony halls, the Monstrosity | Armour, a key hunt | Seek-placement, Cataclysm | The Rot | Placement **Checked** headless | Never seen |
 | 20 | Lights the Nether's gate: both lit, a path home | The Monstrosity's key | Loot modifier | The Rot | **Checked** headless | Never seen |
-| 21 | Blazes, brass, smart propeller; ancient debris, netherite | Blaze rods, a burner, copper and zinc, quartz, diamonds | Nether, Create | The Rot | Materials **Checked** present | Brass is a Create ladder the player must learn |
+| 21 | Blazes, brass, smart propeller; ancient debris, netherite | Blaze rods, a burner, copper and zinc, quartz, diamonds | Nether, Create | The Rot, Brass | Materials **Checked** present; a burner, an electron tube and tin can be made on Earth since ADR-0032 | Brass is a Create ladder the player must learn |
 | 21a | Flies 32,000 blocks south to the End, falls (if they fall) back to space, kills the Dragon, steps into her exit portal | A ship, wings help | `EndGate`, `VoidFall`, `planet/end.json` (ADR-0028) | The Belt | Compiled and unit-tested only; **not run on a server or in a client** | No ship has flown there; the Dragon is untested at 4,550 HP |
 | 21b | Finds an End city, the Elytra, shulker shells | Wings or a gateway pearl | Vanilla worldgen | The Belt | Not checked | Pre-generation cost unmeasured |
 | 22 | Grows: points, web, runes, enchants | Bosses, gates, places | `ascension-combat` | Gear and Growth | **Seen** (screens) and **Checked** (64 scripted checks) | See 5.6: nothing to wear at the top |
@@ -78,21 +78,26 @@ source and no job is a bug (`resource-economy.md` principle 1).
 
 ## 3. What the book now teaches, page by page
 
+> **Recut 2026-10-25 (ADR-0033, `quests.md` section 17):** nine projects, each a blueprint page with a finale, in the order a player climbs. Pages 1 and 5 to 12 below are the projects.
+
 | Page | Quests | The thread |
 |---|---|---|
-| First Days | 16 | Controls, iron, diamonds, gold, titanium, air; then the dark city, the Warden, the gate (with its plan) |
+| First Light | 16 | Controls, iron, diamonds, gold, titanium, air; then the dark city, the Warden, the gate (with its plan). Project 1; its finale is Earth's gate |
+| Runes and Skill Points | 14 | What runes and the skill web are, where points come from, what is locked and why |
+| Build the Gate | 7 | Read the plan, level ground, the five stone families and their counts, gatestones, the keystone, raise the ring, wake it |
 | Planets | 4 | Earth, the Moon, the Nether and the End on a chart, with a live "you are here" |
-| The Road Up | 17 | Create from nothing, the ship's parts (waiting on Create's and Aeronautics' own advancements), air for the trip, the sky's edge |
-| The Moon | 15 | Packing, landing, no air, dust, the Archive, the fortress and its two guardians, the ring, two rings lit |
-| The Rot | 18 | Gold, the long flight, the ring in the teal forest, the smith, wealth (piglins, bastion, netherite), fire (blazes, brass, a smarter propeller) |
+| Spin | 27 | Create from nothing: shafts and cogs, a crank, water, wind, stress, grinding, fans, mixing, belts, steam, pipes and a spout; finale **a working line** |
+| Brass | 7 | A burner for the basin (made on Earth, ADR-0032), brass, a deployer, crafters, an electron tube; finale **a precision mechanism** |
+| Current | 5 | Power aboard: an alternator, an accumulator, wires, an electric motor; finale **an accumulator** (pays no point) |
+| Crude | 8 | Oil for the rocket: steel, a pumpjack, an electrolyzer, the tower, bronze, kerosene, a platinum tank; finale **a bucket of kerosene** |
+| Wings | 26 | A ship is a contraption: glue, weight, a balloon and burner, propellers, a helm, a gyroscope, a control stand, thrusters; finale **a ship that obeys** |
+| Breath | 5 | A compressor, how far you can go, a room of air, a bigger breath, what holds air; finale **a room that holds air** |
+| Skyline | 8 | Air pressure, the altitude and velocity sensors, goggles, a navigation table, thin air, a first hop; finale **where the sky ends** |
+| The Moon | 18 | How a ship gets there (the chart, coming down, a rocket), packing, landing, no air, dust, the Archive, the fortress and its two guardians, the ring; finale **the Moon's gate lit** |
+| The Rot | 15 | Gold, the long flight, the ring in the teal forest, the smith, wealth (piglins, bastion, netherite), fire (blaze rods, the Wither, Ignis) |
 | The Belt | 9 | The longest flight, landing, no floor, the Dragon, her portal as a gate, the small gateway, an End city, wings, shulker shells |
 | Gear and Growth | 10 | Armour, enchanting, tomes, abilities; points and the web; runes, chalk, slots |
 | Together | 6 | Parties, catching up, no friendly fire, one shared book, the map, a breath for a friend |
-| Build the Gate | 7 | Read the plan, level ground, the five stone families and their counts, gatestones, the keystone, raise the ring, wake it |
-| Create: Power | 9 | Shafts and cogs, a crank, water, wind, stress, wrench and goggles, gearboxes, belts, steam |
-| Create: Machines | 16 | Grind, blow, mix, press, assemble, and move things and fluids |
-| Aeronautics: A Ship | 11 | The assembler, glue, weight, balloon and burner, propellers, an engine, steering, bearings, handles |
-| Aeronautics: In Flight | 13 | Air pressure and the sensors, thrusters, fuel (helium), a rocket |
 
 **Rules the book keeps** (checked by the build): no guarded story word (now including Sealers, Openers, the Heir, the
 voice, keepers, the destroyer); every item, advancement and structure exists; titles and lines fit the panel; no task
@@ -108,7 +113,7 @@ Each of these changed a quest or is a fact a later session needs.
 - **Titanium ore needs a diamond pickaxe** (the ledger). First Days had no diamond step, so "Diamonds" was added.
 - **Three Aeronautics advancements mark the ship's milestones:** `head_in_the_clouds` (hot air filled), `for_every_action`
   (a propeller placed and powered), `in_thrust_we_trust` (a bearing assembled). Create has `andesite_alloy`,
-  `andesite_casing`, `water_wheel`, `mechanical_press`, `brass`. The Road Up waits on those.
+  `andesite_casing`, `water_wheel`, `mechanical_press`, `brass`. Spin and Wings wait on those.
 - **A propeller is four iron sheets round an alloy; a burner is four sheets, two alloy, redstone and a coal block; a
   bearing is one sheet.** So a first ship needs at least nine sheets, which needs a mechanical press, which needs spinning
   power. That is a real tutorial's worth of Create.
@@ -135,7 +140,7 @@ Each of these changed a quest or is a fact a later session needs.
 | 5.2 Range and air | **A ship is a closed space, so the Oxygen Emitter aboard should pressurise it.** No tank change. This becomes part of **Oxygen v2** (below), which he starts soon. |
 | 5.3 HUD chart in space | Leave for now; something later. |
 | 5.4 Helium | **Fuel: decided and built** (ADR-0025): raw helium is a superheated blaze-burner fuel, so it is the strongest thruster fuel. A better tank stays an idea for Oxygen v2. |
-| 5.4b Oil | **Liquid fuel: decided, staged** (ADR-0031, 2026-10-25): crude oil on Earth and a refinery from Create: Petrochem; kerosene, diesel and gasoline fuel the liquid Thruster. Its steel, bronze and tower are *heated* recipes, so it needs a Blaze Burner (Planet 3): the Moon runs on coal or helium, oil is the upgrade after the Nether. Unseen in a client. |
+| 5.4b Oil | **Liquid fuel: decided, staged** (ADR-0031 and ADR-0032, 2026-10-25): crude oil on Earth and a refinery from Create: Petrochem; its five fuels feed the liquid Thruster (`oil-and-fuels.md`). The refinery's heat, its pumpjack's electron tube and its tin used to come from the Nether; three Earth recipes now make them, so oil comes **before the first ship** and the Crude page precedes Wings. Unseen in a client. |
 | 5.6 Build paths | A **new session** starts from `plans/session-prompts/4-build-paths.md`. |
 | 5.8 Enchantments | Put them in the table (**they already are**, see 5.8), and add the **Lootr** mod so every player gets their own loot from a chest (**installed**, not yet seen in a client). |
 | 5.9 First minutes | Tell the player about the book at first login (**built**, not yet seen). |

@@ -8,6 +8,8 @@
 > loaded by the real FTB Quests on a dedicated server (10 checks, 0 failures). The new pages have not been seen in a client.**
 > **Later that night: five pages were added (Build the Gate, Create: Power, Create: Machines, Aeronautics: A Ship, Aeronautics: In
 > Flight): 12 pages, 141 quests, server check 10 of 10 again. See section 14.**
+> **Recut 2026-10-25 (section 17, ADR-0033): the book is nine projects drawn as blueprint sheets, like Dr. Stone's roadmaps. 16 pages, 185 quests.**
+> The page table in section 3 and the counts in sections 13 and 14 are the history; section 17 is the book as it is.
 > What the book taught us about the whole game is in [`journey.md`](journey.md); where this work stopped is section 13.
 > Sections 2 to 4 are what FTB Quests already does (read from the installed jar, `ftb-quests-neoforge-2101.1.36`),
 > so we only build what it cannot.
@@ -86,7 +88,8 @@ Four kinds of quest, each with its own quest shape, so a player reads the page a
 
 - **No quest gates a path, and quests do not raise the growth budget.** Growth's v1 budget is 35 points
   from bosses, gates and discoveries (`growth.md` section 1). Quests would not add to it; see the decision
-  in section 9. Their rewards are things that help a player do the next thing: a stack of the right food,
+  in section 9. (2026-10-25: six project finales now pay one point each, and six discoveries stopped paying, so the
+  total is unchanged at 41: section 17.) Their rewards are things that help a player do the next thing: a stack of the right food,
   a lamp, a repair kit, a map entry, a first tool, the right enchanted book (enchantments are now
   stat sources).
 - **Kits for late joiners.** A "kit for this world" reward on each world's landmark quest is the gear
@@ -251,7 +254,8 @@ tools are in `tools/quests/model.py`; `first_days.py` is the pattern.
   that would spoil the next step.
 - **Tasks:** `checkmark()` (a lesson), `item(id, n)` (have it, not taken), `advancement(id)`,
   `dimension(id)`, `structure(id)`. Our advancements carry the discoveries, the gates and the bosses, so
-  most real goals are an advancement. **Rewards:** `give(item, n)`; nothing that raises growth's 35 points.
+  most real goals are an advancement. **Rewards:** `give(item, n)`; nothing that raises growth's total.
+  **A project page** ends with a `blueprint_page(...)` call that lays it out and draws its sheet (section 17).
 - **Three kinds, three shapes:** lesson `ascension_star`, goal `ascension_nova`, landmark `ascension_eye`.
 - **The voice:** section 1. A word in `guarded-words.txt` fails the build; add one the first time a draft
   comes near saying what it should only point at.
@@ -410,3 +414,60 @@ the player has not been to. The numbers are copied from `growth.md` and `rune-sy
 or the slot unlocks move there, they must move in `pack/quests/runes_and_skills.py`. Gear and Growth's points and runes quests now point to
 the new page. **Checked:** the generator (14 pages), and the real FTB Quests on a dedicated server (13 chapter files, 152 of 152 dependencies
 kept, 0 failures). **Not seen in a client.** It reaches players with the next pack (the quest files are in `pack/config`).
+
+## 17. Nine projects (2026-10-25, ADR-0033)
+
+Sanchit asked for the book to work like the roadmaps in *Dr. Stone*, the series where one scientist rebuilds civilisation project by project up to a rocket to the Moon. The research and the three builds
+on offer are in [`dr-stone-roadmap.md`](dr-stone-roadmap.md); he chose **B**, nine projects, drawn as **blueprint pages**. The series' method is borrowed (a named goal, a chart of what it needs, a finale that is
+a capability); its names, characters and pictures are not.
+
+### The pages now
+
+| # | Page | Quests | Its finale (a project's last quest) |
+|---|---|---|---|
+| 1 | **First Light** (First Days) | 16 | Earth's gate lit |
+| 2 | Runes and Skill Points | 14 | (a guide, section 16) |
+| 3 | Build the Gate | 7 | (the plan and the ring) |
+| 4 | Planets | 4 | (the star chart) |
+| 5 | **Spin** | 27 | A working line: a press, a mixer and a fan |
+| 6 | **Brass** | 7 | A precision mechanism |
+| 7 | **Current** | 5 | An accumulator (pays no point) |
+| 8 | **Crude** | 8 | A bucket of kerosene |
+| 9 | **Wings** | 26 | A gyroscope, a control stand and a thruster |
+| 10 | **Breath** | 5 | A compressor and a dispenser: a room that holds air |
+| 11 | **Skyline** | 8 | Being in space |
+| 12 | **The Moon** | 18 | The Moon's gate lit |
+| 13 | The Rot | 15 | (the Nether, off the road) |
+| 14 | The Belt | 9 | (the End, off the road) |
+| 15 | Gear and Growth | 10 | |
+| 16 | Together | 6 | |
+
+**185 quests.** Pages 1 and 5 to 12 are the nine projects, in the order a player climbs; the rest are guides and the two worlds that are not on the road to the Moon. Nothing is locked: the book runs
+in FTB Quests' flexible mode, so a line shows what leads to what and a quest can be done in any order (ADR-0018).
+
+### What a project page is
+
+- **A sheet.** `tools/generate-blueprint-art.py` draws one picture per page into `textures/quests/blueprint/<page>.png`: the paper-blue grid in quest coordinates, a frame with ruler marks, a step number on every
+  row, a heading, a line-drawn motif (spin, gate, brass, current, crude, wings, breath, skyline, moon) and a title block that names the finale and what it pays. Its round chapter icon is drawn by the same script.
+  Every picture is generated from our own seeded code, as the art rule says.
+- **A layout the tool makes.** `tools/quests/layout.py` places the quests as a dependency chart: needs on top, each quest as low as it can sit while still above everything that needs it, the finale last, side
+  notes (optional quests) under their parents, deterministic. `Chapter.blueprint = Blueprint(number, of, motif, finale, points)` is set by a `blueprint_page(CHAPTER, ...)` call at the bottom of the page's module.
+- **Ids that never change.** A quest's id is a hash of its page and slug. A quest moved to another page keeps the id it was first given (`Quest.legacy` names that page), so nobody's progress was lost when five old
+  pages dissolved into the projects (The Road Up, Create: Power, Create: Machines, Aeronautics: A Ship, Aeronautics: In Flight).
+- **A finale is an advancement.** Six pay one point to the whole team (`growth.md` section 3): Spin, Brass, Crude, Wings, Breath and Skyline. First Light and The Moon pay the two points of their gate. Current pays nothing.
+- **Checked by the build.** The validator (`tools/quests/validate.py`) requires that a project's finale exists and is reached by every need, that its sheet is the shape of its picture, and that the points on the title
+  block are what the growth milestone pays. The tests (49 in `tools/quests/tests`) also catch a page that misstates its points, a need that does not lead to the finale, and a moved quest that lost its old id.
+
+### What changed in the content
+
+- **Removed (duplicates):** Lift, Thrust and Know your height.
+- **Added:** A working line, An electron tube, Wires, An electric motor, Bronze, A bigger tank (platinum, optional), A ship that obeys, A bigger breath, What holds air, A first hop.
+- **Moved:** the burner and brass left The Rot for Brass (a burner can be made on Earth, ADR-0032); the test flight became a lesson in Skyline; the chart, descent and rocket quests moved into The Moon.
+- **Order:** Crude comes before Wings, because the first ship's liquid thruster needs oil.
+- **Platinum** keeps Propulsion's own meaning: a platinum fluid tank holds twice what a copper one does (*A bigger tank*, in Crude, optional). Its other parts stay Propulsion's. It is not made a refinery catalyst.
+
+### Where it stands
+
+Generated and checked (`generate-quests.py --check`, 49 tests, the real FTB Quests on a dedicated server: 16 chapters, 609 ids, 248 items and 76 advancements, 10 checks and 0 failures). **Not seen in a client.** To look at
+first: the sheets under the quests and lines (the draw order is taken from the Planets page's picture, never observed for these), the lines' colour against the paper, the title block's text on a narrow sheet,
+and the nine round icons. `scratchpad/preview_sheets.py` overlays the quests on each sheet for a layout check without a game; it is not a substitute for a client.

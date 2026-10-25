@@ -118,7 +118,8 @@ Together), loaded by the real FTB Quests on a dedicated server; the first two pa
 others **not yet**. Rockets are ships with Create Simulated Thrusters, and helium is their fuel (ADR-0025). The book says what and where,
 never why, and never gates a path. **`docs/progression/journey.md` is the step-by-step map of the whole game, what every
 material is for, and what is missing** (no survival-built ship has ever flown, helium has no job, the 26 combat items have
-no source); `quests.md` section 13 says where the work stopped.
+no source); `quests.md` section 13 says where the work stopped. **Recut 2026-10-25 (ADR-0033, `quests.md` section 17): the book is nine projects drawn as
+blueprint pages, like Dr. Stone's roadmaps (16 pages, 185 quests, ids kept), a finale pays a skill point (the total is still 41), and oil comes before the first ship (ADR-0031, ADR-0032, `docs/progression/oil-and-fuels.md`). Not yet seen in a client.**
 
 Each works in its own worktree and merges only when Sanchit says. Tier 2 compat
 jars: chunky, create, cataclysm, endermanoverhaul, jade, immersivedamageindicators, distanthorizons,

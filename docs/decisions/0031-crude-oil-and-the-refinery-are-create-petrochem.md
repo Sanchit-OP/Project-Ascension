@@ -2,6 +2,7 @@
 
 - **Status:** Accepted, 2026-10-25 (Sanchit: "go with Petrochem ... if it has any issues we go with the Diesel Generators")
 - **Date:** 2026-10-25
+- **Amended by:** [ADR-0032](0032-oil-and-the-first-ship-without-the-nether.md) (the refinery is not Nether-tier any more: three Earth recipes)
 - **Builds on:** [ADR-0030](0030-rocket-parts-are-create-propulsion-and-aeroworks.md) (the liquid Thruster is Create Propulsion's),
   [ADR-0025](0025-rockets-are-thruster-ships.md) (a rocket is a thruster ship; helium stays its Moon fuel),
   [ADR-0018](0018-no-world-is-required.md) (nothing here is required), [ADR-0003](0003-modular-architecture-and-compatibility-policy.md)
@@ -26,7 +27,9 @@ Create Propulsion ships fuel data for Diesel Generators and TFMG and none for Pe
 3. **Oil is on Earth only, with no tag or code of ours.** Petrochem's pumpjack recipes are keyed to biomes (desert and deep ocean give petroleum, 80 to 95 mB a
    cycle; swamp and jungle give oil that is already desalted); a check proves every one names a vanilla biome, so the Moon, Nether and End yield nothing.
 4. **Helium is unchanged**: still a Solid Fuel Thruster fuel and a blaze burner fuel. The oil chain is a second, liquid road, not a replacement.
-5. The flight quest page gets an **oil lane** (oil, steel, pumpjack, electrolyzer, distillation, kerosene), `pack/quests/ship_fly.py`.
+5. The flight quest page gets an **oil lane** (oil, steel, pumpjack, electrolyzer, distillation, kerosene), `pack/quests/ship_fly.py`. (Since ADR-0033 that lane is the **Crude** project page, `pack/quests/crude.py`.)
+
+What each fuel is, how much of a barrel it is and how the five compare is in `docs/progression/oil-and-fuels.md`.
 
 ## What was proved, and what was not
 
@@ -39,9 +42,9 @@ Petrochem's jar carries about 15 stray test recipes of the author's other mod (`
 
 ## Consequences
 
-- **The refinery is a Nether-tier road.** Steel (iron and coal), bronze (copper and tin) and the tower's heat are all *heated* Create recipes, and a Blaze Burner needs a
-  captured blaze (Planet 3). Tin needs no ore: a zinc nugget filled with a thick potion by a spout. So the Moon is reached on coal, charcoal or helium and oil is the
-  upgrade that follows the Nether. That is the shape ADR-0018 asks for, but it is a progression fact Sanchit should know before he reworks progression.
+- **The refinery was a Nether-tier road; ADR-0032 (the same day) made it an Earth one.** Steel (iron and coal), bronze (copper and tin) and the tower's heat are all *heated* Create
+  recipes, and a Blaze Burner needs a captured blaze (Planet 3); tin needs a thick potion (glowstone and a brewing stand) and the pumpjack's controller an electron tube (Nether quartz).
+  Sanchit's answer was that oil is needed for the first ship, so it has to come early: a burner, a tube and tin can now be made on Earth, and the Nether road still works.
 - The machines need power in two forms: the electrolyzer takes Forge Energy (Crafts & Additions' alternator, aboard or on the ground), the pumpjack takes rotation.
 - Petrochem has an "Expert" mode (a separate mod, `petrochem_expert`, not in this pack) that roughly doubles the fluids; its recipes would replace the base ones.
 - Steel, bronze and tin items are Petrochem's, tagged `c:plates/steel` and the like. Nothing of ours registers them, so the resource ledger is unaffected.

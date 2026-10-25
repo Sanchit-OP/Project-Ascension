@@ -30,14 +30,20 @@
 > more damage. Proved on a dedicated server (`damage-checks.txt`, 288 checks: a stand-in player earns two boss milestones, takes six nodes
 > and its attributes move by exactly the new numbers). Points, rules and the shape of the web are unchanged.
 
+> **Projects added 2026-10-25 ([ADR-0033](../decisions/0033-the-quest-book-is-nine-projects.md); Sanchit: points "maybe we can give, but we don't want to increase the total number of points
+> given").** A fourth source: six of the quest book's nine projects pay one point to the whole team when the player holds its finale. The total stays 41 because six discoveries stopped
+> paying (an Ancient City, Trial Chambers, a Woodland Mansion, an Ocean Monument, a Nether Fortress, a Bastion; their advancements stay). On a dedicated server the log says
+> `Growth: 23 milestones worth 41 points, 56 tree nodes`. Not seen in a client.
+
 ## 1. In short
 
 **Every bit of growth is a skill point, and every skill point is spent in a tree.** Points come
-from three places, all permanent and all finite:
+from four places, all permanent and all finite:
 
 1. **Bosses.** The first time the team beats each boss, every player gains 3 points.
 2. **Gates.** Each gate lit gives every player 2 points.
-3. **Discoveries.** The first time *you* find each notable place, you gain 1 point.
+3. **Projects.** The first time the team finishes one of six projects in the quest book, every player gains 1 point.
+4. **Discoveries.** The first time *you* find each of six notable places, you gain 1 point.
 
 You spend points in a **web** of skill nodes with four themes: Power, Fury, Guard and Wayfarer.
 The themes sit side by side and shade into one another, so a player can drift from one into the next
@@ -51,7 +57,8 @@ Nothing grows from kill counts, time played or vanilla XP, so nothing can be far
 |---|---|---|---|
 | Boss, first kill | The whole team | 3 | 7 bosses: 21 (the Dragon added 2026-10-20) |
 | Gate lit | The whole team | 2 | 4 gates: 8 (the End's added) |
-| Discovery | You | 1 | 12 places: 12 (landing on the End added) |
+| Project finale | The whole team | 1 | 6 projects: 6 (added 2026-10-25) |
+| Discovery | You | 1 | 6 places: 6 (was 12: six vanilla places stopped paying, 2026-10-25) |
 | **Total by the end of v1** | | | **41 points, for a 56-node web** (was 35: the alpha now ends at the End, ADR-0028, so the web or the points may want re-balancing; Sanchit's call) |
 
 ## 2. Where it fits
@@ -98,17 +105,40 @@ four milestones already open every slot (`rune-system.md` section 6), so the ext
   20 HP all game. Armour and items carry their defence. That is the choice Sanchit made; the first
   Warden fight will show whether 20 HP and armour is enough there.
 
+### Projects (2026-10-25, ADR-0033)
+
+The quest book is nine projects, each a page with a finale (`quests.md` section 17). **A finale is an advancement, and six of them are worth one point to the whole team** (shared milestones, so a
+late joiner arrives with them). Two more finales are the gates the page already pays for (First Light lights Earth's, The Moon lights the Moon's), and Current, whose finale is the middle of a climb, pays nothing.
+
+| Project | Finale (the advancement fires when the player holds it) | Points |
+|---|---|---|
+| Spin | A mechanical press, a mixer and an encased fan | 1 |
+| Brass | A precision mechanism | 1 |
+| Crude | A bucket of kerosene (needs Petrochem) | 1 |
+| Wings | A gyroscope, a control stand and a thruster, solid or liquid (needs Aeroworks and Propulsion) | 1 |
+| Breath | An air compressor and an air dispenser | 1 |
+| Skyline | Being in space | 1 |
+| Current | An accumulator | 0 |
+| **Total** | | **6** |
+
+The files are `data/<namespace>/ascension_combat/growth_milestone/project/*.json` and their advancements `data/<namespace>/advancement/project/*.json`. The validator checks that the points a page's
+title block advertises are what its milestone pays. A pack without a project's mod should lose that milestone with a logged warning; this was only tried with the mods present.
+
 ## 4. Discoveries
 
 **The first time you reach each notable place, you gain one point.** Personal: each player finds
 them for themselves. One per *kind* of place, not per copy, so the list is finite.
 
-| World | Places (v1) |
-|---|---|
-| Earth | An Ancient City, Trial Chambers, a Woodland Mansion, an Ocean Monument |
-| The Moon | Landing on the Moon, the Lunar Archive, the Ruined Citadel |
-| The Nether | Landing on the Nether, the gate ruin in the warped forest, a Nether Fortress, a Bastion |
-| **v1 total** | **11 points** |
+**Since 2026-10-25 only six places pay** (it was twelve). The six vanilla ones, Ancient City, Trial Chambers, Woodland Mansion, Ocean Monument, Nether Fortress and Bastion, kept their advancements
+(so they still tick in the Ascension tab) but no longer give a point; the project finales in section 3 took their six. A design that wants them back can restore one file each.
+
+| World | Places that pay (v1) | Advancement only |
+|---|---|---|
+| Earth | none | An Ancient City, Trial Chambers, a Woodland Mansion, an Ocean Monument |
+| The Moon | Landing on the Moon, the Lunar Archive, the Ruined Citadel | |
+| The Nether | Landing on the Nether, the gate ruin in the warped forest | A Nether Fortress, a Bastion |
+| The End | Landing on the End | |
+| **v1 total** | **6 points** | |
 
 These use vanilla's own "player is inside this structure" check, which vanilla's structure
 advancements already run. **Each place's advancement lives with whatever owns the place**, so none of
@@ -116,7 +146,7 @@ it needs another mod loaded:
 
 | Where the file lives | Places | Advancements screen |
 |---|---|---|
-| `ascension-combat` | The six vanilla places: Ancient City, Trial Chambers, Woodland Mansion, Ocean Monument, Nether Fortress, Bastion | The **Ascension** tab |
+| `ascension-combat` | The six vanilla places: Ancient City, Trial Chambers, Woodland Mansion, Ocean Monument, Nether Fortress, Bastion (advancements only since 2026-10-25: no milestone, no point) | The **Ascension** tab |
 | `ascension-worlds` | Landing on the Moon, the Lunar Archive, landing on the Nether, the gate ruin | The **Gateways** tab |
 | `ascension-compat-cataclysm` | The Ruined Citadel, and the four bosses | The **Ascension** tab, only with Cataclysm |
 

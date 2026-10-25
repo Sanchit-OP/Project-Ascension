@@ -1,6 +1,7 @@
 # A book that works like Dr. Stone's roadmaps (research and proposal, 2026-10-25)
 
-**Status: proposal, nothing built.** Sanchit's idea, once the oil work was finished: make the quest book feel like *Dr. Stone*, the manga and
+**Status: option B built 2026-10-25** (commits `7a6fba2` tooling, `756f64f` the book, `d9eefc5` growth; ADR-0033; the answers to the six questions are in section 5). Not seen in a client.
+Sections 1 to 4 are the research and proposal as written before the build. Sanchit's idea, once the oil work was finished: make the quest book feel like *Dr. Stone*, the manga and
 anime where one scientist rebuilds civilisation from a stone age, project by project, up to a rocket to the Moon. "Slowly gain and create items,
 industrialisation, advancing to the Moon", and "their roadmap parts were fun and good." This page is what the series does (read from its fan
 wiki, summarised here in our own words), what already matches our game, three ways to build it, and the questions that decide which.
@@ -99,6 +100,47 @@ most work, and it fights two rules we have set (ADR-0018 "no world is required",
    can be tested without a crew (`ascension-compat-sable`).
 5. **Oil's place.** Oil needs a Blaze Burner (the Nether). In the cut above it is after The Rot. Keep that, or add a Nether-free steel recipe so it can come before?
 6. **Platinum.** Propulsion put platinum in the world. Give it a job in the chain (the series puts platinum right before a nitric acid setup, as a catalyst, so a refinery catalyst would echo it), or leave it?
+
+## 5. What he answered, and what was built (2026-10-25)
+
+Sanchit's answers, in his words, and what each became:
+
+| # | Question | His answer | Built |
+|---|---|---|---|
+| 1 | A, B or C | "go with B" | Nine projects (ADR-0033) |
+| 2 | Roadmap pictures | "make the blueprint style pages" | A generated blueprint sheet behind every project page, in quest coordinates |
+| 3 | Points | "maybe we can give, but we don't want to increase the total number of points given, so be careful" | Six finales pay 1 point; six discovery points stopped paying; the total is still 41 (`growth.md` section 3) |
+| 4 | Test flights | "idk how it will fit here though" | A lesson, not a mechanic: Skyline's *A first hop* (the game has no unmanned-ship rule and the book cannot detect one) |
+| 5 | Oil's place | "oil needs to come earlier as we need it in the first ship part" | Crude comes before Wings, and the Nether is off its path: a Blaze Burner, an electron tube and tin can be made on Earth (ADR-0032) |
+| 6 | Platinum | "if a mod has it for something we should keep that mod's essence" | Platinum keeps Propulsion's own job (a platinum tank holds twice as much); not made a catalyst |
+
+He also asked how Petrochem's fuels differ; that is [`oil-and-fuels.md`](oil-and-fuels.md).
+
+### How the first cut changed
+
+| First cut (section 3) | Built |
+|---|---|
+| 1 First Light | **First Light** (the page was First Days, retitled) |
+| 2 Iron and Spin | **Spin**, with **Brass** split off as its own project |
+| 3 A Lit Base | **Current** |
+| 4 Wings | **Wings** (after Crude) |
+| 5 Breath | **Breath** |
+| 6 The Rot | not a project: with a burner made on Earth the Nether is no longer on the road to the Moon; The Rot stays as a world page |
+| 7 Crude | **Crude**, moved before Wings |
+| 8 Test Flights | **Skyline**: the climb out of the atmosphere, with the first hop as a lesson |
+| 9 The Moon | **The Moon**, which now begins with the three ways a ship gets there |
+
+### The series' patterns, and where each landed
+
+| Pattern | Where |
+|---|---|
+| Roadmap diagrams | Every project page is one; the finale is last and every need leads to it (the validator checks it) |
+| A project ends in a capability | Each finale names what you can now do (a line, a precision mechanism, a ship that flies, a room that holds air) |
+| Tools that make tools | Spin first: press, mixer and fan, which make the parts of every later project |
+| Raw materials are expeditions | Platinum, helium, oil in a chosen biome (desert, ocean, swamp, jungle) |
+| Test, fail, scale | *A first hop*; the Moon's three approaches |
+| Chemistry as a ladder | The refinery: desalt, flash, atmospheric, vacuum, each cut the step before another |
+| A mystery as the engine | Already ours (`docs/lore/`), untouched |
 
 ## Sources (read 2026-10-25)
 

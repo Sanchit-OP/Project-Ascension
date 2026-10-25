@@ -23,6 +23,13 @@ Written as the work lands; the version number and the date go on it when it is b
   thruster, an ion thruster that runs on power. **Create: Petrochem** puts crude oil in the ground of Earth (desert, swamp, jungle, deep ocean) with a pumpjack, an electrolyzer and a distillation tower; its kerosene, diesel and gasoline are the liquid Thruster's fuels. Its steel and tower need a Blaze Burner. **Create Crafts & Additions** (with its Sable addon, so wires work on a ship) gives a ship stored electricity.
   The flight quest page teaches them in that order.
 - **Brass can be crafted by hand**, which the new thruster needs.
+- **Oil and the first ship no longer need the Nether.** Petrochem's refinery needs heat, an electron tube and tin, and each used to come from the Nether. Three Earth recipes now make them, each dearer than the Nether road:
+  a **Blaze Burner** (a lava bucket over a magma block with iron sheets round it), an **electron tube** (an amethyst shard, four redstone and an iron sheet) and a **tin nugget** (two zinc nuggets and an iron nugget).
+  The Nether recipes still work and still give what only they can.
+
+**The quest book is nine projects.** Like a roadmap, each is a page with a blueprint behind it and a finale: First Light, Spin, Brass, Current, Crude, Wings, Breath, Skyline and The Moon. Crude (oil) comes before Wings (the first ship).
+The old Create and Aeronautics teaching pages are folded into them (16 pages, 185 quests); anything you had finished stays finished. **Finishing a project pays a skill point to your whole team** (Spin, Brass, Crude, Wings, Breath
+and Skyline), and six places stopped paying a point so the total is still 41: an Ancient City, Trial Chambers, a Woodland Mansion, an Ocean Monument, a Nether Fortress and a Bastion (they still tick in your advancements).
 
 **Quality of life**
 - **Paragliders** replaces Gliders: a glider you hold, not wear, with no durability. Its Spirit Orbs, Heart Containers, Stamina Vessels and statues are off.
