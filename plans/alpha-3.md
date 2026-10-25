@@ -226,7 +226,7 @@ that its fluids, recipes and pumpjack load beside the rest, then write the Thrus
 Modrinth alone). Staged with the whole set and booted: 2.3 s, no mixin conflict, `create-checks` 52/0 including the five Thruster fuels read back out of Create
 Propulsion's own table; the quest lane (oil, steel, pumpjack, electrolyzer, distillation, kerosene) loads (`quest-checks` 10/0). **Finding:** steel, bronze and the tower are
 all *heated* recipes, so the refinery needs a Blaze Burner, which only a Planet 3 blaze gives (Create's `blaze_burner_capturable` tag is the blaze alone). Oil is
-therefore the upgrade after the Nether; the Moon still runs on coal, charcoal or helium. **Not in the instance yet**; a pumpjack, electrolyzer and tower are unseen in a client.
+therefore the upgrade after the Nether; the Moon still runs on coal, charcoal or helium. **In the instance since 2026-10-25** (with the rebuilt `ascension_compat_create` jar and the quest lane synced); a pumpjack, electrolyzer and tower are unseen in a client.
 
 ## Not decided (needs Sanchit)
 
@@ -234,7 +234,8 @@ For alpha.3:
 1. ~~Is "molten core" the Heavy Core (F4)?~~ Yes (2026-10-25).
 2. ~~May the staged mod set be applied?~~ Yes, done.
 3. ~~Shaders?~~ Both, off by default.
-4. ~~A liquid fuel~~ Petrochem (ADR-0031), staged; to install in the instance on his word.
+4. ~~A liquid fuel~~ Petrochem (ADR-0031), installed.
+5b. **Progression idea (his, 2026-10-25): make the quest book work like Dr. Stone's roadmaps.** Researched; `docs/progression/dr-stone-roadmap.md` has the series' structure, the mapping onto our pages, three ways to build it (A cover page, B nine projects, C one campaign) and six questions. Waiting on his pick.
 5. The "few more things before we publish" and the "final rollout" list he mentioned earlier, which still have not been told to me.
 
 For alpha.4: spell scaling and lane (step 0 above), and which structure mods.
