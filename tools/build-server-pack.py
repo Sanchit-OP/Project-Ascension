@@ -169,9 +169,11 @@ jars (three of them from mods that forbid redistribution). It is for your own se
 
 ## Updating a server that already has a world
 
-A world made on alpha.1 loads on alpha.2 as it is: **do not wipe it**. Nothing about the dimensions, the structures or the saved data
-changed (the only removals are two runes, and a saved rune page is moved to what replaced them). Chests nobody has opened yet roll the
-new loot when they are first opened; chests already opened keep what they gave.
+A world made on alpha.2 loads on alpha.3 as it is: **do not wipe it**. Nothing about the dimensions or the structures changed. What does change: Sophisticated
+Backpacks and Gliders are gone from the pack (backpacks in the world vanish with what is inside them, so players should empty them first), Create Simulated's
+thrusters are replaced by Create Propulsion's, and a player who spent skill points that came from one of six places is given the tree back to spend again. Quest
+progress is kept. Chests nobody has opened yet roll the new loot when they are first opened; chests already opened keep what they gave. **alpha.2 clients cannot
+join an alpha.3 server** (the network protocol changed): every player updates together.
 
 1. Tell players to leave, then stop the server.
 2. **Back up the world** (the panel's backup, or download the `world/` folder). It takes a minute and undoes any surprise.

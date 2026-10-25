@@ -35,7 +35,8 @@ chosen set of other people's, for solo play or a small team.
 
 - **Earth.** Survive, build, and learn the book (press **J**). Vanilla's Nether and End portals are dead: those worlds are planets now.
 - **Ships.** A Create Aeronautics airship that climbs past the top of the sky is carried into space with its crew. A ship that reaches
-  a planet in space comes down onto it. Rockets are ships too: Create: Simulated Thrusters, burning helium.
+  a planet in space comes down onto it. Rockets are ships too: Create Propulsion's thrusters, burning helium or refined oil. Crude oil is in the ground of Earth's deserts,
+  swamps, jungles and deep oceans (Create: Petrochem), and the Create: Aeroworks gyroscope and control stand keep a ship level and steerable.
 - **The Moon.** A pale world with no air and its own dust storms. A buried archive of tablets, and a boss at the end of a citadel.
 - **The Nether.** The real Nether with its roof taken off, open to the sky and reached by ship. Something in the air harms you: wear
   gold. Fortresses, blaze spawners and netherite are all where you left them.
@@ -58,11 +59,12 @@ Air is a resource you make, carry and spend.
 ## Fighting
 
 - **Twenty-six legendary items**, each with a build path across worlds: components from many places, and for the strongest, a boss's
-  heart. They have tooltips, abilities, sound and a light beam when dropped. **Z** uses the one you wear.
+  heart. They have tooltips, abilities, sound and a light beam when dropped. Four keys use them, one for each place an active sits: **Z** the legs, **X** the chest,
+  **mouse 4** the off hand and relic slot, **mouse 5** the item in your hand.
 - **Runes.** Forty-five runes arranged on pages in an orrery screen (**R**), opening as your team clears bosses and lights gates. Ambush
   hits harder the more Lethality you have, Predator turns Lethality into damage, Arc throws lightning at four enemies at once, and Overheal
   turns healing past full into a shield.
-- **Growth.** A web of fifty-six nodes fed by skill points (**K**). Points come only from bosses, lit gates and the notable places you
+- **Growth.** A web of fifty-six nodes fed by skill points (**K**). Points come only from bosses, lit gates, finishing the quest book's projects and the notable places you
   find first, so every one is earned, and each node is worth having: a small one is +1 Attack Damage, +3 Health, +5 Armor or +3 Lethality.
 - **Enchantments that count.** Sharpness and Power add real Attack Damage, three magic enchantments (Arcane Edge, Aether Tip and
   Spellpiercing) feed the magic side, the legendary items can be enchanted, and an Enchantment Library block stores your books.
@@ -83,15 +85,15 @@ chest from every mod, and Lootr gives each player their own.
 
 - **Teams.** Party up with FTB Teams. Bosses and quest progress belong to the party; a solo player is a party of one. Friendly fire is off.
 - **Everyone gets loot.** Lootr gives each player their own chest contents.
-- **Storage that scales.** Sophisticated Storage, Sophisticated Backpacks and Tom's Simple Storage.
+- **Storage that scales.** Sophisticated Storage and Tom's Simple Storage, Traveler's Backpack (with a sleeping bag in it), and Inventory Profiles Next to sort it all.
 - **Waystones.** Fast travel inside a world. Travel between worlds is refused: that is what ships and gates are for.
 - **Claims and a map.** FTB Chunks protects your base; Xaero's Minimap and World Map draw the map, and **M** opens it.
 
 ## A quest book that teaches
 
-Press **J**. Fourteen pages and roughly 165 quests teach the whole road: first days on Earth, building the gate, four pages teaching
-Create and Aeronautics from nothing, the Moon, the rot, gear and growth, the End, and a page for playing together. A star chart of the
-worlds shows where you are, even in space. A page of its own, **Runes and Skill Points**, explains the two character screens. It says what and
+Press **J**. Sixteen pages and 185 quests teach the whole road, drawn like roadmaps: nine **projects**, each a blueprint with a goal at the bottom (First Light, Spin, Brass,
+Current, Crude, Wings, Breath, Skyline and the Moon), then the rot, the End, gear and growth, and a page for playing together. Finishing six of the projects gives your whole
+team a skill point. A star chart of the worlds shows where you are, even in space. A page of its own, **Runes and Skill Points**, explains the two character screens. It says what and
 where. It never blocks you.
 
 ## A game you can read
@@ -104,17 +106,19 @@ Atlas are in to make the controls bearable.
 
 - **Our own mods:** atmosphere (air, tanks, sealed rooms), worlds (planets, gates, space), combat (items, stats, runes, growth,
   enchantments), HUD, and compatibility jars that tie the rest together.
-- **Ships and tech:** Create, Create Aeronautics, Create: Simulated Thrusters, Sable.
+- **Ships and tech:** Create, Create Aeronautics, Create: Aeroworks, Create Propulsion, Create Crafts & Additions (with its Sable addon), Create: Petrochem, Sable.
 - **Combat and bosses:** L_Ender's Cataclysm, Better Combat, Enderman Overhaul, Caelus API and Icarus for the Elytra.
 - **Quests and teams:** FTB Quests, FTB Teams, FTB Chunks, FTB Library.
-- **Storage and travel:** Sophisticated Storage, Backpacks and Core, Tom's Simple Storage, Lootr, Waystones, Curios API.
-- **Small comforts:** FallingTree (a tree comes down in one go), Gliders, Double Doors (with Collective) and GraveStone Mod.
+- **Storage and travel:** Sophisticated Storage and Core, Tom's Simple Storage, Traveler's Backpack, Inventory Profiles Next, Lootr, Waystones, Curios API.
+- **Small comforts:** FallingTree (a tree comes down in one go), Paragliders, Farmer's Delight, Double Doors (with Collective) and GraveStone Mod.
+- **Maps:** Xaero's Minimap and World Map, FTB Chunks (claims).
 - **Information and interface:** JEI, Just Enough Resources, Jade, Immersive Damage Indicators, Controlling, Keybind Atlas,
   Mouse Tweaks, Ok Zoomer, Default Options, Iris.
+- **Shaders (off until you pick one):** Complementary Shaders - Reimagined and Complementary Shaders - Unbound.
 - **Performance:** Sodium, Lithium, FerriteCore, ModernFix, Alternate Current, BadOptimizations, Entity Culling,
   MoreCulling, Distant Horizons, Chunky, spark.
 - **Libraries:** Architectury, Balm, Cloth Config, Common Network, Forgified Fabric API, GeckoLib, Immersive Messages API, Lionfish
-  API, playerAnimator, Resourceful Config and Lib, Searchables, Sparkweave Engine, TxniLib.
+  API, libIPN, Kotlin for Forge, playerAnimator, Resourceful Config and Lib, Searchables, Sparkweave Engine, TxniLib.
 
 ## What is coming
 
@@ -128,7 +132,7 @@ Everything below is **planned, not promised**: the order and the details can cha
 - **A starter ship** you can copy, so the first flight is less of a puzzle.
 - **The End's own sky,** and a proper look at its haze.
 - **Cataclysm's weapons** brought into the same balance as ours, and more boss tuning from your fights.
-- **A team list on the HUD,** and a server we run: how to join will be posted on this page.
+- **A server we run:** how to join will be posted on this page.
 
 ### The next worlds
 
@@ -152,23 +156,23 @@ Planets are data, not code, so new ones are mostly authoring: terrain, a surviva
 - **H**: character sheet
 - **K**: skill tree
 - **R**: rune page
-- **Z**: use a worn item's ability
-- **M**: map
+- **Z**, **X**, **mouse 4**, **mouse 5**: use an item's ability (legs, chest, off hand and relic slot, the item in your hand)
+- **M**: Xaero's world map
 - **B**: every key, on screen
 - **N**: Cataclysm helmet ability
 
 ## Requirements
 
 Minecraft 1.21.1, NeoForge 21.1.249, Java 21 (the CurseForge app supplies it). Give the game **6 GB or more**, 8 GB if you can; we
-have not measured the least that works. **A world made on alpha.1 loads as it is** (back it up first, as for any update). A world made on a
-development build from before alpha.1 keeps the dimensions it was made with, so start a new one: it will not have the roofless Nether or the
-End as a planet.
+have not measured the least that works. **A world made on alpha.2 loads** (back it up first, and empty any Sophisticated backpack into a chest: that mod is gone and what is
+inside a backpack is lost). A world made on a development build from before alpha.1 keeps the dimensions it was made with, so start a new one: it will not have the roofless Nether or the
+End as a planet. Alpha.2 and alpha.3 cannot share a server.
 
 ## Known issues, in short
 
-Shaders are not supported in space yet. Ships holding air are not proven. Two players at once are not proven. The Curios slots are not
-seen in a game yet (the oxygen tank and Zonia's Hourglass or Sterak's Harness have them). The legendary weapons, the skill tree and the runes
-were all raised and have not met a real boss. The full list, and what to do about each, is in
+Nothing new in this alpha has been played beyond a minute's start-up: the new ship parts, oil, the quest book's blueprint pages and the new mods are all unseen. Shaders are off
+and not supported in space yet. Ships holding air are not proven. Two players at once are not proven. The Curios slots are not seen in a game yet. The legendary weapons, the skill tree
+and the runes have not met a real boss. The full list, and what to do about each, is in
 KNOWN_ISSUES.md.
 
 ## Reporting a bug
@@ -178,7 +182,8 @@ Say what you did, what you expected and what happened. Attach `logs/latest.log` 
 
 ## Credits
 
-Every mod in the pack belongs to its authors; the list is the pack's file list. Thank you to all of them. The art in our own mods is
+Every mod in the pack belongs to its authors; the list is the pack's file list. Thank you to all of them. Shader packs: Complementary Shaders - Reimagined and Complementary Shaders - Unbound,
+by Complementary Development, used under their licences and left unmodified. They are off until you choose one. The art in our own mods is
 original and was generated by our own scripts.
 
 ## Licence

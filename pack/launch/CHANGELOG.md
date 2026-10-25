@@ -1,8 +1,10 @@
 # Changelog
 
-## 0.1.0-alpha.3 (in progress, not released)
+## 0.1.0-alpha.3 (2026-10-25)
 
-Written as the work lands; the version number and the date go on it when it is built.
+What changed after friends tested alpha.2: the ships were too hard to fly, so this alpha adds the parts that make a ship steerable and a rocket fuel to burn, recuts the quest book into
+projects, and fixes what the test found. Minecraft 1.21.1, NeoForge 21.1.249. **An alpha.2 world still loads, but read "Updating from alpha.2" in the known issues first**: backpacks and gliders
+from alpha.2 are gone from the pack, and what is inside a backpack is lost.
 
 **Fixes from the alpha.2 test**
 - **The server pack has no whitelist** any more (it blocked friends from joining). Names are still checked with Mojang.
@@ -20,7 +22,7 @@ Written as the work lands; the version number and the date go on it when it is b
 **Ships and flight** (the alpha.2 test: nobody reached the Moon, "the controls were too hard")
 - **Create: Aeroworks** is in: a **gyroscope** that keeps a ship level, a **joystick**, and a **control stand** that takes lever, joystick, wheel, yoke and
   throttle modules. **Create Propulsion** replaces Create Simulated Thrusters: a solid fuel thruster that burns coal, wood or raw helium, a liquid
-  thruster, an ion thruster that runs on power. **Create: Petrochem** puts crude oil in the ground of Earth (desert, swamp, jungle, deep ocean) with a pumpjack, an electrolyzer and a distillation tower; its kerosene, diesel and gasoline are the liquid Thruster's fuels. Its steel and tower need a Blaze Burner. **Create Crafts & Additions** (with its Sable addon, so wires work on a ship) gives a ship stored electricity.
+  thruster, an ion thruster that runs on power. **Create: Petrochem** puts crude oil in the ground of Earth (desert, swamp, jungle, deep ocean) with a pumpjack, an electrolyzer and a distillation tower; its kerosene, diesel, gasoline, LPG and fuel oil are the liquid Thruster's fuels (gasoline gives the most push from a barrel, kerosene the most per tank). **Create Crafts & Additions** (with its Sable addon, so wires work on a ship) gives a ship stored electricity.
   The flight quest page teaches them in that order.
 - **Brass can be crafted by hand**, which the new thruster needs.
 - **Oil and the first ship no longer need the Nether.** Petrochem's refinery needs heat, an electron tube and tin, and each used to come from the Nether. Three Earth recipes now make them, each dearer than the Nether road:
@@ -50,9 +52,13 @@ and Skyline), and six places stopped paying a point so the total is still 41: an
   your hand (Galeforce). Rebind them in Controls; an item's tooltip says which it uses. The old key is gone, and an old install picks up the four new ones
   with these defaults.
 
+**Maps and keys**
+- **M opens Xaero's World Map and nothing else.** FTB Chunks' own map key is unbound and its minimap is off (it stays for claims; bind **Claim Manager** in Controls to claim a chunk).
+- A small purple arrow on each hotbar slot is Inventory Profiles Next's Auto Refill marker; switch it off in its config if you do not want it (known issues).
+
 **Notes for the release**
 - The network protocol changed (the ability keys), so an alpha.2 client cannot join an alpha.3 server, and the reverse. Update both together.
-- The page description's **Keys** list still says `Z: use a worn item's ability`, which is true of alpha.2. Change it to the four keys when alpha.3 is published.
+- Nothing in this alpha has been played in a client beyond a minute's start-up. Known issues says what is unseen.
 
 ## 0.1.0-alpha.2
 
