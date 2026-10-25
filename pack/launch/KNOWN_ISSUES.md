@@ -36,8 +36,11 @@ Alpha.3 is built and was checked on a dedicated server; a client has started wit
 
 ## Things that are known to be wrong or missing
 
-- **Shaders.** Complementary Shaders (Reimagined and Unbound) come with the pack and are **off**; pick one in Video Settings > Shader Packs. Their clouds are off. With one on,
-  our planets may be drawn with toothed edges and the sky in space has not been looked at; ships under shaders have not been looked at either. If anything looks wrong, turn shaders off.
+- **Shaders.** Complementary Shaders (Reimagined and Unbound) come with the pack, each also as an **Euphoria Patches** version: Video Settings > Shader Packs lists four. All are **off** until you
+  pick one, and their clouds are off. The two Euphoria ones appear after the game's first start (the Euphoria Patcher mod builds them from the Complementary zips in `shaderpacks/`, which must stay as
+  they are; if a Euphoria pack shows an error message instead of a picture, a Complementary zip was changed or is missing, so reinstall it from the app). Looked at once, in a test world: Earth by day,
+  the Moon and the asteroid belt under Euphoria Reimagined and Unbound, with no shader errors; nothing else. With one on, planets may be drawn with toothed edges, the Moon's sky is an amber haze (the
+  same under plain Reimagined), and ships under shaders have not been looked at. If anything looks wrong, turn shaders off. Euphoria Patches' own problems go to its authors (euphoriapatches.com), not to Complementary's.
 - **No clouds, on purpose.** The pack turns clouds off everywhere (the game's setting, held off, and Distant Horizons' own clouds). If you
   see one, tell us which mod drew it.
 - **A small purple arrow on each hotbar slot** is Inventory Profiles Next's Auto Refill marker (a stack that runs out is topped up from your inventory). To hide it, open

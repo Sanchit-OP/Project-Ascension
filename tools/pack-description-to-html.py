@@ -5,7 +5,7 @@
 
 Reads everything under "## Description" in pack/launch/curseforge-description.md and writes pack/launch/curseforge-description.html.
 Open the HTML in a browser, select all, copy, and paste into the project's description box (a markdown paste would show its symbols).
-It understands only what that file uses: headings, paragraphs, bullets (with wrapped lines), one-level quotes, tables, **bold**, `code`.
+It understands only what that file uses: headings, paragraphs, bullets (with wrapped lines), one-level quotes, tables, **bold**, `code`, [links](https://...).
 """
 
 import html
@@ -19,6 +19,7 @@ OUT = os.path.join(HERE, '..', 'pack', 'launch', 'curseforge-description.html')
 
 def inline(text):
     text = html.escape(text, quote=False)
+    text = re.sub(r'\[([^\]]+)\]\((https?://[^)\s]+)\)', r'<a href="\2">\1</a>', text)
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'`(.+?)`', r'<code>\1</code>', text)
     return text

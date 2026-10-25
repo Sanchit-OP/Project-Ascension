@@ -97,6 +97,30 @@ at all. Shaders are off in the instance until a player turns one on.
 - **A reading of the licence, not a ruling:** 1.2c forbids changing the pack's contents "including simple variable changes". The options file is a
   separate file beside the zip, the same file Iris writes when a player moves a slider, so the zip stays byte-for-byte what CurseForge serves.
 
+## Euphoria Patches (added 2026-10-25, before the alpha.3 upload)
+
+Sanchit: add the Euphoria Patches versions of both Complementary packs.
+
+- **What it is.** Euphoria Patches is SpacEagle17's add-on for Complementary Shaders. It is shipped as a **client-side mod, the Euphoria Patcher** (MPL-2.0), not as a shader zip: at start-up it applies
+  a binary patch (`EuphoriaPatches_1.10.5.patch`, 1.7 MB inside its jar) to the Complementary zips in `shaderpacks/` and writes **two folder packs** beside them, `ComplementaryReimagined_r5.9.3 + EuphoriaPatches_1.10.5`
+  and `ComplementaryUnbound_r5.9.3 + EuphoriaPatches_1.10.5`. Nothing modified is ever shipped by us.
+- **In the manifest by id** (`pack/curseforge-extras.json`): project 915902 file 8884680, `EuphoriaPatcher-1.10.5-r5.9.3-neoforge.jar` (4.49 MB, SHA-1 `2b3f92878d6867fa0199937da25ba882b9db7902`,
+  identical to Modrinth's file). Its mod id is `euphoria_patcher`; it needs only NeoForge and Minecraft. Modrinth marks it client only, but its `mods.toml` says side BOTH, so the server pack leaves it
+  out by name (`dev_mods_server_exclude` in `gradle.properties`).
+- **Version coupling.** The patcher names the Complementary release it wants (`_r5.9.3`) and refuses any other: when the Complementary pins move, this one must move with them, to the file whose name ends in the same `rX.Y.Z`.
+  A changed or missing Complementary zip makes it write an error shader (`_0EuphoriaPatches_ErrorShader`) with instructions instead.
+- **Off by default.** It selects nothing: it only rewrites a `shaderPack=` line in `iris.properties` that already names an *older* Euphoria pack. A fresh profile has no `iris.properties` line, so no pack is on.
+- **Clouds off.** A folder pack's option file is `<folder name>.txt` (a zip's is `<zip name>.zip.txt`), so `pack/shaderpacks/` now holds four files, each `CLOUD_STYLE_DEFINE=0`. The Euphoria packs keep that setting
+  (value 0 is still OFF in their language file; the allowed values are -1 0 1 3 50). The patcher prepends two marker lines to the file (`AAA_THIS_IS_A_EUPHORIA_PATCHES_SETTINGS_FILE=true`, `AAB_FOR_EUPHORIA_PATCHES_VERSION_1_10_5=true`) and leaves ours.
+- **Licence** (`EuphoriaPatchesLicense.txt` in each generated pack, v1.1, on top of the Complementary agreement): section 2.2 lets a modpack include the pack **only if the modpack includes the Patcher mod**, which
+  ours does; 2.3 and the Complementary agreement want visible credit to the original pack and to Euphoria Patches **with a link to euphoriapatches.com**, which the CurseForge description's credits now carry (the
+  description tool turns `[text](url)` into a link). Bug reports for the add-on go to its authors, not to Complementary's.
+- **Checked 2026-10-25 in the dev client** (`runDevClient`, a fresh patch with our four option files already in `shaderpacks/`): the patcher takes about 5 s and logs "successfully installed", Iris logs "Using shaderpack:
+  ComplementaryReimagined_r5.9.3 + EuphoriaPatches_1.10.5" and builds the pipelines, there are no shader errors in the log (only Iris's "Failed to find the tag" notes for mods that are not installed and
+  its offline update check), and `GalleryShots` photographed Earth by day and at dusk, the Moon and the asteroid belt: Euphoria Reimagined, Euphoria Unbound and plain Reimagined all draw them, with **no clouds on
+  Earth** (so the option file is honoured). The Moon's sky is an amber haze under all three (plain Reimagined too), so Euphoria did not cause it. **Not seen:** a ship under either Euphoria pack, a planet's edge,
+  nights on the Moon, the Nether and the End, Euphoria's own options screen, two players, and a real CurseForge import of the pack (the app downloading the patcher beside the shaders).
+
 ## Left out on purpose
 
 | Mod | Why |

@@ -40,8 +40,9 @@ and Skyline), and six places stopped paying a point so the total is still 41: an
 
 **Quality of life**
 - **Paragliders** replaces Gliders: a glider you hold, not wear, with no durability. Its Spirit Orbs, Heart Containers, Stamina Vessels and statues are off.
-- **Complementary Shaders (Reimagined and Unbound)** come with the pack and are **off** until you pick one in Video Settings > Shader Packs; their clouds are
-  turned off in both, so there are none in space. Planets and ships under shaders have not been looked at yet: if one looks wrong, turn shaders off.
+- **Complementary Shaders (Reimagined and Unbound), each also as an Euphoria Patches version**, come with the pack and are **off** until you pick one in Video Settings > Shader Packs: four packs in the
+  list. The two Euphoria ones are built on your computer the first time the game starts, by the Euphoria Patcher mod (a few seconds). Clouds are turned off in all four, so there are none in space.
+  Seen once in a test world (Earth, the Moon and the asteroid belt); planets' edges and ships under shaders have not been looked at yet: if one looks wrong, turn shaders off.
 - **Traveler's Backpack** replaces Sophisticated Backpacks, and has a sleeping bag in it. **Inventory Profiles Next** sorts your inventory and chests.
   **Xaero's Minimap and World Map** are in. **Farmer's Delight** adds food.
 

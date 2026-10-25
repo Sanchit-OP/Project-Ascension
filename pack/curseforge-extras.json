@@ -230,6 +230,16 @@
       "side": "both",
       "added": "2026-10-25",
       "why": "crude oil on Earth and a refinery; kerosene, diesel and gasoline fuel Create Propulsion's liquid Thruster (ADR-0031). Diesel Generators is the fallback"
+    },
+    {
+      "name": "Euphoria Patches",
+      "slug": "euphoria-patches",
+      "projectID": 915902,
+      "fileID": 8884680,
+      "file": "EuphoriaPatcher-1.10.5-r5.9.3-neoforge.jar",
+      "side": "client",
+      "added": "2026-10-25",
+      "why": "SpacEagle17's add-on for Complementary Shaders: at start-up it builds two more shader packs, 'ComplementaryReimagined_r5.9.3 + EuphoriaPatches_1.10.5' and the Unbound one, out of the two Complementary zips in shaderpacks/ (it patches a copy on the player's machine; nothing modified is shipped). Must match the Complementary release exactly (r5.9.3). Off until a player picks a pack (alpha.3)"
     }
   ]
 }
