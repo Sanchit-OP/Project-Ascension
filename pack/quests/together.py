@@ -72,7 +72,7 @@ CHAPTER = Chapter(
             icon=item_icon('minecraft:filled_map'), shape=LESSON, size=0.9,
             deps=['catch_up'],
             text=[
-                'Press M for the map. Your party shows on it, however far away they are.',
+                'Press M for the map: the land you have walked, and the players near you.',
             ],
             tasks=[checkmark()],
             rewards=[give('minecraft:compass', 1)],

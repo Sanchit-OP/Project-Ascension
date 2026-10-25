@@ -85,7 +85,7 @@ chest from every mod, and Lootr gives each player their own.
 - **Everyone gets loot.** Lootr gives each player their own chest contents.
 - **Storage that scales.** Sophisticated Storage, Sophisticated Backpacks and Tom's Simple Storage.
 - **Waystones.** Fast travel inside a world. Travel between worlds is refused: that is what ships and gates are for.
-- **Claims and a map.** FTB Chunks protects your base, and **M** opens the map.
+- **Claims and a map.** FTB Chunks protects your base; Xaero's Minimap and World Map draw the map, and **M** opens it.
 
 ## A quest book that teaches
 

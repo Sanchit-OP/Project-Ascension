@@ -582,7 +582,7 @@
 	"quest.1EFBD4D8CAEACCA9.quest_desc": ["A quest one of you finishes counts for the whole party.", "Each of you claims your own rewards."]
 	"quest.260259C5187619CB.title": "The map"
 	"quest.260259C5187619CB.quest_subtitle": "M"
-	"quest.260259C5187619CB.quest_desc": ["Press M for the map. Your party shows on it, however far away they are."]
+	"quest.260259C5187619CB.quest_desc": ["Press M for the map: the land you have walked, and the players near you."]
 	"quest.5486899F38DD1418.title": "A breath for a friend"
 	"quest.5486899F38DD1418.quest_subtitle": "Use a tank on a player"
 	"quest.5486899F38DD1418.quest_desc": ["Use an oxygen tank on another player to fill their lungs from it.", "It is a rescue, not a refill: their lungs only, and only as much as they can hold."]

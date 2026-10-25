@@ -40,6 +40,7 @@ OLD_DEFAULTS = {
     'key.ftbquests.quests': 'key.keyboard.unknown',
     'key.keybindatlas.open_keyboard': 'key.keyboard.k',
     'key.cataclysm.helmet_ability': 'key.keyboard.c',
+    'key.ftbchunks.map': 'key.keyboard.m',
     'key.saveToolbarActivator': 'key.keyboard.c',
     'key.loadToolbarActivator': 'key.keyboard.x',
     'key.socialInteractions': 'key.keyboard.p',

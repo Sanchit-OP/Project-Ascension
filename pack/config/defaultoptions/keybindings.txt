@@ -6,6 +6,7 @@ key_key.ascension_combat.ability_held:key.mouse.5
 key_key.ftbquests.quests:key.keyboard.j
 key_key.keybindatlas.open_keyboard:key.keyboard.b
 key_key.cataclysm.helmet_ability:key.keyboard.n
+key_key.ftbchunks.map:key.keyboard.unknown
 key_key.saveToolbarActivator:key.keyboard.unknown
 key_key.loadToolbarActivator:key.keyboard.unknown
 key_key.socialInteractions:key.keyboard.unknown

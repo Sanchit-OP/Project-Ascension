@@ -15,9 +15,15 @@ as the Reset key**. Keybind Atlas, Controlling, Searchables and Balm load beside
 **Not seen by eye:** the Atlas screen and Controlling's search bar.
 
 **FTB Chunks added 2026-10-18** (the map that shows the team, `pack-extras.md`): Open Map on **M**, minimap
-zoom on **=** and **-**, the other four of its keys unbound. M is free and the zoom keys only share a key with
-FTB Quests' zoom, which acts inside a screen, so the defaults file is unchanged. Not in the audit TSV until it
+zoom on **=** and **-**, the other four of its keys unbound. M was free and the zoom keys only share a key with
+FTB Quests' zoom, which acts inside a screen, so the defaults file was unchanged. Not in the audit TSV until it
 is rerun with the jar installed.
+
+**Changed 2026-10-25 (Sanchit: "only the new mod should open with the M key"):** Xaero's World Map (added the same
+day, also on **M**) is the map, so **FTB Chunks' Open Map is unbound** in the defaults file and `tools/sync-pack-config.py`
+moves a saved key off M if it still holds it. Its minimap is off too (its own setting, `minimap.enabled`, default
+false). FTB Chunks stays for claims and protection; its claim screen has a key of its own (Claim Manager, unbound)
+that a player binds in Controls.
 
 **What is left on a default key, on purpose:** Create's three Left Alt keys (modifier, tool belt,
 tool menu), Cataclysm's own weapon-ability and boots-ability pair on V, Create's Ponder key on W (it
