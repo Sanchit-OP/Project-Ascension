@@ -25,9 +25,9 @@ from alpha.2 are gone from the pack, and what is inside a backpack is lost.
   thruster, an ion thruster that runs on power. **Create: Petrochem** puts crude oil in the ground of Earth (desert, swamp, jungle, deep ocean) with a pumpjack, an electrolyzer and a distillation tower; its kerosene, diesel, gasoline, LPG and fuel oil are the liquid Thruster's fuels (gasoline gives the most push from a barrel, kerosene the most per tank). **Create Crafts & Additions** (with its Sable addon, so wires work on a ship) gives a ship stored electricity.
   The flight quest page teaches them in that order.
 - **Brass can be crafted by hand**, which the new thruster needs.
-- **Oil and the first ship no longer need the Nether.** Petrochem's refinery needs heat and tin, and each used to come from the Nether. Two Earth recipes now make them, each dearer than the Nether road:
-  a **Blaze Burner** (a lava bucket over a magma block with iron sheets round it) and a **tin nugget** (two zinc nuggets and an iron nugget). The Nether recipes still work and still give what only they can.
-  (Quartz for the electron tube needs no recipe: Create makes it by crushing diorite or washing crushed raw gold or soul sand.)
+- **Oil and the first ship no longer need the Nether.** Petrochem's refinery needs heat and tin, and each used to come from the Nether. The book's **Brass page gives you three Blaze Burners**
+  (one for the basin, two under the tower's base; a burner mined with a pickaxe comes back whole, so move it rather than lose it) and an Earth recipe makes a **tin nugget** (two zinc nuggets and an iron nugget).
+  No burner is made on Earth, and the Nether still makes more. (Quartz for the electron tube needs no recipe: Create makes it by crushing diorite or washing crushed raw gold or soul sand.)
 
 **The quest book is nine projects.** Like a roadmap, each is a page with a blueprint behind it and a finale: First Light, Spin, Brass, Current, Crude, Wings, Breath, Skyline and The Moon. Crude (oil) comes before Wings (the first ship).
 The old Create and Aeronautics teaching pages are folded into them (16 pages, 185 quests); anything you had finished stays finished. **Finishing a project pays a skill point to your whole team** (Spin, Brass, Crude, Wings, Breath

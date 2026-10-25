@@ -2,6 +2,7 @@ package com.ascension.compat.create.internal.dev;
 
 import com.ascension.compat.create.internal.RemovedItems;
 import com.google.gson.JsonParser;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -141,7 +142,7 @@ public final class CreateChecks {
                             .orElse(false));
         }
         checkBrassByHand(server);
-        checkBurnerByHand(server);
+        checkNoBurnerByHand(server);
         checkEarthRecipes(server);
         checkMachinesBreak(server);
         if (ModList.get().isLoaded("petrochem")) {
@@ -241,26 +242,27 @@ public final class CreateChecks {
     }
 
     /**
-     * A Blaze Burner made on Earth (Sanchit, 2026-10-25: oil is needed for the first ship, so heat cannot wait for the Nether). Steel, bronze, steam and
-     * Petrochem's tower are all heated recipes, and only a burner heats. The recipe makes Create's own burner item, the one a captured blaze gives.
+     * No Blaze Burner is made on Earth (Sanchit, 2026-10-25: "we can't have that overground, as there is no Nether"). Steel, bronze, steam and Petrochem's
+     * tower are heated recipes and only a burner heats, so the quest book hands out three (the Brass page) and the Nether still makes more. Proves the
+     * hand recipe from the first alpha.3 build is gone, that Create's way is untouched, and that a placed burner gives itself back when mined, so the
+     * three can be moved and are never lost to a pickaxe.
      */
-    private static void checkBurnerByHand(MinecraftServer server) {
-        var byHand = server.getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "blaze_burner_by_hand"));
-        expect("a blaze burner by hand is a loaded recipe", byHand.isPresent());
-        if (byHand.isEmpty()) {
-            return;
-        }
-        Item burner = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "blaze_burner"));
-        expect("it makes Create's blaze burner, the one a captured blaze gives", byHand.get().value().getResultItem(server.registryAccess()).is(burner));
-        // A shaped recipe lists every cell of its grid, the empty ones too.
-        var ingredients = byHand.get().value().getIngredients().stream().filter(i -> !i.isEmpty()).toList();
-        expect("it takes a lava bucket, a magma block and three iron sheets, nothing from the Nether",
-                ingredients.size() == 5
-                        && ingredients.stream().anyMatch(i -> i.test(new ItemStack(Items.LAVA_BUCKET)))
-                        && ingredients.stream().anyMatch(i -> i.test(new ItemStack(Items.MAGMA_BLOCK)))
-                        && ingredients.stream().noneMatch(i -> i.test(new ItemStack(Items.NETHERRACK)) || i.test(new ItemStack(Items.BLAZE_ROD))));
+    private static void checkNoBurnerByHand(MinecraftServer server) {
+        var recipes = server.getRecipeManager();
+        expect("there is no blaze burner recipe of ours", recipes.byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "blaze_burner_by_hand")).isEmpty());
         expect("the empty burner's own recipe is untouched",
-                server.getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath("create", "crafting/kinetics/empty_blaze_burner")).isPresent());
+                recipes.byKey(ResourceLocation.fromNamespaceAndPath("create", "crafting/kinetics/empty_blaze_burner")).isPresent());
+        expect("the recipe's advancement is gone",
+                server.getAdvancements().get(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "recipes/blaze_burner_by_hand")) == null);
+        Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("create", "blaze_burner"));
+        Item burner = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "blaze_burner"));
+        ServerLevel level = server.overworld();
+        for (BlazeBurnerBlock.HeatLevel heat : new BlazeBurnerBlock.HeatLevel[] {BlazeBurnerBlock.HeatLevel.SMOULDERING, BlazeBurnerBlock.HeatLevel.FADING,
+                BlazeBurnerBlock.HeatLevel.KINDLED, BlazeBurnerBlock.HeatLevel.SEETHING}) {
+            BlockState state = block.defaultBlockState().setValue(BlazeBurnerBlock.HEAT_LEVEL, heat);
+            List<ItemStack> drops = Block.getDrops(state, level, new BlockPos(0, 200, 0), null, null, new ItemStack(Items.WOODEN_PICKAXE));
+            expect("a " + heat.getSerializedName() + " blaze burner mined gives the filled burner back", drops.size() == 1 && drops.get(0).is(burner));
+        }
     }
 
     /**

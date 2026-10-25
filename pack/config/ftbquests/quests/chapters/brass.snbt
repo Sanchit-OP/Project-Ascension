@@ -16,7 +16,8 @@
 			id: "21D9B7848ED84479"
 			x: -1.25d
 			y: 0.0d
-			shape: "ascension_nova"
+			shape: "ascension_star"
+			size: 0.9d
 			icon: {
 				id: "create:blaze_burner"
 				count: 1
@@ -25,14 +26,18 @@
 			tasks: [
 				{
 					id: "386D0838967A4F24"
-					type: "item"
-					item: "create:blaze_burner"
-					count: 1L
+					type: "checkmark"
 				}
 			]
 			rewards: [
 				{
 					id: "3E459CC74D622C76"
+					type: "item"
+					item: "create:blaze_burner"
+					count: 3
+				}
+				{
+					id: "77466F7B1881DA52"
 					type: "item"
 					item: "minecraft:copper_ingot"
 					count: 8

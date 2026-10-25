@@ -44,7 +44,7 @@ Petrochem's jar carries about 15 stray test recipes of the author's other mod (`
 
 - **The refinery was a Nether-tier road; ADR-0032 (the same day) made it an Earth one.** Steel (iron and coal), bronze (copper and tin) and the tower's heat are all *heated* Create
   recipes, and a Blaze Burner needs a captured blaze (Planet 3); tin needs a thick potion (glowstone and a brewing stand) and the pumpjack's controller an electron tube (Nether quartz).
-  Sanchit's answer was that oil is needed for the first ship, so it has to come early: a burner, a tube and tin can now be made on Earth, and the Nether road still works.
+  Sanchit's answer was that oil is needed for the first ship, so it has to come early: three burners are given by the book, tin can be made on Earth (the tube needs no recipe: Create makes quartz on Earth), and the Nether road still works.
 - The machines need power in two forms: the electrolyzer takes Forge Energy (Crafts & Additions' alternator, aboard or on the ground), the pumpjack takes rotation.
 - Petrochem has an "Expert" mode (a separate mod, `petrochem_expert`, not in this pack) that roughly doubles the fluids; its recipes would replace the base ones.
 - Steel, bronze and tin items are Petrochem's, tagged `c:plates/steel` and the like. Nothing of ours registers them, so the resource ledger is unaffected.

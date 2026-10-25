@@ -3,6 +3,7 @@
 
   python tools/audit-nether-gating.py                     the audit of every mod in the test instance, printed as a report
   python tools/audit-nether-gating.py --without-patches   the same, ignoring our own Earth recipes (what the mods ask for by themselves)
+  python tools/audit-nether-gating.py --without-gifts     the same, ignoring what the quest book hands out (the Blaze Burner counts as Nether-only again)
   python tools/audit-nether-gating.py --item create:blaze_burner   one item's way back to its blocking root, as a chain
 
 The pack's rule (ADR-0018 and Sanchit, 2026-10-25) is that the Nether is a planet you reach by ship, so nothing on the road to the first ship may need
@@ -16,6 +17,10 @@ How it decides, in plain words
     means any item in it). That repeats until nothing new is found.
   * A recipe with a heat requirement also needs a Blaze Burner under its basin (a superheated one needs a Blaze Cake): those are items too, so a
     burner that only a captured blaze gives blocks everything that is heated.
+  * A quest reward is a source: an item that only the Nether or the End has, but that a quest of ours gives (the three Blaze Burners of the Brass
+    page), counts as available. Only the items named in COUNTED_GIFTS count, and the tool checks in pack/quests (`give('namespace:item', n)`) that a
+    quest still gives each one, so it cannot drift from the book. A gift is finite, so the report lists each one with its count; a heated recipe
+    only needs the burner standing there, it does not use it up.
   * For anything it cannot make it prints the shortest chain back to a root, so the cause is one line.
 
 What it cannot see: a recipe a script adds at runtime, loot-only and trade-only items, a machine's own heat or power rules that are not in a recipe (Petrochem's
@@ -68,6 +73,24 @@ NATURAL = {
 PATCH_NAMESPACES = {'ascension_compat_create'}
 
 HEAT = {'heated': 'create:blaze_burner', 'superheated': 'create:blaze_cake'}
+
+
+# Nether items that the quest book hands out on the way to the first ship, so the road does not need the Nether for them. Only these count: the book
+# also pays small amounts of blaze powder, netherrack and quartz as rewards, and some of those pages are the Nether's own.
+COUNTED_GIFTS = {'create:blaze_burner'}
+
+
+def quest_gifts():
+    """The COUNTED_GIFTS that a quest of ours really gives, with how many in all: `give('namespace:item', n)` in pack/quests/*.py."""
+    given = collections.Counter()
+    for path in glob.glob(os.path.join(ROOT, 'pack', 'quests', '*.py')):
+        with open(path, encoding='utf-8') as handle:
+            for item, count in re.findall(r"give\('([a-z0-9_.-]+:[a-z0-9_/.-]+)',\s*(\d+)\)", handle.read()):
+                if item in COUNTED_GIFTS:
+                    given[item] += int(count)
+    for item in sorted(COUNTED_GIFTS - set(given)):
+        print('WARNING: %s is counted as a quest gift but no quest gives it any more' % item, file=sys.stderr)
+    return given
 
 
 def instance_mods():
@@ -293,13 +316,13 @@ def build_recipes(data):
     return recipes
 
 
-def solve(recipes):
+def solve(recipes, gifts=()):
     """The set of (kind, id) that can be made from Earth, and for every other made item the recipes that make it."""
     made_by = collections.defaultdict(list)
     for r in recipes:
         for res in r.results:
             made_by[res].append(r)
-    blocked_roots = {('item', i) for i in NETHER | END}
+    blocked_roots = {('item', i) for i in (NETHER | END) - set(gifts)}
     feasible = set()
 
     def natural(key):
@@ -380,6 +403,7 @@ def chain(key, made_by, feasible, roots, via=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--without-patches', action='store_true', help='ignore our own Earth recipes')
+    parser.add_argument('--without-gifts', action='store_true', help='ignore what the quest book hands out')
     parser.add_argument('--item', help='explain one item (namespace:path)')
     parser.add_argument('--namespaces', default='create,aeronautics,aeroworks,createpropulsion,createaddition,petrochem,sable,ascension_atmosphere,ascension_compat_create',
                         help='comma-separated namespaces to report')
@@ -394,7 +418,8 @@ def main():
     recipes = build_recipes(data)
     if args.without_patches:
         recipes = [r for r in recipes if not r.patch]
-    made_by, feasible, roots = solve(recipes)
+    gifts = {} if args.without_gifts else quest_gifts()
+    made_by, feasible, roots = solve(recipes, gifts)
 
     if args.item:
         key = ('item', args.item)
@@ -408,7 +433,10 @@ def main():
         return
 
     wanted = [n.strip() for n in args.namespaces.split(',') if n.strip()]
-    print('%d recipes read from %d mods; %s our Earth recipes\n' % (len(recipes), len(data.mods), 'ignoring' if args.without_patches else 'counting'))
+    print('%d recipes read from %d mods; %s our Earth recipes; %s\n' % (
+        len(recipes), len(data.mods), 'ignoring' if args.without_patches else 'counting',
+        "ignoring the quest book's gifts" if args.without_gifts
+        else "counting the quest book's gifts: " + (', '.join('%s x%d' % kv for kv in sorted(gifts.items())) or 'none')))
     heated = collections.Counter()
     for r in recipes:
         if r.heat in HEAT and r.ns in wanted:

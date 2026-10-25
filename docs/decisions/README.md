@@ -58,5 +58,5 @@ forgets it.
 | [0029](0029-planet-loot-is-added-by-two-shared-loot-types.md) | Planet loot is added to every chest by two loot types (a chest condition and a junk strip) that live in core | Accepted |
 | [0030](0030-rocket-parts-are-create-propulsion-and-aeroworks.md) | Rockets use Create Propulsion's thrusters, ships steer with Aeroworks, power comes from Crafts & Additions | Accepted |
 | [0031](0031-crude-oil-and-the-refinery-are-create-petrochem.md) | Crude oil and the refinery are Create: Petrochem; kerosene, diesel and gasoline fuel the liquid Thruster | Accepted; its Nether-tier consequence is amended by 0032 |
-| [0032](0032-oil-and-the-first-ship-without-the-nether.md) | Oil and the first ship do not need the Nether: a Blaze Burner, an electron tube and tin can be made on Earth | Accepted |
+| [0032](0032-oil-and-the-first-ship-without-the-nether.md) | Oil and the first ship do not need the Nether: the book gives three Blaze Burners, tin is an Earth recipe, quartz is Create's own | Accepted |
 | [0033](0033-the-quest-book-is-nine-projects.md) | The quest book is nine projects (Dr. Stone's roadmaps), each a blueprint sheet; six finales pay one skill point, taken from six discoveries so the total stays 41 | Accepted |

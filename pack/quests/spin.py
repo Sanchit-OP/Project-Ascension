@@ -193,7 +193,7 @@ CHAPTER = Chapter(
             deps=['stress'],
             text=[
                 'A steam engine is a gold sheet, an alloy and a copper block. It sits on a fluid tank with water in it.',
-                'The tank needs heat under it, and a lit burner does that (the Brass page makes one). Hold W over the engine for the rest.',
+                'The tank needs heat under it, and a lit burner does that (the Brass page gives you three). Hold W over the engine for the rest.',
             ],
             tasks=[advancement('create:steam_engine')],
             rewards=[give('minecraft:copper_ingot', 8)],
@@ -267,7 +267,7 @@ CHAPTER = Chapter(
             deps=['basin'],
             text=[
                 'A cogwheel over a casing over a whisk. Set it over a basin and turn it.',
-                'Some mixes need heat: a lit burner under the basin gives it. The Brass page shows how to make one.',
+                'Some mixes need heat: a lit burner under the basin gives it. The Brass page gives you three.',
             ],
             tasks=[advancement('create:mechanical_mixer')],
             rewards=[give('minecraft:redstone', 8)],

@@ -111,7 +111,7 @@ Sanchit's answers, in his words, and what each became:
 | 2 | Roadmap pictures | "make the blueprint style pages" | A generated blueprint sheet behind every project page, in quest coordinates |
 | 3 | Points | "maybe we can give, but we don't want to increase the total number of points given, so be careful" | Six finales pay 1 point; six discovery points stopped paying; the total is still 41 (`growth.md` section 3) |
 | 4 | Test flights | "idk how it will fit here though" | A lesson, not a mechanic: Skyline's *A first hop* (the game has no unmanned-ship rule and the book cannot detect one) |
-| 5 | Oil's place | "oil needs to come earlier as we need it in the first ship part" | Crude comes before Wings, and the Nether is off its path: a Blaze Burner and tin can be made on Earth (ADR-0032; the burner is questioned, see `oil-and-fuels.md` section 5) |
+| 5 | Oil's place | "oil needs to come earlier as we need it in the first ship part" | Crude comes before Wings, and the Nether is off its path: the Brass page gives three Blaze Burners and tin can be made on Earth (ADR-0032, `oil-and-fuels.md` section 5) |
 | 6 | Platinum | "if a mod has it for something we should keep that mod's essence" | Platinum keeps Propulsion's own job (a platinum tank holds twice as much); not made a catalyst |
 
 He also asked how Petrochem's fuels differ; that is [`oil-and-fuels.md`](oil-and-fuels.md).
@@ -125,7 +125,7 @@ He also asked how Petrochem's fuels differ; that is [`oil-and-fuels.md`](oil-and
 | 3 A Lit Base | **Current** |
 | 4 Wings | **Wings** (after Crude) |
 | 5 Breath | **Breath** |
-| 6 The Rot | not a project: with a burner made on Earth the Nether is no longer on the road to the Moon; The Rot stays as a world page |
+| 6 The Rot | not a project: with burners given on Earth the Nether is no longer on the road to the Moon; The Rot stays as a world page |
 | 7 Crude | **Crude**, moved before Wings |
 | 8 Test Flights | **Skyline**: the climb out of the atmosphere, with the first hop as a lesson |
 | 9 The Moon | **The Moon**, which now begins with the three ways a ship gets there |

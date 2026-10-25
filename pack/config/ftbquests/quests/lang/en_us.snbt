@@ -173,7 +173,7 @@
 	"quest.33784D5CE51D40D2.quest_desc": ["Six dried kelp make a belt. Use it on two shafts to join them; the belt carries items and anything standing on it."]
 	"quest.525035C40110948D.title": "Steam"
 	"quest.525035C40110948D.quest_subtitle": "A boiler, and a lot of power"
-	"quest.525035C40110948D.quest_desc": ["A steam engine is a gold sheet, an alloy and a copper block. It sits on a fluid tank with water in it.", "The tank needs heat under it, and a lit burner does that (the Brass page makes one). Hold W over the engine for the rest."]
+	"quest.525035C40110948D.quest_desc": ["A steam engine is a gold sheet, an alloy and a copper block. It sits on a fluid tank with water in it.", "The tank needs heat under it, and a lit burner does that (the Brass page gives you three). Hold W over the engine for the rest."]
 	"quest.31F7D08D8D723EF6.title": "A millstone"
 	"quest.31F7D08D8D723EF6.quest_subtitle": "Ore to crushed ore, grain to flour"
 	"quest.31F7D08D8D723EF6.quest_desc": ["A cogwheel over a casing over a stone. Drop items on top while it turns and they come out ground.", "Crushed ore can be smelted, or washed into nuggets at a fan."]
@@ -191,7 +191,7 @@
 	"quest.58271DC5E963B5AB.quest_desc": ["Five andesite alloy in a bowl shape. Machines above it work on what it holds."]
 	"quest.6AFCA0A066B96E1F.title": "A mixer"
 	"quest.6AFCA0A066B96E1F.quest_subtitle": "Combine ingredients"
-	"quest.6AFCA0A066B96E1F.quest_desc": ["A cogwheel over a casing over a whisk. Set it over a basin and turn it.", "Some mixes need heat: a lit burner under the basin gives it. The Brass page shows how to make one."]
+	"quest.6AFCA0A066B96E1F.quest_desc": ["A cogwheel over a casing over a whisk. Set it over a basin and turn it.", "Some mixes need heat: a lit burner under the basin gives it. The Brass page gives you three."]
 	"quest.5188ABFFFDCD7AF8.title": "Compacting"
 	"quest.5188ABFFFDCD7AF8.quest_subtitle": "Fewer items from more"
 	"quest.5188ABFFFDCD7AF8.quest_desc": ["Set a mechanical press over a basin and it squeezes what the basin holds into something denser."]
@@ -215,9 +215,9 @@
 	"quest.24B30AE1B5F8827E.quest_desc": ["A press that flattens, a mixer that stirs, a fan that washes and smokes, a belt that carries, a spout that fills.", "With all of them turning off one shaft, a base builds itself while you are away."]
 	"chapter.57E1D441ADB1F68F.title": "Brass"
 	"chapter.57E1D441ADB1F68F.chapter_subtitle": ["Fire, metal and a hand that works for you."]
-	"quest.21D9B7848ED84479.title": "A burner for the basin"
-	"quest.21D9B7848ED84479.quest_subtitle": "With a blaze, or without one"
-	"quest.21D9B7848ED84479.quest_desc": ["Heated recipes need a blaze burner under the basin. A captured blaze makes one: use an empty burner on a blaze, in the Nether.", "You can make the same burner at home: iron sheets round a magma block, a lava bucket on top. Feed it coal to light it."]
+	"quest.21D9B7848ED84479.title": "Three burners"
+	"quest.21D9B7848ED84479.quest_subtitle": "Heat for the basin and the tower"
+	"quest.21D9B7848ED84479.quest_desc": ["Heated recipes need a lit blaze burner under the basin: brass, steel, bronze, and the distillation tower. Here are three.", "Set one under a basin and feed it coal to light it. Mine a burner with a pickaxe and it comes back whole, so it can be moved.", "In the Nether, an empty burner used on a blaze makes more."]
 	"quest.04BF3DEDB6B04093.title": "Brass"
 	"quest.04BF3DEDB6B04093.quest_subtitle": "Create's next tier"
 	"quest.04BF3DEDB6B04093.quest_desc": ["Copper and zinc, mixed over a lit burner, make brass. Three of each make two ingots by hand at a crafting table, dearer than the mixer.", "Brass is the upgrade: stronger casings, finer controls, better propellers."]
@@ -269,7 +269,7 @@
 	"quest.15D49FC4F1F6B894.quest_desc": ["A mixer that runs on electricity, not spin. Wire it to an alternator or an accumulator and feed it petroleum: out come desalted oil and, half the time, salt."]
 	"quest.78635FFB29DF1F07.title": "A distillation tower"
 	"quest.78635FFB29DF1F07.quest_subtitle": "Split the oil by how hot it boils"
-	"quest.78635FFB29DF1F07.quest_desc": ["Steel tanks stacked over a controller, a blaze burner under it, and an output block at each height. Three modes: flash, atmospheric and vacuum.", "The atmospheric mode gives diesel, kerosene and heavy naphtha. Pipe the kerosene away to a tank."]
+	"quest.78635FFB29DF1F07.quest_desc": ["Steel tanks stacked over a controller, and an output block at each height. Three modes: flash, atmospheric and vacuum.", "Flash needs no heat; the other two want two lit burners under the base.", "The atmospheric mode gives diesel, kerosene and heavy naphtha. Pipe the kerosene away to a tank."]
 	"quest.2305DD03FECDD14D.title": "Kerosene"
 	"quest.2305DD03FECDD14D.quest_subtitle": "Fuel for a long climb"
 	"quest.2305DD03FECDD14D.quest_desc": ["Kerosene gives the liquid Thruster more push for less fuel than diesel does. Gasoline pushes hardest and burns faster."]

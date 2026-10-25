@@ -11,7 +11,7 @@ and what to do. Anything that says "not seen" has been built and checked by mach
 | **A ship is hard to steer** | The book's **Wings** page builds the controls in order: a helm, a gyroscope that keeps the ship level, and a control stand that takes a lever, a joystick, a wheel and a throttle. |
 | **A ship does not hold air** | Carry tanks. Your lungs and two tanks last 620 seconds; two helium tanks last 1,220. The Moon needs about 7 blocks a second to reach on that, the Nether 29 (15 with helium), the End 52 (26 with helium). Landing and refilling at each world cuts every leg. |
 | **You cannot find oil** | Oil is in the ground of **deserts, swamps, jungles and deep oceans** only, and a pumpjack must stand in one of those biomes. Swamp and jungle oil is already desalted, so it skips the electrolyzer. The other worlds have none. |
-| **The oil chain wants a Blaze Burner, quartz or tin** | The burner and tin can be made on Earth: a burner from a lava bucket, a magma block and iron sheets; tin from two zinc nuggets and an iron nugget. Quartz for the electron tube: crush diorite, or wash crushed raw gold or soul sand in a fan's water. The Nether's way still works too. |
+| **The oil chain wants a Blaze Burner, quartz or tin** | The Brass page of the book (*Three burners*) gives you three Blaze Burners: one for the basin, two for the tower's base. A burner mined with a pickaxe comes back whole, so move it rather than lose it; there is no recipe for more on Earth, and in the Nether an empty burner used on a blaze makes one. Tin: two zinc nuggets and an iron nugget. Quartz for the electron tube: crush diorite, or wash crushed raw gold or soul sand in a fan's water. |
 | **You cannot find the Ancient City** | A cartographer villager (apprentice level or above) may sell a map to the nearest one for 14 emeralds and a compass; not every cartographer has it, so try another or level one up. The city is in the deep dark, near the bottom of the world. |
 | **You cannot give air to another player** | Each player carries their own tanks. |
 | **The gate or its key will not work** | Gates are shortcuts, not requirements: a ship goes to any world and back. An operator can light one with `/ascension worlds gateway light <planet>`. |
@@ -28,7 +28,7 @@ Alpha.3 is built and was checked on a dedicated server; a client has started wit
   If a page's quests float on a plain background, the picture did not load: tell us the page.
 - **The new ship parts.** Create Aeroworks' gyroscope, joystick and control stand, and Create Propulsion's solid, liquid and ion thrusters, have never flown a ship.
   Nobody has flown a survival-built ship the whole way yet.
-- **Oil.** The pumpjack, electrolyzer and distillation tower, a hand-made Blaze Burner heating a basin or the tower, and kerosene or gasoline running a thruster, have not been seen.
+- **Oil.** The pumpjack, electrolyzer and distillation tower, the three given Blaze Burners heating a basin or the tower, and kerosene or gasoline running a thruster, have not been seen.
   How the five fuels compare is in the repository's `docs/progression/oil-and-fuels.md`; gasoline gives the most push from a barrel and kerosene the most per tank.
 - **Skill points from projects.** Six projects each give your whole team a point when you hold their finale; whether the advancement fires on the right item is checked by machine only.
 - **Paragliders, Traveler's Backpack and its sleeping bag, Inventory Profiles Next, Xaero's maps and Farmer's Delight** have not been played in this pack.

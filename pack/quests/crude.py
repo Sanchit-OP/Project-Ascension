@@ -1,5 +1,5 @@
 """Crude: oil out of the ground, fuel out of the oil. Create: Petrochem (ADR-0031): steel, bronze, a pumpjack, an electrolyzer, a distillation
-tower, and kerosene for the liquid Thruster. Every heated step wants a burner; none wants the Nether (ADR-0032).
+tower, and kerosene for the liquid Thruster. Every heated step wants a burner, and the Brass page gives three; none wants the Nether (ADR-0032).
 
 Project 5 of 9.
 """
@@ -72,7 +72,8 @@ CHAPTER = Chapter(
             icon=item_icon('petrochem:distillation_controller'), shape=GOAL,
             deps=['electrolyzer'],
             text=[
-                'Steel tanks stacked over a controller, a blaze burner under it, and an output block at each height. Three modes: flash, atmospheric and vacuum.',
+                'Steel tanks stacked over a controller, and an output block at each height. Three modes: flash, atmospheric and vacuum.',
+                'Flash needs no heat; the other two want two lit burners under the base.',
                 'The atmospheric mode gives diesel, kerosene and heavy naphtha. Pipe the kerosene away to a tank.',
             ],
             tasks=[item('petrochem:distillation_controller', 1)],

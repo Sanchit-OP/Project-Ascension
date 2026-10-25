@@ -1,11 +1,12 @@
-"""Brass: fire, metal and a hand that works for you. A burner (a captured blaze's, or one made at home), brass, an electron tube, a
-deployer, mechanical crafters and a precision mechanism. Everything after this on the road is built on a crafter.
+"""Brass: fire, metal and a hand that works for you. Three burners, brass, an electron tube, a deployer, mechanical crafters and a
+precision mechanism. Everything after this on the road is built on a crafter.
 
-Project 3 of 9. The burner, the tube and brass by hand are Earth recipes of ascension-compat-create (ADR-0032).
+Project 3 of 9. The burners are a gift of this page (no blaze burner is made on Earth, ADR-0032); brass by hand is an Earth recipe of
+ascension-compat-create, and the tube is Create's own recipe with quartz from Create's Earth routes.
 """
 
 from quests.layout import blueprint_page
-from quests.model import (Chapter, GOAL, Quest, advancement, give, item, item_icon, picture)
+from quests.model import (Chapter, GOAL, LESSON, Quest, advancement, checkmark, give, item, item_icon, picture)
 
 CHAPTER = Chapter(
     slug='brass',
@@ -16,16 +17,17 @@ CHAPTER = Chapter(
     quests=[
         Quest(
             slug='burner', legacy='the_rot',
-            title='A burner for the basin',
-            subtitle='With a blaze, or without one',
-            icon=item_icon('create:blaze_burner'), shape=GOAL,
+            title='Three burners',
+            subtitle='Heat for the basin and the tower',
+            icon=item_icon('create:blaze_burner'), shape=LESSON, size=0.9,
             deps=['spin.press'],
             text=[
-                'Heated recipes need a blaze burner under the basin. A captured blaze makes one: use an empty burner on a blaze, in the Nether.',
-                'You can make the same burner at home: iron sheets round a magma block, a lava bucket on top. Feed it coal to light it.',
+                'Heated recipes need a lit blaze burner under the basin: brass, steel, bronze, and the distillation tower. Here are three.',
+                'Set one under a basin and feed it coal to light it. Mine a burner with a pickaxe and it comes back whole, so it can be moved.',
+                'In the Nether, an empty burner used on a blaze makes more.',
             ],
-            tasks=[item('create:blaze_burner', 1)],
-            rewards=[give('minecraft:copper_ingot', 8)],
+            tasks=[checkmark()],
+            rewards=[give('create:blaze_burner', 3), give('minecraft:copper_ingot', 8)],
         ),
         Quest(
             slug='brass', legacy='the_rot',

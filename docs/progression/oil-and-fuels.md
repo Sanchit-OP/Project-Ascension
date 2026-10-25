@@ -96,17 +96,23 @@ worth its eight buckets, while gasoline stays the cheap, plentiful fuel for shor
 
 ## 5. The way in without the Nether (2026-10-25, [ADR-0032](../decisions/0032-oil-and-the-first-ship-without-the-nether.md))
 
-Sanchit: the first ship part needs oil, so oil must come early. The chain hides two Nether inputs, each fixed with an Earth recipe. (A third, the electron tube, is not one: Create makes quartz on Earth by crushing
+Sanchit: the first ship part needs oil, so oil must come early. The chain hides two Nether inputs. (A third, the electron tube, is not one: Create makes quartz on Earth by crushing
 diorite, by washing crushed raw gold, and by washing soul sand, and the book's fan page gives the first soul sand. An Earth tube recipe was added and removed the same day, at Sanchit's word.)
 
-| The chain needs | It is made from | Earth recipe (`ascension_compat_create`) |
+| The chain needs | It is made from | What Earth has |
 |---|---|---|
-| A **Blaze Burner** (steel, bronze and the tower are all heated) | a captured blaze | Iron sheets round a magma block under a lava bucket |
-| **Tin** (bronze needs a tin nugget) | a thick potion (glowstone, a brewing stand) | Two zinc nuggets and an iron nugget |
+| A **Blaze Burner** (steel, bronze and the tower are all heated) | a captured blaze | **Three, given by the Brass page** (`brass.burner`); no recipe makes one |
+| **Tin** (bronze needs a tin nugget) | a thick potion (glowstone, a brewing stand) | An Earth recipe (`ascension_compat_create`): two zinc nuggets and an iron nugget |
 
-Each is dearer than the original road, on purpose. The Nether still gives a blaze cake and superheated heat, and netherite.
+Tin is dearer than the original road, on purpose. The burners are finite, but a placed burner mined with a pickaxe comes back whole (Create's loot table drops the filled burner in every lit state; `create-checks` proves it),
+so three can be moved from the basin to the tower. The Nether still makes more (an empty burner used on a blaze), and gives a blaze cake and superheated heat, and netherite.
 
-### Open: Sanchit says no Blaze Burner on Earth (2026-10-25)
+### Decided: option B, three burners as a gift (Sanchit, 2026-10-25)
+
+Sanchit said a Blaze Burner cannot be crafted overground, as there is no Nether, and then picked B: "gift three Blaze Burners". The hand recipe from the first alpha.3 build is removed. The Brass page's first
+quest, *Three burners*, gives them (a checkmark quest, so a player who already has a captured-blaze burner can still take them), and the Spin, Brass and Crude pages say where they are. Why three: one under the
+basin for steel, bronze and brass, and two under the tower's base, which needs a heat total of 2 for its atmospheric and vacuum steps (flash, the first step, needs none). A burner moved from the basin to the
+tower works too, but then the mixer stops, so three keeps both lines running. The options as they were put to him:
 
 `tools/audit-nether-gating.py` shows that without any recipe of ours **all but seven of the 105 blocked items of the ship and oil chain trace to the Blaze Burner**: brass, steel, bronze, biomass and what is
 built from them (the seven are the Blaze Cake, its base, cinder flour, the empty burner and the netherite diving gear). Hand-crafted brass (F3) already lifts the brass half. What still wants heat is Petrochem's steel and bronze (heated mixing), Crafts & Additions' biomass, and the distillation tower, whose
@@ -115,11 +121,16 @@ atmospheric and vacuum steps need a boiler-heat total of 2 under its base (a fue
 | | What it is | Cost | Leaves |
 |---|---|---|---|
 | **A. An Earth heater of our own** | A coal-fired "firebox" block that gives Create's basin and the tower the same heat a kindled burner does | A new block: Java, a model and textures drawn by our scripts, a recipe; checked on a server, looked at in a client | No burner on Earth, no Nether needed, the Blaze Burner stays the Nether's upgrade |
-| **B. Gift the burners** | The oil quest hands out three Blaze Burners (one for the basin, two for the tower), the way the fan quest hands out the first soul sand | Rewards only; no recipe | Burners cannot be made on Earth, only the three given |
-| **C. As built** | The hand-made burner recipe (lava bucket, magma block, iron sheets) | None | A burner crafted on Earth |
+| **B. Gift the burners (chosen)** | The Brass page hands out three Blaze Burners, the way the fan quest hands out the first soul sand (the Brass page, not the oil page, because brass is heated too and comes first) | Rewards only; no recipe | Burners cannot be made on Earth, only the three given; one lost to lava or a creeper cannot be replaced before the Nether |
+| **C. As first built** | The hand-made burner recipe (lava bucket, magma block, iron sheets) | None | A burner crafted on Earth. Removed |
 | **D. Oil after the Nether** | Remove the hand recipe; steel and bronze keep their heated recipes | None | The first ship burns coal or Propulsion's turpentine; kerosene waits for a captured blaze |
+
+Option A (a coal-fired heater block of our own) stays the better answer for a player who loses a burner, and is the natural alpha.4 job if the gift turns out too thin in play.
+`tools/audit-nether-gating.py` now counts the gift (the burner is the only Nether item it counts, and it checks that a quest still gives it): with it, seven items of the six mods are still Nether-only, and
+they are the Blaze Cake with its base and cinder flour, the empty burner and the netherite diving gear.
 
 ## 6. What is not proved
 
-A pumpjack, an electrolyzer and a distillation tower working in a client, kerosene running a Thruster, the hand-made Blaze Burner heating a basin in play, and Petrochem's machines beside Sable. The server run
-(`create-checks`, 61 checks, 0 failures) proves the fluids, the recipes, the fuel table and the three Earth recipes load; it does not prove they work.
+A pumpjack, an electrolyzer and a distillation tower working in a client, kerosene running a Thruster, the gifted Blaze Burners heating a basin and the tower in play (two lit under the tower's base), and Petrochem's
+machines beside Sable. The server run (`create-checks`, 66 checks, 0 failures) proves the fluids, the recipes, the fuel table and the tin recipe load, that no burner recipe of ours exists and that a mined burner gives itself back;
+it does not prove they work.

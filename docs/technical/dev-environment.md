@@ -258,7 +258,7 @@ Two checks that need a game, both dormant until their trigger file exists in the
 - **`create-checks.txt`** (a dedicated server, about a minute, no window): proves Create's backtanks and diving gear are gone
   from the loaded game: no recipe makes or uses one, the recipe viewers are told to hide all six, the advancements for earning
   them are gone and nothing in Create's advancement tree is left without a parent. The creative menu is built by a client and
-  is not covered. Prints `[create-checks]` lines. Seen 2026-10-19: 22 checks, 0 failures.
+  is not covered. It also proves the oil road's Earth side (the tin recipe; no blaze burner recipe of ours; a mined burner drops the filled burner; Create's quartz routes) and Petrochem's fluids, recipes and Thruster fuels. Prints `[create-checks]` lines. Seen 2026-10-25: 66 checks, 0 failures.
 - **`quest-screen-checks.txt`** (a client, about four minutes): opens `runes-test` (copy a fresh one into
   `run/client/saves`, as for the integration run), opens the real quest book at both pages in four states
   (new player, tank done, flying in space over the Moon, standing on the Moon), photographs each to

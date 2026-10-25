@@ -462,7 +462,7 @@ in FTB Quests' flexible mode, so a line shows what leads to what and a quest can
 
 - **Removed (duplicates):** Lift, Thrust and Know your height.
 - **Added:** A working line, An electron tube, Wires, An electric motor, Bronze, A bigger tank (platinum, optional), A ship that obeys, A bigger breath, What holds air, A first hop.
-- **Moved:** the burner and brass left The Rot for Brass (a burner can be made on Earth, ADR-0032); the test flight became a lesson in Skyline; the chart, descent and rocket quests moved into The Moon.
+- **Moved:** the burner and brass left The Rot for Brass (the Brass page now gives three burners, ADR-0032: the first quest is a gift, not a recipe); the test flight became a lesson in Skyline; the chart, descent and rocket quests moved into The Moon.
 - **Order:** Crude comes before Wings, because the first ship's liquid thruster needs oil.
 - **Platinum** keeps Propulsion's own meaning: a platinum fluid tank holds twice what a copper one does (*A bigger tank*, in Crude, optional). Its other parts stay Propulsion's. It is not made a refinery catalyst.
 
