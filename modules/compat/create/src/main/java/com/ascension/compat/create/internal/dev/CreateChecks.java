@@ -141,6 +141,8 @@ public final class CreateChecks {
                             .orElse(false));
         }
         checkBrassByHand(server);
+        checkBurnerByHand(server);
+        checkEarthRecipes(server);
         checkMachinesBreak(server);
         if (ModList.get().isLoaded("petrochem")) {
             checkPetrochem(server);
@@ -236,6 +238,57 @@ public final class CreateChecks {
             fail("could not read Create Propulsion's fuel table: " + e);
         }
         return fuels;
+    }
+
+    /**
+     * A Blaze Burner made on Earth (Sanchit, 2026-10-25: oil is needed for the first ship, so heat cannot wait for the Nether). Steel, bronze, steam and
+     * Petrochem's tower are all heated recipes, and only a burner heats. The recipe makes Create's own burner item, the one a captured blaze gives.
+     */
+    private static void checkBurnerByHand(MinecraftServer server) {
+        var byHand = server.getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "blaze_burner_by_hand"));
+        expect("a blaze burner by hand is a loaded recipe", byHand.isPresent());
+        if (byHand.isEmpty()) {
+            return;
+        }
+        Item burner = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "blaze_burner"));
+        expect("it makes Create's blaze burner, the one a captured blaze gives", byHand.get().value().getResultItem(server.registryAccess()).is(burner));
+        // A shaped recipe lists every cell of its grid, the empty ones too.
+        var ingredients = byHand.get().value().getIngredients().stream().filter(i -> !i.isEmpty()).toList();
+        expect("it takes a lava bucket, a magma block and three iron sheets, nothing from the Nether",
+                ingredients.size() == 5
+                        && ingredients.stream().anyMatch(i -> i.test(new ItemStack(Items.LAVA_BUCKET)))
+                        && ingredients.stream().anyMatch(i -> i.test(new ItemStack(Items.MAGMA_BLOCK)))
+                        && ingredients.stream().noneMatch(i -> i.test(new ItemStack(Items.NETHERRACK)) || i.test(new ItemStack(Items.BLAZE_ROD))));
+        expect("the empty burner's own recipe is untouched",
+                server.getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath("create", "crafting/kinetics/empty_blaze_burner")).isPresent());
+    }
+
+    /**
+     * The rest of the oil road without the Nether (Sanchit, 2026-10-25): the pumpjack's controller needs a precision mechanism, which a deployer
+     * assembles, and a deployer needs an electron tube, which Create makes from Nether quartz; Petrochem's tin needs a thick potion, which needs
+     * glowstone and a brewing stand. An amethyst shard stands in for the quartz and two zinc nuggets and an iron one for the tin.
+     */
+    private static void checkEarthRecipes(MinecraftServer server) {
+        var recipes = server.getRecipeManager();
+        var tube = recipes.byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "electron_tube_by_hand"));
+        expect("an electron tube by hand is a loaded recipe", tube.isPresent());
+        if (tube.isPresent()) {
+            expect("it makes Create's electron tube", tube.get().value().getResultItem(server.registryAccess()).is(
+                    BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "electron_tube"))));
+            var ingredients = tube.get().value().getIngredients();
+            expect("it takes an amethyst shard, four redstone and an iron sheet, no quartz",
+                    ingredients.size() == 6 && ingredients.stream().anyMatch(i -> i.test(new ItemStack(Items.AMETHYST_SHARD)))
+                            && ingredients.stream().noneMatch(i -> i.test(new ItemStack(Items.QUARTZ))));
+        }
+        if (ModList.get().isLoaded("petrochem")) {
+            var tin = recipes.byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "tin_nugget_by_hand"));
+            expect("a tin nugget by hand is a loaded recipe (Petrochem is here)", tin.isPresent());
+            if (tin.isPresent()) {
+                Item tinNugget = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("petrochem", "tin_nugget"));
+                expect("it makes Petrochem's tin nugget from three nuggets", tin.get().value().getResultItem(server.registryAccess()).is(tinNugget)
+                        && tin.get().value().getIngredients().size() == 3);
+            }
+        }
     }
 
     /** The compressor breaks with a pickaxe and drops itself; Create's wrench lifts the dispenser (alpha.2 test, 2026-10-25). */

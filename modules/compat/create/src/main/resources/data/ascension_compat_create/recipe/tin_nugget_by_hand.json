@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "petrochem" }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "create:zinc_nugget" },
+    { "item": "create:zinc_nugget" },
+    { "tag": "c:nuggets/iron" }
+  ],
+  "result": {
+    "id": "petrochem:tin_nugget",
+    "count": 1
+  }
+}

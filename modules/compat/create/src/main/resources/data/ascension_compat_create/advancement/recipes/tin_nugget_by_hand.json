@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    { "type": "neoforge:mod_loaded", "modid": "petrochem" }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_zinc_nugget": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "create:zinc_nugget"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "ascension_compat_create:tin_nugget_by_hand"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_zinc_nugget",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ascension_compat_create:tin_nugget_by_hand"
+    ]
+  }
+}
