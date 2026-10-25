@@ -109,7 +109,7 @@ writing to it.
 | F12 sorting | **Inventory Profiles Next** (+ libIPN, Kotlin for Forge). | Named in the pack extras. **Not in the instance yet.** |
 | F13 quiver | **Dropped.** "It's fine, leave it." | Closed. |
 | F14 map | **Xaero's Minimap** (+ World Map). The team HUD with teammates' health is a separate session. | Named in the pack extras; the HUD prompt is `plans/session-prompts/12-team-hud-and-map.md`. |
-| Shaders | Bundle Complementary Shaders (Reimagined and/or Unbound), with clouds off everywhere. | **Not started**: needs a client look at space and ships under shaders (alpha.2 left them out for clouds in space, toothed planet edges and an Iris warning from Aeronautics). |
+| Shaders | Bundle Complementary Shaders (Reimagined and/or Unbound), with clouds off everywhere. | **Not started.** Found so far: the pack's own cloud switch is `CLOUD_STYLE_DEFINE=0` (OFF), which goes in the shader options file the pack ships beside the zip (`shaderpacks/<pack>.zip.txt`), not in the pack itself, which its licence forbids modifying; Iris's `config/iris.properties` says which pack is on by default. Both packs are already in the dev instance and credited rules are in `pack-extras.md`. Still needed: their CurseForge ids for the manifest, `leave_out_of_the_manifest.shaderpacks` removed from `pack/pack.json`, and a client look at space, the Moon and a ship under them (alpha.2 left shaders out for clouds in space, toothed planet edges and an Iris warning from Aeronautics). |
 | Flight | The failure was the controls. | Aeroworks (gyroscope, control stand, joystick) and the flight quest page; **never flown in a client**. |
 
 **Staged, not applied**: the whole new mod set was built into a copy of the instance's mods (scratchpad `stage/mods`), booted on a
