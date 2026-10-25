@@ -7,8 +7,5 @@
   "neoforge": "21.1.249",
   "leave_out_mods": {
     "ImmediatelyFast": "removed from the stack on 2026-10-22: its HUD batching is the likeliest cause of the level ring and hunger badge vanishing"
-  },
-  "leave_out_of_the_manifest": {
-    "shaderpacks": "Shaders are not supported in space yet (clouds drawn in space, planets with toothed edges) and Create Aeronautics warns of Iris problems, so the alpha ships Iris but no shader pack; a player can add one."
   }
 }

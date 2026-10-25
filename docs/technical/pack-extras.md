@@ -79,6 +79,24 @@ Flywheel (Create's renderer) falls back from `indirect` to `off` while a shader 
 Flywheel's own choice. **Not yet seen by eye:** the Moon and space under either pack, and Unbound
 at all. Shaders are off in the instance until a player turns one on.
 
+**Bundled in alpha.3 (Sanchit, 2026-10-25: both packs, off by default, clouds off everywhere).**
+- **In the manifest by id**, as mods are: Reimagined project 627557 file 8884654, Unbound project 385587 file 8884656 (both `r5.9.3`, the files
+  in the dev instance). The CurseForge app tracks them, so `pack/pack.json` no longer leaves the `shaderpacks` section out.
+- **Off by default.** The pack ships no `iris.properties`, so a new player has no pack selected and Iris does nothing until they choose one in
+  Video Settings > Shader Packs. (The dev instance's own `iris.properties` has Reimagined selected and `enableShaders=false`.)
+- **Clouds off in both.** `pack/shaderpacks/<pack>.zip.txt` holds `CLOUD_STYLE_DEFINE=0`; the pack's own language file calls 0 "OFF" (the other values are
+  -1 set by style, 1 Reimagined, 3 Unbound, 50 vanilla). Iris reads that file beside the zip as the player's option values, so the pack is not modified,
+  which both licences forbid. This is what stops a shader drawing clouds in space and on the Moon, which alpha.2 showed. The files go into the
+  build's `overrides/shaderpacks` and, through `tools/sync-pack-config.py`, into the dev instance.
+- **Not yet seen by eye:** the Moon, space, a planet's edge (alpha.2: toothed) and a Sable ship under either pack. The known-issues page keeps saying
+  shaders are not supported in space until someone has looked.
+- **Credit line for the CurseForge description.** The licence in each zip asks for visible credit when the pack is on by default for new users, which ours
+  is not (the zip of Unbound carries the same `License.txt` text, version 1.7); we credit both anyway: "Shader packs: Complementary Shaders - Reimagined and Complementary Shaders - Unbound, by
+  Complementary Development, used under their licences and left unmodified. They are off until you choose one." (`License.txt` in each zip names only
+  "Complementary Development".)
+- **A reading of the licence, not a ruling:** 1.2c forbids changing the pack's contents "including simple variable changes". The options file is a
+  separate file beside the zip, the same file Iris writes when a player moves a slider, so the zip stays byte-for-byte what CurseForge serves.
+
 ## Left out on purpose
 
 | Mod | Why |

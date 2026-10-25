@@ -2,7 +2,8 @@
 """Copies the pack's shipped config (pack/config/**) into the test game, and updates saved keys.
 
   python tools/sync-pack-config.py                 copy pack/config into run/client/config, run/server/config and the
-                                                   CurseForge test instance's config
+                                                   CurseForge test instance's config, and pack/shaderpacks (the options
+                                                   files that sit beside a shader pack) into the instance's shaderpacks
   python tools/sync-pack-config.py --options PATH  also rewrite the keys in an existing options.txt
                                                    (the game must be closed); a backup is kept
 
@@ -153,6 +154,17 @@ def copy_config(target_root):
           % (target_root, copied, merged, ', removed %d stale quest file(s)' % removed if removed else ''))
 
 
+def copy_shaderpack_options(target):
+    """pack/shaderpacks/<pack>.zip.txt beside the pack's zip, which the launcher installs itself (we never copy a pack)."""
+    base = os.path.join(ROOT, 'pack', 'shaderpacks')
+    if not os.path.isdir(base) or not os.path.isdir(target):
+        return
+    names = [n for n in os.listdir(base) if os.path.isfile(os.path.join(base, n))]
+    for name in names:
+        shutil.copyfile(os.path.join(base, name), os.path.join(target, name))
+    print('%s: copied %d shader option file(s)' % (target, len(names)))
+
+
 def rewrite_options(path):
     wanted = new_keys()
     with open(path, encoding='utf-8') as handle:
@@ -189,6 +201,7 @@ def main():
     copy_config(os.path.join(ROOT, 'run', 'client', 'config'))
     copy_config(os.path.join(ROOT, 'run', 'server', 'config'))
     copy_config(os.path.join(instance_dir(), 'config'))
+    copy_shaderpack_options(os.path.join(instance_dir(), 'shaderpacks'))
     for path in args.options:
         rewrite_options(path)
 

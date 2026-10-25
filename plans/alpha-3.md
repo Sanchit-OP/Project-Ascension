@@ -103,19 +103,21 @@ writing to it.
 | What | Decision | Status |
 |---|---|---|
 | Walls that hold air | Slabs and glass panes seal; stairs and iron bars do not. | **Done**, tag `ascension_atmosphere:airtight`; the balloon's adjustable burner is in it too (the audit found it leaking). |
-| F9 paraglider | **Paragliders** (Tictim), with the Spirit Orb, Heart Container, Stamina Vessel and statue parts off. He likes that the glider is held, not worn. | Config in `pack/config/paraglider-*.toml`, `ascension-compat-paraglider` empties the three statue tags. **Not in the instance yet.** Stamina use while gliding is left on (one wheel, recovers on the ground); durability is off by default. |
-| F10 backpack | **Traveler's Backpack** (confirmed). | Named in the pack extras. **Not in the instance yet.** Its sleeping bag inside the backpack is still to be seen. |
-| F11 thrusters | **Create Propulsion: Simulated** (confirmed). | ADR-0030; helium is a solid-fuel thruster fuel; quest page rewritten. **Not in the instance yet.** |
-| F12 sorting | **Inventory Profiles Next** (+ libIPN, Kotlin for Forge). | Named in the pack extras. **Not in the instance yet.** |
+| F9 paraglider | **Paragliders** (Tictim), with the Spirit Orb, Heart Container, Stamina Vessel and statue parts off. He likes that the glider is held, not worn. | Config in `pack/config/paraglider-*.toml`, `ascension-compat-paraglider` empties the three statue tags. **In the instance since 2026-10-25**, the statues not yet looked for in a world. Stamina use while gliding is left on (one wheel, recovers on the ground); durability is off by default. |
+| F10 backpack | **Traveler's Backpack** (confirmed). | In the instance since 2026-10-25. Its sleeping bag inside the backpack is still to be seen. |
+| F11 thrusters | **Create Propulsion: Simulated** (confirmed). | ADR-0030; helium is a solid-fuel thruster fuel; quest page rewritten. In the instance since 2026-10-25; never flown. |
+| F12 sorting | **Inventory Profiles Next** (+ libIPN, Kotlin for Forge). | In the instance since 2026-10-25. |
 | F13 quiver | **Dropped.** "It's fine, leave it." | Closed. |
-| F14 map | **Xaero's Minimap** (+ World Map). The team HUD with teammates' health is a separate session. | Named in the pack extras; the HUD prompt is `plans/session-prompts/12-team-hud-and-map.md`. |
-| Shaders | Bundle Complementary Shaders (Reimagined and/or Unbound), with clouds off everywhere. | **Not started.** Found so far: the pack's own cloud switch is `CLOUD_STYLE_DEFINE=0` (OFF), which goes in the shader options file the pack ships beside the zip (`shaderpacks/<pack>.zip.txt`), not in the pack itself, which its licence forbids modifying; Iris's `config/iris.properties` says which pack is on by default. Both packs are already in the dev instance and credited rules are in `pack-extras.md`. Still needed: their CurseForge ids for the manifest, `leave_out_of_the_manifest.shaderpacks` removed from `pack/pack.json`, and a client look at space, the Moon and a ship under them (alpha.2 left shaders out for clouds in space, toothed planet edges and an Iris warning from Aeronautics). |
+| F14 map | **Xaero's Minimap** (+ World Map). The team HUD with teammates' health is a separate session. | In the instance since 2026-10-25; the HUD prompt is `plans/session-prompts/12-team-hud-and-map.md`. |
+| Shaders | **Both** Complementary Reimagined and Unbound, **off by default** (Sanchit, 2026-10-25), clouds off everywhere. | **Built, unseen in a client.** The manifest names both by CurseForge id (Reimagined 627557 file 8884654, Unbound 385587 file 8884656, both r5.9.3, tracked by the launcher); `leave_out_of_the_manifest` is gone from `pack/pack.json`; `pack/shaderpacks/<pack>.zip.txt` holds `CLOUD_STYLE_DEFINE=0` (OFF in the pack's own language file) and goes in `overrides/shaderpacks`; no `iris.properties` is shipped, so no pack is selected and a new player has shaders off. Still to do: a client look at space, the Moon, a ship and a planet's edge under each pack, and the credit lines in the CurseForge description at publish (`pack-extras.md`). Notes from before: the pack's own cloud switch is `CLOUD_STYLE_DEFINE=0` (OFF), which goes in the shader options file the pack ships beside the zip (`shaderpacks/<pack>.zip.txt`), not in the pack itself, which its licence forbids modifying; Iris's `config/iris.properties` says which pack is on by default. Both packs are already in the dev instance and credited rules are in `pack-extras.md`. alpha.2 left shaders out for clouds in space, toothed planet edges and an Iris warning from Aeronautics, which is what the client look is for. |
 | Flight | The failure was the controls. | Aeroworks (gyroscope, control stand, joystick) and the flight quest page; **never flown in a client**. |
 
-**Staged, not applied**: the whole new mod set was built into a copy of the instance's mods (scratchpad `stage/mods`), booted on a
-dedicated server and checked (`create-checks` 34/0); the Ascension Dev instance itself, which other sessions use, has not been touched.
-Applying it means: copy the new jars in, move Gliders, Sophisticated Backpacks and Create Simulated Thrusters to a backup folder (as
-`mods-backup-before-oxygen-v2` was), then `python tools/sync-pack-config.py`.
+**Applied to the Ascension Dev instance on 2026-10-25** (Sanchit said yes): the whole new mod set had been built into a copy of the instance's mods, booted on a
+dedicated server and checked (`create-checks` 34/0). The 21 jars it replaced or dropped (Gliders, Sophisticated Backpacks, Create Simulated Thrusters and the
+old `ascension_*` jars, whose only unique content was the Cat's Eye and Silent Step runes and the single armour-ability key that main had already replaced)
+are in the instance's `mods-backup-before-alpha3`; the 19 `ascension_*` jars are the build output; `python tools/sync-pack-config.py` ran. The CurseForge app then
+fingerprinted the folder, so its record now tracks every mod (69), and `tools/build-curseforge-pack.py` counts a mod listed both there and in
+`curseforge-extras.json` once. **No client has started with this set yet.**
 
 **At publish**: the CurseForge description's mod lists (Storage, Gliders, Keys) and `KNOWN_ISSUES.md` still describe alpha.2.
 
@@ -195,13 +197,39 @@ point: grow our own magic lane (Arcane Edge, Aether Tip and Spellpiercing exist)
 Guns exist for 1.21.1 NeoForge: TaCZ (guns are data, so their damage can be set), Superb Warfare (guns, tanks, helicopters), Create: Gunsmithing.
 No ready-made mech mod turned up in a Modrinth search; mechs may be ours, perhaps built on Sable. Open.
 
+## A liquid fuel from crude oil on Earth (asked 2026-10-25, research only)
+
+Sanchit: the liquid Thruster needs a fuel that is not helium; he is thinking of a mod that puts crude oil on Earth with a full refining chain, whose
+products fuel the rocket engine and Propulsion. Read from the mods' own repositories and Modrinth pages (no jar downloaded, nothing installed).
+
+**What the Thruster accepts.** Create Propulsion's liquid fuels are data (`data/createpropulsion/thruster_fuels/<ns>/<name>.json`: fluid, thrust
+and consumption multipliers, `required_mod`). Its jar already carries entries for Create: Diesel Generators (diesel 1.1 thrust / 0.85 use,
+gasoline 1.2 / 0.9, biodiesel, ethanol, plant oil), TFMG (diesel, gasoline, kerosene 1.05 / 0.9, naphtha), Immersive Engineering and Petroleum, Mekanism,
+Northstar and Stellaris. A mod it does not name needs one small file per fluid from our `ascension-compat-create` jar.
+
+| | Create: Diesel Generators 1.3.15 | Create: The Factory Must Grow 1.2.0 | Create: Petrochem 1.3.3 |
+|---|---|---|---|
+| Size and health | 6.4 M downloads, MIT, NeoForge 1.21.1, updated 2026-07-30 | 2 M downloads, MIT-NON-AI licence, 1.21.1 builds, repo active 2026-10-19 | 11 k downloads, MIT, 1.21.1 only, updated 2026-09-20; a small following, so expect bugs |
+| Needs | Create | Create | Create 6.0.10 (ours); its electrolyzer takes Forge Energy, which Crafts & Additions makes |
+| Oil on Earth | Per-chunk oil amounts from noise, richer in plains, desert, savanna, badlands and oceans (`oil_biomes`); a pumpjack and an oil scanner; a `deny_oil_biomes` tag keeps it off the Moon | Underground oil deposits, a pumpjack (not read in detail) | A pumpjack on desert, jungle, swamp or deep ocean ground (80 to 95 mB per cycle, endless); recipes are keyed by biome, so our Moon, Nether and End get none. An add-on, Petro Deposits, makes finite deposits with scanners |
+| Refining | One step: heated distillation tank, 100 mB crude to 50 diesel and 50 gasoline (superheated 75 and 75); plus plant oil, ethanol, biodiesel | The deepest industry of the three: coke ovens, blast furnaces, large distilleries, steel, concrete, aluminium and sulfur (not read in detail) | A real chain: electrolyzer desalts, a distillation tower in three modes (flash: oil, light naphtha, LPG; atmospheric: diesel, kerosene, heavy naphtha, oil residue; vacuum: heavy gas oil, fuel oil, heavy residue), gasoline mixed from the cuts; steel pipes and tank. An "Expert" mode that roughly doubles the fluids is announced |
+| Rocket fuel | Diesel and gasoline; no kerosene | Kerosene, diesel, gasoline, naphtha | **Kerosene**, diesel, gasoline, LPG, fuel oil |
+| Propulsion fuel data | Shipped | Shipped | **Ours to write**, four small files |
+| Weight it adds | Light (tens of items) | Heavy: its own steel, aluminium, bauxite and sulfur world generation, a second progression | Medium: steel and its own machines |
+
+**Reading.** Diesel Generators is the safe choice and the thinnest refinery. TFMG is the biggest game and would become a second pack inside ours (the
+Petrochem author calls its mechanics glitchy; unverified). Petrochem is the closest to "crude to a full refinery to kerosene for a rocket" and the one that
+keeps oil off every world but Earth without any tag, at the cost of being young. Proposed: Petrochem, with Diesel Generators as the fallback if it misbehaves
+on a server. Before either is installed: download the jar (one file, about 2 MB, from Modrinth), add it to the staging copy, boot a dedicated server, check
+that its fluids, recipes and pumpjack load beside the rest, then write the Thruster fuel files and a quest section. Waiting on Sanchit's pick.
+
 ## Not decided (needs Sanchit)
 
 For alpha.3:
-1. Is "molten core" the Heavy Core (F4)?
-2. May the staged mod set be applied to the Ascension Dev instance now? (Gliders, Sophisticated Backpacks and Simulated Thrusters go to a backup folder.)
-3. Shaders: Reimagined, Unbound, or both; and does he want them on by default for a new player?
-4. Helium as a solid item in the Solid Fuel Thruster (done) or also a liquid for the liquid Thruster (needs a new fluid)?
+1. ~~Is "molten core" the Heavy Core (F4)?~~ Yes (2026-10-25).
+2. ~~May the staged mod set be applied?~~ Yes, done.
+3. ~~Shaders?~~ Both, off by default.
+4. A liquid fuel for the liquid Thruster: **not helium.** He asked for a crude oil mod for Earth with a full refining chain. Candidates compared below; waiting on his pick.
 5. The "few more things before we publish" and the "final rollout" list he mentioned earlier, which still have not been told to me.
 
 For alpha.4: spell scaling and lane (step 0 above), and which structure mods.

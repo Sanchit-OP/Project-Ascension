@@ -9,8 +9,10 @@ What goes in (docs/technical/pack-extras.md says why each mod is there):
   manifest.json   every mod by CurseForge project id and file id, never as a file: the launcher's own record of the
                   Ascension Dev instance (minecraftinstance.json) for the mods it tracks (with pack/curseforge-pins.json laid
                   over it where CurseForge no longer has the file), and pack/curseforge-extras.json for the ones placed there
-                  by hand. Shader packs are left out (pack/pack.json says why).
+                  by hand. Shader packs go in by id like mods (a licence rule: Complementary's packs are added through
+                  CurseForge, never uploaded); pack/pack.json can still name a launcher section to leave out.
   overrides/mods  our own jars (ascension_*.jar, built by ./gradlew build), the only jars the pack carries itself.
+  overrides/shaderpacks  pack/shaderpacks: the options files that sit beside a shader pack (<pack>.zip.txt), never a pack.
   overrides/config  everything under pack/config: the settings the pack decides, the first-launch options, the
                   quest book, the keys.
 
@@ -120,6 +122,16 @@ def config_files():
     return files
 
 
+def shaderpack_option_files():
+    files = {}
+    base = os.path.join(PACK, 'shaderpacks')
+    for folder, _, names in os.walk(base):
+        for name in names:
+            path = os.path.join(folder, name)
+            files['overrides/shaderpacks/' + os.path.relpath(path, base).replace(os.sep, '/')] = path
+    return files
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--check', action='store_true', help='report only; write nothing')
@@ -139,6 +151,16 @@ def main():
     extras = extra_mods()
     ours = our_jars()
     configs = config_files()
+    configs.update(shaderpack_option_files())
+
+    # The launcher fingerprints the jars it finds in the mods folder, so a mod placed by hand can later turn up in its record too
+    # (it did on 2026-10-25, when the alpha.3 jars were copied in). The same file in both lists is one entry; a different file under
+    # the same project is a real conflict and is left for the check below.
+    tracked_files = {m['projectID']: m['fileID'] for m in tracked}
+    folded = [m for m in extras if tracked_files.get(m['projectID']) == m['fileID']]
+    if folded:
+        extras = [m for m in extras if m not in folded]
+        notes.append('%d mods in curseforge-extras.json are also in the launcher record under the same file id: counted once' % len(folded))
 
     # One mod, one entry.
     seen = {}
@@ -153,8 +175,10 @@ def main():
     accounted = {m['jar'] for m in tracked + extras} | set(ours)
     for name in sorted(on_disk - accounted):
         problems.append('%s is in the instance but in no list: it would be missing from the pack' % name)
+    shaders_dir = os.path.join(instance, 'shaderpacks')
+    on_disk_shaders = set(os.listdir(shaders_dir)) if os.path.isdir(shaders_dir) else set()
     for mod in tracked + extras:
-        if mod['jar'] not in on_disk:
+        if mod['jar'] not in on_disk and mod['jar'] not in on_disk_shaders:
             notes.append('%s: the instance has no %s (the manifest still names its file id)' % (mod['name'], mod['jar']))
 
     # Never bundle a jar whose third-party distribution is off (ours are ours).

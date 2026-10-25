@@ -19,4 +19,5 @@ It is separate from `run/` (throwaway dev state, never committed) and from `conf
 move the saved keys in an existing game, which Default Options deliberately does not do.
 
 Not here, on purpose: mods and shader packs. Their licences ask to be added through Modrinth or
-CurseForge, not as files we upload (`docs/technical/pack-extras.md`).
+CurseForge, not as files we upload (`docs/technical/pack-extras.md`). `pack/shaderpacks/` is the exception that proves it: only the small
+options file that sits beside a pack (`<pack>.zip.txt`, here the cloud switch), which goes into the instance's `shaderpacks/` and into the pack's overrides.
