@@ -1,5 +1,5 @@
 {
-	"chapter.31FD0572AE70D319.title": "First Days"
+	"chapter.31FD0572AE70D319.title": "First Light"
 	"chapter.31FD0572AE70D319.chapter_subtitle": ["Earth. Learn the ground you stand on."]
 	"quest.738C3477565410E7.title": "Open the Ledger"
 	"quest.738C3477565410E7.quest_subtitle": "It keeps count, and it points"
@@ -60,9 +60,9 @@
 	"quest.3983A847E6B83CA8.title": "Points from gates"
 	"quest.3983A847E6B83CA8.quest_subtitle": "2 each, once, for the whole team"
 	"quest.3983A847E6B83CA8.quest_desc": ["Every gate you light gives every player 2 points: Earth's, the Moon's, the Nether's and the End's.", "A lit gate stays lit, so these come once too."]
-	"quest.3A169BE756F1B40C.title": "Points from places"
-	"quest.3A169BE756F1B40C.quest_subtitle": "1 each, for the first of a kind"
-	"quest.3A169BE756F1B40C.quest_desc": ["The first time you find each kind of place, you gain a point.", "A deep city, a trial chamber, a mansion, a monument, a fortress, a bastion, a few ruins, and every new world you land on.", "A hundred of the same kind give one point. These are yours alone; bosses and gates are shared."]
+	"quest.3A169BE756F1B40C.title": "Places and projects"
+	"quest.3A169BE756F1B40C.quest_subtitle": "1 each, once"
+	"quest.3A169BE756F1B40C.quest_desc": ["The first time you find each kind of place, you gain a point: a few ruins, and every new world you land on. These are yours alone.", "Each project sheet (Spin, Brass, Crude, Wings, Breath, Skyline) pays one point to the whole team when its finale is done.", "A hundred of the same kind give one point. Bosses, gates and projects are shared."]
 	"quest.0FB0E7741D93E932.title": "The Skill Web"
 	"quest.0FB0E7741D93E932.quest_subtitle": "K"
 	"quest.0FB0E7741D93E932.quest_desc": ["Press K. A gold note above your health row tells you when you have points to spend.", "Click a node to mark it, click again to unmark, then press Confirm. Hover a node for what it gives.", "A node costs one point and must touch one you already hold, or sit in the ring round the centre."]
@@ -130,8 +130,8 @@
 	"quest.0ACE2D2F0C79926C.title": "The End"
 	"quest.0ACE2D2F0C79926C.quest_subtitle": "32,000 blocks south"
 	"quest.0ACE2D2F0C79926C.quest_desc": ["A belt of floating rock in the dark, far out to the south. Nothing holds the islands together.", "Something old guards it. Wings help.", "Plan a long flight."]
-	"chapter.66846420A805B305.title": "The Road Up"
-	"chapter.66846420A805B305.chapter_subtitle": ["Earth to the top of the sky."]
+	"chapter.35D07E504E4B332F.title": "Spin"
+	"chapter.35D07E504E4B332F.chapter_subtitle": ["Make the world do the turning."]
 	"quest.778F5319036EB164.title": "The manual in your hand"
 	"quest.778F5319036EB164.quest_subtitle": "Create explains itself"
 	"quest.778F5319036EB164.quest_desc": ["Create teaches its own machines. Hold W over any Create item, in your inventory or in JEI, and a short animated guide plays.", "A ship is made of Create parts, so this is where the way up begins."]
@@ -147,44 +147,6 @@
 	"quest.51560B86C08B0177.title": "Pressed iron"
 	"quest.51560B86C08B0177.quest_subtitle": "Sheets for everything"
 	"quest.51560B86C08B0177.quest_desc": ["A mechanical press flattens iron into sheets. It needs a casing, a shaft, an iron block and something to turn it.", "You need nine: one for the bearing, four for a propeller, four for a burner."]
-	"quest.7550C8791F5A44BF.title": "The bearing"
-	"quest.7550C8791F5A44BF.quest_subtitle": "Titanium turns the blades"
-	"quest.7550C8791F5A44BF.quest_desc": ["Three titanium ingots, an iron sheet and a wooden slab make the bearing that spins a propeller.", "The usual recipe asks for brass. Here, titanium does the job."]
-	"quest.6BE89277CA0B7E2D.title": "Thrust"
-	"quest.6BE89277CA0B7E2D.quest_subtitle": "Blades that push the sky"
-	"quest.6BE89277CA0B7E2D.quest_desc": ["A propeller is four iron sheets round an alloy. A wooden slab and a shaft make it an andesite propeller.", "Set it on the bearing and give it power. A ship has to carry its own: Simulated's portable engine is one way, and Ponder shows how."]
-	"quest.7C3205BE963442F9.title": "Lift"
-	"quest.7C3205BE963442F9.quest_subtitle": "Hot air holds it up"
-	"quest.7C3205BE963442F9.quest_desc": ["Envelopes are wool and sticks. Seal them into an airtight shell, put a burner under it and power the burner with redstone.", "A burner is four iron sheets, two alloy, redstone and a coal block."]
-	"quest.61A35FA99BC1225C.title": "Thin air"
-	"quest.61A35FA99BC1225C.quest_subtitle": "Both lift and thrust fade as you climb"
-	"quest.61A35FA99BC1225C.quest_desc": ["Balloons and propellers push against air, and the air thins as you rise. By the top of the sky about a third is left.", "Build with more lift and more blades than seems fair."]
-	"quest.0FFB162AEE1FB4B4.title": "A helm"
-	"quest.0FFB162AEE1FB4B4.quest_subtitle": "One block wakes the hull"
-	"quest.0FFB162AEE1FB4B4.quest_desc": ["The physics assembler turns the blocks you built into one moving ship. The steering wheel turns it.", "Both are made on casings. Place the assembler where the hull begins and hold W over it."]
-	"quest.6AEB8BAD7F840F9A.title": "Know your height"
-	"quest.6AEB8BAD7F840F9A.quest_subtitle": "The sky ends at 320"
-	"quest.6AEB8BAD7F840F9A.quest_desc": ["An altitude sensor is paper, an iron sheet and a casing.", "The sky ends at height 320. Past it, the world lets go."]
-	"quest.7CB0E909964F2247.title": "A machine that makes air"
-	"quest.7CB0E909964F2247.quest_subtitle": "Spin it, and it breathes out"
-	"quest.7CB0E909964F2247.quest_desc": ["An air compressor turns a spinning shaft into air. The faster it spins, the more air it makes.", "Use a tank on it to fill the tank. Fill every tank before you leave: in space nothing makes air."]
-	"quest.69695F363B61AE01.title": "A room of air"
-	"quest.69695F363B61AE01.quest_subtitle": "Seal it, and it fills"
-	"quest.69695F363B61AE01.quest_desc": ["An air dispenser keeps a sealed room breathable while it has air. Pipe air to it from a compressor and a tank.", "Any hole lets the air out, so seal every gap. A bigger room needs more air every second."]
-	"quest.5C38EACEAEF810ED.title": "How far can you go?"
-	"quest.5C38EACEAEF810ED.quest_subtitle": "Count minutes of air"
-	"quest.5C38EACEAEF810ED.quest_desc": ["Space is airless. A tank lasts five minutes and you can carry two, plus twenty seconds in your lungs.", "Work out your ship's speed, then plan the trip in minutes, not blocks."]
-	"quest.2ED2CC995D088901.title": "Where the sky ends"
-	"quest.2ED2CC995D088901.quest_subtitle": "Past the top, space begins"
-	"quest.2ED2CC995D088901.quest_desc": ["Climb past the top of the sky in your ship and the world lets go. This is space, and it is empty.", "On foot you will get nowhere: only a ship can carry you past the top.", "Take two tanks. There is nothing to breathe."]
-	"quest.5FABAE7A6489ABA1.title": "Steer by the chart"
-	"quest.5FABAE7A6489ABA1.quest_subtitle": "The Planets page follows you"
-	"quest.5FABAE7A6489ABA1.quest_desc": ["Open the Planets page. A point shows where you are, with an arrow for the way you face.", "Worlds you know are named. Keep the arrow pointed at one and fly."]
-	"quest.4DE0EFD601D00710.title": "Coming down"
-	"quest.4DE0EFD601D00710.quest_subtitle": "A world will take your ship"
-	"quest.4DE0EFD601D00710.quest_desc": ["Fly near a world and your ship is carried down to it, crew and all.", "The first lies east of Earth, about four thousand blocks out."]
-	"chapter.5A50CCBE03C8C558.title": "Create: Power"
-	"chapter.5A50CCBE03C8C558.chapter_subtitle": ["Make things spin, and learn what it costs."]
 	"quest.456D5B7D866D892C.title": "Shafts and cogs"
 	"quest.456D5B7D866D892C.quest_subtitle": "Spin travels along them"
 	"quest.456D5B7D866D892C.quest_desc": ["Two andesite alloy make eight shafts. A shaft and a plank make a cogwheel; one more plank makes it large.", "Cogs that touch turn each other, the opposite way. A large cog driving a small one makes the small one spin twice as fast."]
@@ -211,18 +173,13 @@
 	"quest.33784D5CE51D40D2.quest_desc": ["Six dried kelp make a belt. Use it on two shafts to join them; the belt carries items and anything standing on it."]
 	"quest.525035C40110948D.title": "Steam"
 	"quest.525035C40110948D.quest_subtitle": "A boiler, and a lot of power"
-	"quest.525035C40110948D.quest_desc": ["A steam engine is a gold sheet, an alloy and a copper block. It sits on a fluid tank with water in it.", "The tank needs heat under it, and a lit blaze burner does that. Hold W over the engine for the rest."]
-	"chapter.12DD3B4DBD29560D.title": "Create: Machines"
-	"chapter.12DD3B4DBD29560D.chapter_subtitle": ["Grind, blow, mix, press, assemble, move."]
+	"quest.525035C40110948D.quest_desc": ["A steam engine is a gold sheet, an alloy and a copper block. It sits on a fluid tank with water in it.", "The tank needs heat under it, and a lit burner does that (the Brass page makes one). Hold W over the engine for the rest."]
 	"quest.31F7D08D8D723EF6.title": "A millstone"
 	"quest.31F7D08D8D723EF6.quest_subtitle": "Ore to crushed ore, grain to flour"
 	"quest.31F7D08D8D723EF6.quest_desc": ["A cogwheel over a casing over a stone. Drop items on top while it turns and they come out ground.", "Crushed ore can be smelted, or washed into nuggets at a fan."]
 	"quest.25BCAADEC1250707.title": "A saw"
 	"quest.25BCAADEC1250707.quest_subtitle": "Logs to planks, and more"
 	"quest.25BCAADEC1250707.quest_desc": ["Three iron sheets, an iron ingot and a casing. Stood upright, it cuts whatever you put on it.", "Turned to face a tree, it fells it."]
-	"quest.750221738B454389.title": "Crushing wheels"
-	"quest.750221738B454389.quest_subtitle": "A pair, set side by side"
-	"quest.750221738B454389.quest_desc": ["Crushing wheels are made two at a time at mechanical crafters, so they come after brass.", "Items that fall between a spinning pair are ground, faster than a millstone does it."]
 	"quest.681459E09FA0993E.title": "An encased fan"
 	"quest.681459E09FA0993E.quest_subtitle": "Moves air, and what rides on it"
 	"quest.681459E09FA0993E.quest_desc": ["A shaft over a casing over a propeller. It blows air one way when it spins one way, and sucks the other way when reversed."]
@@ -234,22 +191,13 @@
 	"quest.58271DC5E963B5AB.quest_desc": ["Five andesite alloy in a bowl shape. Machines above it work on what it holds."]
 	"quest.6AFCA0A066B96E1F.title": "A mixer"
 	"quest.6AFCA0A066B96E1F.quest_subtitle": "Combine ingredients"
-	"quest.6AFCA0A066B96E1F.quest_desc": ["A cogwheel over a casing over a whisk. Set it over a basin and turn it.", "Some mixes need heat: a lit blaze burner under the basin gives it. The Rot page shows where blazes live."]
+	"quest.6AFCA0A066B96E1F.quest_desc": ["A cogwheel over a casing over a whisk. Set it over a basin and turn it.", "Some mixes need heat: a lit burner under the basin gives it. The Brass page shows how to make one."]
 	"quest.5188ABFFFDCD7AF8.title": "Compacting"
 	"quest.5188ABFFFDCD7AF8.quest_subtitle": "Fewer items from more"
 	"quest.5188ABFFFDCD7AF8.quest_desc": ["Set a mechanical press over a basin and it squeezes what the basin holds into something denser."]
 	"quest.035D40066F6B68BA.title": "Copper casing"
 	"quest.035D40066F6B68BA.quest_subtitle": "A log, wrapped in copper"
 	"quest.035D40066F6B68BA.quest_desc": ["Use a copper ingot on a stripped log. The spout and the item drain are built on copper casings."]
-	"quest.39C750A73A2D005D.title": "A deployer"
-	"quest.39C750A73A2D005D.quest_subtitle": "Your own hands, on a machine"
-	"quest.39C750A73A2D005D.quest_desc": ["An electron tube over a casing over a brass hand. It uses items on blocks, places blocks, and presses buttons.", "An electron tube is a polished rose quartz over an iron sheet."]
-	"quest.0482E37944A9D9FC.title": "Mechanical crafters"
-	"quest.0482E37944A9D9FC.quest_subtitle": "Crafting without hands"
-	"quest.0482E37944A9D9FC.quest_desc": ["An electron tube, a brass casing and a crafting table make three. Set them in a grid and they craft together."]
-	"quest.13A40786829CBFDD.title": "A precision mechanism"
-	"quest.13A40786829CBFDD.quest_subtitle": "Built in loops"
-	"quest.13A40786829CBFDD.quest_desc": ["A gold sheet is passed along a line of machines, round and round, until it becomes a mechanism.", "Fine parts like this are made by passing one item through many machines. Hold W over it."]
 	"quest.1413DFAA81D343E1.title": "Chutes"
 	"quest.1413DFAA81D343E1.quest_subtitle": "Items, straight down"
 	"quest.1413DFAA81D343E1.quest_desc": ["Two iron sheets and an iron ingot make four. Items fall down a chute; a fan under it can blow them up."]
@@ -262,8 +210,77 @@
 	"quest.4EF8B9F90325851D.title": "A spout"
 	"quest.4EF8B9F90325851D.quest_subtitle": "Fill what passes under it"
 	"quest.4EF8B9F90325851D.quest_desc": ["A copper casing over dried kelp. Set it over a belt or a depot and it fills buckets, bottles and the like from the pipe it is joined to."]
-	"chapter.190FF7E0A02D712A.title": "Aeronautics: A Ship"
-	"chapter.190FF7E0A02D712A.chapter_subtitle": ["From a pile of blocks to something that flies."]
+	"quest.24B30AE1B5F8827E.title": "A working line"
+	"quest.24B30AE1B5F8827E.quest_subtitle": "Press, mixer, fan, belt and spout"
+	"quest.24B30AE1B5F8827E.quest_desc": ["A press that flattens, a mixer that stirs, a fan that washes and smokes, a belt that carries, a spout that fills.", "With all of them turning off one shaft, a base builds itself while you are away."]
+	"chapter.57E1D441ADB1F68F.title": "Brass"
+	"chapter.57E1D441ADB1F68F.chapter_subtitle": ["Fire, metal and a hand that works for you."]
+	"quest.21D9B7848ED84479.title": "A burner for the basin"
+	"quest.21D9B7848ED84479.quest_subtitle": "With a blaze, or without one"
+	"quest.21D9B7848ED84479.quest_desc": ["Heated recipes need a blaze burner under the basin. A captured blaze makes one: use an empty burner on a blaze, in the Nether.", "You can make the same burner at home: iron sheets round a magma block, a lava bucket on top. Feed it coal to light it."]
+	"quest.04BF3DEDB6B04093.title": "Brass"
+	"quest.04BF3DEDB6B04093.quest_subtitle": "Create's next tier"
+	"quest.04BF3DEDB6B04093.quest_desc": ["Copper and zinc, mixed over a lit burner, make brass. Three of each make two ingots by hand at a crafting table, dearer than the mixer.", "Brass is the upgrade: stronger casings, finer controls, better propellers."]
+	"quest.39C750A73A2D005D.title": "A deployer"
+	"quest.39C750A73A2D005D.quest_subtitle": "Your own hands, on a machine"
+	"quest.39C750A73A2D005D.quest_desc": ["An electron tube over a casing over a brass hand. It uses items on blocks, places blocks, and presses buttons.", "The brass hand is four brass sheets and an alloy. The electron tube has its own quest."]
+	"quest.0482E37944A9D9FC.title": "Mechanical crafters"
+	"quest.0482E37944A9D9FC.quest_subtitle": "Crafting without hands"
+	"quest.0482E37944A9D9FC.quest_desc": ["An electron tube, a brass casing and a crafting table make three. Set them in a grid and they craft together."]
+	"quest.750221738B454389.title": "Crushing wheels"
+	"quest.750221738B454389.quest_subtitle": "A pair, set side by side"
+	"quest.750221738B454389.quest_desc": ["Crushing wheels are made two at a time at mechanical crafters, so they come after brass.", "Items that fall between a spinning pair are ground, faster than a millstone does it."]
+	"quest.13A40786829CBFDD.title": "A precision mechanism"
+	"quest.13A40786829CBFDD.quest_subtitle": "Built in loops"
+	"quest.13A40786829CBFDD.quest_desc": ["A gold sheet is passed along a line of machines, round and round, until it becomes a mechanism.", "Fine parts like this are made by passing one item through many machines. Hold W over it."]
+	"quest.4CF95F61BD4815E1.title": "An electron tube"
+	"quest.4CF95F61BD4815E1.quest_subtitle": "A shard of light, bound in iron"
+	"quest.4CF95F61BD4815E1.quest_desc": ["A deployer, a crafter and every fine control start with an electron tube. Create cuts it from polished rose quartz, which is Nether quartz and redstone.", "An amethyst shard from a geode, four redstone and an iron sheet make one just as well, at a crafting table."]
+	"chapter.1C966D794046C9BC.title": "Current"
+	"chapter.1C966D794046C9BC.chapter_subtitle": ["Spin becomes power, and power keeps."]
+	"quest.368C3C931F9D23EC.title": "Power aboard"
+	"quest.368C3C931F9D23EC.quest_subtitle": "Electricity, stored in the hull"
+	"quest.368C3C931F9D23EC.quest_desc": ["Create Crafts & Additions turns spin into electricity and electricity back into spin. Wires carry it, accumulators store it.", "A ship can carry its own power: with the Sable addon the wires follow the ship, so a charged accumulator in the hull runs anything on board."]
+	"quest.71B4C0A0F533625A.title": "An alternator"
+	"quest.71B4C0A0F533625A.quest_subtitle": "Spin in, power out"
+	"quest.71B4C0A0F533625A.quest_desc": ["Andesite alloy, iron plates, an iron rod and copper spools, on a mechanical crafter. A shaft turns it and it gives energy to whatever is wired to it."]
+	"quest.1B176CEB14C0F95A.title": "An accumulator"
+	"quest.1B176CEB14C0F95A.quest_subtitle": "Power kept for later"
+	"quest.1B176CEB14C0F95A.quest_desc": ["A brass casing, two capacitors, a copper rod and electrum wire. Connect it to a generator, and it feeds machines when the generator is stopped."]
+	"quest.28807E809AAEA335.title": "Wires"
+	"quest.28807E809AAEA335.quest_subtitle": "Power travels along copper"
+	"quest.28807E809AAEA335.quest_desc": ["A connector on each end and a copper wire between them carry power across a base.", "With the Sable addon the wire stays joined when the ship moves, so a ship can have its own wiring."]
+	"quest.3222771C8671BD90.title": "An electric motor"
+	"quest.3222771C8671BD90.quest_subtitle": "Power back into spin"
+	"quest.3222771C8671BD90.quest_desc": ["The alternator turns spin into power; the electric motor does the opposite. Power kept in an accumulator can turn a shaft again.", "A motor is a quiet way to turn a propeller: no fuel, no smoke."]
+	"chapter.26898F5F6C018C35.title": "Crude"
+	"chapter.26898F5F6C018C35.chapter_subtitle": ["Oil out of the ground, fuel out of the oil."]
+	"quest.7DA25AAA70667BA1.title": "Oil for the rocket"
+	"quest.7DA25AAA70667BA1.quest_subtitle": "Out of the ground, into a tank"
+	"quest.7DA25AAA70667BA1.quest_desc": ["The liquid Thruster burns kerosene, diesel or gasoline. All three come out of crude oil, and Create: Petrochem makes the whole chain.", "Oil lies under deserts, swamps, jungles and deep oceans of Earth, and nowhere else. Every step from steel to the tower wants a burner."]
+	"quest.3852382A0293C75B.title": "Steel"
+	"quest.3852382A0293C75B.quest_subtitle": "Iron and coal, heated"
+	"quest.3852382A0293C75B.quest_desc": ["Every Petrochem machine is made of steel. Heat an iron ingot and a coal in a mixer over a burner, then press the ingot flat for sheets.", "Pipes, tanks and plates are all steel."]
+	"quest.48EAEECF93D9FE3F.title": "A pumpjack"
+	"quest.48EAEECF93D9FE3F.quest_subtitle": "A crank, a well and an arm"
+	"quest.48EAEECF93D9FE3F.quest_desc": ["The crank takes a rotation speed controller, the well is steel pipe, the arm is built on a mechanical crafter. Put the well in the ground, turn the crank.", "Desert and deep ocean give crude petroleum; swamp and jungle give oil that is already desalted. Any other ground gives nothing."]
+	"quest.15D49FC4F1F6B894.title": "An electrolyzer"
+	"quest.15D49FC4F1F6B894.quest_subtitle": "Take the salt out"
+	"quest.15D49FC4F1F6B894.quest_desc": ["A mixer that runs on electricity, not spin. Wire it to an alternator or an accumulator and feed it petroleum: out come desalted oil and, half the time, salt."]
+	"quest.78635FFB29DF1F07.title": "A distillation tower"
+	"quest.78635FFB29DF1F07.quest_subtitle": "Split the oil by how hot it boils"
+	"quest.78635FFB29DF1F07.quest_desc": ["Steel tanks stacked over a controller, a blaze burner under it, and an output block at each height. Three modes: flash, atmospheric and vacuum.", "The atmospheric mode gives diesel, kerosene and heavy naphtha. Pipe the kerosene away to a tank."]
+	"quest.2305DD03FECDD14D.title": "Kerosene"
+	"quest.2305DD03FECDD14D.quest_subtitle": "Fuel for a long climb"
+	"quest.2305DD03FECDD14D.quest_desc": ["Kerosene gives the liquid Thruster more push for less fuel than diesel does. Gasoline pushes hardest and burns faster."]
+	"quest.158F2CDB69ED0191.title": "Bronze"
+	"quest.158F2CDB69ED0191.quest_subtitle": "Copper and tin, heated"
+	"quest.158F2CDB69ED0191.quest_desc": ["The tower and the engines use bronze plates. Heat a copper ingot and a tin nugget in a mixer over a burner, then press the ingot.", "Tin has no ore here. Petrochem fills a zinc nugget with a thick potion; two zinc nuggets and an iron nugget make one at a crafting table."]
+	"quest.44401010A72450E0.title": "A bigger tank"
+	"quest.44401010A72450E0.quest_subtitle": "Platinum holds twice the fuel"
+	"quest.44401010A72450E0.quest_desc": ["Platinum is Create Propulsion's own metal, in stone and deepslate. A platinum fluid tank holds twice what a copper one does.", "A good place for kerosene: a rocket burns a lot of it."]
+	"chapter.0FFBABDCB1630CF5.title": "Wings"
+	"chapter.0FFBABDCB1630CF5.chapter_subtitle": ["A ship that flies, steers and has a fire in it."]
 	"quest.0D3E3051194A3A30.title": "A ship is a contraption"
 	"quest.0D3E3051194A3A30.quest_subtitle": "Glued blocks, one moving body"
 	"quest.0D3E3051194A3A30.quest_desc": ["A physics assembler is a lever on a casing between two alloy. It turns a glued group of blocks into one moving body.", "Glue what should move, then hold use on the assembler and pull its lever. Any assembler can take the ship apart again."]
@@ -279,12 +296,18 @@
 	"quest.3472B710D903A6D7.title": "The hot air burner"
 	"quest.3472B710D903A6D7.quest_subtitle": "It fills the balloon above it"
 	"quest.3472B710D903A6D7.quest_desc": ["Four iron sheets, two alloy, redstone and a coal block. Power it with redstone and it fills the balloon above.", "A panel sets the most hot air it may give, and the signal strength scales that. Several burners can share a balloon."]
+	"quest.7550C8791F5A44BF.title": "The bearing"
+	"quest.7550C8791F5A44BF.quest_subtitle": "Titanium turns the blades"
+	"quest.7550C8791F5A44BF.quest_desc": ["Three titanium ingots, an iron sheet and a wooden slab make the bearing that spins a propeller.", "The usual recipe asks for brass. Here, titanium does the job."]
 	"quest.49C3BADD29599892.title": "Propellers"
 	"quest.49C3BADD29599892.quest_subtitle": "Sails on a bearing"
 	"quest.49C3BADD29599892.quest_desc": ["A propeller bearing attaches to the block in front of it. Anything with at least two sail-like blocks counts as a propeller; more sails push harder.", "Reversing the spin, or using a wrench, reverses the push. A propeller moving through air pushes less."]
 	"quest.0336D33F956E38E2.title": "A portable engine"
 	"quest.0336D33F956E38E2.quest_subtitle": "The ship carries its own power"
 	"quest.0336D33F956E38E2.quest_desc": ["A blast furnace, an engine assembly and an iron sheet make one. It burns fuel to turn a shaft, wherever it is.", "Fuel goes in by hand or by machine. A blaze cake superheats it for more power."]
+	"quest.0FFB162AEE1FB4B4.title": "A helm"
+	"quest.0FFB162AEE1FB4B4.quest_subtitle": "One block wakes the hull"
+	"quest.0FFB162AEE1FB4B4.quest_desc": ["The physics assembler turns the blocks you built into one moving ship. The steering wheel turns it.", "Both are made on casings. Place the assembler where the hull begins and hold W over it."]
 	"quest.092F22E898F4606B.title": "The steering wheel"
 	"quest.092F22E898F4606B.quest_subtitle": "Grab it and turn"
 	"quest.092F22E898F4606B.quest_desc": ["A large cogwheel over a casing over a shaft. Hold use to grab it and move the mouse to turn it; sneaking snaps it to 45 degrees.", "A bearing driven by the wheel must be told not to take the ship apart when it turns."]
@@ -297,29 +320,15 @@
 	"quest.5E9CC76BEBA994D5.title": "A name"
 	"quest.5E9CC76BEBA994D5.quest_subtitle": "Every ship has one"
 	"quest.5E9CC76BEBA994D5.quest_desc": ["Paper, a stick and an alloy make four nameplates. Name your ship with one."]
-	"chapter.62B8C7928B93CDB4.title": "Aeronautics: In Flight"
-	"chapter.62B8C7928B93CDB4.chapter_subtitle": ["Climb, steer, and leave."]
-	"quest.062AFA714E6E51FF.title": "Air pressure"
-	"quest.062AFA714E6E51FF.quest_subtitle": "Climb, and everything weakens"
-	"quest.062AFA714E6E51FF.quest_desc": ["Hot air burners lift less and propellers push less the higher you go, because the air thins.", "An altitude sensor shows your height, and with goggles on, the air pressure too."]
-	"quest.6D3E9CD8CBD31E01.title": "The altitude sensor"
-	"quest.6D3E9CD8CBD31E01.quest_subtitle": "A signal that follows your height"
-	"quest.6D3E9CD8CBD31E01.quest_desc": ["Paper over an iron sheet over a casing. Climbing raises its signal by default, and you can set the lowest and highest heights, or invert it."]
-	"quest.64302D6A1B17CC5D.title": "The velocity sensor"
-	"quest.64302D6A1B17CC5D.quest_subtitle": "A signal that follows your speed"
-	"quest.64302D6A1B17CC5D.quest_desc": ["A propeller over a barrel over a casing. It gives a signal by speed along the way it faces; set the speed that gives full strength."]
-	"quest.2CF4F64AB697E399.title": "Aviator's goggles"
-	"quest.2CF4F64AB697E399.quest_subtitle": "A pilot sees more"
-	"quest.2CF4F64AB697E399.quest_desc": ["Leather and a pair of goggles. They show what engineer's goggles show: speed, stress and what a block holds."]
+	"quest.1AA1B3155D4F8627.title": "A propeller that tips itself"
+	"quest.1AA1B3155D4F8627.quest_subtitle": "Brass, and a little quartz"
+	"quest.1AA1B3155D4F8627.quest_desc": ["A smart propeller makes thrust when spun and tips itself to face upward.", "It needs brass and quartz. Hold W over it in JEI to see the rest."]
 	"quest.7CAF54B976C4D1D8.title": "A throttle lever"
 	"quest.7CAF54B976C4D1D8.quest_subtitle": "Set a signal by hand"
 	"quest.7CAF54B976C4D1D8.quest_desc": ["A stick on a brass casing. Drag it to set a signal from nothing to full, and use a wrench to invert it."]
 	"quest.267C2E5B0F74C7D0.title": "A gimbal sensor"
 	"quest.267C2E5B0F74C7D0.quest_subtitle": "A signal that follows the tilt"
 	"quest.267C2E5B0F74C7D0.quest_desc": ["A compass over a gyroscopic mechanism over a brass casing. It gives a signal by tilt, each axis on its own.", "By default the signal is strongest downhill; you can set the angle and invert it."]
-	"quest.059C346EDD68A171.title": "A navigation table"
-	"quest.059C346EDD68A171.quest_subtitle": "A signal toward where you are going"
-	"quest.059C346EDD68A171.quest_desc": ["A brass sheet over a precision mechanism over a brass casing. Give it a navigation item and it signals toward the destination, weaker when you do not face it."]
 	"quest.0008F7A2299413E7.title": "Steering a ship"
 	"quest.0008F7A2299413E7.quest_subtitle": "Keep it level, point it where you go"
 	"quest.0008F7A2299413E7.quest_desc": ["A ship turns on three axes and wants to roll over. Two blocks make it calm: a gyroscope keeps it level, and a control stand holds the levers.", "Both come from Create: Aeroworks. They send signals over redstone links, so the stand can sit anywhere on the ship."]
@@ -340,45 +349,70 @@
 	"quest.689B936CDFED01AB.quest_desc": ["Copper sheets, iron sheets, andesite alloy, a chute and a fluid pipe: no Nether needed. It burns what you feed it and costs no stress.", "Drop fuel in from a chute or a belt. A redstone signal pauses it and stops it using fuel."]
 	"quest.4E1D1D205D57F9D7.title": "Fuel decides the push"
 	"quest.4E1D1D205D57F9D7.quest_subtitle": "Wood, coal, cake, helium"
-	"quest.4E1D1D205D57F9D7.quest_desc": ["Wood pushes a little, coal and charcoal push more, a blaze cake pushes hardest of the common fuels.", "Raw helium from the Moon pushes like a blaze cake and burns twice as long. Bring a stack."]
+	"quest.4E1D1D205D57F9D7.quest_desc": ["Wood pushes a little, coal and charcoal push more, a blaze cake pushes hardest of the common fuels.", "Raw helium from the Moon pushes like a blaze cake and burns twice as long. Bring a stack.", "Kerosene from crude oil is the liquid Thruster's best: more push for less fuel. The Crude page makes it."]
 	"quest.6EFB65203626CF07.title": "A thruster"
 	"quest.6EFB65203626CF07.quest_subtitle": "A liquid in, a hard push out"
 	"quest.6EFB65203626CF07.quest_desc": ["Iron and copper sheets, a fluid pipe, two mechanical pumps and a brass casing. It takes a liquid fuel from a pipe or a tank: kerosene, diesel or gasoline.", "Brass can be crafted by hand from copper and zinc; a heated mixer makes it far cheaper."]
-	"quest.368C3C931F9D23EC.title": "Power aboard"
-	"quest.368C3C931F9D23EC.quest_subtitle": "Electricity, stored in the hull"
-	"quest.368C3C931F9D23EC.quest_desc": ["Create Crafts & Additions turns spin into electricity and electricity back into spin. Wires carry it, accumulators store it.", "A ship can carry its own power: with the Sable addon the wires follow the ship, so a charged accumulator in the hull runs anything on board."]
-	"quest.71B4C0A0F533625A.title": "An alternator"
-	"quest.71B4C0A0F533625A.quest_subtitle": "Spin in, power out"
-	"quest.71B4C0A0F533625A.quest_desc": ["Andesite alloy, iron plates, an iron rod and copper spools, on a mechanical crafter. A shaft turns it and it gives energy to whatever is wired to it."]
-	"quest.1B176CEB14C0F95A.title": "An accumulator"
-	"quest.1B176CEB14C0F95A.quest_subtitle": "Power kept for later"
-	"quest.1B176CEB14C0F95A.quest_desc": ["A brass casing, two capacitors, a copper rod and electrum wire. Connect it to a generator, and it feeds machines when the generator is stopped."]
 	"quest.5CA14F7691533EF9.title": "An ion thruster"
 	"quest.5CA14F7691533EF9.quest_subtitle": "No fuel, only power"
 	"quest.5CA14F7691533EF9.quest_desc": ["Needs redstone parts from Simulated, brass and sturdy sheets, a precision mechanism and a chute. It pushes gently for as long as it has power.", "It never runs dry, so it is what a ship uses to keep station in space."]
-	"quest.7DA25AAA70667BA1.title": "Oil for the rocket"
-	"quest.7DA25AAA70667BA1.quest_subtitle": "Out of the ground, into a tank"
-	"quest.7DA25AAA70667BA1.quest_desc": ["The liquid Thruster burns kerosene, diesel or gasoline. All three come out of crude oil, and Create: Petrochem makes the whole chain.", "Oil lies under deserts, swamps, jungles and deep oceans of Earth, and nowhere else. A burner under the mixer and tower is needed at every step."]
-	"quest.3852382A0293C75B.title": "Steel"
-	"quest.3852382A0293C75B.quest_subtitle": "Iron and coal, heated"
-	"quest.3852382A0293C75B.quest_desc": ["Every Petrochem machine is made of steel. Heat an iron ingot and a coal in a mixer over a burner, then press the ingot flat for sheets.", "Bronze is the second metal: copper and a tin nugget. A tin nugget is a zinc nugget filled with a thick potion by a spout."]
-	"quest.48EAEECF93D9FE3F.title": "A pumpjack"
-	"quest.48EAEECF93D9FE3F.quest_subtitle": "A crank, a well and an arm"
-	"quest.48EAEECF93D9FE3F.quest_desc": ["The crank takes a rotation speed controller, the well is steel pipe, the arm is built on a mechanical crafter. Put the well in the ground, turn the crank.", "Desert and deep ocean give crude petroleum; swamp and jungle give oil that is already desalted. Any other ground gives nothing."]
-	"quest.15D49FC4F1F6B894.title": "An electrolyzer"
-	"quest.15D49FC4F1F6B894.quest_subtitle": "Take the salt out"
-	"quest.15D49FC4F1F6B894.quest_desc": ["A mixer that runs on electricity, not spin. Wire it to an alternator or an accumulator and feed it petroleum: out come desalted oil and, half the time, salt."]
-	"quest.78635FFB29DF1F07.title": "A distillation tower"
-	"quest.78635FFB29DF1F07.quest_subtitle": "Split the oil by how hot it boils"
-	"quest.78635FFB29DF1F07.quest_desc": ["Steel tanks stacked over a controller, a blaze burner under it, and an output block at each height. Three modes: flash, atmospheric and vacuum.", "The atmospheric mode gives diesel, kerosene and heavy naphtha. Pipe the kerosene away to a tank."]
-	"quest.2305DD03FECDD14D.title": "Kerosene"
-	"quest.2305DD03FECDD14D.quest_subtitle": "Fuel for a long climb"
-	"quest.2305DD03FECDD14D.quest_desc": ["Kerosene gives the liquid Thruster more push for less fuel than diesel does. Gasoline pushes hardest and burns faster."]
+	"quest.272ABB61913682E8.title": "A ship that obeys"
+	"quest.272ABB61913682E8.quest_subtitle": "Level, steered and fuelled"
+	"quest.272ABB61913682E8.quest_desc": ["A gyroscope to keep it level, a stand to steer from, thrusters that answer. This is the ship the Moon is reached in.", "Take it up a little and bring it back before the long climb: the Skyline page says how."]
+	"chapter.5D61733C5A640819.title": "Breath"
+	"chapter.5D61733C5A640819.chapter_subtitle": ["Air to carry, air to make, air to keep."]
+	"quest.7CB0E909964F2247.title": "A machine that makes air"
+	"quest.7CB0E909964F2247.quest_subtitle": "Spin it, and it breathes out"
+	"quest.7CB0E909964F2247.quest_desc": ["An air compressor turns a spinning shaft into air. The faster it spins, the more air it makes.", "Use a tank on it to fill the tank. Fill every tank before you leave: in space nothing makes air."]
+	"quest.5C38EACEAEF810ED.title": "How far can you go?"
+	"quest.5C38EACEAEF810ED.quest_subtitle": "Count minutes of air"
+	"quest.5C38EACEAEF810ED.quest_desc": ["Space is airless. A tank lasts five minutes and you can carry two, plus twenty seconds in your lungs.", "Work out your ship's speed, then plan the trip in minutes, not blocks."]
+	"quest.69695F363B61AE01.title": "A room of air"
+	"quest.69695F363B61AE01.quest_subtitle": "Seal it, and it fills"
+	"quest.69695F363B61AE01.quest_desc": ["An air dispenser keeps a sealed room breathable while it has air. Pipe air to it from a compressor and a tank.", "Any hole lets the air out, so seal every gap. A bigger room needs more air every second."]
+	"quest.67DC4C52B973930B.title": "A bigger breath"
+	"quest.67DC4C52B973930B.quest_subtitle": "The helium tank holds twice as much"
+	"quest.67DC4C52B973930B.quest_desc": ["A helium tank holds twice the air of a plain one. Fill it at the compressor the same way.", "Two helium tanks last twice as long as two plain ones, and the trip to the next world is a long one."]
+	"quest.75DAAD4062BD1FCD.title": "What holds air"
+	"quest.75DAAD4062BD1FCD.quest_subtitle": "Walls, doors, slabs and panes"
+	"quest.75DAAD4062BD1FCD.quest_desc": ["A closed room holds air if every side is a wall. Full blocks, shut doors and trapdoors, slabs and glass panes all hold it.", "Stairs, iron bars, fences and an open door let it out. A hot air balloon's burner and envelope hold it too."]
+	"chapter.79EB03B3CE31A19B.title": "Skyline"
+	"chapter.79EB03B3CE31A19B.chapter_subtitle": ["Read the sky, test the ship, leave."]
+	"quest.062AFA714E6E51FF.title": "Air pressure"
+	"quest.062AFA714E6E51FF.quest_subtitle": "Climb, and everything weakens"
+	"quest.062AFA714E6E51FF.quest_desc": ["Hot air burners lift less and propellers push less the higher you go, because the air thins.", "An altitude sensor shows your height, and with goggles on, the air pressure too."]
+	"quest.6D3E9CD8CBD31E01.title": "The altitude sensor"
+	"quest.6D3E9CD8CBD31E01.quest_subtitle": "A signal that follows your height"
+	"quest.6D3E9CD8CBD31E01.quest_desc": ["Paper over an iron sheet over a casing. Climbing raises its signal by default, and you can set the lowest and highest heights, or invert it."]
+	"quest.64302D6A1B17CC5D.title": "The velocity sensor"
+	"quest.64302D6A1B17CC5D.quest_subtitle": "A signal that follows your speed"
+	"quest.64302D6A1B17CC5D.quest_desc": ["A propeller over a barrel over a casing. It gives a signal by speed along the way it faces; set the speed that gives full strength."]
+	"quest.2CF4F64AB697E399.title": "Aviator's goggles"
+	"quest.2CF4F64AB697E399.quest_subtitle": "A pilot sees more"
+	"quest.2CF4F64AB697E399.quest_desc": ["Leather and a pair of goggles. They show what engineer's goggles show: speed, stress and what a block holds."]
+	"quest.059C346EDD68A171.title": "A navigation table"
+	"quest.059C346EDD68A171.quest_subtitle": "A signal toward where you are going"
+	"quest.059C346EDD68A171.quest_desc": ["A brass sheet over a precision mechanism over a brass casing. Give it a navigation item and it signals toward the destination, weaker when you do not face it."]
+	"quest.61A35FA99BC1225C.title": "Thin air"
+	"quest.61A35FA99BC1225C.quest_subtitle": "Both lift and thrust fade as you climb"
+	"quest.61A35FA99BC1225C.quest_desc": ["Balloons and propellers push against air, and the air thins as you rise. By the top of the sky about a third is left.", "The sky ends at height 320. Past it, the world lets go. Build with more lift and more blades than seems fair."]
+	"quest.2ED2CC995D088901.title": "Where the sky ends"
+	"quest.2ED2CC995D088901.quest_subtitle": "Past the top, space begins"
+	"quest.2ED2CC995D088901.quest_desc": ["Climb past the top of the sky in your ship and the world lets go. This is space, and it is empty.", "On foot you will get nowhere: only a ship can carry you past the top.", "Take two tanks. There is nothing to breathe."]
+	"quest.21A66F90EF163BE8.title": "A first hop"
+	"quest.21A66F90EF163BE8.quest_subtitle": "Up a little, and back down"
+	"quest.21A66F90EF163BE8.quest_desc": ["Before the long climb, take the ship up a few hundred blocks and bring it back. Watch the altitude sensor and the fuel.", "Mend what you saw: a ship that drifts, a burner that runs dry, a tank that was nearly empty. Then go."]
+	"chapter.119239C740926134.title": "The Moon"
+	"chapter.119239C740926134.chapter_subtitle": ["Four thousand blocks east, and no air."]
+	"quest.5FABAE7A6489ABA1.title": "Steer by the chart"
+	"quest.5FABAE7A6489ABA1.quest_subtitle": "The Planets page follows you"
+	"quest.5FABAE7A6489ABA1.quest_desc": ["Open the Planets page. A point shows where you are, with an arrow for the way you face.", "Worlds you know are named. Keep the arrow pointed at one and fly."]
+	"quest.4DE0EFD601D00710.title": "Coming down"
+	"quest.4DE0EFD601D00710.quest_subtitle": "A world will take your ship"
+	"quest.4DE0EFD601D00710.quest_desc": ["Fly near a world and your ship is carried down to it, crew and all.", "The first lies east of Earth, about four thousand blocks out."]
 	"quest.167E54E270783F56.title": "A rocket"
 	"quest.167E54E270783F56.quest_subtitle": "Thrusters under a hull"
 	"quest.167E54E270783F56.quest_desc": ["A rocket is a ship with its thrusters at the bottom, pointing down, and fuel in each. Glue it, assemble it, fuel it, then give the thrusters a signal.", "Put a gyroscope in the hull and a joystick at the stand, and it will climb straight. Past the top of the sky it is carried into space like any ship. Take air."]
-	"chapter.119239C740926134.title": "The Moon"
-	"chapter.119239C740926134.chapter_subtitle": ["Four thousand blocks east, and no air."]
 	"quest.2596935EA8C47E7E.title": "Before you go"
 	"quest.2596935EA8C47E7E.quest_subtitle": "Pack for a world with no air"
 	"quest.2596935EA8C47E7E.quest_desc": ["Two tanks, full. Food, a pickaxe and light. Spare iron for more tanks.", "Fly east from Earth. When your ship nears the Moon it is carried down to the surface."]
@@ -465,15 +499,6 @@
 	"quest.0D96F37AEBC7B1E3.title": "Blaze rods"
 	"quest.0D96F37AEBC7B1E3.quest_subtitle": "Fuel, brewing, and more"
 	"quest.0D96F37AEBC7B1E3.quest_desc": ["Blazes drop rods. Keep a few: Create's blaze burner is made from a blaze and needs netherrack to hold it."]
-	"quest.21D9B7848ED84479.title": "A blaze, kept"
-	"quest.21D9B7848ED84479.quest_subtitle": "A burner that never goes out"
-	"quest.21D9B7848ED84479.quest_desc": ["Make an empty blaze burner, then use it on a blaze. Hold W over it for how.", "A mixer set over a lit burner is hot enough to make brass."]
-	"quest.04BF3DEDB6B04093.title": "Brass"
-	"quest.04BF3DEDB6B04093.quest_subtitle": "Create's next tier"
-	"quest.04BF3DEDB6B04093.quest_desc": ["Copper and zinc, mixed over a lit burner, make brass.", "Brass is the upgrade: stronger casings, finer controls, better propellers."]
-	"quest.1AA1B3155D4F8627.title": "A propeller that tips itself"
-	"quest.1AA1B3155D4F8627.quest_subtitle": "Brass, and a little quartz"
-	"quest.1AA1B3155D4F8627.quest_desc": ["A smart propeller makes thrust when spun and tips itself to face upward.", "It needs brass and quartz. Hold W over it in JEI to see the rest."]
 	"quest.2C0A43DAD9B7C8BF.title": "The Wither"
 	"quest.2C0A43DAD9B7C8BF.quest_subtitle": "Optional, and it fights back from range"
 	"quest.2C0A43DAD9B7C8BF.quest_desc": ["Wither skeletons drop skulls, rarely. Three skulls on a T of four soul sand call it.", "Fight it in a tunnel with a low roof. Bring a shield, and milk to cure the withering.", "The first time your team beats it, everyone on the team gains skill points."]

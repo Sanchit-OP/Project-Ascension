@@ -1,0 +1,244 @@
+{
+	id: "26898F5F6C018C35"
+	group: ""
+	order_index: 7
+	filename: "crude"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/crude.png"
+		}
+	}
+	quests: [
+		{
+			id: "7DA25AAA70667BA1"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "petrochem:kerosene_bucket"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "69F64C65B1E5074E"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "1087D6E20D682EC4"
+					type: "item"
+					item: "minecraft:coal"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "3852382A0293C75B"
+			x: 0.0d
+			y: 2.2d
+			shape: "ascension_nova"
+			icon: {
+				id: "petrochem:steel_ingot"
+				count: 1
+			}
+			dependencies: ["7DA25AAA70667BA1", "21D9B7848ED84479"]
+			tasks: [
+				{
+					id: "1BC2327255173A24"
+					type: "item"
+					item: "petrochem:steel_sheet"
+					count: 8L
+				}
+			]
+			rewards: [
+				{
+					id: "3034780B4877E4BA"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "48EAEECF93D9FE3F"
+			x: -1.25d
+			y: 4.4d
+			shape: "ascension_nova"
+			icon: {
+				id: "petrochem:pumpjack_arm"
+				count: 1
+			}
+			dependencies: ["3852382A0293C75B", "13A40786829CBFDD"]
+			tasks: [
+				{
+					id: "3942FCCD1719ACBE"
+					type: "item"
+					item: "petrochem:pumpjack_arm"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "20784D16FDC6F5FB"
+					type: "item"
+					item: "minecraft:chain"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "15D49FC4F1F6B894"
+			x: 0.0d
+			y: 6.6d
+			shape: "ascension_nova"
+			icon: {
+				id: "petrochem:electrolyzer"
+				count: 1
+			}
+			dependencies: ["48EAEECF93D9FE3F", "158F2CDB69ED0191", "71B4C0A0F533625A"]
+			tasks: [
+				{
+					id: "3EB9EF5EBD3C3017"
+					type: "item"
+					item: "petrochem:electrolyzer"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "4A4584E326BB4B3F"
+					type: "item"
+					item: "minecraft:copper_ingot"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "78635FFB29DF1F07"
+			x: 0.0d
+			y: 8.8d
+			shape: "ascension_nova"
+			icon: {
+				id: "petrochem:distillation_controller"
+				count: 1
+			}
+			dependencies: ["15D49FC4F1F6B894"]
+			tasks: [
+				{
+					id: "2DF7E3E6505024F5"
+					type: "item"
+					item: "petrochem:distillation_controller"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "76418A469805CB59"
+					type: "item"
+					item: "minecraft:bucket"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "2305DD03FECDD14D"
+			x: -1.25d
+			y: 11.0d
+			shape: "ascension_eye"
+			size: 1.5d
+			icon: {
+				id: "petrochem:kerosene_bucket"
+				count: 1
+			}
+			dependencies: ["78635FFB29DF1F07"]
+			tasks: [
+				{
+					id: "56D89DAF7FA1F3E2"
+					type: "advancement"
+					advancement: "ascension_compat_create:project/crude"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "28D1435E5A26F2B4"
+					type: "item"
+					item: "minecraft:blaze_powder"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "158F2CDB69ED0191"
+			x: 1.25d
+			y: 4.4d
+			shape: "ascension_nova"
+			icon: {
+				id: "petrochem:bronze_sheet"
+				count: 1
+			}
+			dependencies: ["7DA25AAA70667BA1", "21D9B7848ED84479", "4EF8B9F90325851D"]
+			tasks: [
+				{
+					id: "3BF538214D362ED2"
+					type: "item"
+					item: "petrochem:bronze_sheet"
+					count: 4L
+				}
+			]
+			rewards: [
+				{
+					id: "46D07D13305CA89D"
+					type: "item"
+					item: "minecraft:copper_ingot"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "44401010A72450E0"
+			x: 1.25d
+			y: 11.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "createpropulsion:platinum_fluid_tank"
+				count: 1
+			}
+			dependencies: ["78635FFB29DF1F07"]
+			optional: true
+			tasks: [
+				{
+					id: "5BD43E8F80A1F93A"
+					type: "item"
+					item: "createpropulsion:platinum_fluid_tank"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "5C261B3B2E1EA45A"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 16
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [
+		{
+			id: "3774FCB5A83C471A"
+			x: 0.0d
+			y: 6.3d
+			width: 21.467d
+			height: 20.767d
+			image: "ascension_compat_ftbquests:textures/quests/blueprint/crude.png"
+			order: -1
+		}
+	]
+}

@@ -1,0 +1,162 @@
+{
+	id: "5D61733C5A640819"
+	group: ""
+	order_index: 9
+	filename: "breath"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/breath.png"
+		}
+	}
+	quests: [
+		{
+			id: "7CB0E909964F2247"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_compat_create:air_compressor"
+				count: 1
+			}
+			dependencies: ["4121BDE2FA93BA25"]
+			tasks: [
+				{
+					id: "543401587415C402"
+					type: "item"
+					item: "ascension_compat_create:air_compressor"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "698462E7F34E4B88"
+					type: "item"
+					item: "minecraft:glass"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "5C38EACEAEF810ED"
+			x: -1.25d
+			y: 4.4d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:clock"
+				count: 1
+			}
+			dependencies: ["67DC4C52B973930B"]
+			tasks: [
+				{
+					id: "0A566B270A607E08"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "3E09D2CA67B61A1B"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "69695F363B61AE01"
+			x: 0.0d
+			y: 6.6d
+			shape: "ascension_eye"
+			size: 1.5d
+			icon: {
+				id: "ascension_atmosphere:air_dispenser"
+				count: 1
+			}
+			dependencies: ["75DAAD4062BD1FCD", "5C38EACEAEF810ED"]
+			tasks: [
+				{
+					id: "06CAD77EA1BE3DB7"
+					type: "advancement"
+					advancement: "ascension_compat_create:project/breath"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "521245BFB5E7984F"
+					type: "item"
+					item: "minecraft:iron_block"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "67DC4C52B973930B"
+			x: 0.0d
+			y: 2.2d
+			shape: "ascension_nova"
+			icon: {
+				id: "ascension_atmosphere:oxygen_tank_helium"
+				count: 1
+			}
+			dependencies: ["7CB0E909964F2247"]
+			tasks: [
+				{
+					id: "03D5384D10049E41"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_tank_helium"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "148EDE322DB355B1"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "75DAAD4062BD1FCD"
+			x: 1.25d
+			y: 4.4d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:glass_pane"
+				count: 1
+			}
+			dependencies: ["7CB0E909964F2247"]
+			tasks: [
+				{
+					id: "1B3EAEDFD0F63A8E"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "0D510D920847CD04"
+					type: "item"
+					item: "minecraft:glass_pane"
+					count: 8
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [
+		{
+			id: "4A2CD13C790AC0E7"
+			x: 0.0d
+			y: 4.1d
+			width: 21.467d
+			height: 15.633d
+			image: "ascension_compat_ftbquests:textures/quests/blueprint/breath.png"
+			order: -1
+		}
+	]
+}

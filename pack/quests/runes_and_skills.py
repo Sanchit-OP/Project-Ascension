@@ -6,7 +6,7 @@ right (R), and one quest at the bottom that ties them to gear and the character 
 a checkmark: there is nothing to detect in reading, and nothing here gates a path (ADR-0018).
 
 Numbers quoted are the ones in docs/progression/growth.md and docs/technical/rune-system.md (41 points from seven
-bosses, four gates and twelve places; a respec costs 20 levels; a rune change one Rune Chalk and 3 levels; the second
+bosses, four gates, six places and six projects; a respec costs 20 levels; a rune change one Rune Chalk and 3 levels; the second
 path opens at the first milestone and the three shards at the next three). If a number there moves, move it here.
 The places are described by kind, not named, so the page never names a place the player has not been to (the book's
 rule: say what and where, never why).
@@ -64,14 +64,14 @@ CHAPTER = Chapter(
         ),
         Quest(
             slug='places', x=0, y=6,
-            title='Points from places',
-            subtitle='1 each, for the first of a kind',
+            title='Places and projects',
+            subtitle='1 each, once',
             icon=item_icon('minecraft:spyglass'), shape=LESSON, size=0.9,
             deps=['gates'],
             text=[
-                'The first time you find each kind of place, you gain a point.',
-                'A deep city, a trial chamber, a mansion, a monument, a fortress, a bastion, a few ruins, and every new world you land on.',
-                'A hundred of the same kind give one point. These are yours alone; bosses and gates are shared.',
+                'The first time you find each kind of place, you gain a point: a few ruins, and every new world you land on. These are yours alone.',
+                'Each project sheet (Spin, Brass, Crude, Wings, Breath, Skyline) pays one point to the whole team when its finale is done.',
+                'A hundred of the same kind give one point. Bosses, gates and projects are shared.',
             ],
             tasks=[checkmark()],
             rewards=[give('minecraft:cooked_beef', 8)],

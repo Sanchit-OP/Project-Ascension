@@ -1,7 +1,7 @@
 {
 	id: "10B8BC825CD966BD"
 	group: ""
-	order_index: 10
+	order_index: 12
 	filename: "the_rot"
 	default_quest_shape: "ascension_nova"
 	icon: {
@@ -371,90 +371,6 @@
 					id: "787F8C7C8D4EF6E0"
 					type: "item"
 					item: "minecraft:netherrack"
-					count: 16
-				}
-			]
-		}
-		{
-			id: "21D9B7848ED84479"
-			x: 6.0d
-			y: 8.0d
-			shape: "ascension_nova"
-			icon: {
-				id: "create:blaze_burner"
-				count: 1
-			}
-			dependencies: ["0D96F37AEBC7B1E3"]
-			hide_until_deps_complete: true
-			tasks: [
-				{
-					id: "386D0838967A4F24"
-					type: "item"
-					item: "create:blaze_burner"
-					count: 1L
-				}
-			]
-			rewards: [
-				{
-					id: "3E459CC74D622C76"
-					type: "item"
-					item: "minecraft:copper_ingot"
-					count: 8
-				}
-			]
-		}
-		{
-			id: "04BF3DEDB6B04093"
-			x: 6.0d
-			y: 10.0d
-			shape: "ascension_nova"
-			icon: {
-				id: "create:brass_ingot"
-				count: 1
-			}
-			dependencies: ["21D9B7848ED84479"]
-			hide_until_deps_complete: true
-			tasks: [
-				{
-					id: "4177FF71802D82D4"
-					type: "advancement"
-					advancement: "create:brass"
-					criterion: ""
-				}
-			]
-			rewards: [
-				{
-					id: "78BF8C3D710E0014"
-					type: "item"
-					item: "minecraft:quartz"
-					count: 8
-				}
-			]
-		}
-		{
-			id: "1AA1B3155D4F8627"
-			x: 6.0d
-			y: 12.0d
-			shape: "ascension_nova"
-			icon: {
-				id: "aeronautics:smart_propeller"
-				count: 1
-			}
-			dependencies: ["04BF3DEDB6B04093"]
-			hide_until_deps_complete: true
-			tasks: [
-				{
-					id: "0359A015D39B922F"
-					type: "item"
-					item: "aeronautics:smart_propeller"
-					count: 1L
-				}
-			]
-			rewards: [
-				{
-					id: "656A3537FEC6559C"
-					type: "item"
-					item: "minecraft:quartz"
 					count: 16
 				}
 			]

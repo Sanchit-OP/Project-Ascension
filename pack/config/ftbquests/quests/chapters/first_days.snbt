@@ -465,6 +465,15 @@
 	quest_links: [ ]
 	images: [
 		{
+			id: "7DA12D4907660971"
+			x: 4.68d
+			y: 8.93d
+			width: 21.467d
+			height: 26.903d
+			image: "ascension_compat_ftbquests:textures/quests/blueprint/first_days.png"
+			order: -1
+		}
+		{
 			id: "2920D76FE915CCFE"
 			x: 7.0d
 			y: 14.0d

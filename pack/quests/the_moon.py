@@ -4,11 +4,12 @@ Where things stand is stated as coordinates read from the structure placement fi
 -160, -256; the ring at -160, 0; the fortress at 800, 0; the Moon's middle is 0, 0). The page says what and
 where, never why: the tablets in the Archive speak for themselves.
 
-Layout: three columns. The left follows the Archive, the middle the fortress and the ring (the main line, down
-to the shortcut and the next world), the right the small things worth knowing before wandering off.
+Project 9 of 9 (docs/progression/dr-stone-roadmap.md): it opens with the three steps that bring a ship here (steer by the chart, come
+down, or a rocket), and its finale is the Moon's ring lit. Laid out by tools/quests/layout.py.
 """
 
-from quests.model import (GOAL, LANDMARK, LESSON, Chapter, Quest, advancement, checkmark, give, item, item_icon,
+from quests.layout import blueprint_page
+from quests.model import (GOAL, LANDMARK, LESSON, Chapter, Quest, advancement, checkmark, dimension, give, item, item_icon,
                           picture, structure)
 
 CHAPTER = Chapter(
@@ -18,13 +19,52 @@ CHAPTER = Chapter(
     icon=picture('textures/quests/icons/the_moon.png'),
     shape=GOAL,
     quests=[
+        Quest(
+            slug='chart_flight', legacy='road_up',
+            title='Steer by the chart',
+            subtitle='The Planets page follows you',
+            icon=item_icon('minecraft:map'), shape=LESSON, size=0.9,
+            deps=['skyline.sky_ends'], hide_until='complete',
+            text=[
+                'Open the Planets page. A point shows where you are, with an arrow for the way you face.',
+                'Worlds you know are named. Keep the arrow pointed at one and fly.',
+            ],
+            tasks=[checkmark()],
+            rewards=[give('minecraft:compass', 1)],
+        ),
+        Quest(
+            slug='come_down', legacy='road_up',
+            title='Coming down',
+            subtitle='A world will take your ship',
+            icon=item_icon('minecraft:end_rod'), shape=LESSON, size=0.9,
+            deps=['chart_flight'], hide_until='complete',
+            text=[
+                'Fly near a world and your ship is carried down to it, crew and all.',
+                'The first lies east of Earth, about four thousand blocks out.',
+            ],
+            tasks=[checkmark()],
+            rewards=[give('minecraft:cooked_beef', 12)],
+        ),
+        Quest(
+            slug='rocket', legacy='ship_fly',
+            title='A rocket',
+            subtitle='Thrusters under a hull',
+            icon=item_icon('createpropulsion:solid_fuel_thruster'), shape=GOAL,
+            deps=['wings.solid_thruster', 'wings.fuel', 'wings.joystick'],
+            text=[
+                'A rocket is a ship with its thrusters at the bottom, pointing down, and fuel in each. Glue it, assemble it, fuel it, then give the thrusters a signal.',
+                'Put a gyroscope in the hull and a joystick at the stand, and it will climb straight. Past the top of the sky it is carried into space like any ship. Take air.',
+            ],
+            tasks=[dimension('ascension_worlds:space')],
+            rewards=[give('ascension_worlds:raw_helium', 4)],
+        ),
         # ---- Before, and the landing ------------------------------------------------------------
         Quest(
-            slug='pack', x=3, y=0,
+            slug='pack',
             title='Before you go',
             subtitle='Pack for a world with no air',
             icon=item_icon('ascension_atmosphere:oxygen_tank'), shape=GOAL,
-            deps=[],
+            deps=['come_down', 'rocket'],
             text=[
                 'Two tanks, full. Food, a pickaxe and light. Spare iron for more tanks.',
                 'Fly east from Earth. When your ship nears the Moon it is carried down to the surface.',
@@ -33,7 +73,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:cooked_beef', 16)],
         ),
         Quest(
-            slug='touchdown', x=3, y=2,
+            slug='touchdown',
             title='Touchdown',
             subtitle='The first step is a long one',
             icon=item_icon('minecraft:end_stone'), shape=LANDMARK, size=1.2,
@@ -48,7 +88,7 @@ CHAPTER = Chapter(
 
         # ---- Three lessons, once you are down -------------------------------------------------
         Quest(
-            slug='air', x=0, y=4,
+            slug='air', optional=True,
             title='No air',
             subtitle='Lungs, tanks and a room',
             icon=item_icon('ascension_atmosphere:air_dispenser'), shape=LESSON, size=0.9,
@@ -61,7 +101,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:iron_ingot', 8)],
         ),
         Quest(
-            slug='dust', x=3, y=4,
+            slug='dust',
             title='Dust',
             subtitle='When you can see a dozen blocks',
             icon=item_icon('minecraft:gravel'), shape=LESSON, size=0.9,
@@ -74,7 +114,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:cooked_beef', 6)],
         ),
         Quest(
-            slug='earthrise', x=6, y=4,
+            slug='earthrise',
             title='Home in the sky',
             subtitle='It does not move',
             icon=item_icon('minecraft:compass'), shape=LESSON, size=0.9,
@@ -89,7 +129,7 @@ CHAPTER = Chapter(
 
         # ---- The Archive, on the left ---------------------------------------------------------
         Quest(
-            slug='archive', x=0, y=6,
+            slug='archive', optional=True,
             title='The Lunar Archive',
             subtitle='A hall under the ground',
             icon=item_icon('ascension_worlds:archive_tablet'), shape=LANDMARK, size=1.2,
@@ -102,7 +142,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:torch', 32)],
         ),
         Quest(
-            slug='moon_stone', x=0, y=8,
+            slug='moon_stone', optional=True,
             title='Moon stone',
             subtitle='It builds rings, and looks the part',
             icon=item_icon('ascension_worlds:anorthosite_bricks'), shape=GOAL,
@@ -117,7 +157,7 @@ CHAPTER = Chapter(
 
         # ---- The right: small things worth knowing -----------------------------------------
         Quest(
-            slug='tall_ones', x=6, y=6,
+            slug='tall_ones', optional=True,
             title='Tall visitors',
             subtitle='Do not meet their eyes',
             icon=item_icon('minecraft:carved_pumpkin'), shape=GOAL,
@@ -132,7 +172,7 @@ CHAPTER = Chapter(
 
         # ---- The main line: fortress, guardians, the ring -------------------------------------
         Quest(
-            slug='citadel', x=3, y=6,
+            slug='citadel',
             title='The Ruined Citadel',
             subtitle='A broken fortress to the east',
             icon=item_icon('minecraft:chiseled_stone_bricks'), shape=LANDMARK, size=1.2,
@@ -145,7 +185,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:golden_apple', 2)],
         ),
         Quest(
-            slug='golem', x=3, y=8,
+            slug='golem',
             title='The Ender Golem',
             subtitle='A huge guardian',
             icon=item_icon('minecraft:dragon_head'), shape=LANDMARK, size=1.2,
@@ -158,7 +198,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:golden_carrot', 12)],
         ),
         Quest(
-            slug='moon_ring', x=6, y=8,
+            slug='moon_ring',
             title='The ring on the plain',
             subtitle='Dark, and it will not break',
             icon=item_icon('ascension_worlds:inscribed_gatestone'), shape=LANDMARK, size=1.2,
@@ -172,7 +212,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:cooked_beef', 8)],
         ),
         Quest(
-            slug='guardian', x=3, y=10,
+            slug='guardian',
             title='The Ender Guardian',
             subtitle='When the first falls, it wakes',
             icon=item_icon('ascension_worlds:gateway_key'), shape=LANDMARK, size=1.2,
@@ -185,7 +225,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:golden_apple', 2)],
         ),
         Quest(
-            slug='moon_gate', x=3, y=12,
+            slug='moon_gate',
             title='Wake the ring',
             subtitle='Key to the keystone',
             icon=item_icon('ascension_worlds:gateway_keystone'), shape=LANDMARK, size=1.2,
@@ -198,7 +238,7 @@ CHAPTER = Chapter(
             rewards=[give('ascension_atmosphere:oxygen_tank', 2), give('minecraft:diamond', 2)],
         ),
         Quest(
-            slug='both_lit', x=3, y=14,
+            slug='both_lit', optional=True,
             title='Two rings',
             subtitle='The way home, and the way back',
             icon=item_icon('minecraft:ender_pearl'), shape=LESSON, size=0.9,
@@ -211,7 +251,7 @@ CHAPTER = Chapter(
             rewards=[give('minecraft:cooked_beef', 12)],
         ),
         Quest(
-            slug='look_out', x=3, y=16,
+            slug='look_out', optional=True,
             title='Look out',
             subtitle='Another world is named',
             icon=item_icon('minecraft:spyglass'), shape=LESSON, size=0.9,
@@ -225,3 +265,5 @@ CHAPTER = Chapter(
         ),
     ],
 )
+
+blueprint_page(CHAPTER, number=9, of=9, motif='moon', finale='moon_gate', points=2)

@@ -10,12 +10,13 @@ Layout: two tracks. The left one (x 0) is the way down to the Warden and the gat
 iron, diamonds, titanium and air, which the gate and the ship both need.
 """
 
+from quests.layout import blueprint_page
 from quests.model import (GOAL, LANDMARK, LESSON, Chapter, Image, Quest, advancement, checkmark, give, item,
                           item_icon, picture)
 
 CHAPTER = Chapter(
     slug='first_days',
-    title='First Days',
+    title='First Light',
     subtitle='Earth. Learn the ground you stand on.',
     icon=picture('textures/quests/icons/first_days.png'),
     shape=LESSON,
@@ -247,3 +248,5 @@ CHAPTER = Chapter(
         ),
     ],
 )
+
+blueprint_page(CHAPTER, number=1, of=9, motif='gate', finale='earth_gate', points=2, place=False, strict=False)

@@ -1,0 +1,241 @@
+{
+	id: "79EB03B3CE31A19B"
+	group: ""
+	order_index: 10
+	filename: "skyline"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/skyline.png"
+		}
+	}
+	quests: [
+		{
+			id: "062AFA714E6E51FF"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:feather"
+				count: 1
+			}
+			tasks: [
+				{
+					id: "3F4E5030E5A253F4"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "615AD4485CFB9699"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "6D3E9CD8CBD31E01"
+			x: -2.5d
+			y: 2.2d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:altitude_sensor"
+				count: 1
+			}
+			dependencies: ["062AFA714E6E51FF"]
+			tasks: [
+				{
+					id: "008FE41969048700"
+					type: "advancement"
+					advancement: "simulated:no_pressure"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "151B6C4B5099266A"
+					type: "item"
+					item: "minecraft:paper"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "64302D6A1B17CC5D"
+			x: -2.5d
+			y: 4.4d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:velocity_sensor"
+				count: 1
+			}
+			dependencies: ["062AFA714E6E51FF"]
+			tasks: [
+				{
+					id: "1BB3890D3B43CBC2"
+					type: "advancement"
+					advancement: "simulated:speed_is_key"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "132D10F0A0BC5759"
+					type: "item"
+					item: "minecraft:barrel"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "2CF4F64AB697E399"
+			x: 0.0d
+			y: 2.2d
+			shape: "ascension_nova"
+			icon: {
+				id: "aeronautics:aviators_goggles"
+				count: 1
+			}
+			dependencies: ["062AFA714E6E51FF"]
+			tasks: [
+				{
+					id: "04E99316BF667971"
+					type: "advancement"
+					advancement: "aeronautics:high_fashion"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "347BDB57BE341AEB"
+					type: "item"
+					item: "minecraft:leather"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "059C346EDD68A171"
+			x: 0.0d
+			y: 4.4d
+			shape: "ascension_nova"
+			icon: {
+				id: "simulated:navigation_table"
+				count: 1
+			}
+			dependencies: ["2CF4F64AB697E399", "13A40786829CBFDD"]
+			tasks: [
+				{
+					id: "646877705D4F9990"
+					type: "advancement"
+					advancement: "simulated:thataway"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "5CE44388C4DF9B55"
+					type: "item"
+					item: "minecraft:map"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "61A35FA99BC1225C"
+			x: 2.5d
+			y: 2.2d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:feather"
+				count: 1
+			}
+			dependencies: ["062AFA714E6E51FF"]
+			tasks: [
+				{
+					id: "36E295615058789E"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "7D3D05F6264CF906"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 6
+				}
+			]
+		}
+		{
+			id: "2ED2CC995D088901"
+			x: 0.0d
+			y: 6.6d
+			shape: "ascension_eye"
+			size: 1.5d
+			icon: {
+				id: "minecraft:ender_eye"
+				count: 1
+			}
+			dependencies: ["21A66F90EF163BE8", "64302D6A1B17CC5D", "059C346EDD68A171", "49C3BADD29599892", "5C38EACEAEF810ED"]
+			tasks: [
+				{
+					id: "080D92F7E4721FB5"
+					type: "advancement"
+					advancement: "ascension_worlds:project/skyline"
+					criterion: ""
+				}
+			]
+			rewards: [
+				{
+					id: "0DC825999D1B3C6E"
+					type: "item"
+					item: "ascension_atmosphere:oxygen_tank"
+					count: 2
+				}
+			]
+		}
+		{
+			id: "21A66F90EF163BE8"
+			x: 2.5d
+			y: 4.4d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:feather"
+				count: 1
+			}
+			dependencies: ["6D3E9CD8CBD31E01", "61A35FA99BC1225C"]
+			tasks: [
+				{
+					id: "27ED5ABDC83C0B13"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "5B0E419BE341C39B"
+					type: "item"
+					item: "minecraft:firework_rocket"
+					count: 8
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [
+		{
+			id: "2FC61712F9F307CF"
+			x: 0.0d
+			y: 4.1d
+			width: 21.467d
+			height: 15.633d
+			image: "ascension_compat_ftbquests:textures/quests/blueprint/skyline.png"
+			order: -1
+		}
+	]
+}

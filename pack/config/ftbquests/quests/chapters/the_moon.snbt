@@ -1,7 +1,7 @@
 {
 	id: "119239C740926134"
 	group: ""
-	order_index: 9
+	order_index: 11
 	filename: "the_moon"
 	default_quest_shape: "ascension_nova"
 	icon: {
@@ -13,14 +13,95 @@
 	}
 	quests: [
 		{
-			id: "2596935EA8C47E7E"
-			x: 3.0d
+			id: "5FABAE7A6489ABA1"
+			x: -1.67d
 			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:map"
+				count: 1
+			}
+			dependencies: ["2ED2CC995D088901"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "24241DA8A26019B2"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "45057221EB8BA62B"
+					type: "item"
+					item: "minecraft:compass"
+					count: 1
+				}
+			]
+		}
+		{
+			id: "4DE0EFD601D00710"
+			x: -1.67d
+			y: 2.2d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "minecraft:end_rod"
+				count: 1
+			}
+			dependencies: ["5FABAE7A6489ABA1"]
+			hide_until_deps_complete: true
+			tasks: [
+				{
+					id: "168AC8F3C0C9AE45"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "38D4AC72618D9160"
+					type: "item"
+					item: "minecraft:cooked_beef"
+					count: 12
+				}
+			]
+		}
+		{
+			id: "167E54E270783F56"
+			x: 0.83d
+			y: 2.2d
+			shape: "ascension_nova"
+			icon: {
+				id: "createpropulsion:solid_fuel_thruster"
+				count: 1
+			}
+			dependencies: ["689B936CDFED01AB", "4E1D1D205D57F9D7", "1BDE03F9CDA7B3B0"]
+			tasks: [
+				{
+					id: "5284E4E3168E2619"
+					type: "dimension"
+					dimension: "ascension_worlds:space"
+				}
+			]
+			rewards: [
+				{
+					id: "5EE92E6CD1339873"
+					type: "item"
+					item: "ascension_worlds:raw_helium"
+					count: 4
+				}
+			]
+		}
+		{
+			id: "2596935EA8C47E7E"
+			x: -0.42d
+			y: 4.4d
 			shape: "ascension_nova"
 			icon: {
 				id: "ascension_atmosphere:oxygen_tank"
 				count: 1
 			}
+			dependencies: ["4DE0EFD601D00710", "167E54E270783F56"]
 			tasks: [
 				{
 					id: "2B564ACAF89EA072"
@@ -40,8 +121,8 @@
 		}
 		{
 			id: "5C3D3D153AB786FA"
-			x: 3.0d
-			y: 2.0d
+			x: -0.42d
+			y: 6.6d
 			shape: "ascension_eye"
 			size: 1.2d
 			icon: {
@@ -68,8 +149,8 @@
 		}
 		{
 			id: "297D57BAB99EB146"
-			x: 0.0d
-			y: 4.0d
+			x: -1.67d
+			y: 8.8d
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
@@ -78,6 +159,7 @@
 			}
 			dependencies: ["5C3D3D153AB786FA"]
 			hide_until_deps_complete: true
+			optional: true
 			tasks: [
 				{
 					id: "5709B6A66FB6F4C4"
@@ -95,8 +177,8 @@
 		}
 		{
 			id: "39210A7B5E81204C"
-			x: 3.0d
-			y: 4.0d
+			x: 0.83d
+			y: 8.8d
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
@@ -122,8 +204,8 @@
 		}
 		{
 			id: "722D0E4EC6A99645"
-			x: 6.0d
-			y: 4.0d
+			x: -0.42d
+			y: 13.2d
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
@@ -149,8 +231,8 @@
 		}
 		{
 			id: "2E6543415E341650"
-			x: 0.0d
-			y: 6.0d
+			x: -1.67d
+			y: 11.0d
 			shape: "ascension_eye"
 			size: 1.2d
 			icon: {
@@ -159,6 +241,7 @@
 			}
 			dependencies: ["297D57BAB99EB146"]
 			hide_until_deps_visible: true
+			optional: true
 			tasks: [
 				{
 					id: "0373B5A0835EC27E"
@@ -178,8 +261,8 @@
 		}
 		{
 			id: "466ABCF1B5C89196"
-			x: 0.0d
-			y: 8.0d
+			x: -2.92d
+			y: 13.2d
 			shape: "ascension_nova"
 			icon: {
 				id: "ascension_worlds:anorthosite_bricks"
@@ -187,6 +270,7 @@
 			}
 			dependencies: ["2E6543415E341650"]
 			hide_until_deps_complete: true
+			optional: true
 			tasks: [
 				{
 					id: "166E11FAC6BC5171"
@@ -212,8 +296,8 @@
 		}
 		{
 			id: "29A74F9C723843DD"
-			x: 6.0d
-			y: 6.0d
+			x: -2.08d
+			y: 15.4d
 			shape: "ascension_nova"
 			icon: {
 				id: "minecraft:carved_pumpkin"
@@ -221,6 +305,7 @@
 			}
 			dependencies: ["722D0E4EC6A99645"]
 			hide_until_deps_visible: true
+			optional: true
 			tasks: [
 				{
 					id: "0753375F23655AD1"
@@ -240,8 +325,8 @@
 		}
 		{
 			id: "0B06D6440EF28094"
-			x: 3.0d
-			y: 6.0d
+			x: 0.83d
+			y: 11.0d
 			shape: "ascension_eye"
 			size: 1.2d
 			icon: {
@@ -269,8 +354,8 @@
 		}
 		{
 			id: "569547F61537E838"
-			x: 3.0d
-			y: 8.0d
+			x: 2.08d
+			y: 13.2d
 			shape: "ascension_eye"
 			size: 1.2d
 			icon: {
@@ -298,8 +383,8 @@
 		}
 		{
 			id: "5220A441989488BD"
-			x: 6.0d
-			y: 8.0d
+			x: 0.42d
+			y: 15.4d
 			shape: "ascension_eye"
 			size: 1.2d
 			icon: {
@@ -326,8 +411,8 @@
 		}
 		{
 			id: "28A5D61491BF79D5"
-			x: 3.0d
-			y: 10.0d
+			x: 2.92d
+			y: 15.4d
 			shape: "ascension_eye"
 			size: 1.2d
 			icon: {
@@ -355,10 +440,10 @@
 		}
 		{
 			id: "7A22FAD6FD73A041"
-			x: 3.0d
-			y: 12.0d
+			x: 1.67d
+			y: 17.6d
 			shape: "ascension_eye"
-			size: 1.2d
+			size: 1.5d
 			icon: {
 				id: "ascension_worlds:gateway_keystone"
 				count: 1
@@ -390,8 +475,8 @@
 		}
 		{
 			id: "110AEBAD91F0BDF5"
-			x: 3.0d
-			y: 14.0d
+			x: 1.67d
+			y: 19.8d
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
@@ -400,6 +485,7 @@
 			}
 			dependencies: ["7A22FAD6FD73A041"]
 			hide_until_deps_complete: true
+			optional: true
 			tasks: [
 				{
 					id: "24DEAB4140C5B4E3"
@@ -417,8 +503,8 @@
 		}
 		{
 			id: "2D0C3B663FFEF051"
-			x: 3.0d
-			y: 16.0d
+			x: 1.67d
+			y: 22.0d
 			shape: "ascension_star"
 			size: 0.9d
 			icon: {
@@ -427,6 +513,7 @@
 			}
 			dependencies: ["110AEBAD91F0BDF5"]
 			hide_until_deps_complete: true
+			optional: true
 			tasks: [
 				{
 					id: "1BE05EA9BD079565"
@@ -444,5 +531,15 @@
 		}
 	]
 	quest_links: [ ]
-	images: [ ]
+	images: [
+		{
+			id: "1B9B64B28B79F7AC"
+			x: 0.0d
+			y: 11.8d
+			width: 21.467d
+			height: 33.6d
+			image: "ascension_compat_ftbquests:textures/quests/blueprint/the_moon.png"
+			order: -1
+		}
+	]
 }

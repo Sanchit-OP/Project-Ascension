@@ -1,0 +1,164 @@
+{
+	id: "1C966D794046C9BC"
+	group: ""
+	order_index: 6
+	filename: "current"
+	default_quest_shape: "ascension_nova"
+	icon: {
+		id: "ftbquests:custom_icon"
+		count: 1
+		components: {
+			"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/icons/current.png"
+		}
+	}
+	quests: [
+		{
+			id: "368C3C931F9D23EC"
+			x: 0.0d
+			y: 0.0d
+			shape: "ascension_star"
+			size: 0.9d
+			icon: {
+				id: "createaddition:modular_accumulator"
+				count: 1
+			}
+			dependencies: ["279C1B352598D68D"]
+			tasks: [
+				{
+					id: "04FC00967F61D24D"
+					type: "checkmark"
+				}
+			]
+			rewards: [
+				{
+					id: "2D17B82092A857C6"
+					type: "item"
+					item: "minecraft:copper_ingot"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "71B4C0A0F533625A"
+			x: 0.0d
+			y: 2.2d
+			shape: "ascension_nova"
+			icon: {
+				id: "createaddition:alternator"
+				count: 1
+			}
+			dependencies: ["368C3C931F9D23EC", "0482E37944A9D9FC"]
+			tasks: [
+				{
+					id: "29BD8354649C4A8E"
+					type: "item"
+					item: "createaddition:alternator"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "6FE67AD08BA51DA2"
+					type: "item"
+					item: "minecraft:iron_ingot"
+					count: 8
+				}
+			]
+		}
+		{
+			id: "1B176CEB14C0F95A"
+			x: -0.62d
+			y: 6.6d
+			shape: "ascension_eye"
+			size: 1.5d
+			icon: {
+				id: "createaddition:modular_accumulator"
+				count: 1
+			}
+			dependencies: ["71B4C0A0F533625A", "28807E809AAEA335"]
+			tasks: [
+				{
+					id: "0C324F8600859119"
+					type: "item"
+					item: "createaddition:modular_accumulator"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "13AD8EAB6598ED23"
+					type: "item"
+					item: "minecraft:redstone"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "28807E809AAEA335"
+			x: -1.25d
+			y: 4.4d
+			shape: "ascension_nova"
+			icon: {
+				id: "createaddition:connector"
+				count: 1
+			}
+			dependencies: ["71B4C0A0F533625A"]
+			tasks: [
+				{
+					id: "30311FC10094C453"
+					type: "item"
+					item: "createaddition:connector"
+					count: 2L
+				}
+			]
+			rewards: [
+				{
+					id: "003D3F9D96D8D9FF"
+					type: "item"
+					item: "minecraft:copper_ingot"
+					count: 16
+				}
+			]
+		}
+		{
+			id: "3222771C8671BD90"
+			x: 1.25d
+			y: 4.4d
+			shape: "ascension_nova"
+			icon: {
+				id: "createaddition:electric_motor"
+				count: 1
+			}
+			dependencies: ["71B4C0A0F533625A"]
+			optional: true
+			tasks: [
+				{
+					id: "422761B7EC327013"
+					type: "item"
+					item: "createaddition:electric_motor"
+					count: 1L
+				}
+			]
+			rewards: [
+				{
+					id: "6DBF2C58560B580F"
+					type: "item"
+					item: "minecraft:redstone"
+					count: 16
+				}
+			]
+		}
+	]
+	quest_links: [ ]
+	images: [
+		{
+			id: "10B128CFD447B651"
+			x: 0.0d
+			y: 4.1d
+			width: 21.467d
+			height: 15.633d
+			image: "ascension_compat_ftbquests:textures/quests/blueprint/current.png"
+			order: -1
+		}
+	]
+}
