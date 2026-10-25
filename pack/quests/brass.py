@@ -98,8 +98,8 @@ CHAPTER = Chapter(
             icon=item_icon('create:electron_tube'), shape=GOAL,
             deps=['spin.press'],
             text=[
-                'A deployer, a crafter and every fine control start with an electron tube. Create cuts it from polished rose quartz, which is Nether quartz and redstone.',
-                'An amethyst shard from a geode, four redstone and an iron sheet make one just as well, at a crafting table.',
+                'A deployer, a crafter and every fine control start with an electron tube. Create cuts it from rose quartz: quartz and eight redstone, polished with sandpaper.',
+                'Quartz is not only in the Nether. A crushing wheel gets it from diorite, and a fan\'s water gets it from crushed raw gold or from soul sand.',
             ],
             tasks=[item('create:electron_tube', 4)],
             rewards=[give('minecraft:redstone', 16)],

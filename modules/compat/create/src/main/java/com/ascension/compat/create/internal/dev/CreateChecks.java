@@ -264,22 +264,19 @@ public final class CreateChecks {
     }
 
     /**
-     * The rest of the oil road without the Nether (Sanchit, 2026-10-25): the pumpjack's controller needs a precision mechanism, which a deployer
-     * assembles, and a deployer needs an electron tube, which Create makes from Nether quartz; Petrochem's tin needs a thick potion, which needs
-     * glowstone and a brewing stand. An amethyst shard stands in for the quartz and two zinc nuggets and an iron one for the tin.
+     * The rest of the oil road without the Nether (Sanchit, 2026-10-25). Petrochem's tin needs a thick potion, which needs glowstone and a brewing
+     * stand, so two zinc nuggets and an iron one make it by hand. The electron tube needs no recipe of ours: Create's own recipe wants polished rose
+     * quartz, and Create itself makes quartz on Earth: a crushing wheel on diorite, a fan's water over crushed raw gold or over soul sand, and the fan page
+     * of the book gives the first soul sand, which a fan's soul fire makes more of from sand.
      */
     private static void checkEarthRecipes(MinecraftServer server) {
         var recipes = server.getRecipeManager();
-        var tube = recipes.byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "electron_tube_by_hand"));
-        expect("an electron tube by hand is a loaded recipe", tube.isPresent());
-        if (tube.isPresent()) {
-            expect("it makes Create's electron tube", tube.get().value().getResultItem(server.registryAccess()).is(
-                    BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "electron_tube"))));
-            var ingredients = tube.get().value().getIngredients();
-            expect("it takes an amethyst shard, four redstone and an iron sheet, no quartz",
-                    ingredients.size() == 6 && ingredients.stream().anyMatch(i -> i.test(new ItemStack(Items.AMETHYST_SHARD)))
-                            && ingredients.stream().noneMatch(i -> i.test(new ItemStack(Items.QUARTZ))));
+        for (String id : new String[] {"crushing/diorite", "splashing/crushed_raw_gold", "splashing/soul_sand", "haunting/soul_sand"}) {
+            expect("Create makes quartz on Earth: its recipe " + id + " is loaded", recipes.byKey(ResourceLocation.fromNamespaceAndPath("create", id)).isPresent());
         }
+        expect("the electron tube is Create's own recipe, with no hand recipe of ours",
+                recipes.byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "electron_tube_by_hand")).isEmpty()
+                        && recipes.byKey(ResourceLocation.fromNamespaceAndPath("create", "crafting/materials/electron_tube")).isPresent());
         if (ModList.get().isLoaded("petrochem")) {
             var tin = recipes.byKey(ResourceLocation.fromNamespaceAndPath("ascension_compat_create", "tin_nugget_by_hand"));
             expect("a tin nugget by hand is a loaded recipe (Petrochem is here)", tin.isPresent());
