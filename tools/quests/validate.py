@@ -9,6 +9,8 @@ Checked:
   * items, advancements, dimensions and structures that belong to us exist (vanilla ones are checked
     by shape here, and for real by QuestChecks on a server)
   * pictures and quest shapes exist in the compat jar
+  * a project page (a blueprint): its finale exists, every quest that is not marked optional leads to it, its sheet is the shape of its picture,
+    and the skill points it advertises are what the growth milestone for the finale's advancement really pays
   * no text uses a guarded word (pack/quests/guarded-words.txt)
 """
 
@@ -16,6 +18,7 @@ import glob
 import json
 import os
 import re
+import struct
 
 from quests import chart
 from quests.model import Icon
@@ -62,16 +65,56 @@ def _lang_keys():
     return keys
 
 
+_ADVANCEMENTS = None
+
+
 def _advancement_exists(namespace, path):
-    pattern = os.path.join(ROOT, 'modules', '**', 'src', 'main', 'resources', 'data', namespace,
-                           'advancement', *path.split('/')) + '.json'
-    return bool(glob.glob(pattern, recursive=True))
+    """Whether one of our modules ships data/<namespace>/advancement/<path>.json. The files are listed once per run."""
+    global _ADVANCEMENTS
+    if _ADVANCEMENTS is None:
+        found = set()
+        for dirpath, dirs, names in os.walk(os.path.join(ROOT, 'modules')):
+            dirs[:] = [d for d in dirs if d not in ('build', '.gradle', 'run')]
+            parts = dirpath.replace(os.sep, '/').split('/')
+            if 'advancement' not in parts or 'data' not in parts:
+                continue
+            at = parts.index('advancement')
+            for name in names:
+                if name.endswith('.json'):
+                    # .../data/<namespace>/advancement/<rest>/<name>.json
+                    base = parts[:at]
+                    if len(base) >= 2 and base[-2] == 'data':
+                        rest = parts[at + 1:] + [name[:-5]]
+                        found.add(base[-1] + ':' + '/'.join(rest))
+        _ADVANCEMENTS = found
+    return f'{namespace}:{path}' in _ADVANCEMENTS
 
 
 def _structure_exists(namespace, path):
     pattern = os.path.join(ROOT, 'modules', '**', 'src', 'main', 'resources', 'data', namespace,
                            'worldgen', 'structure', *path.split('/')) + '.json'
     return bool(glob.glob(pattern, recursive=True))
+
+
+def _png_size(path):
+    """(width, height) of a PNG, read from its header."""
+    with open(path, 'rb') as handle:
+        head = handle.read(24)
+    if head[:8] != bytes([0x89]) + b'PNG' + bytes([0x0D, 0x0A, 0x1A, 0x0A]):
+        return None
+    return struct.unpack('>II', head[16:24])
+
+
+def milestone_points():
+    """{advancement id: (points, shared)} for every growth milestone file in the repository."""
+    found = {}
+    pattern = os.path.join(ROOT, 'modules', '**', 'src', 'main', 'resources', 'data', '*', 'ascension_combat', 'growth_milestone', '**', '*.json')
+    for path in glob.glob(pattern, recursive=True):
+        with open(path, encoding='utf-8') as handle:
+            data = json.load(handle)
+        if 'advancement' in data:
+            found[data['advancement']] = (int(data.get('points', 0)), bool(data.get('shared', False)))
+    return found
 
 
 def _guarded():
@@ -105,6 +148,7 @@ class _Checker:
         self.shapes = _shapes_available()
         self.dimensions = VANILLA_DIMENSIONS | {p.surface for p in chart.load_planets()} | {chart.SPACE}
         self.quests = {}            # 'chapter.slug' -> (chapter, quest)
+        self.milestones = milestone_points()
 
     # -- the whole book -------------------------------------------------------------------------
 
@@ -181,8 +225,73 @@ class _Checker:
         placed = []
         for quest in chapter.quests:
             self._quest(chapter, quest, placed)
-        if chapter.quests and not any(not q.deps for q in chapter.quests):
+        # A way in is a quest that waits for nothing on its own page (a project page may wait for another page: a lock, never a gate).
+        if chapter.quests and not any(not [d for d in q.deps if '.' not in d or d.startswith(chapter.slug + '.')] for q in chapter.quests):
             self.problems.append(f'{where}: every quest depends on another, so the page has no way in')
+        if chapter.blueprint:
+            self._blueprint(chapter)
+
+    def _blueprint(self, chapter):
+        where = f'chapter {chapter.slug} (blueprint)'
+        blueprint = chapter.blueprint
+        by_slug = {q.slug: q for q in chapter.quests}
+        if blueprint.finale not in by_slug:
+            self.problems.append(f'{where}: the finale "{blueprint.finale}" is not a quest of the page')
+            return
+        # Every quest that is not a side note leads to the finale, as every need on a roadmap does.
+        local = {}
+        for quest in chapter.quests:
+            for ref in quest.deps:
+                slug = ref.split('.', 1)[1] if ref.startswith(chapter.slug + '.') else ref
+                if slug in by_slug:
+                    local.setdefault(slug, []).append(quest.slug)
+        reaches = set()
+
+        def walk(slug):
+            if slug in reaches:
+                return
+            reaches.add(slug)
+            for child in local.get(slug, []):
+                walk(child)
+        # "reaches the finale" is the same as "is an ancestor of it": walk up from the finale instead
+        parents = {q.slug: [r.split('.', 1)[1] if r.startswith(chapter.slug + '.') else r for r in q.deps] for q in chapter.quests}
+        stack = [blueprint.finale]
+        ancestors = set()
+        while stack:
+            current = stack.pop()
+            for parent in parents.get(current, []):
+                if parent in by_slug and parent not in ancestors:
+                    ancestors.add(parent)
+                    stack.append(parent)
+        for quest in chapter.quests:
+            if blueprint.strict and quest.slug != blueprint.finale and quest.slug not in ancestors and not quest.optional:
+                self.problems.append(f'{where}: {quest.slug} does not lead to the finale {blueprint.finale} (make it optional, or give the finale a dependency on it)')
+        if blueprint.box is None:
+            self.problems.append(f'{where}: the sheet has not been laid out')
+        else:
+            left, top, right, bottom = blueprint.box
+            for quest in chapter.quests:
+                if not (left <= quest.x <= right and top <= quest.y <= bottom):
+                    self.problems.append(f'{where}: {quest.slug} is off the sheet')
+        sheets = [i for i in chapter.images if i.slug == 'sheet']
+        if len(sheets) != 1:
+            self.problems.append(f'{where}: expected one sheet picture, found {len(sheets)}')
+        else:
+            path = os.path.join(COMPAT_ASSETS, *sheets[0].texture.split('/'))
+            if os.path.exists(path):
+                size = _png_size(path)
+                if size is None:
+                    self.problems.append(f'{where}: the sheet is not a PNG')
+                elif abs(size[0] / size[1] - sheets[0].width / sheets[0].height) > 0.004:
+                    self.problems.append(f'{where}: the sheet picture is {size[0]}x{size[1]} but the page wants {sheets[0].width}x{sheets[0].height} '
+                                         f'(run python tools/generate-blueprint-art.py)')
+        finale = by_slug[blueprint.finale]
+        advancements = [t.args['advancement'] for t in finale.tasks if t.kind == 'advancement']
+        paid = [self.milestones[a] for a in advancements if a in self.milestones]
+        pays = sum(p[0] for p in paid)
+        if pays != blueprint.points:
+            self.problems.append(f'{where}: the page says its finale pays {blueprint.points} skill point(s) but the growth milestones for '
+                                 f'{advancements or "no advancement"} pay {pays}')
 
     # -- a quest --------------------------------------------------------------------------------
 

@@ -100,10 +100,10 @@ def levels(count):
 @dataclass
 class Quest:
     slug: str
-    x: float
-    y: float
-    title: str
-    text: List[str]
+    x: float = 0.0                         # a page with a `blueprint` is laid out by tools/quests/layout.py; the numbers here are then overwritten
+    y: float = 0.0
+    title: str = ''
+    text: List[str] = field(default_factory=list)
     subtitle: str = ''
     icon: Optional[Icon] = None
     shape: Optional[str] = None            # None: the chapter's default
@@ -114,6 +114,8 @@ class Quest:
     hide_until: Optional[str] = None       # None, 'visible' (deps seen) or 'complete' (deps done)
     optional: bool = False
     secret: bool = False                   # invisible until it is completed
+    legacy: Optional[str] = None           # the chapter this quest was first written in: its ids (quest, tasks, rewards) keep that chapter's name,
+                                           # so moving a quest to another page strands nobody's progress
 
 
 @dataclass
@@ -131,6 +133,21 @@ class Image:
 
 
 @dataclass
+class Blueprint:
+    """A project page drawn as a blueprint (docs/progression/dr-stone-roadmap.md): laid out by dependency, on a generated sheet.
+
+    `number` and `of` are the sheet number in the title block, `motif` names the line drawing in its corner, `finale` is the quest the page
+    exists for (drawn larger, at the bottom). `box` is filled by tools/quests/layout.py: (left, top, right, bottom) in position units."""
+    number: int
+    of: int
+    motif: str
+    finale: str
+    strict: bool = True                    # every quest that is not optional leads to the finale (a hand-placed page, like First Light, need not)
+    points: int = 0                        # skill points the finale pays the team; checked against the growth milestone file
+    box: Optional[tuple] = None
+
+
+@dataclass
 class Chapter:
     slug: str
     title: str
@@ -139,6 +156,7 @@ class Chapter:
     quests: List[Quest] = field(default_factory=list)
     images: List[Image] = field(default_factory=list)
     shape: str = 'ascension_star'          # the quest shape used where a quest names none
+    blueprint: Optional[Blueprint] = None
 
 
 @dataclass

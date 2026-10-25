@@ -131,7 +131,7 @@ class BookTest(unittest.TestCase):
         lang = self.files['lang/en_us.snbt']
         for chapter in self.book.chapters:
             for quest in chapter.quests:
-                qid = object_id('quest', f'{chapter.slug}.{quest.slug}')
+                qid = emit.quest_id(chapter, quest)
                 self.assertIn(f'"quest.{qid}.title"', lang)
                 self.assertIn(f'"quest.{qid}.quest_desc"', lang)
 
@@ -286,6 +286,74 @@ class ValidatorCatchesTest(unittest.TestCase):
     def test_a_page_with_no_way_in(self):
         text = self.problems(_book(_quest('a', deps=['b']), _quest('b', x=2, deps=['a'])))
         self.assertIn('no way in', text)
+
+
+class ProjectPagesTest(unittest.TestCase):
+    """The nine project pages (docs/progression/dr-stone-roadmap.md): laid out by dependency, ids kept, and a validator that notices a bad one."""
+
+    @classmethod
+    def setUpClass(cls):
+        from book import BOOK
+        cls.book = BOOK
+        cls.pages = [c for c in BOOK.chapters if c.blueprint]
+
+    def test_there_are_nine_projects_numbered_in_order(self):
+        self.assertEqual(list(range(1, 10)), sorted(c.blueprint.number for c in self.pages))
+        self.assertTrue(all(c.blueprint.of == 9 for c in self.pages))
+
+    def test_a_moved_quest_keeps_the_id_of_the_page_it_was_written_on(self):
+        spin = next(c for c in self.book.chapters if c.slug == 'spin')
+        press = next(q for q in spin.quests if q.slug == 'press')
+        self.assertEqual('road_up', press.legacy)
+        self.assertEqual(object_id('quest', 'road_up.press'), emit.quest_id(spin, press))
+        # and a reference from another page lands on that same id
+        files = emit.all_files(self.book)
+        wings = files['chapters/wings.snbt']
+        self.assertIn(object_id('quest', 'road_up.press'), wings)
+
+    def test_a_new_quest_is_named_by_its_own_page(self):
+        spin = next(c for c in self.book.chapters if c.slug == 'spin')
+        line = next(q for q in spin.quests if q.slug == 'line')
+        self.assertIsNone(line.legacy)
+        self.assertEqual(object_id('quest', 'spin.line'), emit.quest_id(spin, line))
+
+    def test_the_finale_is_on_the_lowest_row_of_a_laid_out_page(self):
+        for chapter in self.pages:
+            if not chapter.blueprint.strict or chapter.slug == 'the_moon':
+                continue      # the Moon has side notes under its finale
+            finale = next(q for q in chapter.quests if q.slug == chapter.blueprint.finale)
+            self.assertEqual(max(q.y for q in chapter.quests), finale.y, chapter.slug)
+
+    def test_a_layout_is_the_same_every_time(self):
+        import importlib
+        from quests import layout
+        chapter = next(c for c in self.pages if c.slug == 'crude')
+        before = [(q.slug, q.x, q.y) for q in chapter.quests]
+        layout.layered(chapter)
+        self.assertEqual(before, [(q.slug, q.x, q.y) for q in chapter.quests])
+
+    def test_every_project_page_passes_the_validator(self):
+        self.assertEqual([], validate.check(self.book))
+
+    def test_a_page_that_misstates_its_points_is_caught(self):
+        chapter = next(c for c in self.pages if c.slug == 'brass')
+        real = chapter.blueprint.points
+        try:
+            chapter.blueprint.points = real + 1
+            problems = validate.check(self.book)
+        finally:
+            chapter.blueprint.points = real
+        self.assertTrue(any('skill point' in p and 'brass' in p for p in problems), problems)
+
+    def test_a_need_that_does_not_lead_to_the_finale_is_caught(self):
+        chapter = next(c for c in self.pages if c.slug == 'skyline')
+        stray = Quest(slug='stray', title='Stray', text=['x'], tasks=[checkmark()])
+        chapter.quests.append(stray)
+        try:
+            problems = validate.check(self.book)
+        finally:
+            chapter.quests.remove(stray)
+        self.assertTrue(any('stray does not lead to the finale' in p for p in problems), problems)
 
 
 if __name__ == '__main__':

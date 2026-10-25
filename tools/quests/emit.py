@@ -31,8 +31,22 @@ def _icon(icon):
     return {'id': 'ftbquests:custom_icon', 'count': 1, 'components': {'ftbquests:icon': _texture(icon.texture)}}
 
 
+# 'chapter.slug' -> id, for every quest of the book being written. A quest keeps the id of the chapter it was first written in
+# (`Quest.legacy`), wherever it is shown now, so a quest moved to another page keeps anyone's progress.
+_IDS = {}
+
+
+def _origin(chapter, quest):
+    return quest.legacy or chapter.slug
+
+
+def quest_id(chapter, quest):
+    """The id a quest is written with: that of the page it was first written on."""
+    return object_id('quest', f'{_origin(chapter, quest)}.{quest.slug}')
+
+
 def _qid(chapter_slug, slug):
-    return object_id('quest', f'{chapter_slug}.{slug}')
+    return _IDS.get(f'{chapter_slug}.{slug}') or object_id('quest', f'{chapter_slug}.{slug}')
 
 
 def _resolve(ref, chapter_slug):
@@ -63,7 +77,7 @@ def _written(table, what, kind, args, object_kind, chapter, quest, index):
     """{'id': ...} followed by the fields the table gives for this kind."""
     if kind not in table:
         raise ValueError(f'unknown {what} kind {kind!r} in {chapter.slug}.{quest.slug}')
-    out = {'id': object_id(object_kind, f'{chapter.slug}.{quest.slug}.{index}')}
+    out = {'id': object_id(object_kind, f'{_origin(chapter, quest)}.{quest.slug}.{index}')}
     out.update(table[kind](args))
     return out
 
@@ -162,6 +176,10 @@ def data_text():
 
 def all_files(book):
     """{path relative to config/ftbquests/quests: text} for the whole book."""
+    _IDS.clear()
+    for chapter in book.chapters:
+        for quest in chapter.quests:
+            _IDS[f'{chapter.slug}.{quest.slug}'] = object_id('quest', f'{_origin(chapter, quest)}.{quest.slug}')
     files = {
         'data.snbt': data_text(),
         'chapter_groups.snbt': dumps({'chapter_groups': []}),
