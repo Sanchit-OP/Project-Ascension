@@ -9,7 +9,11 @@ any ship (ADR-0015). The thrusters are Create Propulsion's. Helium, from the Moo
 burner fuel (modules/compat/create, data/createpropulsion and data/create/data_maps). Steering is Aeroworks' (ADR-0030): the
 first Moon flight of the alpha.2 test failed on the controls, so the page teaches a gyroscope and a control stand before a rocket.
 
-Layout: the sky and its instruments on top (y 0 to 4); steering (y 7 to 9); thrusters and power (y 12 to 16); the rocket at the bottom.
+The liquid fuel is crude oil from Create: Petrochem (ADR-0031): a pumpjack on Earth, an electrolyzer to desalt it, a distillation tower to split it, and
+kerosene, diesel and gasoline for the liquid Thruster (modules/compat/create, data/createpropulsion/thruster_fuels/petrochem). Its steel and bronze
+are mixed on a Blaze Burner, so the lane is a Nether-tier upgrade; coal and helium still reach the Moon.
+
+Layout: the sky and its instruments on top (y 0 to 4); steering (y 7 to 9); thrusters and power (y 12 to 16); the oil lane beside them (x 13.5, y 12 to 22); the rocket at the bottom.
 """
 
 from quests.model import (GOAL, LANDMARK, LESSON, Chapter, Quest, advancement, checkmark, dimension, give, item,
@@ -211,7 +215,7 @@ CHAPTER = Chapter(
             icon=item_icon('createpropulsion:thruster'), shape=GOAL,
             deps=['thrusters', 'the_rot.brass'],
             text=[
-                'Iron and copper sheets, a fluid pipe, two mechanical pumps and a brass casing. It takes a liquid fuel from a pipe or a tank.',
+                'Iron and copper sheets, a fluid pipe, two mechanical pumps and a brass casing. It takes a liquid fuel from a pipe or a tank: kerosene, diesel or gasoline.',
                 'Brass can be crafted by hand from copper and zinc; a heated mixer makes it far cheaper.',
             ],
             tasks=[item('createpropulsion:thruster', 1)],
@@ -268,6 +272,84 @@ CHAPTER = Chapter(
             ],
             tasks=[advancement('createpropulsion:energy_propulsion')],
             rewards=[give('minecraft:redstone_block', 1)],
+        ),
+
+        # ---- Oil -----------------------------------------------------------------------------------
+        Quest(
+            slug='oil', x=13.5, y=12,
+            title='Oil for the rocket',
+            subtitle='Out of the ground, into a tank',
+            icon=item_icon('petrochem:kerosene_bucket'), shape=LESSON, size=0.9,
+            deps=['thrusters'],
+            text=[
+                'The liquid Thruster burns kerosene, diesel or gasoline. All three come out of crude oil, and Create: Petrochem makes the whole chain.',
+                'Oil lies under deserts, swamps, jungles and deep oceans of Earth, and nowhere else. A burner under the mixer and tower is needed at every step.',
+            ],
+            tasks=[checkmark()],
+            rewards=[give('minecraft:coal', 16)],
+        ),
+        Quest(
+            slug='steel', x=13.5, y=14,
+            title='Steel',
+            subtitle='Iron and coal, heated',
+            icon=item_icon('petrochem:steel_ingot'), shape=GOAL,
+            deps=['oil'],
+            text=[
+                'Every Petrochem machine is made of steel. Heat an iron ingot and a coal in a mixer over a burner, then press the ingot flat for sheets.',
+                'Bronze is the second metal: copper and a tin nugget. A tin nugget is a zinc nugget filled with a thick potion by a spout.',
+            ],
+            tasks=[item('petrochem:steel_sheet', 8)],
+            rewards=[give('minecraft:iron_ingot', 16)],
+        ),
+        Quest(
+            slug='pumpjack', x=13.5, y=16,
+            title='A pumpjack',
+            subtitle='A crank, a well and an arm',
+            icon=item_icon('petrochem:pumpjack_arm'), shape=GOAL,
+            deps=['steel'],
+            text=[
+                'The crank takes a rotation speed controller, the well is steel pipe, the arm is built on a mechanical crafter. Put the well in the ground, turn the crank.',
+                'Desert and deep ocean give crude petroleum; swamp and jungle give oil that is already desalted. Any other ground gives nothing.',
+            ],
+            tasks=[item('petrochem:pumpjack_arm', 1)],
+            rewards=[give('minecraft:chain', 8)],
+        ),
+        Quest(
+            slug='electrolyzer', x=13.5, y=18,
+            title='An electrolyzer',
+            subtitle='Take the salt out',
+            icon=item_icon('petrochem:electrolyzer'), shape=GOAL,
+            deps=['pumpjack', 'alternator'],
+            text=[
+                'A mixer that runs on electricity, not spin. Wire it to an alternator or an accumulator and feed it petroleum: out come desalted oil and, half the time, salt.',
+            ],
+            tasks=[item('petrochem:electrolyzer', 1)],
+            rewards=[give('minecraft:copper_ingot', 16)],
+        ),
+        Quest(
+            slug='distillation', x=13.5, y=20,
+            title='A distillation tower',
+            subtitle='Split the oil by how hot it boils',
+            icon=item_icon('petrochem:distillation_controller'), shape=GOAL,
+            deps=['electrolyzer'],
+            text=[
+                'Steel tanks stacked over a controller, a blaze burner under it, and an output block at each height. Three modes: flash, atmospheric and vacuum.',
+                'The atmospheric mode gives diesel, kerosene and heavy naphtha. Pipe the kerosene away to a tank.',
+            ],
+            tasks=[item('petrochem:distillation_controller', 1)],
+            rewards=[give('minecraft:bucket', 2)],
+        ),
+        Quest(
+            slug='kerosene', x=13.5, y=22,
+            title='Kerosene',
+            subtitle='Fuel for a long climb',
+            icon=item_icon('petrochem:kerosene_bucket'), shape=GOAL,
+            deps=['distillation', 'thruster'],
+            text=[
+                'Kerosene gives the liquid Thruster more push for less fuel than diesel does. Gasoline pushes hardest and burns faster.',
+            ],
+            tasks=[item('petrochem:kerosene_bucket', 1)],
+            rewards=[give('minecraft:blaze_powder', 8)],
         ),
 
         # ---- A rocket -----------------------------------------------------------------------------

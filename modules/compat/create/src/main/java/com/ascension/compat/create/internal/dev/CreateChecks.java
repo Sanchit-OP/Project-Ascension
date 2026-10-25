@@ -1,12 +1,17 @@
 package com.ascension.compat.create.internal.dev;
 
 import com.ascension.compat.create.internal.RemovedItems;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,6 +28,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
@@ -136,6 +142,9 @@ public final class CreateChecks {
         }
         checkBrassByHand(server);
         checkMachinesBreak(server);
+        if (ModList.get().isLoaded("petrochem")) {
+            checkPetrochem(server);
+        }
         if (ModList.get().isLoaded("curios")) {
             CuriosProbe.run(server.overworld(), ModList.get().isLoaded("aeronautics"));
         }
@@ -157,6 +166,76 @@ public final class CreateChecks {
             Item item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(namespace, path));
             return CuriosApi.getItemStackSlots(new ItemStack(item), level).keySet();
         }
+    }
+
+    /**
+     * Crude oil and the refinery are Create: Petrochem's (ADR-0031), and its products fuel Create Propulsion's liquid Thruster through the
+     * {@code thruster_fuels} files in this jar. Proves the fluids, the chain's recipes and the tag are loaded, that oil is only pumped from
+     * biomes of Earth, and (Propulsion being read by reflection, since nothing here compiles against it) that its fuel table knows the five fluids.
+     */
+    private static void checkPetrochem(MinecraftServer server) {
+        for (String name : new String[] {"petroleum", "desalted_oil", "oil", "kerosene", "diesel", "gasoline", "lpg", "fuel_oil"}) {
+            expect("petrochem:" + name + " is a registered fluid", BuiltInRegistries.FLUID.containsKey(ResourceLocation.fromNamespaceAndPath("petrochem", name)));
+        }
+        Fluid petroleum = BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath("petrochem", "petroleum"));
+        var crude = BuiltInRegistries.FLUID.getTag(TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "crude_oil")));
+        expect("petroleum is in the c:crude_oil tag", crude.isPresent() && crude.get().stream().anyMatch(h -> h.value() == petroleum));
+
+        Map<String, Integer> byType = new TreeMap<>();
+        for (RecipeHolder<?> holder : server.getRecipeManager().getRecipes()) {
+            ResourceLocation type = BuiltInRegistries.RECIPE_TYPE.getKey(holder.value().getType());
+            if (type != null && type.getNamespace().equals("petrochem")) {
+                byType.merge(type.getPath(), 1, Integer::sum);
+            }
+        }
+        log("   petrochem recipe types loaded: " + byType);
+        expect("the pumpjack has its four biome recipes", byType.getOrDefault("pumpjack", 0) == 4);
+        expect("the distillation tower has its three modes", byType.getOrDefault("distilling", 0) == 3);
+        expect("the electrolyzer has recipes", byType.getOrDefault("electrolyzing", 0) >= 1);
+
+        // Oil comes out of the ground only where a recipe names the biome. None may name a biome of ours.
+        List<String> biomes = new ArrayList<>();
+        for (var entry : server.getResourceManager().listResources("recipe/pumpjack", id -> id.getNamespace().equals("petrochem")
+                && id.getPath().endsWith(".json")).entrySet()) {
+            try (var reader = entry.getValue().openAsReader()) {
+                biomes.add(JsonParser.parseReader(reader).getAsJsonObject().get("biome").getAsString());
+            } catch (IOException | RuntimeException e) {
+                fail("could not read " + entry.getKey() + ": " + e);
+            }
+        }
+        log("   pumpjack biomes: " + biomes);
+        expect("every pumpjack recipe names a vanilla biome or biome tag", !biomes.isEmpty() && biomes.stream().allMatch(b -> b.startsWith("minecraft:") || b.startsWith("#minecraft:")));
+
+        if (!ModList.get().isLoaded("createpropulsion")) {
+            log("   Create Propulsion is not loaded: the fuel table is not checked");
+            return;
+        }
+        Map<ResourceLocation, float[]> known = thrusterFuels();
+        log("   Create Propulsion knows " + known.size() + " liquid fuels");
+        float[][] wanted = {{1.15f, 0.8f}, {1.1f, 0.85f}, {1.2f, 0.9f}, {1.0f, 0.95f}, {0.9f, 1.0f}};
+        String[] names = {"kerosene", "diesel", "gasoline", "lpg", "fuel_oil"};
+        for (int i = 0; i < names.length; i++) {
+            float[] got = known.get(ResourceLocation.fromNamespaceAndPath("petrochem", names[i]));
+            expect("Create Propulsion burns petrochem:" + names[i] + " in the liquid Thruster, thrust " + wanted[i][0] + " using " + wanted[i][1],
+                    got != null && got[0] == wanted[i][0] && got[1] == wanted[i][1]);
+        }
+    }
+
+    /** The fluids Create Propulsion's loaded {@code thruster_fuels} data accepts, with thrust and consumption, by reflection (this jar does not compile against it). */
+    private static Map<ResourceLocation, float[]> thrusterFuels() {
+        Map<ResourceLocation, float[]> fuels = new HashMap<>();
+        try {
+            Class<?> manager = Class.forName("dev.propulsionteam.propulsionsimulated.content.thruster.ThrusterFuelManager");
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>) manager.getMethod("getFuelPropertiesMap").invoke(null)).entrySet()) {
+                Object properties = entry.getValue();
+                float thrust = (Float) properties.getClass().getMethod("thrustMultiplier").invoke(properties);
+                float consumption = (Float) properties.getClass().getMethod("consumptionMultiplier").invoke(properties);
+                fuels.put(BuiltInRegistries.FLUID.getKey((Fluid) entry.getKey()), new float[] {thrust, consumption});
+            }
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            fail("could not read Create Propulsion's fuel table: " + e);
+        }
+        return fuels;
     }
 
     /** The compressor breaks with a pickaxe and drops itself; Create's wrench lifts the dispenser (alpha.2 test, 2026-10-25). */

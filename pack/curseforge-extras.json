@@ -220,6 +220,16 @@
       "side": "client",
       "added": "2026-10-25",
       "why": "the full map; Xaero's Minimap works with it (alpha.3)"
+    },
+    {
+      "name": "Create: Petrochem",
+      "slug": "create-petrochem",
+      "projectID": 1494004,
+      "fileID": 8926887,
+      "file": "petrochem-neoforge-1.21.1-1.3.3.jar",
+      "side": "both",
+      "added": "2026-10-25",
+      "why": "crude oil on Earth and a refinery; kerosene, diesel and gasoline fuel Create Propulsion's liquid Thruster (ADR-0031). Diesel Generators is the fallback"
     }
   ]
 }

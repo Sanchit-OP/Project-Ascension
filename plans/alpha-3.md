@@ -221,7 +221,12 @@ Northstar and Stellaris. A mod it does not name needs one small file per fluid f
 Petrochem author calls its mechanics glitchy; unverified). Petrochem is the closest to "crude to a full refinery to kerosene for a rocket" and the one that
 keeps oil off every world but Earth without any tag, at the cost of being young. Proposed: Petrochem, with Diesel Generators as the fallback if it misbehaves
 on a server. Before either is installed: download the jar (one file, about 2 MB, from Modrinth), add it to the staging copy, boot a dedicated server, check
-that its fluids, recipes and pumpjack load beside the rest, then write the Thruster fuel files and a quest section. Waiting on Sanchit's pick.
+that its fluids, recipes and pumpjack load beside the rest, then write the Thruster fuel files and a quest section. 
+**Decided 2026-10-25: Petrochem** (ADR-0031), Diesel Generators the fallback. Petrochem is on CurseForge too (project 1494004, 331 k downloads; the 11 k above is
+Modrinth alone). Staged with the whole set and booted: 2.3 s, no mixin conflict, `create-checks` 52/0 including the five Thruster fuels read back out of Create
+Propulsion's own table; the quest lane (oil, steel, pumpjack, electrolyzer, distillation, kerosene) loads (`quest-checks` 10/0). **Finding:** steel, bronze and the tower are
+all *heated* recipes, so the refinery needs a Blaze Burner, which only a Planet 3 blaze gives (Create's `blaze_burner_capturable` tag is the blaze alone). Oil is
+therefore the upgrade after the Nether; the Moon still runs on coal, charcoal or helium. **Not in the instance yet**; a pumpjack, electrolyzer and tower are unseen in a client.
 
 ## Not decided (needs Sanchit)
 
@@ -229,7 +234,7 @@ For alpha.3:
 1. ~~Is "molten core" the Heavy Core (F4)?~~ Yes (2026-10-25).
 2. ~~May the staged mod set be applied?~~ Yes, done.
 3. ~~Shaders?~~ Both, off by default.
-4. A liquid fuel for the liquid Thruster: **not helium.** He asked for a crude oil mod for Earth with a full refining chain. Candidates compared below; waiting on his pick.
+4. ~~A liquid fuel~~ Petrochem (ADR-0031), staged; to install in the instance on his word.
 5. The "few more things before we publish" and the "final rollout" list he mentioned earlier, which still have not been told to me.
 
 For alpha.4: spell scaling and lane (step 0 above), and which structure mods.

@@ -57,3 +57,4 @@ forgets it.
 | [0028](0028-planet-4-is-the-end.md) | Planet 4 is the End, an asteroid belt; its gate is the Dragon's exit portal; the predator world slides to Planet 5 | Proposed |
 | [0029](0029-planet-loot-is-added-by-two-shared-loot-types.md) | Planet loot is added to every chest by two loot types (a chest condition and a junk strip) that live in core | Accepted |
 | [0030](0030-rocket-parts-are-create-propulsion-and-aeroworks.md) | Rockets use Create Propulsion's thrusters, ships steer with Aeroworks, power comes from Crafts & Additions | Accepted |
+| [0031](0031-crude-oil-and-the-refinery-are-create-petrochem.md) | Crude oil and the refinery are Create: Petrochem; kerosene, diesel and gasoline fuel the liquid Thruster | Accepted |

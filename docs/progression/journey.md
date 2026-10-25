@@ -135,6 +135,7 @@ Each of these changed a quest or is a fact a later session needs.
 | 5.2 Range and air | **A ship is a closed space, so the Oxygen Emitter aboard should pressurise it.** No tank change. This becomes part of **Oxygen v2** (below), which he starts soon. |
 | 5.3 HUD chart in space | Leave for now; something later. |
 | 5.4 Helium | **Fuel: decided and built** (ADR-0025): raw helium is a superheated blaze-burner fuel, so it is the strongest thruster fuel. A better tank stays an idea for Oxygen v2. |
+| 5.4b Oil | **Liquid fuel: decided, staged** (ADR-0031, 2026-10-25): crude oil on Earth and a refinery from Create: Petrochem; kerosene, diesel and gasoline fuel the liquid Thruster. Its steel, bronze and tower are *heated* recipes, so it needs a Blaze Burner (Planet 3): the Moon runs on coal or helium, oil is the upgrade after the Nether. Unseen in a client. |
 | 5.6 Build paths | A **new session** starts from `plans/session-prompts/4-build-paths.md`. |
 | 5.8 Enchantments | Put them in the table (**they already are**, see 5.8), and add the **Lootr** mod so every player gets their own loot from a chest (**installed**, not yet seen in a client). |
 | 5.9 First minutes | Tell the player about the book at first login (**built**, not yet seen). |

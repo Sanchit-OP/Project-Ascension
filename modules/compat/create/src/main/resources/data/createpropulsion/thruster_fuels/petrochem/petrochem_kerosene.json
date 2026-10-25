@@ -1,0 +1,6 @@
+{
+  "fluid": "petrochem:kerosene",
+  "thrust_multiplier": 1.15,
+  "consumption_multiplier": 0.8,
+  "required_mod": "petrochem"
+}

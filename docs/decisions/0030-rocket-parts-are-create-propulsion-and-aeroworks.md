@@ -5,6 +5,7 @@
 - **Supersedes in part:** [ADR-0025](0025-rockets-are-thruster-ships.md): its choice of **Create Simulated Thrusters** as the
   thruster mod. Everything else in 0025 stands: a rocket is a Create Aeronautics ship with thrusters under it, carried to space by
   the rules of ADR-0015, and helium is its fuel.
+- **See also:** [ADR-0031](0031-crude-oil-and-the-refinery-are-create-petrochem.md), the liquid fuel for the Thruster (crude oil, Create: Petrochem).
 - **Builds on:** [ADR-0003](0003-modular-architecture-and-compatibility-policy.md) (foreign integration is data or a Tier-2 jar),
   [ADR-0018](0018-no-world-is-required.md)
 

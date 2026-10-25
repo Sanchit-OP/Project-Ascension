@@ -20,7 +20,7 @@ Written as the work lands; the version number and the date go on it when it is b
 **Ships and flight** (the alpha.2 test: nobody reached the Moon, "the controls were too hard")
 - **Create: Aeroworks** is in: a **gyroscope** that keeps a ship level, a **joystick**, and a **control stand** that takes lever, joystick, wheel, yoke and
   throttle modules. **Create Propulsion** replaces Create Simulated Thrusters: a solid fuel thruster that burns coal, wood or raw helium, a liquid
-  thruster, an ion thruster that runs on power. **Create Crafts & Additions** (with its Sable addon, so wires work on a ship) gives a ship stored electricity.
+  thruster, an ion thruster that runs on power. **Create: Petrochem** puts crude oil in the ground of Earth (desert, swamp, jungle, deep ocean) with a pumpjack, an electrolyzer and a distillation tower; its kerosene, diesel and gasoline are the liquid Thruster's fuels. Its steel and tower need a Blaze Burner. **Create Crafts & Additions** (with its Sable addon, so wires work on a ship) gives a ship stored electricity.
   The flight quest page teaches them in that order.
 - **Brass can be crafted by hand**, which the new thruster needs.
 

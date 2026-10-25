@@ -273,7 +273,7 @@ damage checks still passed (77 of 77). **Not seen in a client.**
 
 Replaced: **Gliders** by **Paragliders**, **Sophisticated Backpacks** by **Traveler's Backpack**, **Create Simulated Thrusters** by
 **Create Propulsion: Simulated** (ADR-0030). Added: **Create: Aeroworks**, **Create Crafts & Additions** with **Create Additions - Sable
-Compat**, **Farmer's Delight**, **Inventory Profiles Next** (with libIPN and Kotlin for Forge), **Xaero's Minimap** and **Xaero's World Map**.
+Compat**, **Create: Petrochem** (ADR-0031, added later the same day), **Farmer's Delight**, **Inventory Profiles Next** (with libIPN and Kotlin for Forge), **Xaero's Minimap** and **Xaero's World Map**.
 Sophisticated Core and Storage stay. Each is named by CurseForge project and file id in `pack/curseforge-extras.json`; none is bundled.
 
 | Mod | File | Notes |
@@ -282,6 +282,7 @@ Sophisticated Core and Storage stay. Each is named by CurseForge project and fil
 | Create Propulsion: Simulated 1.1.5 | `createpropulsion-1.1.5.jar` | MIT. Needs Create 6.0.6+, Sable 2.0.3+. Adds platinum ore. |
 | Create Crafts & Additions 1.7.2 (beta) | `createaddition-1.7.2.jar` | Needs Create [6.0.7, 6.1.0). The stable 1.6.0 is file 8188476 if the beta misbehaves. |
 | Create Additions - Sable Compat 0.1.13 (beta) | `sable_createaddition_compat-0.1.13.jar` | Wires on a ship. |
+| Create: Petrochem 1.3.3 | `petrochem-neoforge-1.21.1-1.3.3.jar` | MIT; CurseForge 1494004 / 8926887. Needs Create 6.0.10+. Crude oil and a refinery; mixins into Create's basin and powered shaft. Carries ~15 stray `gearbox:` test recipes that log parse errors at start. Staged and booted with the set (`create-checks` 52/0); **not in the instance yet.** |
 | Farmer's Delight 1.3.4 | `FarmersDelight-1.21.1-1.3.4.jar` | No dependencies. |
 | Paragliders 21.1.5 (Tictim, GPL-3) | `Paraglider-neoforge-21.1.5.jar` | Spirit Orbs, vessels and statues off: `pack/config/paraglider-*.toml` and `ascension-compat-paraglider`. |
 | Traveler's Backpack 10.1.40 | `travelersbackpack-neoforge-1.21.1-10.1.40.jar` | The author allows modpacks, forbids reposting the jar: the pack names it by id. |
