@@ -101,6 +101,8 @@ def _quest(chapter, quest):
         out['icon'] = icon
     if quest.deps:
         out['dependencies'] = [_resolve(ref, chapter.slug) for ref in quest.deps]
+    if quest.requirement:
+        out['dependency_requirement'] = quest.requirement
     if quest.hide_until == 'visible':
         out['hide_until_deps_visible'] = True
     elif quest.hide_until == 'complete':

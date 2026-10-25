@@ -147,6 +147,20 @@ class BookTest(unittest.TestCase):
             self.assertAlmostEqual(ux, quest.x, places=2)
             self.assertAlmostEqual(uy, quest.y, places=2)
 
+    def test_a_world_you_have_landed_on_is_never_a_bare_ring(self):
+        # FTB Quests completes a quest only when the steps before it are done, so a player who skipped a step has a landing that is "started" but never
+        # "completed". The chart must count started, and must name the landing quest of each world beside the step that points the way.
+        planets = next(c for c in self.book.chapters if c.slug == 'planets')
+        by_slug = {q.slug: q for q in planets.quests}
+        landings = {'moon': 'the_moon.touchdown', 'nether': 'the_rot.landing', 'end': 'the_belt.belt_landing'}
+        for world, landing in landings.items():
+            quest = by_slug[world]
+            self.assertEqual('one_started', quest.requirement)
+            self.assertIn(landing, quest.deps)
+            chapter = next(c for c in self.book.chapters if c.slug == landing.split('.')[0])
+            self.assertIn(landing.split('.')[1], {q.slug for q in chapter.quests})
+        self.assertIn('dependency_requirement: "one_started"', self.files['chapters/planets.snbt'])
+
     def test_the_marker_picture_covers_the_chart_exactly(self):
         planets = next(c for c in self.book.chapters if c.slug == 'planets')
         chart_image = next(i for i in planets.images if i.slug == 'chart')

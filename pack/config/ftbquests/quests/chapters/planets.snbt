@@ -46,7 +46,8 @@
 					"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/planets/moon.png"
 				}
 			}
-			dependencies: ["4121BDE2FA93BA25"]
+			dependencies: ["4121BDE2FA93BA25", "5C3D3D153AB786FA"]
+			dependency_requirement: "one_started"
 			hide_until_deps_complete: true
 			tasks: [
 				{
@@ -83,7 +84,8 @@
 					"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/planets/nether.png"
 				}
 			}
-			dependencies: ["38E2DDDB06CDA399"]
+			dependencies: ["38E2DDDB06CDA399", "15259A25C4DAE739"]
+			dependency_requirement: "one_started"
 			hide_until_deps_complete: true
 			tasks: [
 				{
@@ -126,7 +128,8 @@
 					"ftbquests:icon": "ascension_compat_ftbquests:textures/quests/planets/end.png"
 				}
 			}
-			dependencies: ["38E2DDDB06CDA399"]
+			dependencies: ["38E2DDDB06CDA399", "72C5BFD6CA1681A1"]
+			dependency_requirement: "one_started"
 			hide_until_deps_complete: true
 			tasks: [
 				{

@@ -5,7 +5,7 @@ its quest, its ring and its halo all come from one number. Each world has three 
 Quests visibility and no code:
 
     rumour   a faint ring and nothing else          always, until the world is known
-    known    the named sphere, one click from a page   once the quest it depends on is done
+    known    the named sphere, one click from a page   once a step that points the way, or the landing, has been started
     visited  a halo around the sphere               once the player has been there
 
 The "you are here" marker is a texture our own code draws on the client (ChartOverlay); it is the last
@@ -17,11 +17,16 @@ import math
 from quests import chart
 from quests.model import (Chapter, Image, Quest, dimension, give, picture)
 
-# The one thing that reveals each world. Earth is always known.
+# What reveals each world. Earth is always known. A world is known when ANY of these has been started (FTB Quests: a quest is started once one of
+# its tasks has progress, even if the quest cannot complete because an earlier step was skipped), so a world you have already stood on is never
+# a bare ring: the page for landing there counts, as well as the step that points the way.
 KNOWN_AFTER = {
-    'moon': 'first_days.first_breath',    # once you can carry your own air
-    'nether': 'moon',                     # once you have stood on the Moon
-    'end': 'moon',                        # likewise
+    'moon': ['first_days.first_breath',   # you can carry your own air
+             'the_moon.touchdown'],       # or you have landed
+    'nether': ['moon',                    # you have stood on the Moon
+               'the_rot.landing'],        # or you have landed
+    'end': ['moon',                       # likewise
+            'the_belt.belt_landing'],
 }
 
 # What each world's page says, in practical words and no more. Distances come from the planet files.
@@ -102,16 +107,18 @@ def _build():
 
         deps = []
         hide = None
+        requirement = None
         if key in KNOWN_AFTER:
-            deps = [KNOWN_AFTER[key]]
+            deps = list(KNOWN_AFTER[key])
             hide = 'complete'
+            requirement = 'one_started'
 
         quests.append(Quest(
             slug=key, x=ux, y=uy,
             title=title, subtitle=subtitle, text=text,
             icon=picture(f'textures/quests/planets/{key}.png'),
             shape='none', size=1.7,
-            deps=deps, hide_until=hide,
+            deps=deps, hide_until=hide, requirement=requirement,
             tasks=[dimension(planet.surface)],
             rewards=BLURB[key]['rewards'],
         ))

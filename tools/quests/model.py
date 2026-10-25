@@ -112,6 +112,8 @@ class Quest:
     tasks: List[Task] = field(default_factory=list)
     rewards: List[Reward] = field(default_factory=list)
     hide_until: Optional[str] = None       # None, 'visible' (deps seen) or 'complete' (deps done)
+    requirement: Optional[str] = None      # how many deps count: None (all done), 'one_completed', 'all_started' or 'one_started'; FTB Quests calls a
+                                           # quest started once any of its tasks has progress, even when the quest cannot complete yet
     optional: bool = False
     secret: bool = False                   # invisible until it is completed
     legacy: Optional[str] = None           # the chapter this quest was first written in: its ids (quest, tasks, rewards) keep that chapter's name,

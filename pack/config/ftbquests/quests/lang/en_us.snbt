@@ -21,7 +21,7 @@
 	"quest.4C6D7B1AFA4FB07C.quest_desc": ["Gather four gold ingots and keep them on you, not left in a chest.", "You will be glad of them before long. Where, you will see for yourself."]
 	"quest.0AC0AFA737E77E30.title": "The dark below"
 	"quest.0AC0AFA737E77E30.quest_subtitle": "A city that is asleep"
-	"quest.0AC0AFA737E77E30.quest_desc": ["Far under the world there is a city, and everything in it is asleep.", "It lies inside the deep dark: caves lined with sculk, near the bottom of the world.", "Go quietly. Sneak, and put wool under your feet where you must cross open floor.", "Bring good armour, food and a way back up."]
+	"quest.0AC0AFA737E77E30.quest_desc": ["Far under the world there is a city, and everything in it is asleep.", "It lies inside the deep dark: caves lined with sculk, near the bottom of the world.", "A cartographer who has risen past novice may sell a map to the nearest one, for 14 emeralds and a compass.", "Go quietly. Sneak, and put wool under your feet where you must cross open floor.", "Bring good armour, food and a way back up."]
 	"quest.194DE687782014EC.title": "The Warden"
 	"quest.194DE687782014EC.quest_subtitle": "It hears, and nothing else"
 	"quest.194DE687782014EC.quest_desc": ["It cannot see you. It hears your steps, your digging and your fall.", "Wear what you can afford to lose, and know where the way up is.", "The first time your team beats it, everyone on the team gains skill points."]
@@ -235,7 +235,7 @@
 	"quest.13A40786829CBFDD.quest_desc": ["A gold sheet is passed along a line of machines, round and round, until it becomes a mechanism.", "Fine parts like this are made by passing one item through many machines. Hold W over it."]
 	"quest.4CF95F61BD4815E1.title": "An electron tube"
 	"quest.4CF95F61BD4815E1.quest_subtitle": "A shard of light, bound in iron"
-	"quest.4CF95F61BD4815E1.quest_desc": ["A deployer, a crafter and every fine control start with an electron tube. Create cuts it from polished rose quartz, which is Nether quartz and redstone.", "An amethyst shard from a geode, four redstone and an iron sheet make one just as well, at a crafting table."]
+	"quest.4CF95F61BD4815E1.quest_desc": ["A deployer, a crafter and every fine control start with an electron tube. Create cuts it from rose quartz: quartz and eight redstone, polished with sandpaper.", "Quartz is not only in the Nether. A crushing wheel gets it from diorite, and a fan's water gets it from crushed raw gold or from soul sand."]
 	"chapter.1C966D794046C9BC.title": "Current"
 	"chapter.1C966D794046C9BC.chapter_subtitle": ["Spin becomes power, and power keeps."]
 	"quest.368C3C931F9D23EC.title": "Power aboard"

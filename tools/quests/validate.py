@@ -319,6 +319,10 @@ class _Checker:
         if not quest.tasks:
             self.problems.append(f'{q}: a quest with no task can never be completed')
 
+        if quest.requirement not in (None, 'all_completed', 'one_completed', 'all_started', 'one_started'):
+            self.problems.append(f'{q}: dependency requirement "{quest.requirement}" is not one FTB Quests knows')
+        if quest.requirement and not quest.deps:
+            self.problems.append(f'{q}: a dependency requirement with no dependencies')
         for dep in quest.deps:
             if self._ref(chapter, dep) not in self.quests:
                 self.problems.append(f'{q}: depends on "{dep}", which is not a quest')
