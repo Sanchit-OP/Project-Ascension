@@ -227,7 +227,8 @@ Modrinth alone). Staged with the whole set and booted: 2.3 s, no mixin conflict,
 Propulsion's own table; the quest lane (oil, steel, pumpjack, electrolyzer, distillation, kerosene) loads (`quest-checks` 10/0). **Finding:** steel, bronze and the tower are
 all *heated* recipes, so the refinery needs a Blaze Burner, which only a Planet 3 blaze gives (Create's `blaze_burner_capturable` tag is the blaze alone). Oil is
 therefore the upgrade after the Nether; the Moon still runs on coal, charcoal or helium. **Superseded the same day (ADR-0032):** Sanchit said oil is needed for the first ship, so a Blaze Burner (lava bucket,
-magma block, iron sheets), an electron tube (amethyst shard, four redstone, iron sheet) and tin (two zinc nuggets, an iron nugget) are craftable on Earth; the oil chain no longer touches the Nether. `create-checks` 61/0. How the five
+magma block, iron sheets) and tin (two zinc nuggets, an iron nugget) are craftable on Earth (an Earth electron tube was added and removed: Create makes quartz on Earth); the oil chain no longer touches the Nether. `create-checks` 63/0.
+**Sanchit then said (2026-10-25) no Blaze Burner on Earth; `tools/audit-nether-gating.py` found everything ship-critical traces to that one item; options A to D are in `docs/progression/oil-and-fuels.md` section 5. Open.** How the five
 fuels differ is `docs/progression/oil-and-fuels.md`. **In the instance since 2026-10-25** (with the rebuilt `ascension_compat_create` jar and the quest lane synced); a pumpjack, electrolyzer and tower are unseen in a client.
 
 ## Not decided (needs Sanchit)

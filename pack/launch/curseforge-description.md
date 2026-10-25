@@ -33,7 +33,7 @@ chosen set of other people's, for solo play or a small team.
 
 ## The road (what you can play today)
 
-- **Earth.** Survive, build, and learn the book (press **J**). Vanilla's Nether and End portals are dead: those worlds are planets now.
+- **Earth.** Survive, build, and learn the book (press **J**). A cartographer villager can sell you a map to the nearest Ancient City. Vanilla's Nether and End portals are dead: those worlds are planets now.
 - **Ships.** A Create Aeronautics airship that climbs past the top of the sky is carried into space with its crew. A ship that reaches
   a planet in space comes down onto it. Rockets are ships too: Create Propulsion's thrusters, burning helium or refined oil. Crude oil is in the ground of Earth's deserts,
   swamps, jungles and deep oceans (Create: Petrochem), and the Create: Aeroworks gyroscope and control stand keep a ship level and steerable.

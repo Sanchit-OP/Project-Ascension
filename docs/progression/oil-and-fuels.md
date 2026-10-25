@@ -96,15 +96,28 @@ worth its eight buckets, while gasoline stays the cheap, plentiful fuel for shor
 
 ## 5. The way in without the Nether (2026-10-25, [ADR-0032](../decisions/0032-oil-and-the-first-ship-without-the-nether.md))
 
-Sanchit: the first ship part needs oil, so oil must come early. The chain hides three Nether inputs, each fixed with an Earth recipe:
+Sanchit: the first ship part needs oil, so oil must come early. The chain hides two Nether inputs, each fixed with an Earth recipe. (A third, the electron tube, is not one: Create makes quartz on Earth by crushing
+diorite, by washing crushed raw gold, and by washing soul sand, and the book's fan page gives the first soul sand. An Earth tube recipe was added and removed the same day, at Sanchit's word.)
 
 | The chain needs | It is made from | Earth recipe (`ascension_compat_create`) |
 |---|---|---|
 | A **Blaze Burner** (steel, bronze and the tower are all heated) | a captured blaze | Iron sheets round a magma block under a lava bucket |
-| An **electron tube** (the pumpjack's controller needs a precision mechanism, which a deployer builds, which needs a tube) | polished rose quartz (Nether quartz) | An amethyst shard, four redstone and an iron sheet |
 | **Tin** (bronze needs a tin nugget) | a thick potion (glowstone, a brewing stand) | Two zinc nuggets and an iron nugget |
 
-Each is dearer than the original road, on purpose. The Nether still gives a blaze cake and superheated heat, netherite and quartz.
+Each is dearer than the original road, on purpose. The Nether still gives a blaze cake and superheated heat, and netherite.
+
+### Open: Sanchit says no Blaze Burner on Earth (2026-10-25)
+
+`tools/audit-nether-gating.py` shows that without any recipe of ours **all but seven of the 105 blocked items of the ship and oil chain trace to the Blaze Burner**: brass, steel, bronze, biomass and what is
+built from them (the seven are the Blaze Cake, its base, cinder flour, the empty burner and the netherite diving gear). Hand-crafted brass (F3) already lifts the brass half. What still wants heat is Petrochem's steel and bronze (heated mixing), Crafts & Additions' biomass, and the distillation tower, whose
+atmospheric and vacuum steps need a boiler-heat total of 2 under its base (a fuelled Blaze Burner gives 1, a seething one 2; lava, fire and magma give 0, so a lava floor cannot do it). The choices:
+
+| | What it is | Cost | Leaves |
+|---|---|---|---|
+| **A. An Earth heater of our own** | A coal-fired "firebox" block that gives Create's basin and the tower the same heat a kindled burner does | A new block: Java, a model and textures drawn by our scripts, a recipe; checked on a server, looked at in a client | No burner on Earth, no Nether needed, the Blaze Burner stays the Nether's upgrade |
+| **B. Gift the burners** | The oil quest hands out three Blaze Burners (one for the basin, two for the tower), the way the fan quest hands out the first soul sand | Rewards only; no recipe | Burners cannot be made on Earth, only the three given |
+| **C. As built** | The hand-made burner recipe (lava bucket, magma block, iron sheets) | None | A burner crafted on Earth |
+| **D. Oil after the Nether** | Remove the hand recipe; steel and bronze keep their heated recipes | None | The first ship burns coal or Propulsion's turpentine; kerosene waits for a captured blaze |
 
 ## 6. What is not proved
 

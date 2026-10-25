@@ -466,6 +466,13 @@ in FTB Quests' flexible mode, so a line shows what leads to what and a quest can
 - **Order:** Crude comes before Wings, because the first ship's liquid thruster needs oil.
 - **Platinum** keeps Propulsion's own meaning: a platinum fluid tank holds twice what a copper one does (*A bigger tank*, in Crude, optional). Its other parts stay Propulsion's. It is not made a refinery catalyst.
 
+### The Planets chart, fixed 2026-10-25
+
+Sanchit saw only Earth on the chart while standing in the End. FTB Quests completes a quest only when the quests before it are complete, so a player who skipped a step (his test world had visited the Moon, the
+Nether and the End without finishing "A breath of your own" and what leads to it) had every landing "started" and none "completed", and the chart showed rings. A world is now shown when **any one** of its two
+revealing quests has been *started* (`dependency_requirement: one_started`, FTB Quests' own option, read from its jar): the Moon after the oxygen tank quest or the Moon landing, the Nether and the End after the Moon
+or their own landing. Read against his saved quest file, all three worlds would show. The tooling has `Quest.requirement` for this; `test_a_world_you_have_landed_on_is_never_a_bare_ring` guards it. Not seen in a client.
+
 ### Where it stands
 
 Generated and checked (`generate-quests.py --check`, 49 tests, the real FTB Quests on a dedicated server: 16 chapters, 609 ids, 248 items and 76 advancements, 10 checks and 0 failures). **Not seen in a client.** To look at

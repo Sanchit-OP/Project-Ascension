@@ -45,7 +45,7 @@ journey is weakest.
 | 18 | Lives under the rot: one piece of gold armour in any slot | Gold | `PlanetHazardMechanics` | The Rot | **Checked** (dose timing unit-tested, headless); **not seen in a client** | Whole-world client test is still owed |
 | 19 | Finds the ring in the warped forest, the colony halls, the Monstrosity | Armour, a key hunt | Seek-placement, Cataclysm | The Rot | Placement **Checked** headless | Never seen |
 | 20 | Lights the Nether's gate: both lit, a path home | The Monstrosity's key | Loot modifier | The Rot | **Checked** headless | Never seen |
-| 21 | Blazes, brass, smart propeller; ancient debris, netherite | Blaze rods, a burner, copper and zinc, quartz, diamonds | Nether, Create | The Rot, Brass | Materials **Checked** present; a burner, an electron tube and tin can be made on Earth since ADR-0032 | Brass is a Create ladder the player must learn |
+| 21 | Blazes, brass, smart propeller; ancient debris, netherite | Blaze rods, a burner, copper and zinc, quartz, diamonds | Nether, Create | The Rot, Brass | Materials **Checked** present; a burner and tin can be made on Earth since ADR-0032 (the burner is questioned: `oil-and-fuels.md` section 5) | Brass is a Create ladder the player must learn |
 | 21a | Flies 32,000 blocks south to the End, falls (if they fall) back to space, kills the Dragon, steps into her exit portal | A ship, wings help | `EndGate`, `VoidFall`, `planet/end.json` (ADR-0028) | The Belt | Compiled and unit-tested only; **not run on a server or in a client** | No ship has flown there; the Dragon is untested at 4,550 HP |
 | 21b | Finds an End city, the Elytra, shulker shells | Wings or a gateway pearl | Vanilla worldgen | The Belt | Not checked | Pre-generation cost unmeasured |
 | 22 | Grows: points, web, runes, enchants | Bosses, gates, places | `ascension-combat` | Gear and Growth | **Seen** (screens) and **Checked** (64 scripted checks) | See 5.6: nothing to wear at the top |
@@ -87,7 +87,7 @@ source and no job is a bug (`resource-economy.md` principle 1).
 | Build the Gate | 7 | Read the plan, level ground, the five stone families and their counts, gatestones, the keystone, raise the ring, wake it |
 | Planets | 4 | Earth, the Moon, the Nether and the End on a chart, with a live "you are here" |
 | Spin | 27 | Create from nothing: shafts and cogs, a crank, water, wind, stress, grinding, fans, mixing, belts, steam, pipes and a spout; finale **a working line** |
-| Brass | 7 | A burner for the basin (made on Earth, ADR-0032), brass, a deployer, crafters, an electron tube; finale **a precision mechanism** |
+| Brass | 7 | A burner for the basin (made on Earth, ADR-0032), brass, a deployer, crafters, an electron tube (quartz from diorite, gold or soul sand); finale **a precision mechanism** |
 | Current | 5 | Power aboard: an alternator, an accumulator, wires, an electric motor; finale **an accumulator** (pays no point) |
 | Crude | 8 | Oil for the rocket: steel, a pumpjack, an electrolyzer, the tower, bronze, kerosene, a platinum tank; finale **a bucket of kerosene** |
 | Wings | 26 | A ship is a contraption: glue, weight, a balloon and burner, propellers, a helm, a gyroscope, a control stand, thrusters; finale **a ship that obeys** |
@@ -140,7 +140,7 @@ Each of these changed a quest or is a fact a later session needs.
 | 5.2 Range and air | **A ship is a closed space, so the Oxygen Emitter aboard should pressurise it.** No tank change. This becomes part of **Oxygen v2** (below), which he starts soon. |
 | 5.3 HUD chart in space | Leave for now; something later. |
 | 5.4 Helium | **Fuel: decided and built** (ADR-0025): raw helium is a superheated blaze-burner fuel, so it is the strongest thruster fuel. A better tank stays an idea for Oxygen v2. |
-| 5.4b Oil | **Liquid fuel: decided, staged** (ADR-0031 and ADR-0032, 2026-10-25): crude oil on Earth and a refinery from Create: Petrochem; its five fuels feed the liquid Thruster (`oil-and-fuels.md`). The refinery's heat, its pumpjack's electron tube and its tin used to come from the Nether; three Earth recipes now make them, so oil comes **before the first ship** and the Crude page precedes Wings. Unseen in a client. |
+| 5.4b Oil | **Liquid fuel: decided, staged** (ADR-0031 and ADR-0032, 2026-10-25): crude oil on Earth and a refinery from Create: Petrochem; its five fuels feed the liquid Thruster (`oil-and-fuels.md`). The refinery's heat and its tin used to come from the Nether; two Earth recipes now make them (the electron tube's quartz is Create's own, from diorite, gold or soul sand), so oil comes **before the first ship** and the Crude page precedes Wings. Unseen in a client. |
 | 5.6 Build paths | A **new session** starts from `plans/session-prompts/4-build-paths.md`. |
 | 5.8 Enchantments | Put them in the table (**they already are**, see 5.8), and add the **Lootr** mod so every player gets their own loot from a chest (**installed**, not yet seen in a client). |
 | 5.9 First minutes | Tell the player about the book at first login (**built**, not yet seen). |
