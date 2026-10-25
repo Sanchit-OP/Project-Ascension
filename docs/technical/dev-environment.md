@@ -251,6 +251,10 @@ Two checks that need a game, both dormant until their trigger file exists in the
   health, her death lighting the End's gate, the exit portal holding the player and opening the destination screen, gate travel to Earth and back,
   and falling out of the bottom into space. Prints `[end-checks]` lines. Seen 2026-10-20: 18 checks, 0 failures. Use a new `level-name` for
   each run (the Dragon stays dead in a world she has died in). The stand-in is ticked by hand; its connection is not in the server's list.
+- **`explorer-map-checks.txt`** (a dedicated server, about a minute, stops itself): the cartographer's map to the nearest Ancient City (`ExplorerMaps`): the structure tag, the three trade
+  levels and no other profession's, a real offer made from a villager's feet (a filled map named for the city with a marker on one, 14 emeralds and a compass, six uses), the same villager
+  never offered it twice, and ten new cartographers each leaving with it at most once. Prints `[explorer-map-checks]` lines. Seen 2026-10-25: 13 checks, 0 failures (the first search
+  took 5 s). Use a world nobody has explored if you want the first number to be honest.
 - **`create-checks.txt`** (a dedicated server, about a minute, no window): proves Create's backtanks and diving gear are gone
   from the loaded game: no recipe makes or uses one, the recipe viewers are told to hide all six, the advancements for earning
   them are gone and nothing in Create's advancement tree is left without a parent. The creative menu is built by a client and

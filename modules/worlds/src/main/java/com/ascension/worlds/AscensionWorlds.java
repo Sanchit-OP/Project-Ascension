@@ -20,6 +20,8 @@ import com.ascension.worlds.internal.SpaceAttachments;
 import com.ascension.worlds.internal.SpaceEnvironment;
 import com.ascension.worlds.internal.SpaceMechanics;
 import com.ascension.worlds.internal.EndChecks;
+import com.ascension.worlds.internal.ExplorerMapChecks;
+import com.ascension.worlds.internal.ExplorerMaps;
 import com.ascension.worlds.internal.EndGate;
 import com.ascension.worlds.internal.VoidFall;
 import com.ascension.worlds.internal.VanillaPortals;
@@ -87,6 +89,8 @@ public final class AscensionWorlds {
         EndGate.register();
         VoidFall.register();
         EndChecks.register(NeoForge.EVENT_BUS);
+        ExplorerMaps.register(NeoForge.EVENT_BUS);
+        ExplorerMapChecks.register(NeoForge.EVENT_BUS);
         PregeneratedGates.register();
         container.registerConfig(ModConfig.Type.SERVER, WorldsConfig.SPEC);
 

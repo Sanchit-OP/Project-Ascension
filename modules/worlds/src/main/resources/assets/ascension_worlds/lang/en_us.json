@@ -75,5 +75,6 @@
   "ascension_worlds.gateway.unbreakable": "The ancients built this gate to last. It will not break.",
   "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list.",
   "advancements.ascension_worlds.project.skyline.title": "Project: Skyline",
-  "advancements.ascension_worlds.project.skyline.description": "Climb past the top of the sky in your ship and into space. Everyone on the team gains a skill point, once."
+  "advancements.ascension_worlds.project.skyline.description": "Climb past the top of the sky in your ship and into space. Everyone on the team gains a skill point, once.",
+  "filled_map.ascension_worlds.ancient_city": "Ancient City Explorer Map"
 }
