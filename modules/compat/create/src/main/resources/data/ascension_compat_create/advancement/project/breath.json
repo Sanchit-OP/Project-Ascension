@@ -1,0 +1,52 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ascension_combat"
+    }
+  ],
+  "parent": "ascension_combat:growth/root",
+  "criteria": {
+    "compressor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "ascension_compat_create:air_compressor"
+          }
+        ]
+      }
+    },
+    "dispenser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "ascension_atmosphere:air_dispenser"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "compressor"
+    ],
+    [
+      "dispenser"
+    ]
+  ],
+  "display": {
+    "icon": {
+      "id": "ascension_atmosphere:air_dispenser"
+    },
+    "title": {
+      "translate": "advancements.ascension_compat_create.project.breath.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_compat_create.project.breath.description"
+    },
+    "frame": "goal",
+    "announce_to_chat": false
+  }
+}

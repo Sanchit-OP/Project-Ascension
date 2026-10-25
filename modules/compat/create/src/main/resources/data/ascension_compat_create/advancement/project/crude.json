@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ascension_combat"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "petrochem"
+    }
+  ],
+  "parent": "ascension_combat:growth/root",
+  "criteria": {
+    "kerosene": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "petrochem:kerosene_bucket"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "petrochem:kerosene_bucket"
+    },
+    "title": {
+      "translate": "advancements.ascension_compat_create.project.crude.title"
+    },
+    "description": {
+      "translate": "advancements.ascension_compat_create.project.crude.description"
+    },
+    "frame": "goal",
+    "announce_to_chat": false
+  }
+}

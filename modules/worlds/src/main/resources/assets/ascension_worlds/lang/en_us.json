@@ -73,5 +73,7 @@
   "advancements.ascension_worlds.discovery.nether_gate.title": "The Gate Ruin",
   "advancements.ascension_worlds.discovery.nether_gate.description": "Find the ruined gate in the warped forest. You gain a skill point, once.",
   "ascension_worlds.gateway.unbreakable": "The ancients built this gate to last. It will not break.",
-  "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list."
+  "block.ascension_worlds.gateway_keystone.use_a_portal": "Gateway travel only works from an active gateway portal's destination list.",
+  "advancements.ascension_worlds.project.skyline.title": "Project: Skyline",
+  "advancements.ascension_worlds.project.skyline.description": "Climb past the top of the sky in your ship and into space. Everyone on the team gains a skill point, once."
 }

@@ -5,5 +5,15 @@
   "block.ascension_compat_create.air_compressor.rate": "Making %1$s mB of Liquid O2 per second",
   "block.ascension_compat_create.air_compressor.tooltip": "Turn it with a Create shaft to make Liquid O2. Faster shaft, more Liquid O2.",
   "block.ascension_compat_create.air_compressor.tooltip2": "Right-click with an oxygen tank to fill it, or draw it into pipes and tanks with a pump.",
-  "block.ascension_compat_create.air_compressor.tooltip3": "Pipe it to an Air Dispenser to keep a sealed room breathable."
+  "block.ascension_compat_create.air_compressor.tooltip3": "Pipe it to an Air Dispenser to keep a sealed room breathable.",
+  "advancements.ascension_compat_create.project.spin.title": "Project: Spin",
+  "advancements.ascension_compat_create.project.spin.description": "Hold a mechanical press, a mixer and an encased fan: the machines of a working line. Everyone on the team gains a skill point, once.",
+  "advancements.ascension_compat_create.project.brass.title": "Project: Brass",
+  "advancements.ascension_compat_create.project.brass.description": "Hold a precision mechanism: brass, a deployer and a crafter lie behind it. Everyone on the team gains a skill point, once.",
+  "advancements.ascension_compat_create.project.crude.title": "Project: Crude",
+  "advancements.ascension_compat_create.project.crude.description": "Fill a bucket with kerosene, refined from crude oil. Everyone on the team gains a skill point, once.",
+  "advancements.ascension_compat_create.project.wings.title": "Project: Wings",
+  "advancements.ascension_compat_create.project.wings.description": "Hold a gyroscope, a control stand and a thruster: a ship that stays level, steers and answers. Everyone on the team gains a skill point, once.",
+  "advancements.ascension_compat_create.project.breath.title": "Project: Breath",
+  "advancements.ascension_compat_create.project.breath.description": "Hold an Air Compressor and an Air Dispenser: air to make, and a room that keeps it. Everyone on the team gains a skill point, once."
 }
