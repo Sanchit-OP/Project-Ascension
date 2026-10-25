@@ -17,8 +17,8 @@ shipping both invites exactly the confusion ADR-0002 exists to avoid -- and the 
 lets a player swim in lava, which walks round the Nether.
 
 Also makes raw helium (from ascension-worlds, when it is installed) a superheated blaze-burner fuel, the
-highest grade. Create's blaze burners and Create Simulated Thrusters' Blaze Thruster both read that fuel list,
-so the same data entry makes helium rocket fuel.
+highest grade. Also a fuel for Create Propulsion's Solid Fuel Thruster (a data file in Propulsion's own format, ignored when
+Propulsion is absent), which is what makes helium rocket fuel (ADR-0030, superseding ADR-0025's thrusters).
 
 Optional. Without Create installed, this jar simply is not present -- nothing else notices,
 because nothing else knew this existed in the first place.

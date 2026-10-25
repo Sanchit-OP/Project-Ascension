@@ -98,6 +98,27 @@ writing to it.
 | F13 quiver | Nyf's Quivers (262K, five tiers) | Quivers as items. | Whether it has a Curios slot is not on its page; **ask for or check a Curios quiver slot** before choosing. |
 | F14 map | **Xaero's Minimap + World Map** (121M) | Shows players, mobs, waypoints, cave mode. | With **Open Parties and Claims** teammates show on the map; but we use FTB Teams and FTB Chunks (which has a map). JourneyMap (15.6M) is the other: it has underground slices by Y level. Team health on the HUD is ours to build (the HUD module's deferred T4), not a map mod's job. |
 
+### Decided by Sanchit, 2026-10-25, and where each stands
+
+| What | Decision | Status |
+|---|---|---|
+| Walls that hold air | Slabs and glass panes seal; stairs and iron bars do not. | **Done**, tag `ascension_atmosphere:airtight`; the balloon's adjustable burner is in it too (the audit found it leaking). |
+| F9 paraglider | **Paragliders** (Tictim), with the Spirit Orb, Heart Container, Stamina Vessel and statue parts off. He likes that the glider is held, not worn. | Config in `pack/config/paraglider-*.toml`, `ascension-compat-paraglider` empties the three statue tags. **Not in the instance yet.** Stamina use while gliding is left on (one wheel, recovers on the ground); durability is off by default. |
+| F10 backpack | **Traveler's Backpack** (confirmed). | Named in the pack extras. **Not in the instance yet.** Its sleeping bag inside the backpack is still to be seen. |
+| F11 thrusters | **Create Propulsion: Simulated** (confirmed). | ADR-0030; helium is a solid-fuel thruster fuel; quest page rewritten. **Not in the instance yet.** |
+| F12 sorting | **Inventory Profiles Next** (+ libIPN, Kotlin for Forge). | Named in the pack extras. **Not in the instance yet.** |
+| F13 quiver | **Dropped.** "It's fine, leave it." | Closed. |
+| F14 map | **Xaero's Minimap** (+ World Map). The team HUD with teammates' health is a separate session. | Named in the pack extras; the HUD prompt is `plans/session-prompts/12-team-hud-and-map.md`. |
+| Shaders | Bundle Complementary Shaders (Reimagined and/or Unbound), with clouds off everywhere. | **Not started**: needs a client look at space and ships under shaders (alpha.2 left them out for clouds in space, toothed planet edges and an Iris warning from Aeronautics). |
+| Flight | The failure was the controls. | Aeroworks (gyroscope, control stand, joystick) and the flight quest page; **never flown in a client**. |
+
+**Staged, not applied**: the whole new mod set was built into a copy of the instance's mods (scratchpad `stage/mods`), booted on a
+dedicated server and checked (`create-checks` 34/0); the Ascension Dev instance itself, which other sessions use, has not been touched.
+Applying it means: copy the new jars in, move Gliders, Sophisticated Backpacks and Create Simulated Thrusters to a backup folder (as
+`mods-backup-before-oxygen-v2` was), then `python tools/sync-pack-config.py`.
+
+**At publish**: the CurseForge description's mod lists (Storage, Gliders, Keys) and `KNOWN_ISSUES.md` still describe alpha.2.
+
 ### Good to have in alpha.3 (not required)
 
 | # | Finding |
@@ -177,10 +198,10 @@ No ready-made mech mod turned up in a Modrinth search; mechs may be ours, perhap
 ## Not decided (needs Sanchit)
 
 For alpha.3:
-1. Which paraglider, backpack (with a sleeping bag), sorting mod and minimap/team-HUD mod (F9, F10, F12, F14). I research and propose, he picks.
-2. Is the thruster mod he has in mind Create Propulsion (F11)?
-3. Is "molten core" the Heavy Core (F4)?
-4. What exactly went wrong on the first flight to the Moon, beyond what the four mods fix: the failures, in the order they happened.
+1. Is "molten core" the Heavy Core (F4)?
+2. May the staged mod set be applied to the Ascension Dev instance now? (Gliders, Sophisticated Backpacks and Simulated Thrusters go to a backup folder.)
+3. Shaders: Reimagined, Unbound, or both; and does he want them on by default for a new player?
+4. Helium as a solid item in the Solid Fuel Thruster (done) or also a liquid for the liquid Thruster (needs a new fluid)?
 5. The "few more things before we publish" and the "final rollout" list he mentioned earlier, which still have not been told to me.
 
 For alpha.4: spell scaling and lane (step 0 above), and which structure mods.

@@ -251,6 +251,30 @@ damage checks still passed (77 of 77). **Not seen in a client.**
 - **The server needs the same files.** The server pack must carry `pack/config/` as well as `serverpack/config/` (the Waystones rule
   is a server decision, and Waystones syncs its config to clients).
 
+## Alpha.3 changes (2026-10-25, after the alpha.2 test with friends)
+
+Replaced: **Gliders** by **Paragliders**, **Sophisticated Backpacks** by **Traveler's Backpack**, **Create Simulated Thrusters** by
+**Create Propulsion: Simulated** (ADR-0030). Added: **Create: Aeroworks**, **Create Crafts & Additions** with **Create Additions - Sable
+Compat**, **Farmer's Delight**, **Inventory Profiles Next** (with libIPN and Kotlin for Forge), **Xaero's Minimap** and **Xaero's World Map**.
+Sophisticated Core and Storage stay. Each is named by CurseForge project and file id in `pack/curseforge-extras.json`; none is bundled.
+
+| Mod | File | Notes |
+|---|---|---|
+| Create: Aeroworks 1.5.0 | `aeroworks-1.5.0.jar` | Needs Create 6.0.0+ and Sable 1.1.0+. Custom licence, not read. |
+| Create Propulsion: Simulated 1.1.5 | `createpropulsion-1.1.5.jar` | MIT. Needs Create 6.0.6+, Sable 2.0.3+. Adds platinum ore. |
+| Create Crafts & Additions 1.7.2 (beta) | `createaddition-1.7.2.jar` | Needs Create [6.0.7, 6.1.0). The stable 1.6.0 is file 8188476 if the beta misbehaves. |
+| Create Additions - Sable Compat 0.1.13 (beta) | `sable_createaddition_compat-0.1.13.jar` | Wires on a ship. |
+| Farmer's Delight 1.3.4 | `FarmersDelight-1.21.1-1.3.4.jar` | No dependencies. |
+| Paragliders 21.1.5 (Tictim, GPL-3) | `Paraglider-neoforge-21.1.5.jar` | Spirit Orbs, vessels and statues off: `pack/config/paraglider-*.toml` and `ascension-compat-paraglider`. |
+| Traveler's Backpack 10.1.40 | `travelersbackpack-neoforge-1.21.1-10.1.40.jar` | The author allows modpacks, forbids reposting the jar: the pack names it by id. |
+| Inventory Profiles Next 2.2.5, libIPN 6.6.3, Kotlin for Forge 5.12.0 | three jars | Client only; AGPL. Kept off the server (`dev_mods_server_exclude`). |
+| Xaero's Minimap 26.6.0, World Map 1.47.0 | two jars | Client side; the minimap carries Xaero's library inside. |
+
+Checked 2026-10-25 on a dedicated server with a staging copy of the instance's mods (the instance itself untouched until the swap):
+the set loads together with Create 6.0.10, Aeronautics 1.3.2 and Sable 2.0.5 in 2.2 s and `create-checks` passes 34 of 34. The only
+errors were quest tasks naming the old thrusters, which the rewritten **Aeronautics: In Flight** page replaces. Every download's size
+matched the size its source publishes (three also matched a published SHA-512 prefix).
+
 ## Chat noise (2026-10-18)
 
 Two lines kept appearing in the chat of the dev client. **"Distant Horizons: Chunky detected"** is real

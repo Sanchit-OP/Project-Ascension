@@ -1,0 +1,7 @@
+{
+  "item": "ascension_worlds:raw_helium",
+  "thrust_multiplier": 1.5,
+  "consumption_multiplier": 0.5,
+  "particle": "plasma",
+  "required_mod": "ascension_worlds"
+}

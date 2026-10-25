@@ -43,7 +43,7 @@ def gradle_property(name):
 
 
 # Our own mods: 17 until 2026-10-22, when ascension-compat-curios became the 18th.
-EXPECTED_OUR_JARS = 18
+EXPECTED_OUR_JARS = 19
 
 
 def instance_dir():

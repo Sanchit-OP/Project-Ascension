@@ -32,7 +32,7 @@ import zipfile
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 OUT = os.path.join(ROOT, 'build', 'server')
 FIXED_DATE = (2026, 10, 21, 0, 0, 0)
-EXPECTED_OUR_JARS = 18
+EXPECTED_OUR_JARS = 19
 NEOFORGE_INSTALLER = 'https://maven.neoforged.net/releases/net/neoforged/neoforge/%s/neoforge-%s-installer.jar'
 
 

@@ -1,0 +1,39 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/Sanchit-OP/Project-Ascension/issues"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "Ascension Compat: Paraglider"
+authors = "${mod_authors}"
+description = '''
+Removes Paragliders' three world-generated statues (Nether, underground, Tarrey Town) by emptying the biome tags that place them.
+The glider itself is untouched. Spirit Orbs, vessels and village statues are turned off in the pack's config.
+
+Optional. Without Paragliders installed, this jar simply is not present.
+'''
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+# Required, not optional: this jar has no other reason to exist, so if Paragliders is absent NeoForge should refuse to
+# load it rather than load it into a no-op (same reasoning as ascension-compat-endermanoverhaul).
+[[dependencies.${mod_id}]]
+modId = "paraglider"
+type = "required"
+versionRange = "${paraglider_version_range}"
+ordering = "AFTER"
+side = "BOTH"

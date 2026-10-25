@@ -51,8 +51,9 @@ forgets it.
 | [0022](0022-enchantments-are-stat-sources.md) | Enchantments are stat sources, as data | Accepted |
 | [0023](0023-teams-are-ftb-teams-parties.md) | Teams are FTB Teams parties; progress has three owners (world, team, you) | Accepted |
 | [0024](0024-the-hud-is-its-own-module.md) | The HUD is its own Tier 1 module, `ascension-hud`, with a contract in `core` | Accepted |
-| [0025](0025-rockets-are-thruster-ships.md) | Rockets are ships with thrusters (Create Simulated Thrusters), and helium is their fuel | Accepted |
+| [0025](0025-rockets-are-thruster-ships.md) | Rockets are ships with thrusters (Create Simulated Thrusters), and helium is their fuel | Accepted; the thruster mod is superseded by 0030 |
 | [0026](0026-air-is-a-fluid.md) | Air is a fluid, and a dispenser holds the room | Accepted |
 | [0027](0027-max-health-ceiling-is-raised.md) | Max Health's ceiling is raised past vanilla's 1,024, so bosses can have the health the balance gives them | Accepted |
 | [0028](0028-planet-4-is-the-end.md) | Planet 4 is the End, an asteroid belt; its gate is the Dragon's exit portal; the predator world slides to Planet 5 | Proposed |
 | [0029](0029-planet-loot-is-added-by-two-shared-loot-types.md) | Planet loot is added to every chest by two loot types (a chest condition and a junk strip) that live in core | Accepted |
+| [0030](0030-rocket-parts-are-create-propulsion-and-aeroworks.md) | Rockets use Create Propulsion's thrusters, ships steer with Aeroworks, power comes from Crafts & Additions | Accepted |

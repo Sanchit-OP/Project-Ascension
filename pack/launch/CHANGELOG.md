@@ -17,6 +17,18 @@ Written as the work lands; the version number and the date go on it when it is b
   holds the air again, at once. **Slabs and glass panes hold air too**, and so does the hot air balloon's adjustable burner; stairs, iron bars and fences do not.
   A datapack can add blocks to `ascension_atmosphere:airtight`.
 
+**Ships and flight** (the alpha.2 test: nobody reached the Moon, "the controls were too hard")
+- **Create: Aeroworks** is in: a **gyroscope** that keeps a ship level, a **joystick**, and a **control stand** that takes lever, joystick, wheel, yoke and
+  throttle modules. **Create Propulsion** replaces Create Simulated Thrusters: a solid fuel thruster that burns coal, wood or raw helium, a liquid
+  thruster, an ion thruster that runs on power. **Create Crafts & Additions** (with its Sable addon, so wires work on a ship) gives a ship stored electricity.
+  The flight quest page teaches them in that order.
+- **Brass can be crafted by hand**, which the new thruster needs.
+
+**Quality of life**
+- **Paragliders** replaces Gliders: a glider you hold, not wear, with no durability. Its Spirit Orbs, Heart Containers, Stamina Vessels and statues are off.
+- **Traveler's Backpack** replaces Sophisticated Backpacks, and has a sleeping bag in it. **Inventory Profiles Next** sorts your inventory and chests.
+  **Xaero's Minimap and World Map** are in. **Farmer's Delight** adds food.
+
 **Combat**
 - **Cataclysm's gear was rebalanced.** Ignitium, Cursium and the Monstrous Helm are smithed from a netherite piece, and several came out worse than the
   piece they used up: each is now at least that netherite piece in Armor, Magic Resist and Health (a full Ignitium set is 84 / 60 / 40, Cursium 76 / 53 / 42,

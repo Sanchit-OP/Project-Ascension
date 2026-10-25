@@ -1,7 +1,8 @@
 # ADR-0025: Rockets are ships with thrusters, and helium is their fuel
 
 - **Status:** Accepted, 2026-10-18 (Sanchit: the thrusters are how the rockets for space travel are made, and helium
-  is the fuel)
+  is the fuel). **The choice of thruster mod is superseded by [ADR-0030](0030-rocket-parts-are-create-propulsion-and-aeroworks.md)**
+  (2026-10-25); the rest stands.
 - **Date:** 2026-10-18
 - **Amends:** [ADR-0015](0015-the-road-to-space-is-by-airship.md), whose context said "no rocket engines". Only that
   sentence changes. The decision itself, that **a Create Aeronautics ship is the way to space** and the ascent and

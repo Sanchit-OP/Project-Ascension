@@ -12,16 +12,6 @@
       "why": "every player gets their own copy of a chest's loot"
     },
     {
-      "name": "Create: Simulated Thrusters",
-      "slug": "create-simulated-thrusters",
-      "projectID": 1546743,
-      "fileID": 8220627,
-      "file": "create_simulated_thrusters-1.21.1-NeoForge-1.1.1.jar",
-      "side": "both",
-      "added": "2026-10-18",
-      "why": "rockets are thruster ships, helium is their fuel (ADR-0025)"
-    },
-    {
       "name": "Sophisticated Core",
       "slug": "sophisticated-core",
       "projectID": 618298,
@@ -29,7 +19,7 @@
       "file": "sophisticatedcore-1.21.1-1.5.16.2422.jar",
       "side": "both",
       "added": "2026-10-21",
-      "why": "needed by Sophisticated Storage and Sophisticated Backpacks"
+      "why": "needed by Sophisticated Storage"
     },
     {
       "name": "Sophisticated Storage",
@@ -40,16 +30,6 @@
       "side": "both",
       "added": "2026-10-21",
       "why": "chests and barrels with upgrades, so a group's base needs fewer, bigger blocks. 1.6.7.2193 was withdrawn from CurseForge on 2026-10-20 or 21 (its file page is gone), so the pack names 2184"
-    },
-    {
-      "name": "Sophisticated Backpacks",
-      "slug": "sophisticated-backpacks",
-      "projectID": 422301,
-      "fileID": 9259142,
-      "file": "sophisticatedbackpacks-1.21.1-3.26.13.2214.jar",
-      "side": "both",
-      "added": "2026-10-21",
-      "why": "a backpack, worn in Curios' back slot"
     },
     {
       "name": "Tom's Simple Storage Mod",
@@ -122,14 +102,124 @@
       "why": "chop one log, the tree falls (alpha.2); its config sets sneak, durability and hunger costs"
     },
     {
-      "name": "Gliders",
-      "slug": "gliders",
-      "projectID": 828331,
-      "fileID": 6850529,
-      "file": "gliders-1.21.1-neoforge-1.1.8.jar",
+      "name": "Create: Aeroworks",
+      "slug": "create-aeroworks",
+      "projectID": 1522473,
+      "fileID": 8743051,
+      "file": "aeroworks-1.5.0.jar",
       "side": "both",
-      "added": "2026-10-22",
-      "why": "craftable hang gliders, a Curios accessory or worn (alpha.2)"
+      "added": "2026-10-25",
+      "why": "gyroscope, joystick and a control stand: ships that are easy to steer (alpha.3; the first Moon flight failed on controls)"
+    },
+    {
+      "name": "Create Propulsion: Simulated",
+      "slug": "create-propulsion-simulated",
+      "projectID": 1522736,
+      "fileID": 8496246,
+      "file": "createpropulsion-1.1.5.jar",
+      "side": "both",
+      "added": "2026-10-25",
+      "why": "thrusters that burn fuel or run on power, replacing Create Simulated Thrusters (alpha.3, ADR-0030)"
+    },
+    {
+      "name": "Create Crafts & Additions",
+      "slug": "createaddition",
+      "projectID": 439890,
+      "fileID": 9029800,
+      "file": "createaddition-1.7.2.jar",
+      "side": "both",
+      "added": "2026-10-25",
+      "why": "electricity: store power and run a ship from it (alpha.3)"
+    },
+    {
+      "name": "Create Additions - Sable Compat",
+      "slug": "create-additions-sable-compat",
+      "projectID": 1525684,
+      "fileID": 8079798,
+      "file": "sable_createaddition_compat-0.1.13.jar",
+      "side": "both",
+      "added": "2026-10-25",
+      "why": "Crafts & Additions' wires work on a ship (alpha.3)"
+    },
+    {
+      "name": "Farmer's Delight",
+      "slug": "farmers-delight",
+      "projectID": 398521,
+      "fileID": 8765184,
+      "file": "FarmersDelight-1.21.1-1.3.4.jar",
+      "side": "both",
+      "added": "2026-10-25",
+      "why": "food: crops, a cooking pot, a cutting board (alpha.3)"
+    },
+    {
+      "name": "Paragliders",
+      "slug": "paragliders",
+      "projectID": 289240,
+      "fileID": 7795089,
+      "file": "Paraglider-neoforge-21.1.5.jar",
+      "side": "both",
+      "added": "2026-10-25",
+      "why": "a held glider, no armour slot; replaces Gliders. Spirit Orbs, vessels and statues are off (alpha.3)"
+    },
+    {
+      "name": "Traveler's Backpack",
+      "slug": "travelers-backpack",
+      "projectID": 321117,
+      "fileID": 9297032,
+      "file": "travelersbackpack-neoforge-1.21.1-10.1.40.jar",
+      "side": "both",
+      "added": "2026-10-25",
+      "why": "a backpack with a sleeping bag in it; replaces Sophisticated Backpacks (alpha.3)"
+    },
+    {
+      "name": "Inventory Profiles Next",
+      "slug": "inventory-profiles-next",
+      "projectID": 495267,
+      "fileID": 7810574,
+      "file": "InventoryProfilesNext-neoforge-1.21.1-2.2.5.jar",
+      "side": "client",
+      "added": "2026-10-25",
+      "why": "sorting the player inventory and chests (alpha.3)"
+    },
+    {
+      "name": "libIPN",
+      "slug": "libipn",
+      "projectID": 679177,
+      "fileID": 7810552,
+      "file": "libIPN-neoforge-1.21.1-6.6.3.jar",
+      "side": "client",
+      "added": "2026-10-25",
+      "why": "needed by Inventory Profiles Next (alpha.3)"
+    },
+    {
+      "name": "Kotlin for Forge",
+      "slug": "kotlin-for-forge",
+      "projectID": 351264,
+      "fileID": 8335665,
+      "file": "kotlinforforge-5.12.0-all.jar",
+      "side": "client",
+      "added": "2026-10-25",
+      "why": "needed by Inventory Profiles Next (alpha.3)"
+    },
+    {
+      "name": "Xaero's Minimap",
+      "slug": "xaeros-minimap",
+      "projectID": 263420,
+      "fileID": 9067173,
+      "file": "xaerominimap-neoforge-1.21.1-26.6.0.jar",
+      "side": "client",
+      "added": "2026-10-25",
+      "why": "the minimap (alpha.3)"
+    },
+    {
+      "name": "Xaero's World Map",
+      "slug": "xaeros-world-map",
+      "projectID": 317780,
+      "fileID": 9067277,
+      "file": "xaeroworldmap-neoforge-1.21.1-1.47.0.jar",
+      "side": "client",
+      "added": "2026-10-25",
+      "why": "the full map; Xaero's Minimap works with it (alpha.3)"
     }
   ]
 }

@@ -1,0 +1,8 @@
+# Only the settings the pack decides. The pack uses Paragliders' glider and nothing of its progression
+# (Sanchit, 2026-10-25): no Spirit Orbs, no Heart Containers, no Stamina Vessels, no statues. Max Health and
+# stamina are the growth tree's and the gear's business, not a shrine's.
+[features]
+	spiritOrbGens = false
+	heartContainers = false
+	staminaVessels = false
+	villageStructures = false

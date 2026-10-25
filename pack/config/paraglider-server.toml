@@ -1,0 +1,11 @@
+# See paraglider-common.toml. Every way of earning a vessel or an orb is off; the glider itself costs sticks and leather, has no
+# durability (paragliderDurability stays 0, its default) and uses a stamina wheel that recovers on the ground.
+[spiritOrbs]
+	enderDragonDropsVessel = false
+	witherDropsVessel = false
+	raidGivesVessel = false
+	elderGuardianDropsSpiritOrb = false
+	spawnerSpiritOrbDrops = 0.0
+	trialSpiritOrbDrops = 0.0
+	ominousTrialSpiritOrbDrops = 0.0
+	spiritOrbLoots = false

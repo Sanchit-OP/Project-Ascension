@@ -6,7 +6,7 @@ Built 2026-10-22, branch `curios-slots`, **compiled and unit-built only: not see
 |---|---|---|
 | `ascension_tank` | oxygen tank, helium tank (tag `curios:ascension_tank`) | The worn tank is an oxygen source with no valve: wearing it is opening it. One slot, one worn tank. |
 | `ascension_relic` | Zonia's Hourglass, Sterak's Harness (tag `curios:ascension_relic`) | Works as the off hand does: the off-hand and relic ability key, the passive, the stats. |
-| `back` | a backpack | Sophisticated Backpacks assigns it itself; nothing of ours. Gliders brings its own `glider` slot, so the two do not compete. |
+| `back` | a backpack | Traveler's Backpack (from alpha.3; Sophisticated Backpacks before) uses it; nothing of ours. Paragliders' glider is a held item with no slot. |
 
 ## Decisions (they differ from prompt 11, on Sanchit's word 2026-10-22)
 
@@ -29,12 +29,12 @@ Built 2026-10-22, branch `curios-slots`, **compiled and unit-built only: not see
 4. Zonia's in the relic slot: the off-hand and relic ability key starts stasis; the tooltip and stat sheet list its stats, labelled "Relic slot".
 5. Sterak's in the relic slot: the attack-damage and lifesteal passives work; with Sterak's also in the off hand, stats count once.
 6. Die with Soulbound and without; relog; reload the world: both slots keep their contents.
-7. Wear a backpack in `back` and a glider in its slot at the same time.
+7. Wear a Traveler's Backpack in `back`, then take out the glider: it is held in the hand, no slot.
 8. Dedicated server: the same jars on the server (Curios is the example in `dev-environment.md` of a mod both sides must carry).
 
 ## Slots a player has (2026-10-22, Sanchit: only slots we have a use for)
 
-Kept: `ascension_tank`, `ascension_relic` (ours); `back` (Sophisticated Backpacks, Icarus wings); `glider` (Gliders); `head`
+Kept: `ascension_tank`, `ascension_relic` (ours); `back` (Traveler's Backpack, Icarus wings); `head`
 (Create's goggles); `belt` (Tom's Storage wireless terminal). Curios' own ten definitions assign nothing to the player.
 
 Removed: Cataclysm's `necklace`, `rings`, `waist`, `talisman`, `hands`, `feet` (its amulets, ankh, ring, belts, gloves, boots and
